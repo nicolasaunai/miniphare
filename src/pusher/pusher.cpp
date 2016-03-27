@@ -1,6 +1,6 @@
 #include "pusher.h"
 
-pusher::pusher()
+Pusher::Pusher()
 {
 
 }
