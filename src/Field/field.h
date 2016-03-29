@@ -7,12 +7,15 @@ class Field
 {
 public:
     Field();
-    ~Field();
+    virtual ~Field();
 
 private:
     std::string name;
     unsigned int nbDims;
     double *data;
+
+
+    virtual void allocate();
 
 };
 
