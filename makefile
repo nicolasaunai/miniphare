@@ -1,83 +1,143 @@
-# Simple makefile
+#CXX     ?= mpicxx
+CXX     = mpicxx
+BUILD_DIR ?= build
 
-PGM = mphare
-CPP = mpicxx
+EXEC = miniphare
 
-#DSRC = $(HOME)/codes/miniphare
-DSRC = src
+default: $(EXEC)
 
-SOURCES1 = $(DSRC)/main.cpp  
-HEADERS1 = 
-INC1 = 
+####################################################
+DESCRIBE:=$(shell git describe 2>/dev/null || echo 'NONE')
+BRANCH:=$(shell git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'NONE')
+VERSION="$(DESCRIBE)-$(BRANCH)"
+COMMITDATE:="$(shell git show -s --pretty="%ci" 2>/dev/null || echo 'NONE')"
 
-SOURCES2 = $(DSRC)/pusher/pusher.cpp 
-HEADERS2 = $(DSRC)/pusher/pusher.h 
-
-INC2 = -I$(DSRC)/pusher 
-
-
-SOURCES3 = $(DSRC)/Field/Field1D.cpp \
-           $(DSRC)/Field/Field2D.cpp \
-           $(DSRC)/Field/Field3D.cpp
-
-HEADERS3 = $(DSRC)/Field/Field.h  \
-           $(DSRC)/Field/Field1D.h \
-           $(DSRC)/Field/Field2D.h \
-           $(DSRC)/Field/Field3D.h \
-           $(DSRC)/tools/tools.h
-
-INC3 = -I$(DSRC)/Field -I$(DSRC)/tools 
+CXXFLAGS += -D__VERSION=\"$(VERSION)\" -D__COMMITDATE=\"$(COMMITDATE)\" -D__CONFIG=\""$(config)"\"
+CXXFLAGS += -I${HDF5_ROOT_DIR}/include -std=c++11
+#LDFLAGS += -L${HDF5_ROOT_DIR}/lib -lhdf5 -lz
 
 
-# We substitute .cpp by .o to deduce the object file names
-OBJS1=$(subst .cpp,.o,$(SOURCES1))
-OBJS2=$(subst .cpp,.o,$(SOURCES2))
-OBJS3=$(subst .cpp,.o,$(SOURCES3))
+#add subdirs
+DIRS := $(shell find src -type d)
+#add include directives for subdirs
+CXXFLAGS += $(DIRS:%=-I%)
 
-OBJS=$(OBJS1) $(OBJS2) $(OBJS3)
+#collect all cpp files
+SRCS := $(shell find src/* -name \*.cpp)
+OBJS := $(addprefix $(BUILD_DIR)/, $(SRCS:.cpp=.o))
+DEPS := $(addprefix $(BUILD_DIR)/, $(SRCS:.cpp=.d))
 
-$(info OBJS="$(OBJS)")
 
-INC=$(INC1) $(INC2) $(INC3)
 
-ifeq ($(config),debug)
-        CFLAGS = -Wall -pedantic -ansi -g
-        DOBJ = objs_dbg
-
-else ifeq ($(config),analyze)
-        CFLAGS = -Wall -pedantic -ansi -g  --analyze
-        DOBJ = objs_dbg
-
-else ifeq ($(config),release)
-        CFLAGS = -Wall -pedantic -ansi -O3
-        DOBJ = objs
+# check for variable config
+ifneq (,$(findstring debug,$(config)))
+        CXXFLAGS += -g -pg -Wall -D__DEBUG -O0 # -shared-intel
+else
+        CXXFLAGS += -O3 # -xHost -ipo
 endif
 
-LDFLAGS = -lm
+ifneq (,$(findstring scalasca,$(config)))
+    CXX = scalasca -instrument mpic++
+endif
 
-# $^ designe la liste des dependances
-# $@ designe le nom de la cible
-# $< designe le nom de la premiere dependance
-# $* designe le nom du fichier sans suffixe
+#ifneq (,$(findstring turing,$(config)))
+#        CXXFLAGS += -I$(BG_PYTHONHOME)/include/python2.7 -qlanglvl=extended0x
+#        LDFLAGS  += -qnostaticlink -L(BG_PYTHONHOME)/lib64 -lpython2.7 -lutil
+#endif
 
-#%.o: %.cpp 
-#	$(CPP) -o $@ -c $< $(CFLAGS) $(INC)
-
-all: $(PGM)
-
-$(PGM): $(OBJS)
-	$(CPP) -o $@ $^ $(LDFLAGS) 
-
-$(OBJS1): $(SOURCES1) $(HEADERS1)
-	$(CPP) -o $@ -c $*.cpp $(CFLAGS) $(INC1)
-
-$(OBJS2): $(SOURCES2) $(HEADERS2)
-	$(CPP) -o $@ -c $*.cpp $(CFLAGS) $(INC2)
-	
-$(OBJS3): $(SOURCES3) $(HEADERS3)
-	$(CPP) -o $@ -c $*.cpp $(CFLAGS) $(INC3)
+#ifeq (,$(findstring noopenmp,$(config)))
+#        SMILEI_COMPILER:=$(shell $(CXX) --showme:command)
+#    ifneq (,$(findstring icpc,$(SMILEI_COMPILER)))
+#        OPENMPFLAGS = -openmp
+#    else
+#        OPENMPFLAGS = -fopenmp
+#        LDFLAGS += -lm
+#    endif
+#    OPENMPFLAGS += -D_OMP
+#    LDFLAGS += $(OPENMPFLAGS)
+#    CXXFLAGS += $(OPENMPFLAGS)
+#endif
 
 clean:
-	rm -f $(OBJS) $(PGM)
+	rm -f $(OBJS) $(DEPS) $(PYHEADERS)
+	rm -rf $(BUILD_DIR)
+	rm -rf miniphare-$(VERSION).tgz
+	make -C doc clean
 
+distclean: clean
+	rm -f $(EXEC)
+
+
+# this generates a .h file containing a char[] with the python script in binary then
+# you can just include this file to get the contents (in Params/Params.cpp)
+#$(BUILD_DIR)/%.pyh: %.py
+#        @ echo "Creating binary char for $< : $@"
+#        @ mkdir -p "$(@D)"
+#        @ cd "$(<D)" && xxd -i "$(<F)" > "$(@F)"
+#        @ mv "$(<D)/$(@F)" "$@"
+
+$(BUILD_DIR)/%.d: %.cpp
+	 @ echo "Checking dependencies for $<"
+# create and modify dependecy file .d to take into account the location subdir
+	@ $(CXX) $(CXXFLAGS) -MM $< 2>/dev/null | sed -e "s@\(^.*\)\.o:@$(BUILD_DIR)/$(shell  dirname $<)/\1.d $(BUILD_DIR)/$(shell  dirname $<)/\1.o:@" > $@
+
+$(BUILD_DIR)/%.o : %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(EXEC): $(OBJS)
+	$(CXX) $(OBJS) -o $(BUILD_DIR)/$@ $(LDFLAGS)
+	cp $(BUILD_DIR)/$@ $@
+
+# these are kept for backward compatibility and might be removed (see make help)
+obsolete:
+	@echo "[WARNING] Please consider using make config=\"$(MAKECMDGOALS)\""
+
+debug: obsolete
+	make config=debug
+
+scalasca: obsolete
+	make config=scalasca
+
+
+ifeq ($(filter clean help doc,$(MAKECMDGOALS)),)
+# Let's try to make the next lines clear: we include $(DEPS) and pygenerator
+-include $(DEPS) pygenerator
+# we specify that pygenerator is not a file
+.PHONY : pygenerator buildtree
+# create the tree to store .d .o .pyh files
+buildtree:
+	@echo "Creating build dirtree in $(BUILD_DIR)"
+	@mkdir -p $(addprefix $(BUILD_DIR)/, $(DIRS))
+# and pygenerator will create all the $(PYHEADERS) (which are files)
+pygenerator : buildtree $(PYHEADERS)
+endif
+
+
+.PHONY: doc src help clean default tar
+
+doc:
+	make -C doc all
+
+tar:
+	git archive -o miniphare-$(VERSION).tgz --prefix miniphare-$(VERSION)/ HEAD
+
+help:
+	@echo 'Usage: make config=OPTIONS'
+	@echo '	    OPTIONS is a string composed of one or more of:'
+	@echo '	        debug      : to compile in debug mode (code runs really slow)'
+	@echo '         scalasca   : to compile using scalasca'
+	@echo '         noopenmp   : to compile without openmp'
+	@echo ' examples:'
+	@echo '     make config=debug'
+	@echo '     make config=noopenmp'
+	@echo '     make config="debug noopenmp"'
+	@echo
+	@echo 'Environment variables :'
+	@echo '     CXX     : mpi c++ compiler'
+	@echo '     HDF5_ROOT_DIR : HDF5 dir'
+	@echo '     BUILD_DIR         :directory used to store build files (default: "build")'
+	@echo
+	@echo '      make doc     : builds the documentation'
+	@echo '      make tar     : creates an archive of the sources'
+	@echo '      make clean   : remove build'
 
