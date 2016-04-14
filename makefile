@@ -14,6 +14,9 @@ COMMITDATE:="$(shell git show -s --pretty="%ci" 2>/dev/null || echo 'NONE')"
 
 CXXFLAGS += -D__VERSION=\"$(VERSION)\" -D__COMMITDATE=\"$(COMMITDATE)\" -D__CONFIG=\""$(config)"\"
 CXXFLAGS += -I${HDF5_ROOT_DIR}/include -std=c++11
+CXXFLAGS += -I/home/mathieud/blitz-install/include
+
+LDFLAGS += -L/home/mathieud/blitz-install/lib
 #LDFLAGS += -L${HDF5_ROOT_DIR}/lib -lhdf5 -lz
 
 
