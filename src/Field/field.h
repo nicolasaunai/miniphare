@@ -1,22 +1,55 @@
 #ifndef FIELD_H
 #define FIELD_H
 
+
 #include <string>
+#include <vector>
+#include <cstddef>
+
+#include "types.h"
+
 
 class Field
 {
+
 public:
-    Field();
-    virtual ~Field();
+
+    Field(uint32 nx, uint32 ny, uint32 nz, std::string name):name_(name),
+        shape_{nx,ny,nz},ndims_{2},data_{}{data_.resize(nx*ny*nz);}
+
+
+    Field(Field const& source) = default;
+    Field(Field&& source) = default;
+
+
+    std::string name() const {return name_;}
+
+    // operators for 1D, 2D and 3D read/write access for convenience
+
+    double const& operator()(uint32 ix) const {return data_[ix];}
+    double const& operator()(uint32 ix, uint32 iy) const { return data_[iy+shape_[1]*ix]; }
+    double const& operator()(uint32 ix, uint32 iy, uint32 iz) const
+    {return data_[iz + shape_[2]*iy + shape_[1]*shape_[2]*ix]; }
+
+
+    double& operator()(uint32 ix) {return data_[ix];}
+    double& operator()(uint32 ix, uint32 iy) { return data_[iy+shape_[1]*ix]; }
+    double& operator()(uint32 ix, uint32 iy, uint32 iz)
+    {return data_[iz + shape_[2]*iy + shape_[1]*shape_[2]*ix]; }
+
+    std::vector<uint32> shape() const {return shape_;}
+    uint32 nbDimensions()const{return ndims_;}
 
 private:
-    std::string name;
-    unsigned int nbDims;
-    double *data;
 
+    std::string name_;
+    std::vector<uint32> shape_;
+    uint32 ndims_;
+    std::vector<double> data_;
 
-    virtual void allocate();
 
 };
 
 #endif // FIELD_H
+
+
