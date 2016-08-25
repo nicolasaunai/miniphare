@@ -22,7 +22,7 @@ void Faraday::operator()(VecField const& E, VecField const& B, VecField& Bnew)
 
 
 FaradayImpl1D::FaradayImpl1D(double dt, GridLayout const& layout)
-    :FaradayImplInternals(dt,layout),
+    :FaradayImplInternals(dt, layout),
       dxEz_( layout.nx(), layout.ny(), layout.nz(), "_dxEz"),
       dxEy_( layout.nx(), layout.ny(), layout.nz(), "_dxEy")
 {
@@ -36,7 +36,7 @@ void FaradayImpl1D::operator()(VecField const& E, VecField const& B, VecField& B
     std::cout << "got " << E.name() << " and "
               << B.name() << " and " << Bnew.name() << std::endl;
 
-    double dtodx = dt_  / layout_.dx();
+    //double dtodx = dt_  / layout_.dx();
 
     const Field& Ey  = E.component(VecField::VecY);
     const Field& Ez  = E.component(VecField::VecZ);
@@ -49,14 +49,53 @@ void FaradayImpl1D::operator()(VecField const& E, VecField const& B, VecField& B
     Field& Bznew    = Bnew.component(VecField::VecZ);
 
 
-    std::vector<uint32> shape = B.shape();
+    //std::vector<uint32> shape = B.shape();
 
-    // does not account for ghost nodes etc. yet.
-    // this should not really be dealt here anyway...
-    for (uint32 ix = 0; ix < shape[0]; ix++ )
+
+    layout_.deriv(Ez, GridLayout::directionX, dxEz_);
+    layout_.deriv(Ey, GridLayout::directionX, dxEy_);
+
+
+
+    uint32 iStart = layout_.physicalStartIndex(Bx, GridLayout::directionX);
+    uint32 iEnd   = layout_.physicalEndIndex  (Bx, GridLayout::directionX);
+
+    for (uint32 ix = iStart; ix < iEnd; ++ix )
     {
         Bxnew(ix) = Bx(ix);
-        Bynew(ix) = By(ix) + dtodx * ( Ez(ix+1) - Ez(ix) );
-        Bznew(ix) = Bz(ix) - dtodx * ( Ey(ix+1) - Ey(ix));
     }
+
+
+    iStart = layout_.physicalStartIndex(By, GridLayout::directionX);
+    iEnd   = layout_.physicalEndIndex  (By, GridLayout::directionX);
+
+    for (uint32 ix = iStart; ix < iEnd; ++ix )
+    {
+        Bynew(ix) +=   dt_ * dxEz_(ix);
+    }
+
+
+    iStart = layout_.physicalStartIndex(Bz, GridLayout::directionX);
+    iEnd   = layout_.physicalEndIndex  (Bz, GridLayout::directionX);
+
+    for (uint32 ix = iStart; ix < iEnd; ++ix )
+    {
+        Bznew(ix) += - dt_ * dxEy_(ix);
+    }
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

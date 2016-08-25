@@ -4,6 +4,7 @@
 #include<vector>
 
 #include "types.h"
+#include "Field/field.h"
 
 
 class GridLayout
@@ -47,6 +48,12 @@ private:
 
 
 public:
+
+    static const uint32 directionX = 0;
+    static const uint32 directionY = 1;
+    static const uint32 directionZ = 2;
+
+
     GridLayout():dx_{0.1},dy_{0.1},dz_{0.1},
                  odx_{1./dx_},ody_{1./dy_},odz_{1./dz_},
                  nx_{10}, ny_{1}, nz_{1},nbdims_{1}
@@ -80,6 +87,20 @@ public:
     uint32  indexXmax() const { return nulpx_ ; }
 
     std::vector<double>  XSegment() const { return xsupport_ ; }
+
+
+
+    // start and end index used in computing loops
+    uint32 physicalStartIndex(Field const& field, uint32 direction) const;
+    uint32 physicalEndIndex  (Field const& field, uint32 direction) const;
+
+    uint32 ghostStartIndex(Field const& field, uint32 direction) const;
+    uint32 ghostEndIndex  (Field const& field, uint32 direction) const;
+
+    void deriv(Field const& operand, uint32 direction, Field& derivative)const;
+
+
+
 
 
     //friend std::ostream & operator << (std::ostream & ostr, GridLayout & layout) ;
