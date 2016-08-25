@@ -40,8 +40,7 @@ private:
 
 
     //std::vector< std::unique_ptr<Projector> > projector; // is of size Ion.nbSpecies();
-    double dt_;                 // timeIntegration
-    GridLayout layout_;
+
 
 
     Electromag EMFieldsPred_;

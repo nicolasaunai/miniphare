@@ -5,6 +5,7 @@
 
 
 #include "Vecfield/vecfield.h"
+#include "grid/gridlayout.h"
 
 
 
@@ -41,6 +42,7 @@ private:
     double dt_;
     std::vector<double> dxdydz_;
     uint32 nbDims_;
+    GridLayout layout_;
     std::unique_ptr<FaradayImpl> implPtr_;
 
 
@@ -48,7 +50,7 @@ public:
 
     // TODO : faraday object should take start and end "iterators"
     // those are given by SOlver which takes them from GridLayout
-    explicit Faraday(double dt, std::vector<double> dxdydz_, uint32 nbDims);
+    explicit Faraday(double dt, GridLayout const& layout);
 
 
     Faraday(Faraday const& source) = delete;

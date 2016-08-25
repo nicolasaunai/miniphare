@@ -1,12 +1,13 @@
 
 #include "faraday.h"
 #include "faradayfactory.h"
+#include "grid/gridlayout.h"
 
 
-
-Faraday::Faraday(double dt, std::vector<double> dxdydz, uint32 nbDims)
-    :dt_{dt},dxdydz_{dxdydz}, nbDims_{nbDims},
-      implPtr_{FaradayImplFactory::createFaradayImpl(dxdydz, nbDims)}
+Faraday::Faraday(double dt, GridLayout const& layout)
+    : dt_{dt}, dxdydz_{  {layout.dx(), layout.dy(), layout.dz()} },
+      nbDims_{layout.nbDimensions()},
+      implPtr_{FaradayImplFactory::createFaradayImpl(dxdydz_, nbDims_)}
 {
 }
 
@@ -17,6 +18,8 @@ void Faraday::operator()(VecField const& E, VecField const& B, VecField& Bnew)
 {
     return (*implPtr_)(E, B, Bnew, dt_, dxdydz_);
 }
+
+
 
 
 
