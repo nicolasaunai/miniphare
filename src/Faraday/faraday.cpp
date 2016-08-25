@@ -5,9 +5,7 @@
 
 
 Faraday::Faraday(double dt, GridLayout const& layout)
-    : dt_{dt}, dxdydz_{  {layout.dx(), layout.dy(), layout.dz()} },
-      nbDims_{layout.nbDimensions()},
-      implPtr_{FaradayImplFactory::createFaradayImpl(dxdydz_, nbDims_)}
+    : implPtr_{FaradayImplFactory::createFaradayImpl(dt, layout)}
 {
 }
 
@@ -16,20 +14,29 @@ Faraday::Faraday(double dt, GridLayout const& layout)
 
 void Faraday::operator()(VecField const& E, VecField const& B, VecField& Bnew)
 {
-    return (*implPtr_)(E, B, Bnew, dt_, dxdydz_);
+    return (*implPtr_)(E, B, Bnew);
 }
 
 
 
 
 
-void FaradayImpl1D::operator()(VecField const& E, VecField const& B, VecField& Bnew,
-                        double dt, std::vector<double> dxdydz)
+FaradayImpl1D::FaradayImpl1D(double dt, GridLayout const& layout)
+    :FaradayImplInternals(dt,layout),
+      dxEz_( layout.nx(), layout.ny(), layout.nz(), "_dxEz"),
+      dxEy_( layout.nx(), layout.ny(), layout.nz(), "_dxEy")
+{
+}
+
+
+
+
+void FaradayImpl1D::operator()(VecField const& E, VecField const& B, VecField& Bnew)
 {
     std::cout << "got " << E.name() << " and "
               << B.name() << " and " << Bnew.name() << std::endl;
 
-    double dtodx = dt/dxdydz[0];
+    double dtodx = dt_  / layout_.dx();
 
     const Field& Ey  = E.component(VecField::VecY);
     const Field& Ez  = E.component(VecField::VecZ);

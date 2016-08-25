@@ -5,23 +5,48 @@
 
 
 #include "Vecfield/vecfield.h"
+#include "Field/field.h"
 #include "grid/gridlayout.h"
 
 
 
+
+// comment here
 class FaradayImpl
 {
     public:
-        virtual void operator()(VecField const& E, VecField const& B, VecField& Bnew,
-                            double dt, std::vector<double> dxdydz) = 0;
+        virtual void operator()(VecField const& E, VecField const& B, VecField& Bnew) = 0;
 };
 
 
 
-class FaradayImpl1D :  public FaradayImpl
+
+class FaradayImplInternals
 {
 public:
-    FaradayImpl1D()                            = default;
+    FaradayImplInternals(double dt, GridLayout const& layout):dt_{dt},layout_{layout}{}
+
+protected:
+    double dt_;
+    GridLayout layout_;
+};
+
+
+
+
+
+// comment here
+class FaradayImpl1D :  public FaradayImpl, private FaradayImplInternals
+{
+
+private:
+
+    Field dxEz_;
+    Field dxEy_;
+
+
+public:
+    FaradayImpl1D(double dt, GridLayout const& layout);
 
     FaradayImpl1D(FaradayImpl1D const& source) = delete;
     FaradayImpl1D& operator=(FaradayImpl1D const& source) = delete;
@@ -29,20 +54,21 @@ public:
     FaradayImpl1D(FaradayImpl1D&& source)            = default;
     FaradayImpl1D& operator=(FaradayImpl1D&& source) = default;
 
-    virtual void operator()(VecField const& E, VecField const& B, VecField& Bnew,
-                        double dt, std::vector<double> dxdydz) override;
+    virtual void operator()(VecField const& E, VecField const& B, VecField& Bnew) override;
 };
 
 
 
 
+
+// comment here
 class Faraday
 {
 private:
-    double dt_;
-    std::vector<double> dxdydz_;
-    uint32 nbDims_;
-    GridLayout layout_;
+
+    //
+
+
     std::unique_ptr<FaradayImpl> implPtr_;
 
 

@@ -7,19 +7,19 @@
 
 #include "Faraday/faraday.h"
 #include "types.h"
+#include "grid/gridlayout.h"
 
 
 
 class FaradayImplFactory
 {
 public:
-    static std::unique_ptr<FaradayImpl> createFaradayImpl(std::vector<double> meshSize,
-                                                          uint32 nbDims)
+    static std::unique_ptr<FaradayImpl> createFaradayImpl(double dt, GridLayout const& layout)
     {
-        switch (nbDims)
+        switch (layout.nbDimensions())
         {
             case 1:
-                return std::unique_ptr<FaradayImpl> ( new FaradayImpl1D );
+                return std::unique_ptr<FaradayImpl> ( new FaradayImpl1D(dt, layout));
 
 #if 0
             case 2:
