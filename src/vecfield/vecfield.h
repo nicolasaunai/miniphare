@@ -36,8 +36,9 @@ public:
 
 
     VecField(uint32 nx, uint32 ny, uint32 nz, std::string name):name_(name),
-        xComponent_(nx, ny, nz, name+"_x"),yComponent_(nx, ny, nz, name+"_y"),
-        zComponent_(nx, ny, nz, name+"_z"){}
+        xComponent_(nx, ny, nz, name.insert(1,"_x")),
+        yComponent_(nx, ny, nz, name.insert(1,"_y")),
+        zComponent_(nx, ny, nz, name.insert(1,"_z")) {}
 
 
     // I don't like calling 3 times shape()
