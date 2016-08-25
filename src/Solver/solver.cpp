@@ -17,11 +17,6 @@ Solver::Solver(GridLayout const& layout, double dt)
 
     std::vector<double>dxdydz{layout.dx(), layout.dy(), layout.dz()};
 
-    auto nbDims = layout.nbDimensions();
-
-    //faradaySolver_ = FaradayFactory::createFaradaySolver(dt, dxdydz, nbDims);
-
-
     // TODO need to initialize OHM object
     // TODO and vector (?) of particles (n+1)
     // TODO boundary conditions (?)
