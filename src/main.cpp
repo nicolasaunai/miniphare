@@ -27,8 +27,8 @@ int main(int argc, char *argv[])
 
     PatchData myPatchdata{dt, gridlayout};
 
-    Patch     root{myPatchdata}; // root = myInitialCondition();
-    Hierarchy simulationHierarchy{root};
+    Patch     root{ std::move(myPatchdata) }; // root = myInitialCondition();
+    Hierarchy simulationHierarchy{ std::move(root) };
 
     MLMD mlmdManager;
 

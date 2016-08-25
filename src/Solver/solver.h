@@ -19,7 +19,12 @@ class Solver
 public:
 
     Solver(GridLayout const& layout, double dt);
-    Solver(Solver     const& source);
+
+    Solver(Solver const& source) = delete;
+    Solver& operator=(Solver const& source) = delete;
+
+    Solver(Solver&& toMove)      = default;
+    Solver& operator=(Solver&& source) = default;
 
     void solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons);
 
@@ -47,7 +52,8 @@ private:
     // BoundaryCondition bc_;
 
 
-    std::unique_ptr<Faraday> faradaySolver_;
+    //std::unique_ptr<Faraday> faradaySolver_;
+    Faraday faraday_;
     // ohm object
 
     /*

@@ -12,7 +12,9 @@ private:
         Patch root_;
 
 public:
-    explicit Hierarchy(Patch&  root):root_{root} { /*root_->parent = nullptr;*/}
+
+
+    explicit Hierarchy(Patch&& root):root_{std::move(root)} { /*root_->parent = nullptr;*/}
     //Hierarchy(Patch&& root):root_{}{}
 
 

@@ -6,22 +6,20 @@
 #include <vector>
 
 #include "Faraday/faraday.h"
-#include "Faraday/faraday1d.h"
 #include "types.h"
 
 
 
-class FaradayFactory
+class FaradayImplFactory
 {
 public:
-    static std::unique_ptr<Faraday> createFaradaySolver(double dt,
-                                                        std::vector<double> meshSize,
-                                                        uint32 nbDims)
+    static std::unique_ptr<FaradayImpl> createFaradayImpl(std::vector<double> meshSize,
+                                                          uint32 nbDims)
     {
         switch (nbDims)
         {
             case 1:
-                return std::unique_ptr<Faraday> ( new Faraday1D(dt, meshSize[0]) );
+                return std::unique_ptr<FaradayImpl> ( new FaradayImpl1D );
 
 #if 0
             case 2:
@@ -35,6 +33,44 @@ public:
     }
 };
 
+
+
+
+#if 0
+
+
+class FaradayPolyImpl
+{
+    public:
+        virtual double operator()(double a) = 0;
+};
+
+
+
+
+class FaradayPolyImplFactory
+{
+    public:
+    static std::unique_ptr<FaradayPolyImpl>createFaradayPolyImpl(int dim)
+    {
+        switch(dim)
+        {
+            case 1:
+              return std::unique_ptr<FaradayPolyImpl> (new Faraday1D);
+
+             case 2:
+                return std::unique_ptr<FaradayPolyImpl> (new Faraday2D);
+
+            default:
+                std::cout << "nope...\n";
+                return nullptr;
+        }
+    }
+};
+
+
+
+#endif
 
 
 

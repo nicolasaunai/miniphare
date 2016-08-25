@@ -11,6 +11,7 @@
 
 Solver::Solver(GridLayout const& layout, double dt)
     :dt_{dt}, layout_{layout},
+     faraday_{dt, {layout.dx(), layout.dy(), layout.dz()}, layout.nbDimensions()},
      EMFieldsPred_{layout.nx(), layout.ny(), layout.nz(), "_pred"},
      EMFieldsAvg_ {layout.nx(), layout.ny(), layout.nz(), "_avg"}
 {
@@ -19,25 +20,13 @@ Solver::Solver(GridLayout const& layout, double dt)
 
     auto nbDims = layout.nbDimensions();
 
-    faradaySolver_ = FaradayFactory::createFaradaySolver(dt, dxdydz, nbDims);
+    //faradaySolver_ = FaradayFactory::createFaradaySolver(dt, dxdydz, nbDims);
 
 
     // TODO need to initialize OHM object
     // TODO and vector (?) of particles (n+1)
     // TODO boundary conditions (?)
     // TODO projections/interpolations
-
-}
-
-
-
-Solver::Solver(Solver const& source)
-    : dt_{source.dt_}, layout_{source.layout_},
-      EMFieldsAvg_ { source.EMFieldsAvg_ },
-      EMFieldsPred_{ source.EMFieldsPred_},
-      faradaySolver_{source.faradaySolver_->clone()}
-
-{
 
 }
 
@@ -58,11 +47,11 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     VecField &Bavg   = EMFieldsAvg_.getB();
     VecField &Eavg   = EMFieldsAvg_.getE();
 
-    Faraday& faraday = *faradaySolver_;
+    //Faraday& faraday = *faradaySolver_;
     // Ohm& ohm        = *ohmSolver_;
 
     // B_{n+1} pred 1
-    faraday(E, B, Bpred);
+    faraday_(E, B, Bpred);
 
 
     // get ion and electron moments at time n
@@ -86,7 +75,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     //  // part2_ is invalid
 
     // B_{n+1} Pred 2
-    faraday(Eavg, B, Bpred);
+    faraday_(Eavg, B, Bpred);
 
     // get ion and electron moments at time n+1 (pred 1)
     // Field const& Ni = ions.chargeDensity();

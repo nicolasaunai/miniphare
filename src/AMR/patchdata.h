@@ -23,7 +23,16 @@ private:
 
 
 public:
+
+
     PatchData(double dt, const GridLayout& layout);
+
+    PatchData(PatchData const& source) = delete;
+    PatchData& operator=(PatchData const& source) = delete;
+
+    PatchData(PatchData&& source) = default;
+    PatchData& operator=(PatchData&& source) = default;
+
     //void advance(){solver_.solveStep(EMfields_, ions_, electrons_);}
 
 };

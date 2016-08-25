@@ -13,13 +13,21 @@ class Patch
 private:
 
     PatchData data_;
-
     // parent pointer
     // vector of children
     //
 
 public:
-    explicit Patch(PatchData& data):data_{data}{}
+
+
+    Patch(PatchData&& patchData):data_{std::move(patchData)}{}
+    //Patch(PatchData& patchData):data_{std::move(data)}{}
+
+    Patch(Patch&& source) = default;
+    Patch& operator=(Patch&& source) = default;
+
+    Patch(Patch const& source) = delete;
+    Patch& operator=(Patch& source) = delete;
 
 
 };
