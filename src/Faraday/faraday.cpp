@@ -30,6 +30,9 @@ FaradayImpl1D::FaradayImpl1D(double dt, GridLayout const& layout)
 
 
 
+FaradayImpl::~FaradayImpl(){} // why here
+
+
 
 void FaradayImpl1D::operator()(VecField const& E, VecField const& B, VecField& Bnew)
 {

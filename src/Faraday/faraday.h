@@ -16,7 +16,7 @@ class FaradayImpl
 {
     public:
         virtual void operator()(VecField const& E, VecField const& B, VecField& Bnew) = 0;
-        virtual ~FaradayImpl(){};
+        virtual ~FaradayImpl();
 };
 
 
