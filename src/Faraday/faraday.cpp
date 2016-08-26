@@ -52,9 +52,9 @@ void FaradayImpl1D::operator()(VecField const& E, VecField const& B, VecField& B
     Field& Bznew    = Bnew.component(VecField::VecZ);
 
 
-    //std::vector<uint32> shape = B.shape();
-
-
+    // warning: we add a loop over the whole domain.
+    // should be better than having one loop with polymorphic
+    // derivative. (should be tested).
     layout_.deriv(Ez, GridLayout::directionX, dxEz_);
     layout_.deriv(Ey, GridLayout::directionX, dxEy_);
 
