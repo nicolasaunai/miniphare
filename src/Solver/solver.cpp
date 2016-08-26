@@ -41,6 +41,8 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     VecField &Bavg   = EMFieldsAvg_.getB();
     VecField &Eavg   = EMFieldsAvg_.getE();
 
+
+
     //Faraday& faraday = *faradaySolver_;
     // Ohm& ohm        = *ohmSolver_;
 
@@ -53,10 +55,10 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // VecField const& Vi = ions.bulkVelocity();
     // Field const& Pe = electrons.Pressure(/* Ni ? */ );
     // VecField const& Ve = electrons.bulkVelocity(B, Vi, Ni);
-
+    // Field const& Ne  = electrons.chargeDensity();
 
     // E_{n+1} pred 1
-    // ohm(Bpred, Ve, Pe, Epred);
+    // ohm(Bpred, Ne, Ve, Pe, Epred);
 
     // (E,B)_(n+1/2) pred 1
 
@@ -76,9 +78,10 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // VecField const& Vi = ions.bulkVelocity();
     // Field const& Pe = electrons.Pressure(/* Ni ? */ );
     // VecField const& Ve = electrons.bulkVelocity(B, Vi, Ni);
+    // Field const& Ne  = electrons.chargeDensity();
 
     // E_{n+1} pred 2
-    // ohm(Bpred, Ve, Pe, Epred);
+    // ohm(Bpred, Ne, Ve, Pe, Epred);
 
     // (E,B)_(n+1/2) pred 2
     // VectorField::avg(E, Epred, Eavg);
@@ -96,9 +99,10 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // VecField const& Vi = ions.bulkVelocity();
     // Field const& Pe = electrons.Pressure(/* Ni ? */ );
     // VecField const& Ve = electrons.bulkVelocity(B, Vi, Ni);
+    // Field const& Ne  = electrons.chargeDensity();
 
     // E_{n+1} pred 2
-    // ohm(B, Ve, Pe, E);
+    // ohm(B, Ne, Ve, Pe, E);
 
 }
 

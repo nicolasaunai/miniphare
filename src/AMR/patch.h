@@ -20,7 +20,7 @@ private:
 public:
 
 
-    Patch(PatchData&& patchData):data_{std::move(patchData)}{}
+    explicit Patch(PatchData&& patchData):data_{std::move(patchData)}{}
     //Patch(PatchData& patchData):data_{std::move(data)}{}
 
     Patch(Patch&& source) = default;

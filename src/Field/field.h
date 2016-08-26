@@ -17,8 +17,15 @@ public:
     Field(uint32 nx, uint32 ny, uint32 nz, std::string name):name_(name),
         shape_{nx,ny,nz},ndims_{2},data_{}{data_.resize(nx*ny*nz);}
 
-    Field(Field const& source) = default;
     Field(Field&& source) = default;
+    Field& operator=(Field&& source) = default;
+
+    Field(Field const& source) = default;
+
+    // http://en.cppreference.com/w/cpp/language/copy_assignment
+    // gets deleted if implicitly defined and if move construct and assign
+    // are declared ... why ? (lead to error un Ohm if not defaulted).
+    Field& operator=(Field const& source) = default;
 
 
     std::string name() const {return name_;}
