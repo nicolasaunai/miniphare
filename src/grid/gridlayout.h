@@ -2,9 +2,52 @@
 #define GRIDLAYOUT_H
 
 #include<vector>
+#include<array>
 
 #include "types.h"
 #include "Field/field.h"
+
+
+
+
+class GridLayoutImpl
+{
+
+public:
+
+
+    // start and end index used in computing loops
+    virtual uint32 physicalStartIndex(Field const& field, uint32 direction) const = 0;
+    virtual uint32 physicalEndIndex  (Field const& field, uint32 direction) const = 0;
+
+    virtual uint32 ghostStartIndex(Field const& field, uint32 direction) const = 0;
+    virtual uint32 ghostEndIndex  (Field const& field, uint32 direction) const = 0;
+
+    virtual void deriv(Field const& operand, uint32 direction, Field& derivative)const = 0;
+
+    virtual uint32 nbDimensions() const = 0;
+
+    virtual ~GridLayoutImpl() = default;
+
+};
+
+
+
+
+class GridLayoutImplInternals
+{
+protected:
+
+    uint32 nbdims_;
+
+public:
+    explicit GridLayoutImplInternals(uint32 nbDims);
+    uint32 nbDimensions_() const  {return nbdims_;}
+};
+
+
+
+
 
 
 class GridLayout
@@ -22,29 +65,7 @@ private:
     uint32 ny_  ;
     uint32 nz_  ;
 
-    uint32 nbdims_;
-
-
-    // TODO attention nx est utilisé PARTOUT comme le nombre de POINTS dans les TABLEAUX
-    // INCLUANT les ghosts, PRA etc. Il faudra les renommer pour rendre ça comprehensible...
-    //e.g. allocSizeX, etc.
-    // REVOIR tout le systeme d'indices.
-
-    int32 nbrCellsX_ ;
-    int32 nbrNodesX_ ;  // equals: nbrCellsX_ + 1
-
-    // Indexes corresponding to the physical boundaries of the local domain,
-    // ghost nodes are not included.
-    // The boundaries including ghost nodes for a node centered field are given by :
-    // [ nulmx - centeredOffset ; nulpx + centeredOffset ]
-    uint32 nulmx_ ;
-    uint32 nulpx_ ;
-
-    std::vector<double> xsupport_ ;     // primal grid coordinates
-
-
-
-    //void initDomain( double xminGlobal ) ;
+    std::unique_ptr<GridLayoutImpl> implPtr_;
 
 
 public:
@@ -54,15 +75,9 @@ public:
     static const uint32 directionZ = 2;
 
 
-    GridLayout():dx_{0.1},dy_{0.1},dz_{0.1},
-                 odx_{1./dx_},ody_{1./dy_},odz_{1./dz_},
-                 nx_{10}, ny_{1}, nz_{1},nbdims_{1}
-    {}
-
-    //GridLayout( uint32 level, const GlobalParams & globalParams );
-
-    //void  displayXSegment() ;
-
+    GridLayout();
+    // check other constructors and assign ops.
+    GridLayout(GridLayout const& source);
 
     double dx() const {return dx_;}
     double dy() const {return dy_;}
@@ -76,21 +91,8 @@ public:
     uint32 ny()const {return ny_;}
     uint32 nz()const {return nz_;}
 
-    uint32 nbDimensions() const {return nbdims_;}
 
 
-    int32  nbrCellsX() const { return nbrCellsX_ ; }
-
-    int32  nbrNodesX() const { return nbrNodesX_ ; }
-
-    uint32  indexXmin() const { return nulmx_ ; }
-    uint32  indexXmax() const { return nulpx_ ; }
-
-    std::vector<double>  XSegment() const { return xsupport_ ; }
-
-
-
-    // start and end index used in computing loops
     uint32 physicalStartIndex(Field const& field, uint32 direction) const;
     uint32 physicalEndIndex  (Field const& field, uint32 direction) const;
 
@@ -99,12 +101,11 @@ public:
 
     void deriv(Field const& operand, uint32 direction, Field& derivative)const;
 
-
-
-
-
-    //friend std::ostream & operator << (std::ostream & ostr, GridLayout & layout) ;
-
+    uint32 nbDimensions() const;
 };
+
+
+
+
 
 #endif // GRIDLAYOUT_H
