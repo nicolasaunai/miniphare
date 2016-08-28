@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Faraday/faraday.h"
+#include "faradayimpl1d.h"
 #include "types.h"
 #include "grid/gridlayout.h"
 

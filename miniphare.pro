@@ -22,7 +22,8 @@ SOURCES += src/main.cpp \
     src/AMR/mlmd.cpp \
     src/grid/gridlayoutimplyee.cpp \
     src/Ohm/ohm.cpp \
-    src/Ohm/ohmimpl1d.cpp
+    src/Ohm/ohmimpl1d.cpp \
+    src/Faraday/faradayimpl1d.cpp
 
 HEADERS += \
     src/Plasmas/ions.h \
@@ -47,7 +48,8 @@ HEADERS += \
     src/grid/gridlayoutimplfactory.h \
     src/Ohm/ohm.h \
     src/Ohm/ohmimplfactory.h \
-    src/Ohm/ohmimpl1d.h
+    src/Ohm/ohmimpl1d.h \
+    src/Faraday/faradayimpl1d.h
 
 
 INCLUDEPATH += src/
