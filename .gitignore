@@ -76,3 +76,8 @@ Thumbs.db
 *.exe
 
 miniphare
+
+
+# DOCUMENTATION FILES
+# ------------------
+doc/html
