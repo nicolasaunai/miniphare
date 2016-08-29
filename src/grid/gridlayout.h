@@ -76,8 +76,8 @@ public:
 
 
     GridLayout();
-    // check other constructors and assign ops.
     GridLayout(GridLayout const& source);
+    GridLayout(GridLayout&& source);
 
     double dx() const {return dx_;}
     double dy() const {return dy_;}

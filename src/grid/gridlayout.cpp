@@ -34,6 +34,14 @@ GridLayout::GridLayout(GridLayout const& source)
 
 
 
+GridLayout::GridLayout(GridLayout&& source)
+    : dx_{ (std::move(source.dx_) }, dy_{ std::move(source.dy_) },dz_{ std::move(source.dz_) },
+      odx_{ std::move(source.odx_)}, ody_{std::move(source.ody_)}, odz_{std::move(source.odz_)},
+      nx_{std::move(source.nx)}, ny{std::move(source.ny)}, nz{std::move(source.nz)},
+      implPtr_{std::move(source.implPtr_)}
+{
+}
+
 
 
 
