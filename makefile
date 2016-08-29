@@ -1,5 +1,7 @@
-#CXX     ?= mpicxx
-CXX     = mpicxx
+#CXX     ?= mpic++
+
+CXX = g++
+
 BUILD_DIR ?= build
 
 EXEC = miniphare
@@ -14,9 +16,6 @@ COMMITDATE:="$(shell git show -s --pretty="%ci" 2>/dev/null || echo 'NONE')"
 
 CXXFLAGS += -D__VERSION=\"$(VERSION)\" -D__COMMITDATE=\"$(COMMITDATE)\" -D__CONFIG=\""$(config)"\"
 CXXFLAGS += -I${HDF5_ROOT_DIR}/include -std=c++11
-CXXFLAGS += -I/home/mathieud/blitz-install/include
-
-LDFLAGS += -L/home/mathieud/blitz-install/lib
 #LDFLAGS += -L${HDF5_ROOT_DIR}/lib -lhdf5 -lz
 
 
@@ -36,7 +35,7 @@ DEPS := $(addprefix $(BUILD_DIR)/, $(SRCS:.cpp=.d))
 ifneq (,$(findstring debug,$(config)))
         CXXFLAGS += -g -pg -Wall -D__DEBUG -O0 # -shared-intel
 else
-        CXXFLAGS += -O3 # -xHost -ipo
+        CXXFLAGS += -O3 -Wall # -xHost -ipo
 endif
 
 ifneq (,$(findstring scalasca,$(config)))

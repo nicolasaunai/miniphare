@@ -1,79 +1,175 @@
 #include <iostream>
 
-#include <blitz/array.h>
 
-#include "Field/field.h"
-#include "Field/field1D.h"
+#include "AMR/patch.h"
+#include "AMR/patchdata.h"
+#include "AMR/hierarchy.h"
+#include "grid/gridlayout.h"
+#include "AMR/mlmd.h"
 
-using namespace std;
-using namespace blitz;
+// hierarchy contains linked list of patchs which are tokens
+//
+
+
 
 
 
 int main(int argc, char *argv[])
 {
-    cout << "Hello World!" << endl;
+
+    std::cout << "Hello World!" << std::endl;
+
+    double dt = 0.001;
+    GridLayout gridlayout; // should later come from file input parameters somehow
+
+    PatchData myPatchdata{dt, gridlayout};
+
+    Patch     root{ std::move(myPatchdata) }; // root = myInitialCondition();
+    Hierarchy simulationHierarchy{ std::move(root) };
+
+    MLMD mlmdManager;
 
 
-//    Array<float,2> A(3,3), B(3,3), C(3,3);
+    //Hierarchy simulaationHierarchy( myInitialCondition() );
 
-//    A = 1, 0, 0,
-//        2, 2, 2,
-//        1, 0, 0;
-
-//    B = 0, 0, 7,
-//        0, 8, 0,
-//        9, 9, 9;
-
-//    C = A + B;
-
-//    cout << "A = " << A << endl
-//         << "B = " << B << endl
-//         << "C = " << C << endl;
-
-//    Array<int,2> Am8(8,8);
-//    Am8 = 0;
-
-//    Array<int,2> Bm3 = Am8(Range(1,7,3), Range(1,5,2));
-//    Bm3 = 1;
-
-//    Array<int,2> Cm3(Bm3*2.0) ;
-
-//    cout << "Am8 = " << Am8 << endl;
-//    cout << "Cm3 = " << Cm3 << endl;
-
-    Field myField("undef_field") ;
-    cout << myField ;
-
-
-    Field1D ex_1(10,20) ;
-//    cout << ex_1 ;
-
-    Field1D ex_2("ex_2",10,20) ;
-//    cout << ex_2 ;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    return 0;
 }
+
+    // module de lecture des params d'input.
+
+    //try    {
+
+    // construction du patch/domain
+
+      //}
+
+    // catch (patchError)
+    //{
+            // some stuff
+        //return 1;
+     //   }
+
+
+
+
+
+
+
+    // initialize patch from input params somehow
+
+    // patch building
+    // Ion, etc. attach to patch via patchdata
+    //patch.set...(Ions)
+
+    // patch() {Ions...}
+
+
+    // main loop
+
+
+
+
+
+    // patch.advance() --> data_.solver_.solvestep(EMFields, Ions)
+
+
+
+    // diag()
+
+    //
+
+
+
+
+
+
+
+// pseudo code
+
+
+// we assume here that all patches at t=0 have been initialized properly
+// i.e. each patch has all its particles and fields everywhere needed.
+
+
+// go through each level of the hierarchy
+// for each level, go through each patch
+
+
+
+// first thing : get data from parent patch:
+// this is done *** AT THE FIRST SUBSTEP ONLY ***
+
+//  - tell him my coordinates and ask for its particles in my PRA
+//  - split particles
+//  - delete bad particles (not in influence zone)
+//  - deposit child particles in influence zone in PRA moment buffers
+//  - add incoming child particles to current patch
+
+//  - get field Boundary condition from parent patch
+//  - calculate time interpolation of BC for all subsequent substeps and store that
+
+
+
+// NO NEED TO EXCHANGE WITH PARENT PATCH ANYMORE
+// START SUBSTEP SOLVE LOOP
+
+
+// (Bn,En) ---> B_(n+1,P1)
+// (Bn+1, Pe,n_n, un)-->E_(n+1,P1)
+
+
+// we now have PRED1 fields
+
+
+// En+1/2, Bn+1/2 == (E,B)_avg1
+
+
+// get field BC from patch BC buffer.
+
+
+// MOVE IONS
+
+// (xn,vn) ---- dt_patch, (E,B)_avg1 ----> (xn+1, vn+1)
+
+
+// deposit non-out-of-range ions
+// deposit RPA moments
+
+
+
+// we now have Moments_(n+1,P1)
+
+
+// (Bn,EavgP1) ----- dtpatch ---->  B_(n+1,P2)
+// (B_(n+1,P2), Moments_(n+1,P1) ) ---> E_(n+1,P2)
+
+
+// we now have PRED2 fields
+
+// (E,B)_avg2
+
+// get field BC from patch BC buffer (same as before)
+
+
+// MOVE IONS
+
+// (xn,vn) ---- dt_patch, (E,B)_avg1 ----> (xn+1, vn+1)
+
+// this time we can delete leaving particles
+
+
+// deposit ions  + add PRA moment buffers
+
+
+// (Bn,Eavg2) ----- dtpatch ---->  B_(n+1)
+// (B_(n+1,P2), Moments_(n+1,P2) ) ---> E_(n+1)
+
+
+// apply BC
+
+
+
+// AFTER all substeps
+// we need to traverse the tree from leaves to top to synchronize patches.
+
+
+

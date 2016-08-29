@@ -38,7 +38,6 @@ tags
 .DS_Store
 .directory
 *.debug
-Makefile*
 *.prl
 *.app
 moc_*.cpp
@@ -86,3 +85,9 @@ Thumbs.db
 *.dll
 *.exe
 
+miniphare
+
+
+# DOCUMENTATION FILES
+# ------------------
+doc/html
