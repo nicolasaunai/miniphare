@@ -10,9 +10,9 @@
 
 
 Solver::Solver(GridLayout const& layout, double dt)
-    :faraday_{dt, layout},
-     EMFieldsPred_{layout.nx(), layout.ny(), layout.nz(), "_pred"},
-     EMFieldsAvg_ {layout.nx(), layout.ny(), layout.nz(), "_avg"}
+    :EMFieldsPred_{layout.nx(), layout.ny(), layout.nz(), "_pred"},
+     EMFieldsAvg_ {layout.nx(), layout.ny(), layout.nz(), "_avg"},
+     faraday_{dt, layout}
 {
 
     std::vector<double>dxdydz{layout.dx(), layout.dy(), layout.dz()};
