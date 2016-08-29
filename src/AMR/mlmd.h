@@ -3,7 +3,15 @@
 
 #include "grid/gridlayout.h"
 
-class MLMD
+/**
+ * @brief The MLMD class deals with all MLMD operations.
+ *
+ * MLMD is the object executes MLDM operations:
+ *     - dealing with PRA (splitting, inter patch communications, field interpolations etc.)
+ *     - refinement / patch creation and insertion into the Hierarchy
+ *     -  etc.
+ */
+class MLMD // TODO should be a singleton pattern
 {
 
 private:
