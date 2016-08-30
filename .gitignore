@@ -4,17 +4,12 @@
 # binary files
 build
 
-Intel.txt
-mini_git.txt
-
-mphare
 miniphare
 miniphare.config
 miniphare.creator
 miniphare.files
 miniphare.includes
 miniphare.creator.user
-doxy_doc
 
 *~
 *.autosave
