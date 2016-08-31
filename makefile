@@ -1,4 +1,7 @@
-CXX     ?= mpic++
+#CXX     ?= mpic++
+
+CXX = g++
+
 BUILD_DIR ?= build
 
 EXEC = miniphare
@@ -32,7 +35,7 @@ DEPS := $(addprefix $(BUILD_DIR)/, $(SRCS:.cpp=.d))
 ifneq (,$(findstring debug,$(config)))
         CXXFLAGS += -g -pg -Wall -D__DEBUG -O0 # -shared-intel
 else
-        CXXFLAGS += -O3 # -xHost -ipo
+        CXXFLAGS += -O3 -Wall # -xHost -ipo
 endif
 
 ifneq (,$(findstring scalasca,$(config)))
@@ -60,7 +63,7 @@ endif
 clean:
 	rm -f $(OBJS) $(DEPS) $(PYHEADERS)
 	rm -rf $(BUILD_DIR)
-	rm -rf smilei-$(VERSION).tgz
+	rm -rf miniphare-$(VERSION).tgz
 	make -C doc clean
 
 distclean: clean
@@ -118,7 +121,7 @@ doc:
 	make -C doc all
 
 tar:
-	git archive -o smilei-$(VERSION).tgz --prefix smilei-$(VERSION)/ HEAD
+	git archive -o miniphare-$(VERSION).tgz --prefix miniphare-$(VERSION)/ HEAD
 
 help:
 	@echo 'Usage: make config=OPTIONS'

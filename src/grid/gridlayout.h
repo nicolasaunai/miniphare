@@ -1,8 +1,9 @@
 #ifndef GRIDLAYOUT_H
 #define GRIDLAYOUT_H
 
-#include<vector>
-#include<array>
+#include <vector>
+#include <array>
+#include <memory>
 
 #include "types.h"
 #include "Field/field.h"

@@ -4,7 +4,12 @@
 # binary files
 build
 
-
+miniphare
+miniphare.config
+miniphare.creator
+miniphare.files
+miniphare.includes
+miniphare.creator.user
 
 *~
 *.autosave

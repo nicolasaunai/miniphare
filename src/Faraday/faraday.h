@@ -4,7 +4,7 @@
 #include <memory>
 
 
-#include "Vecfield/vecfield.h"
+#include "vecfield/vecfield.h"
 #include "Field/field.h"
 #include "grid/gridlayout.h"
 

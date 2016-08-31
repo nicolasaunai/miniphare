@@ -1,8 +1,5 @@
-
-
-
-
 #include <iostream>
+
 
 #include "AMR/patch.h"
 #include "AMR/patchdata.h"
@@ -17,9 +14,9 @@
 
 
 
-
 int main(int argc, char *argv[])
 {
+
     std::cout << "Hello World!" << std::endl;
 
     double dt = 0.001;
@@ -34,6 +31,7 @@ int main(int argc, char *argv[])
 
 
     //Hierarchy simulaationHierarchy( myInitialCondition() );
+
 }
 
     // module de lecture des params d'input.
