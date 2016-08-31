@@ -81,3 +81,9 @@ miniphare
 # DOCUMENTATION FILES
 # ------------------
 doc/html
+
+
+
+# UNIT TEST FILES
+# ---------------
+build*

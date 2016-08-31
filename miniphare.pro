@@ -23,7 +23,8 @@ SOURCES += src/main.cpp \
     src/grid/gridlayoutimplyee.cpp \
     src/Ohm/ohm.cpp \
     src/Ohm/ohmimpl1d.cpp \
-    src/Faraday/faradayimpl1d.cpp
+    src/Faraday/faradayimpl1d.cpp \
+    src/grid/test_gridlayout.cpp
 
 HEADERS += \
     src/Plasmas/ions.h \
@@ -52,7 +53,11 @@ HEADERS += \
     src/Faraday/faradayimpl1d.h
 
 
-INCLUDEPATH += src/
+INCLUDEPATH += src/ \
+               /opt/local/include
+
+
+LIBS += -L/opt/local/lib -lgtest
 
 
 DISTFILES += \
