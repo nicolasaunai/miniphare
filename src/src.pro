@@ -49,7 +49,8 @@ HEADERS += \
     Ohm/ohm.h \
     Ohm/ohmimplfactory.h \
     Ohm/ohmimpl1d.h \
-    Faraday/faradayimpl1d.h
+    Faraday/faradayimpl1d.h \
+    grid/gridlayoutimpl.h
 
 
 

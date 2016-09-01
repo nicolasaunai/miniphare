@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include "gridlayout.h"
+#include "gridlayoutimpl.h"
 #include "types.h"
 
 
