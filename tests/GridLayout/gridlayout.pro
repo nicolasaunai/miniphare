@@ -18,9 +18,11 @@ QMAKE_CXXFLAGS +=  -Werror=constant-conversion
 SOURCES += test_gridlayout.cpp \
            ../../src/grid/gridlayout.cpp \
            ../../src/grid/gridlayoutimplyee.cpp \
+           ../../src/grid/gridlayoutimpl.cpp \
 
 HEADERS += ../../src/grid/gridlayout.h \
            ../../src/grid/gridlayoutimplfactory.h \
            ../../src/grid/gridlayoutimplyee.h \
+           ../../src/grid/gridlayoutimpl.h \
            ../../src/types.h \
            ../../src/constants.h \

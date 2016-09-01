@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     grid/gridlayoutimplyee.cpp \
     Ohm/ohm.cpp \
     Ohm/ohmimpl1d.cpp \
-    Faraday/faradayimpl1d.cpp
+    Faraday/faradayimpl1d.cpp \
+    grid/gridlayoutimpl.cpp
 
 HEADERS += \
     Plasmas/ions.h \

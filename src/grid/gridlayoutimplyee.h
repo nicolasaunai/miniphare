@@ -13,12 +13,14 @@
 class GridLayoutImplYee : public GridLayoutImpl, private GridLayoutImplInternals
 {
 
+
 private:
 
     // TODO attention nx est utilisé PARTOUT comme le nombre de POINTS dans les TABLEAUX
     // INCLUANT les ghosts, PRA etc. Il faudra les renommer pour rendre ça comprehensible...
     //e.g. allocSizeX, etc.
     // REVOIR tout le systeme d'indices.
+
 #if 0
     int32 nbrCellsX_ ;
     int32 nbrNodesX_ ;  // equals: nbrCellsX_ + 1
@@ -38,9 +40,8 @@ private:
 
 
 public:
+
     explicit GridLayoutImplYee(uint32 nbDims);
-
-
     virtual ~GridLayoutImplYee() = default;
 
 
@@ -58,6 +59,11 @@ public:
     std::vector<double>  XSegment() const { return xsupport_ ; }
 #endif
 
+    virtual uint32 nbDimensions() const override {return nbDimensions_();}
+
+    virtual uint32 nx(uint32 nbrCellx) const override;
+    virtual uint32 ny(uint32 nbrCelly) const override;
+    virtual uint32 nz(uint32 nbrCellz) const override;
 
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, uint32 direction) const override;
@@ -67,8 +73,6 @@ public:
     virtual uint32 ghostEndIndex  (Field const& field, uint32 direction) const override;
 
     virtual void deriv(Field const& operand, uint32 direction, Field& derivative) const override;
-
-    virtual uint32 nbDimensions() const override {return nbDimensions_();}
 
 
 };

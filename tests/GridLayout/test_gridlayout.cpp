@@ -172,6 +172,7 @@ TEST_P(GridLayoutImplFactoryTest, factoryParamTests)
 }
 
 
+
 GridLayoutImplFactoryParams factoryInputs[] = {
     GridLayoutImplFactoryParams(-2,"yee"),
     GridLayoutImplFactoryParams(4200000000,"yee"),
@@ -272,7 +273,7 @@ TEST_P(GridLayoutConstructorTest, ConstructorTest)
 
 GridLayoutParams gridLayoutConstructorInputs[] = {
 
-                  /* dx    dy     dz   nx  ny nz name ndims  comments */
+                  /* dx    dy     dz    nx  ny nz name  ndims  comments */
     // 1D
     GridLayoutParams(0.1  ,0.    ,0.2   ,10,  1, 1,"yee" ,1 ,"cant' be 1D and have non-zero dz"),
     GridLayoutParams(0.1  ,1e-11 ,0.    ,10,  1, 1,"yee" ,1 ,"can't be 1D and have non-zero dy"),
@@ -286,10 +287,15 @@ GridLayoutParams gridLayoutConstructorInputs[] = {
 
 
     //2D
-    GridLayoutParams(0.1  ,0.    ,0.  ,10,  1, 1,"nico",1 ,"can't have unknown layout name"),
-    GridLayoutParams(1e-11,0.    ,0.  ,10, 12, 1,"yee" ,2 ,"can't be 2D and have dx=0"),
-    GridLayoutParams(0.1  ,0.    ,0.  ,10, 12, 1,"yee" ,2 ,"can't be 2D with dy=0"),
-    GridLayoutParams(0.1  ,0.    ,0.  ,10,  1, 1,"yee" ,2 ,"2D but ny=1 and dy=0")
+    GridLayoutParams(0.1  ,0.1   ,0.1 ,10, 12, 1,"yee",1    ,"can't be 2D and have non-zero dz"),
+    GridLayoutParams(0.1  ,0.1   ,0.  ,10, 12, 2,"yee",1    ,"can't be 2D and have nz != 0"),
+    GridLayoutParams(0.1  ,0.1   ,0.  , 1, 12, 1,"yee",1    ,"can't be 2D and have nx == 1"),
+    GridLayoutParams(0.1  ,0.1   ,0.  ,10,  1, 1,"yee",1    ,"can't be 2D and have ny == 1"),
+    GridLayoutParams(0.0  ,0.1   ,0.  ,10, 12, 1,"yee",1    ,"can't be 2D and have dx == 0"),
+    GridLayoutParams(0.1  ,0.0   ,0.  ,10, 12, 1,"yee",1    ,"can't be 2D and have dy == 0"),
+    GridLayoutParams(-0.1 ,0.1   ,0.  ,10, 12, 1,"yee",1    ,"2D with negative dx"),
+    GridLayoutParams(0.1  ,-0.1  ,0.  ,10, 12, 1,"yee",1    ,"2D with negative dy")
+
 
 };
 

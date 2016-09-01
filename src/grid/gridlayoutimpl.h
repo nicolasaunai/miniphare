@@ -10,6 +10,10 @@ class GridLayoutImpl
 public:
 
 
+    virtual uint32 nx(uint32 nbrCellx) const = 0;
+    virtual uint32 ny(uint32 nbrCelly) const = 0;
+    virtual uint32 nz(uint32 nbrCellz) const = 0;
+
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, uint32 direction) const = 0;
     virtual uint32 physicalEndIndex  (Field const& field, uint32 direction) const = 0;
@@ -31,12 +35,11 @@ public:
 class GridLayoutImplInternals
 {
 protected:
-
     uint32 nbdims_;
 
 public:
     explicit GridLayoutImplInternals(uint32 nbDims);
-    uint32 nbDimensions_() const  {return nbdims_;}
+    uint32 nbDimensions_() const { return nbdims_; }
 };
 
 
