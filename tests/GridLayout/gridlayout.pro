@@ -23,3 +23,4 @@ HEADERS += ../../src/grid/gridlayout.h \
            ../../src/grid/gridlayoutimplfactory.h \
            ../../src/grid/gridlayoutimplyee.h \
            ../../src/types.h \
+           ../../src/constants.h \

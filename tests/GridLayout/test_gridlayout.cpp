@@ -168,15 +168,12 @@ TEST_P(GridLayoutImplFactoryTest, factoryParamTests)
 {
     GridLayoutImplFactoryParams inputs = GetParam();
     std::cout << inputs  << std::endl;
-    std::string toto = inputs.implTypeName;
     ASSERT_ANY_THROW(GridLayoutImplFactory::createGridLayoutImpl(inputs.nbDims, inputs.implTypeName));
 }
 
 
 GridLayoutImplFactoryParams factoryInputs[] = {
     GridLayoutImplFactoryParams(-2,"yee"),
-//    GridLayoutImplFactoryParams(2269666877636610,"yee"), // TODO Why does this trigger an execption?
-    //GridLayoutImplFactoryParams(-5000000000,"yee"),
     GridLayoutImplFactoryParams(4200000000,"yee"),
     GridLayoutImplFactoryParams(4200000000,"wrong"),
     GridLayoutImplFactoryParams(1,"yee "),
@@ -189,6 +186,7 @@ GridLayoutImplFactoryParams factoryInputs[] = {
 INSTANTIATE_TEST_CASE_P(BulkTest, GridLayoutImplFactoryTest, testing::ValuesIn(factoryInputs));
 
  /* ---------------------------------------------------------------------------- */
+
 
 
 
@@ -211,7 +209,7 @@ INSTANTIATE_TEST_CASE_P(BulkTest, GridLayoutImplFactoryTest, testing::ValuesIn(f
  *
  * ---------------------------------------------------------------------------- */
 
-#if 0
+#if 1
 class GridLayoutFixture : public testing::Test
 {
 public:
@@ -224,7 +222,35 @@ struct GridLayoutParams
     std::array<double,3> dxdydz;
     std::array<uint32,3> fieldSizes;
     std::string layoutName;
-    uint32 nbDims;
+    uint32 nbDims_;
+    std::string testComment_;
+
+    GridLayoutParams(double dx, double dy, double dz,
+                     uint32 nx, uint32 ny, uint32 nz,
+                     std::string const& name,
+                     uint32 nbDims, std::string testComment):
+                     dxdydz{ {dx,dy,dz} }, fieldSizes{ {nx,ny,nz} },
+                     layoutName{name}, nbDims_{nbDims}, testComment_{testComment}
+    {
+    }
+
+
+    friend std::ostream& operator<<(std::ostream& os, GridLayoutParams const& inputs)
+    {
+        os << "mesh size : (" ;
+        for (double const& dl: inputs.dxdydz)
+        {
+            os << dl << " ";
+        }
+        os << ") ; FieldSize : (";
+        for (uint32 const& n: inputs.fieldSizes)
+        {
+            os << n << " ";
+        }
+        os << ") " << inputs.testComment_;
+        return os;
+    }
+
 };
 
 
@@ -238,23 +264,37 @@ class GridLayoutConstructorTest: public ::testing::TestWithParam<GridLayoutParam
 TEST_P(GridLayoutConstructorTest, ConstructorTest)
 {
     GridLayoutParams inputs = GetParam();
-    ASSERT_ANY_THROW( GridLayout(inputs.dxdydz, inputs.fieldSizes, inputs.nbDims, inputs.layoutName) );
+    std::cout << inputs  << std::endl;
+    ASSERT_ANY_THROW( GridLayout(inputs.dxdydz, inputs.fieldSizes, inputs.nbDims_, inputs.layoutName) );
 }
 
 
-GridLayoutImplFactoryParams factoryInputs[] = {
-    GridLayoutImplFactoryParams(-2,"yee"),
-    GridLayoutImplFactoryParams(-8589934590,"yee"), // TODO Why does this trigger an execption?
-    GridLayoutImplFactoryParams(-5000000000,"yee"),
-    GridLayoutImplFactoryParams(4200000000,"yee"),
-    GridLayoutImplFactoryParams(4200000000,"wrong"),
-    GridLayoutImplFactoryParams(1,"yee "),
-    GridLayoutImplFactoryParams(1,"YEE"),
-    GridLayoutImplFactoryParams(1,"Yee"),
-    GridLayoutImplFactoryParams(1," yee")
+
+GridLayoutParams gridLayoutConstructorInputs[] = {
+
+                  /* dx    dy     dz   nx  ny nz name ndims  comments */
+    // 1D
+    GridLayoutParams(0.1  ,0.    ,0.2   ,10,  1, 1,"yee" ,1 ,"cant' be 1D and have non-zero dz"),
+    GridLayoutParams(0.1  ,1e-11 ,0.    ,10,  1, 1,"yee" ,1 ,"can't be 1D and have non-zero dy"),
+    GridLayoutParams(0.1  ,0.    ,0.    ,10, 24, 1,"yee" ,1 ,"can't be 1D and have ny != 0"),
+    GridLayoutParams(0.1  ,0.    ,0.    ,10,  1, 2,"yee" ,1 ,"can't be 1D and have nz != 0"),
+    GridLayoutParams(0.1  ,0.    ,0.    , 1,  1, 1,"yee" ,1 ,"can't be 1D and have nx = 1"),
+    GridLayoutParams(0.0  ,0.    ,0.    ,10,  1, 1,"yee" ,1 ,"can't be 1D and have dx = 0"),
+    GridLayoutParams(-0.1 ,0.    ,0.    ,10,  1, 1,"yee" ,1 ,"can't have negative dx"),
+    GridLayoutParams(-0.1 ,-1e-11,0.    ,10,  1, 1,"yee" ,1 ,"1D with negative dy"),
+    GridLayoutParams(-0.1 ,0.    ,-1e-11,10,  1, 1,"yee" ,1 ,"1D with negative dz"),
+
+
+    //2D
+    GridLayoutParams(0.1  ,0.    ,0.  ,10,  1, 1,"nico",1 ,"can't have unknown layout name"),
+    GridLayoutParams(1e-11,0.    ,0.  ,10, 12, 1,"yee" ,2 ,"can't be 2D and have dx=0"),
+    GridLayoutParams(0.1  ,0.    ,0.  ,10, 12, 1,"yee" ,2 ,"can't be 2D with dy=0"),
+    GridLayoutParams(0.1  ,0.    ,0.  ,10,  1, 1,"yee" ,2 ,"2D but ny=1 and dy=0")
+
 };
 
-INSTANTIATE_TEST_CASE_P(BulkTest, GridLayoutImplFactoryTest, testing::ValuesIn(factoryInputs));
+INSTANTIATE_TEST_CASE_P(BulkTest, GridLayoutConstructorTest,
+                        testing::ValuesIn( gridLayoutConstructorInputs ) );
 
 #endif
 /* ---------------------------------------------------------------------------- */

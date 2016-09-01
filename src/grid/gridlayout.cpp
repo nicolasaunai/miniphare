@@ -1,6 +1,9 @@
+
+#include<cmath>
+
 #include "gridlayout.h"
 #include "gridlayoutimplfactory.h"
-
+#include "constants.h"
 
   //GridLayoutImpl::~GridLayoutImpl(){}
 
@@ -20,6 +23,32 @@ GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> fieldSi
       nx_{fieldSizes[0]}, ny_{fieldSizes[1]}, nz_{fieldSizes[2]},
       implPtr_{GridLayoutImplFactory::createGridLayoutImpl(nbDims, layoutName)}
 {
+    switch (nbDims)
+    {
+        case 1:
+            // 1D with tiny dx must be a problem
+            if ( (std::abs(dx_) < EPS12) )
+                throw std::runtime_error("Error - 1D requires non-zero dx");
+
+            // cant' be 1D and have only 1 point in x
+            //if ()
+
+
+            // 1D but non-zero dy or dz
+            if ( (std::abs(dy_) >  EPS12) || (std::abs(dz_) > EPS12) )
+                throw std::runtime_error("Error - 1D requires dy=dz=0");
+
+            // 1D but non-zero dimensions 2 and 3.
+            if ( (ny_ != 1) || (nz_ != 1) )
+                throw  std::runtime_error("Error - 1D requires ny=nz=1");
+
+        case 2:
+            if (std::abs(dz_) > EPS12)
+              throw  std::runtime_error("Error - 2D requires dz = 0");
+
+            if (nz_ != 1)
+                throw  std::runtime_error("Error - 2D requires nz = 1");
+    }
 }
 
 

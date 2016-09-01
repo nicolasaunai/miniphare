@@ -50,7 +50,8 @@ HEADERS += \
     Ohm/ohmimplfactory.h \
     Ohm/ohmimpl1d.h \
     Faraday/faradayimpl1d.h \
-    grid/gridlayoutimpl.h
+    grid/gridlayoutimpl.h \
+    constants.h
 
 
 
