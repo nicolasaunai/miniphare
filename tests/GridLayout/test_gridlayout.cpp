@@ -122,7 +122,6 @@
 
 #include "gtest/gtest.h"
 
-
 #include "grid/gridlayout.h"
 #include "grid/gridlayoutimplfactory.h"
 #include "grid/gridlayoutimplyee.h"
@@ -210,7 +209,7 @@ INSTANTIATE_TEST_CASE_P(BulkTest, GridLayoutImplFactoryTest, testing::ValuesIn(f
  *
  * ---------------------------------------------------------------------------- */
 
-#if 1
+
 class GridLayoutFixture : public testing::Test
 {
 public:
@@ -221,16 +220,16 @@ public:
 struct GridLayoutParams
 {
     std::array<double,3> dxdydz;
-    std::array<uint32,3> fieldSizes;
+    std::array<uint32,3> nbrCells;
     std::string layoutName;
     uint32 nbDims_;
     std::string testComment_;
 
     GridLayoutParams(double dx, double dy, double dz,
-                     uint32 nx, uint32 ny, uint32 nz,
+                     uint32 nbrCellx, uint32 nbrCelly, uint32 nbrCellz,
                      std::string const& name,
                      uint32 nbDims, std::string testComment):
-                     dxdydz{ {dx,dy,dz} }, fieldSizes{ {nx,ny,nz} },
+                     dxdydz{ {dx,dy,dz} }, nbrCells{ {nbrCellx,nbrCelly,nbrCellz} },
                      layoutName{name}, nbDims_{nbDims}, testComment_{testComment}
     {
     }
@@ -244,7 +243,7 @@ struct GridLayoutParams
             os << dl << " ";
         }
         os << ") ; FieldSize : (";
-        for (uint32 const& n: inputs.fieldSizes)
+        for (uint32 const& n: inputs.nbrCells)
         {
             os << n << " ";
         }
@@ -266,35 +265,37 @@ TEST_P(GridLayoutConstructorTest, ConstructorTest)
 {
     GridLayoutParams inputs = GetParam();
     std::cout << inputs  << std::endl;
-    ASSERT_ANY_THROW( GridLayout(inputs.dxdydz, inputs.fieldSizes, inputs.nbDims_, inputs.layoutName) );
+    ASSERT_ANY_THROW( GridLayout(inputs.dxdydz, inputs.nbrCells, inputs.nbDims_, inputs.layoutName) );
 }
 
 
 
 GridLayoutParams gridLayoutConstructorInputs[] = {
 
-                  /* dx    dy     dz    nx  ny nz name  ndims  comments */
+                  /* dx    dy     dz  nbrCellx y z name  ndims  comments */
     // 1D
-    GridLayoutParams(0.1  ,0.    ,0.2   ,10,  1, 1,"yee" ,1 ,"cant' be 1D and have non-zero dz"),
-    GridLayoutParams(0.1  ,1e-11 ,0.    ,10,  1, 1,"yee" ,1 ,"can't be 1D and have non-zero dy"),
-    GridLayoutParams(0.1  ,0.    ,0.    ,10, 24, 1,"yee" ,1 ,"can't be 1D and have ny != 0"),
-    GridLayoutParams(0.1  ,0.    ,0.    ,10,  1, 2,"yee" ,1 ,"can't be 1D and have nz != 0"),
-    GridLayoutParams(0.1  ,0.    ,0.    , 1,  1, 1,"yee" ,1 ,"can't be 1D and have nx = 1"),
-    GridLayoutParams(0.0  ,0.    ,0.    ,10,  1, 1,"yee" ,1 ,"can't be 1D and have dx = 0"),
-    GridLayoutParams(-0.1 ,0.    ,0.    ,10,  1, 1,"yee" ,1 ,"can't have negative dx"),
-    GridLayoutParams(-0.1 ,-1e-11,0.    ,10,  1, 1,"yee" ,1 ,"1D with negative dy"),
-    GridLayoutParams(-0.1 ,0.    ,-1e-11,10,  1, 1,"yee" ,1 ,"1D with negative dz"),
+    GridLayoutParams(0.1  ,0.    ,0.2   ,10,  0, 0,"yee" ,1 ,"cant' be 1D and have non-zero dz"),
+    GridLayoutParams(0.1  ,1e-11 ,0.    ,10,  0, 0,"yee" ,1 ,"can't be 1D and have non-zero dy"),
+    GridLayoutParams(0.1  ,0.    ,0.    ,10, 24, 0,"yee" ,1 ,"can't be 1D and have nbrCelly != 0"),
+    GridLayoutParams(0.1  ,0.    ,0.    ,10,  0, 2,"yee" ,1 ,"can't be 1D and have nbrCellz != 0"),
+    GridLayoutParams(0.1  ,0.    ,0.    , 0,  0, 0,"yee" ,1 ,"can't be 1D and have nbrCellx == 0"),
+    GridLayoutParams(0.0  ,0.    ,0.    ,10,  0, 0,"yee" ,1 ,"can't be 1D and have dx = 0"),
+    GridLayoutParams(-0.1 ,0.    ,0.    ,10,  0, 0,"yee" ,1 ,"can't have negative dx"),
+    GridLayoutParams(-0.1 ,-1e-11,0.    ,10,  0, 0,"yee" ,1 ,"1D with negative dy"),
+    GridLayoutParams(-0.1 ,0.    ,-1e-11,10,  0, 0,"yee" ,1 ,"1D with negative dz"),
 
 
     //2D
-    GridLayoutParams(0.1  ,0.1   ,0.1 ,10, 12, 1,"yee",1    ,"can't be 2D and have non-zero dz"),
-    GridLayoutParams(0.1  ,0.1   ,0.  ,10, 12, 2,"yee",1    ,"can't be 2D and have nz != 0"),
-    GridLayoutParams(0.1  ,0.1   ,0.  , 1, 12, 1,"yee",1    ,"can't be 2D and have nx == 1"),
-    GridLayoutParams(0.1  ,0.1   ,0.  ,10,  1, 1,"yee",1    ,"can't be 2D and have ny == 1"),
-    GridLayoutParams(0.0  ,0.1   ,0.  ,10, 12, 1,"yee",1    ,"can't be 2D and have dx == 0"),
-    GridLayoutParams(0.1  ,0.0   ,0.  ,10, 12, 1,"yee",1    ,"can't be 2D and have dy == 0"),
-    GridLayoutParams(-0.1 ,0.1   ,0.  ,10, 12, 1,"yee",1    ,"2D with negative dx"),
-    GridLayoutParams(0.1  ,-0.1  ,0.  ,10, 12, 1,"yee",1    ,"2D with negative dy")
+    GridLayoutParams(0.1  ,0.1   ,0.1 ,10, 12, 0,"yee",1    ,"can't be 2D and have non-zero dz"),
+    GridLayoutParams(0.1  ,0.1   ,0.  ,10, 12, 2,"yee",1    ,"can't be 2D and have nbrCellz != 0"),
+    GridLayoutParams(0.1  ,0.1   ,0.  , 0, 12, 0,"yee",1    ,"can't be 2D and have nbrCellx == 0"),
+    GridLayoutParams(0.1  ,0.1   ,0.  ,10,  0, 0,"yee",1    ,"can't be 2D and have nbrCelly == 0"),
+    GridLayoutParams(0.0  ,0.1   ,0.  ,10, 12, 0,"yee",1    ,"can't be 2D and have dx == 0"),
+    GridLayoutParams(0.1  ,0.0   ,0.  ,10, 12, 0,"yee",1    ,"can't be 2D and have dy == 0"),
+    GridLayoutParams(-0.1 ,0.1   ,0.  ,10, 12, 0,"yee",1    ,"2D with negative dx"),
+    GridLayoutParams(0.1  ,-0.1  ,0.  ,10, 12, 0,"yee",1    ,"2D with negative dy")
+
+    //TODO : 3D case can wait.
 
 
 };
@@ -302,7 +303,6 @@ GridLayoutParams gridLayoutConstructorInputs[] = {
 INSTANTIATE_TEST_CASE_P(BulkTest, GridLayoutConstructorTest,
                         testing::ValuesIn( gridLayoutConstructorInputs ) );
 
-#endif
 /* ---------------------------------------------------------------------------- */
 
 

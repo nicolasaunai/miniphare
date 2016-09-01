@@ -5,9 +5,6 @@
 #include "gridlayoutimplfactory.h"
 #include "constants.h"
 
-  //GridLayoutImpl::~GridLayoutImpl(){}
-
-
 
 
 GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
@@ -19,8 +16,6 @@ GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCell
       implPtr_{ GridLayoutImplFactory::createGridLayoutImpl(nbDims, layoutName) }
 {
 
-#if 0
-
     switch (nbDims)
     {
         case 1:
@@ -29,8 +24,8 @@ GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCell
                 throw std::runtime_error("Error - 1D requires non-zero dx");
 
             // cant' be 1D and have only 1 point in x
-            if ( nx_ <= 1)
-                throw std::runtime_error("Error - 1D requires nx > 1");
+            if ( nbrCellx_ <= minNbrCells)
+                throw std::runtime_error("Error - direction X is too small");
 
 
             // 1D but non-zero dy or dz
@@ -38,17 +33,19 @@ GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCell
                 throw std::runtime_error("Error - 1D requires dy=dz=0");
 
             // 1D but non-zero dimensions 2 and 3.
-            if ( (ny_ != 1) || (nz_ != 1) )
+            if ( (nbrCelly_ != 0) || (nbrCellz_ != 0) )
                 throw  std::runtime_error("Error - 1D requires ny=nz=1");
+
+            break;
 
         case 2:
             if (std::abs(dz_) > EPS12)
               throw  std::runtime_error("Error - 2D requires dz = 0");
 
-            if (nz_ != 1)
+            if (nbrCellz_ != 0)
                 throw  std::runtime_error("Error - 2D requires nz = 1");
+        break;
     }
-#endif
 
 }
 
@@ -64,7 +61,7 @@ GridLayout::GridLayout(GridLayout const& source)
       nbrCellz_{source.nbrCellz_}
 {
     uint32 nbDims = source.nbDimensions();
-    implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(nbDims, "yee") ;
+    implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(nbDims, "yee") ; //TODO bad hardcoded. make a clone
 }
 
 
