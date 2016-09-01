@@ -1,8 +1,10 @@
 
 
 #include <iostream>
-//#include  "gridlayout.h"
-
+#include "grid/gridlayout.h"
+#include "grid/gridlayoutimplfactory.h"
+#include "grid/gridlayoutimplyee.h"
+#include "types.h"
 
 
 
@@ -21,7 +23,9 @@
 
     2.2 - GridLayout should be movable
     2.3 - GridLayout should be copyiable
-        -
+    2.4 - Implementation Factory throws an exception if unknown layout and
+          nbDims < 1 and > 3
+
 
 
   3 - nx(), ny(), nz() methods:
@@ -115,46 +119,86 @@
 
 */
 
-
+#include <string>
 #include "gtest/gtest.h"
 
-#include <cmath>
 
- double square_root (const double val)
+
+/* ----------------------------------------------------------------------------
+ *
+ *                            GridLayoutFactory TEST
+ *
+ * SPECIFICATION:
+ * -------------
+ *
+ *  - Implementation Factory throws an exception if unknown layout and
+ *          nbDims < 1 and > 3
+ *
+ * ---------------------------------------------------------------------------- */
+
+
+struct GridLayoutImplFactoryParams
 {
-    return std::sqrt(val);
-}
+    uint32 nbDims;
+    std::string implTypeName;
+    GridLayoutImplFactoryParams(uint32 dims, std::string const& name):nbDims{dims},implTypeName{name}{}
+    friend std::ostream& operator<<(std::ostream& os, GridLayoutImplFactoryParams const& params)
+    {
+        os << "nbDims = " << params.nbDims << " ; implTypeName = " << params.implTypeName;
+        return os;
+    }
+};
 
-void truc()
+
+
+class GridLayoutImplFactoryTest : public ::testing::TestWithParam<GridLayoutImplFactoryParams>
 {
-    throw std::runtime_error("ta race");
-}
-
-
-TEST(SquareRootTest, PositiveNos) {
+};
 
 
 
-
-    EXPECT_EQ (18.0, square_root (324.0));
-    EXPECT_EQ (25.4, square_root (645.16));
-    EXPECT_EQ (50.332, square_root (2533.310224));
-}
-
-
-
-TEST (SquareRootTest, ZeroAndNegativeNos) {
-    ASSERT_EQ (0.0, square_root (0.0));
-    ASSERT_EQ (-1, square_root (-22.0));
-}
-
-
-
-TEST(exceptTest, except1)
+TEST_P(GridLayoutImplFactoryTest, factoryParamTests)
 {
-    EXPECT_ANY_THROW(truc());
-    ASSERT_THROW(truc(), std::runtime_error);
+    GridLayoutImplFactoryParams inputs = GetParam();
+    ASSERT_ANY_THROW(GridLayoutImplFactory::createGridLayoutImpl(inputs.nbDims, inputs.implTypeName));
 }
+
+
+GridLayoutImplFactoryParams factoryInputs[] = {
+    GridLayoutImplFactoryParams(-2,"yee"),
+    GridLayoutImplFactoryParams(-8589934590,"yee"),
+    GridLayoutImplFactoryParams(-5000000000,"yee"),
+    GridLayoutImplFactoryParams(4200000000,"yee"),
+    GridLayoutImplFactoryParams(4200000000,"wrong"),
+    GridLayoutImplFactoryParams(1,"yee "),
+    GridLayoutImplFactoryParams(1,"YEE"),
+    GridLayoutImplFactoryParams(1,"Yee"),
+    GridLayoutImplFactoryParams(1," yee")
+};
+
+INSTANTIATE_TEST_CASE_P(BulkTest, GridLayoutImplFactoryTest, testing::ValuesIn(factoryInputs));
+
+ /* ---------------------------------------------------------------------------- */
+
+
+
+
+
+
+/* ----------------------------------------------------------------------------
+ *
+ *                            GridLayout TEST
+ *
+ * SPECIFICATION:
+ * -------------
+ *
+ *  -
+ *
+ * ---------------------------------------------------------------------------- */
+
+
+
+
 
 
 

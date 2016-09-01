@@ -1,11 +1,13 @@
 #include <iostream>
-
+#include <array>
+#include <string>
 
 #include "AMR/patch.h"
 #include "AMR/patchdata.h"
 #include "AMR/hierarchy.h"
 #include "grid/gridlayout.h"
 #include "AMR/mlmd.h"
+#include "types.h"
 
 // hierarchy contains linked list of patchs which are tokens
 //
@@ -19,8 +21,15 @@ int main(int argc, char *argv[])
 
     std::cout << "Hello World!" << std::endl;
 
+
+    // the following input parameters should be given by some module
     double dt = 0.001;
-    GridLayout gridlayout; // should later come from file input parameters somehow
+    std::array<double,3> dxdydz  = {0.05, 0, 0};
+    std::array<uint32,3> fieldSizes =  {100, 1, 1};
+    std::string layoutName = "yee";
+    uint32 nbDims = 1;
+
+    GridLayout gridlayout {dxdydz, fieldSizes, nbDims, layoutName };
 
     PatchData myPatchdata{dt, gridlayout};
 

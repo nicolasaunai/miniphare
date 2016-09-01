@@ -5,15 +5,20 @@
 
 #include "gridlayout.h"
 #include "gridlayoutimplyee.h"
+#include <iostream>
 
 
 class GridLayoutImplFactory
 {
 public:
 
-    static std::unique_ptr<GridLayoutImpl> createGridLayoutImpl(uint32 nbDims)
+    static std::unique_ptr<GridLayoutImpl> createGridLayoutImpl(uint32 nbDims,
+                                                                std::string const& layoutName)
     {
-        std::string layoutName = "yee";
+        if (nbDims != 1 || nbDims != 2 || nbDims != 3)
+        {
+            throw std::runtime_error("Error : GridLayoutImplFactory - wrong dimensionality");
+        }
 
         if (layoutName == "yee")
         {

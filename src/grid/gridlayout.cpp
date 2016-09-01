@@ -13,11 +13,12 @@ GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims)
 
 
 
-GridLayout::GridLayout()
-    : dx_{0.1}, dy_{1}, dz_{1},
+GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> fieldSizes,
+                       uint32 nbDims, std::string layoutName)
+    : dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]},
       odx_{1./dx_}, ody_{1./dy_}, odz_{1./dz_},
-      nx_{10}, ny_{1}, nz_{1},
-      implPtr_{GridLayoutImplFactory::createGridLayoutImpl(1)}
+      nx_{fieldSizes[0]}, ny_{fieldSizes[1]}, nz_{fieldSizes[2]},
+      implPtr_{GridLayoutImplFactory::createGridLayoutImpl(nbDims, layoutName)}
 {
 }
 
@@ -29,7 +30,7 @@ GridLayout::GridLayout(GridLayout const& source)
       nx_{source.nx_}, ny_{source.ny_}, nz_{source.nz_}
 {
     uint32 nbDims = source.nbDimensions();
-    implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(nbDims) ;
+    implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(nbDims, "yee") ;
 }
 
 

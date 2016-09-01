@@ -76,7 +76,8 @@ public:
     static const uint32 directionZ = 2;
 
 
-    GridLayout();
+    GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> fieldSizes,
+               uint32 nbDims, std::string layoutName);
     GridLayout(GridLayout const& source);
     GridLayout(GridLayout&& source);
 
