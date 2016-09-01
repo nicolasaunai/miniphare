@@ -15,9 +15,9 @@ public:
     static std::unique_ptr<GridLayoutImpl> createGridLayoutImpl(uint32 nbDims,
                                                                 std::string const& layoutName)
     {
-        if (nbDims != 1 || nbDims != 2 || nbDims != 3)
+        if (nbDims != 1 && nbDims != 2 && nbDims != 3)
         {
-            throw std::runtime_error("Error : GridLayoutImplFactory - wrong dimensionality");
+             throw std::runtime_error("Error : GridLayoutImplFactory - wrong dimensionality");
         }
 
         if (layoutName == "yee")

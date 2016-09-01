@@ -12,6 +12,9 @@ INCLUDEPATH += /opt/local/include \
 LIBS += -L/opt/local/lib -lgtest
 
 
+QMAKE_CXXFLAGS +=  -Werror=constant-conversion
+
+
 SOURCES += test_gridlayout.cpp \
            ../../src/grid/gridlayout.cpp \
            ../../src/grid/gridlayoutimplyee.cpp \

@@ -1,10 +1,6 @@
 
 
-#include <iostream>
-#include "grid/gridlayout.h"
-#include "grid/gridlayoutimplfactory.h"
-#include "grid/gridlayoutimplyee.h"
-#include "types.h"
+
 
 
 
@@ -120,7 +116,17 @@
 */
 
 #include <string>
+#include <iostream>
+#include <array>
+#include <string>
+
 #include "gtest/gtest.h"
+
+
+#include "grid/gridlayout.h"
+#include "grid/gridlayoutimplfactory.h"
+#include "grid/gridlayoutimplyee.h"
+#include "types.h"
 
 
 
@@ -141,6 +147,7 @@ struct GridLayoutImplFactoryParams
 {
     uint32 nbDims;
     std::string implTypeName;
+
     GridLayoutImplFactoryParams(uint32 dims, std::string const& name):nbDims{dims},implTypeName{name}{}
     friend std::ostream& operator<<(std::ostream& os, GridLayoutImplFactoryParams const& params)
     {
@@ -160,14 +167,16 @@ class GridLayoutImplFactoryTest : public ::testing::TestWithParam<GridLayoutImpl
 TEST_P(GridLayoutImplFactoryTest, factoryParamTests)
 {
     GridLayoutImplFactoryParams inputs = GetParam();
+    std::cout << inputs  << std::endl;
+    std::string toto = inputs.implTypeName;
     ASSERT_ANY_THROW(GridLayoutImplFactory::createGridLayoutImpl(inputs.nbDims, inputs.implTypeName));
 }
 
 
 GridLayoutImplFactoryParams factoryInputs[] = {
     GridLayoutImplFactoryParams(-2,"yee"),
-    GridLayoutImplFactoryParams(-8589934590,"yee"),
-    GridLayoutImplFactoryParams(-5000000000,"yee"),
+//    GridLayoutImplFactoryParams(2269666877636610,"yee"), // TODO Why does this trigger an execption?
+    //GridLayoutImplFactoryParams(-5000000000,"yee"),
     GridLayoutImplFactoryParams(4200000000,"yee"),
     GridLayoutImplFactoryParams(4200000000,"wrong"),
     GridLayoutImplFactoryParams(1,"yee "),
@@ -175,6 +184,7 @@ GridLayoutImplFactoryParams factoryInputs[] = {
     GridLayoutImplFactoryParams(1,"Yee"),
     GridLayoutImplFactoryParams(1," yee")
 };
+
 
 INSTANTIATE_TEST_CASE_P(BulkTest, GridLayoutImplFactoryTest, testing::ValuesIn(factoryInputs));
 
@@ -192,10 +202,62 @@ INSTANTIATE_TEST_CASE_P(BulkTest, GridLayoutImplFactoryTest, testing::ValuesIn(f
  * SPECIFICATION:
  * -------------
  *
- *  -
+ *  - Constructor throws if :
+ *      - nbDims = 1 and (dy != 0 || dz !=0 || ny != 1 || nz != 1)
+ *      - nbDims = 2 and (dz !=0  || nz != 1)
+ *
+ *  - Copy construction is defined and copies all members OK
+ *  - Move construction is defined and moves all members OK
  *
  * ---------------------------------------------------------------------------- */
 
+#if 0
+class GridLayoutFixture : public testing::Test
+{
+public:
+    GridLayout gl;
+};
+
+
+struct GridLayoutParams
+{
+    std::array<double,3> dxdydz;
+    std::array<uint32,3> fieldSizes;
+    std::string layoutName;
+    uint32 nbDims;
+};
+
+
+class GridLayoutConstructorTest: public ::testing::TestWithParam<GridLayoutParams>
+{
+
+};
+
+
+
+TEST_P(GridLayoutConstructorTest, ConstructorTest)
+{
+    GridLayoutParams inputs = GetParam();
+    ASSERT_ANY_THROW( GridLayout(inputs.dxdydz, inputs.fieldSizes, inputs.nbDims, inputs.layoutName) );
+}
+
+
+GridLayoutImplFactoryParams factoryInputs[] = {
+    GridLayoutImplFactoryParams(-2,"yee"),
+    GridLayoutImplFactoryParams(-8589934590,"yee"), // TODO Why does this trigger an execption?
+    GridLayoutImplFactoryParams(-5000000000,"yee"),
+    GridLayoutImplFactoryParams(4200000000,"yee"),
+    GridLayoutImplFactoryParams(4200000000,"wrong"),
+    GridLayoutImplFactoryParams(1,"yee "),
+    GridLayoutImplFactoryParams(1,"YEE"),
+    GridLayoutImplFactoryParams(1,"Yee"),
+    GridLayoutImplFactoryParams(1," yee")
+};
+
+INSTANTIATE_TEST_CASE_P(BulkTest, GridLayoutImplFactoryTest, testing::ValuesIn(factoryInputs));
+
+#endif
+/* ---------------------------------------------------------------------------- */
 
 
 
