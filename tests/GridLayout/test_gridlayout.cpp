@@ -183,7 +183,7 @@ GridLayoutImplFactoryParams factoryInputs[] = {
 };
 
 
-INSTANTIATE_TEST_CASE_P(BulkTest, GridLayoutImplFactoryTest, testing::ValuesIn(factoryInputs));
+INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutImplFactoryTest, testing::ValuesIn(factoryInputs));
 
  /* ---------------------------------------------------------------------------- */
 
@@ -281,9 +281,10 @@ GridLayoutParams gridLayoutConstructorInputs[] = {
     GridLayoutParams(0.1  ,0.    ,0.    , 0,  0, 0,"yee" ,1 ,"can't be 1D and have nbrCellx == 0"),
     GridLayoutParams(0.0  ,0.    ,0.    ,10,  0, 0,"yee" ,1 ,"can't be 1D and have dx = 0"),
     GridLayoutParams(-0.1 ,0.    ,0.    ,10,  0, 0,"yee" ,1 ,"can't have negative dx"),
-    GridLayoutParams(-0.1 ,-1e-11,0.    ,10,  0, 0,"yee" ,1 ,"1D with negative dy"),
-    GridLayoutParams(-0.1 ,0.    ,-1e-11,10,  0, 0,"yee" ,1 ,"1D with negative dz"),
+    GridLayoutParams(0.1  ,-1e-11,0.    ,10,  0, 0,"yee" ,1 ,"1D with negative dy"),
+    GridLayoutParams(0.1  ,0.    ,-1e-11,10,  0, 0,"yee" ,1 ,"1D with negative dz"),
 
+    GridLayoutParams(0.1  ,0.    ,0.    ,10,  0, 0,"YEE" ,1 ,"bad layout name"),
 
     //2D
     GridLayoutParams(0.1  ,0.1   ,0.1 ,10, 12, 0,"yee",1    ,"can't be 2D and have non-zero dz"),
@@ -297,11 +298,14 @@ GridLayoutParams gridLayoutConstructorInputs[] = {
 
     //TODO : 3D case can wait.
 
-
 };
 
-INSTANTIATE_TEST_CASE_P(BulkTest, GridLayoutConstructorTest,
+
+INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutConstructorTest,
                         testing::ValuesIn( gridLayoutConstructorInputs ) );
+
+
+
 
 /* ---------------------------------------------------------------------------- */
 
