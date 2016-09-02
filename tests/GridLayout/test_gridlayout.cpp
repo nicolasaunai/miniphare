@@ -127,6 +127,7 @@
 #include "grid/gridlayoutimplfactory.h"
 #include "grid/gridlayoutimplyee.h"
 #include "types.h"
+#include "utility.h"
 
 
 class GridLayoutFixture : public testing::Test
@@ -416,9 +417,10 @@ INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutConstructorTest,
 TEST(MeshSizeTest, meshSize1DNullInvariant)
 {
     GridLayout gl( {0.1, 0, 0}, {15,0,0}, 1, "yee");
-    ASSERT_TRUE( (std::abs(gl.dy()) < 1e-12 ) && (std::abs(gl.dz()) < 1e-12 ) );
+    std::cout << gl.dy() << " " << utils::isZero(gl.dy())<< std::endl;
+    ASSERT_TRUE( utils::isZero(gl.dy()) && utils::isZero(gl.dz())  );
 }
-
+#if 1
 
 TEST(MeshSizeTest, meshSize1DNonZero)
 {
@@ -461,7 +463,7 @@ TEST(MeshSizeTest, inverse2DzThrows)
     GridLayout gl( {0.1, 0.1, 0}, {15,11,0}, 2, "yee");
     ASSERT_ANY_THROW(gl.odz());
 }
-
+#endif
 /* ---------------------------------------------------------------------------- */
 
 

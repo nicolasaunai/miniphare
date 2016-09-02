@@ -8,8 +8,13 @@ namespace utils
 {
     inline bool isZero(double value)
      {
-        return std::abs(value-std::numeric_limits<double>::epsilon()) > 0;
+         return std::abs( value - std::numeric_limits<double>::epsilon() )
+                 <= std::numeric_limits<double>::epsilon();
     }
+
+
+
+
 }
 
 

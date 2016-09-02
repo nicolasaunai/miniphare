@@ -35,6 +35,13 @@ private:
     static const std::string errorInverseMesh;
 
 
+    // test the validity of the GridLayout construction
+    bool isValid1D() const;
+    bool isValid2D() const;
+    bool isValid3D() const;
+
+
+
 public:
 
     static const uint32 directionX = 0;
@@ -71,9 +78,9 @@ public:
 
     // return the (total) number of mesh points
     // this does depend on the layout
-    uint32 nx() const;
-    uint32 ny() const;
-    uint32 nz() const;
+    uint32 nx() const; // TODO should be added to unit test
+    uint32 ny() const; // TODO should be added to unit test
+    uint32 nz() const; // TODO should be added to unit test
 
 
     uint32 physicalStartIndex(Field const& field, uint32 direction) const;
