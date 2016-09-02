@@ -6,13 +6,17 @@ CONFIG -= qt
 SUBDIRS += gridlayout
 
 
-INCLUDEPATH += /opt/local/include \
+#INCLUDEPATH += /opt/local/include \
+#               ../../src
+
+INCLUDEPATH += /usr/include/gtest \
                ../../src
 
-LIBS += -L/opt/local/lib -lgtest
+#LIBS += -L/opt/local/lib -lgtest
 
+LIBS += -L/usr/lib -lpthread -lgtest
 
-QMAKE_CXXFLAGS +=  -Werror=constant-conversion
+#QMAKE_CXXFLAGS +=  -Werror=constant-conversion
 
 
 SOURCES += test_gridlayout.cpp \
