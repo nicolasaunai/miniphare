@@ -52,7 +52,8 @@ HEADERS += \
     Ohm/ohmimpl1d.h \
     Faraday/faradayimpl1d.h \
     grid/gridlayoutimpl.h \
-    constants.h
+    constants.h \
+    Faraday/faradayimpl.h
 
 
 

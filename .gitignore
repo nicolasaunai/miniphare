@@ -11,6 +11,8 @@ miniphare.files
 miniphare.includes
 miniphare.creator.user
 
+Doxyfile
+
 *~
 *.autosave
 *.a
