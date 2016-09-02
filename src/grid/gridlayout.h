@@ -27,9 +27,9 @@ private:
     uint32 nbrCelly_  ;
     uint32 nbrCellz_  ;
 
+    uint32 interpOrder_ ;
 
     std::unique_ptr<GridLayoutImpl> implPtr_;
-
 
 public:
 
@@ -37,13 +37,12 @@ public:
     static const uint32 directionY = 1;
     static const uint32 directionZ = 2;
 
-
     static const uint32 minNbrCells = 10; // minimum nbr of cells in a
                                           // non-invariant direction
 
-
     GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
-               uint32 nbDims, std::string layoutName);
+               uint32 nbDims      , std::string layoutName,
+               uint32 interpOrder );
     GridLayout(GridLayout const& source);
     GridLayout(GridLayout&& source);
 
@@ -66,7 +65,6 @@ public:
     uint32 nx() const;
     uint32 ny() const;
     uint32 nz() const;
-
 
     uint32 physicalStartIndex(Field const& field, uint32 direction) const;
     uint32 physicalEndIndex  (Field const& field, uint32 direction) const;

@@ -16,7 +16,7 @@
  *
  * Faraday provides client code with an operator() taking the old magnetic field,
  * the electric field and a reference to the updated magnetic field vector.
- * The class encapsulate a unique pointer to an abstract implementation of the
+ * The class encapsulates a unique pointer to an abstract implementation of the
  * solver, which is realized by concrete implementations knowing the dimensionality etc.
  *
  * Faraday is intended to be part of a Solver object and is therefore move-only.

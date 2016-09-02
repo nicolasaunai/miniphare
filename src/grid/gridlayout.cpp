@@ -8,14 +8,16 @@
 
 
 GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
-                       uint32 nbDims, std::string layoutName)
+                       uint32 nbDims      , std::string layoutName,
+                       uint32 interpOrder )
 
     : dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]},
       odx_{1./dx_}, ody_{1./dy_}, odz_{1./dz_},
       nbrCellx_{nbrCells[0]}, nbrCelly_{nbrCells[1]}, nbrCellz_{nbrCells[2]},
-      implPtr_{ GridLayoutImplFactory::createGridLayoutImpl(nbDims, layoutName) }
+      interpOrder_{interpOrder},
+      implPtr_{ GridLayoutImplFactory::createGridLayoutImpl(
+                    nbDims, interpOrder, layoutName, nbrCells ) }
 {
-
     switch (nbDims)
     {
         case 1:
@@ -58,10 +60,14 @@ GridLayout::GridLayout(GridLayout const& source)
       odz_{source.odz_},
       nbrCellx_{source.nbrCellx_},
       nbrCelly_{source.nbrCelly_},
-      nbrCellz_{source.nbrCellz_}
+      nbrCellz_{source.nbrCellz_},
+      interpOrder_{source.interpOrder_}
 {
     uint32 nbDims = source.nbDimensions();
-    implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(nbDims, "yee") ; //TODO bad hardcoded. make a clone
+
+    //TODO : "yee" bad hardcoded. make a clone
+    implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(
+                nbDims, interpOrder_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} }) ;
 }
 
 
@@ -75,7 +81,6 @@ GridLayout::GridLayout(GridLayout&& source)
       implPtr_{std::move(source.implPtr_)}
 {
 }
-
 
 
 uint32 GridLayout::nx() const

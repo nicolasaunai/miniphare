@@ -1,6 +1,8 @@
 #ifndef GRIDLAYOUTIMPL_H
 #define GRIDLAYOUTIMPL_H
 
+#include <array>
+
 #include "types.h"
 #include "Field/field.h"
 
@@ -37,9 +39,40 @@ class GridLayoutImplInternals
 protected:
     uint32 nbdims_;
 
+    uint32 nbrCellx_  ;
+    uint32 nbrCelly_  ;
+    uint32 nbrCellz_  ;
+
+    uint32 centeredOffset_ ;
+    uint32 leftOffset_ ;
+    uint32 rightOffset_ ;
+
+    uint32 nbrCellsPRA_ ;
+
+    void computeOffsets( uint32 interpOrder ) ;
+
 public:
-    explicit GridLayoutImplInternals(uint32 nbDims);
+
+    static const uint32 directionX = 0;
+    static const uint32 directionY = 1;
+    static const uint32 directionZ = 2;
+
+
+    static const uint32 minNbrCells = 10; // minimum nbr of cells in a
+                                          // non-invariant direction
+
+    static const uint32 defaultNbrCellsPRA = 10;
+
+    explicit GridLayoutImplInternals(uint32 nbDims, uint32 interpOrder,
+                                     std::array<uint32,3> nbrCellsXYZ);
+
     uint32 nbDimensions_() const { return nbdims_; }
+
+
+    uint32 primalNumCellMin( uint32 direction ) const ;
+    uint32 primalNumCellMax( uint32 direction ) const ;
+    uint32 dualNumCellMin( uint32 direction ) const ;
+    uint32 dualNumCellMax( uint32 direction ) const ;
 };
 
 

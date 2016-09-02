@@ -12,8 +12,11 @@ class GridLayoutImplFactory
 {
 public:
 
-    static std::unique_ptr<GridLayoutImpl> createGridLayoutImpl(uint32 nbDims,
-                                                                std::string const& layoutName)
+    static std::unique_ptr<GridLayoutImpl>
+    createGridLayoutImpl(uint32 nbDims,
+                         uint32 interpOrder,
+                         std::string const& layoutName,
+                         std::array<uint32,3> nbrCellsXYZ )
     {
         if (nbDims != 1 && nbDims != 2 && nbDims != 3)
         {
@@ -22,7 +25,8 @@ public:
 
         if (layoutName == "yee")
         {
-            return std::unique_ptr<GridLayoutImpl> ( new GridLayoutImplYee(nbDims));
+            return std::unique_ptr<GridLayoutImpl> (
+                        new GridLayoutImplYee( nbDims, interpOrder, nbrCellsXYZ));
         }
         //else if{}
 

@@ -3,6 +3,7 @@
 
 
 #include <vector>
+#include <array>
 
 #include "gridlayoutimpl.h"
 #include "types.h"
@@ -41,7 +42,9 @@ private:
 
 public:
 
-    explicit GridLayoutImplYee(uint32 nbDims);
+    explicit GridLayoutImplYee(uint32 nbDims,
+                               uint32 interpOrder,
+                               std::array<uint32,3> nbrCellsXYZ);
     virtual ~GridLayoutImplYee() = default;
 
 
