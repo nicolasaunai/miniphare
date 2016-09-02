@@ -8,6 +8,7 @@
 #include "types.h"
 #include "Field/field.h"
 #include "gridlayoutimpl.h"
+#include "utility.h"
 
 
 
@@ -30,6 +31,9 @@ private:
 
     std::unique_ptr<GridLayoutImpl> implPtr_;
 
+    using error = std::runtime_error;
+    static const std::string errorInverseMesh;
+
 
 public:
 
@@ -44,17 +48,21 @@ public:
 
     GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
                uint32 nbDims, std::string layoutName);
+
     GridLayout(GridLayout const& source);
     GridLayout(GridLayout&& source);
+
+    GridLayout& operator=(GridLayout const& source) = delete;
+    GridLayout& operator=(GridLayout&& source) = delete;
 
 
     double dx() const {return dx_;}
     double dy() const {return dy_;}
     double dz() const {return dz_;}
 
-    double odx()const {return odx_;}
-    double ody()const {return ody_;}
-    double odz()const {return odz_;}
+    double odx()const { return utils::isZero(dx_) ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
+    double ody()const { return utils::isZero(dy_) ? throw error(errorInverseMesh +" dy() (dy==0)"): ody_;}
+    double odz()const { return utils::isZero(dz_) ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
 
     double nbrCellx() const {return nbrCellx_;}
     double nbrCelly() const {return nbrCelly_;}

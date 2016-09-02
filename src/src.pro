@@ -24,7 +24,8 @@ SOURCES += main.cpp \
     Ohm/ohm.cpp \
     Ohm/ohmimpl1d.cpp \
     Faraday/faradayimpl1d.cpp \
-    grid/gridlayoutimpl.cpp
+    grid/gridlayoutimpl.cpp \
+    utility.cpp
 
 HEADERS += \
     Plasmas/ions.h \
@@ -52,7 +53,8 @@ HEADERS += \
     Ohm/ohmimpl1d.h \
     Faraday/faradayimpl1d.h \
     grid/gridlayoutimpl.h \
-    constants.h
+    constants.h \
+    utility.h
 
 
 
