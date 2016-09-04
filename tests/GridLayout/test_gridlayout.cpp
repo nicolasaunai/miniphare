@@ -120,6 +120,7 @@
 #include <array>
 #include <string>
 #include <cmath>
+#include <type_traits>
 
 #include "gtest/gtest.h"
 
@@ -467,6 +468,28 @@ TEST(MeshSizeTest, inverse2DzThrows)
 /* ---------------------------------------------------------------------------- */
 
 
+
+
+/* ----------------------------------------------------------------------------
+ *
+ *                           COPY/MOVE construction
+ *
+ * ---------------------------------------------------------------------------- */
+
+TEST(GridLayoutTest, copyConstructible)
+{
+    ASSERT_TRUE( std::is_copy_constructible<GridLayout>::value );
+}
+
+
+TEST(GridLayoutTest, moveConstructible)
+{
+    ASSERT_TRUE( std::is_move_constructible<GridLayout>::value );
+}
+
+
+
+/* ---------------------------------------------------------------------------- */
 
 
 
