@@ -9,10 +9,26 @@ SUBDIRS += gridlayout
 INCLUDEPATH += /opt/local/include \
                ../../src
 
-LIBS += -L/opt/local/lib -lgtest
+#LIBS += -L/opt/local/lib -lgtest
+
+# if macx else unix
+macx {
+    LIBS += -L/opt/local/lib -lgtest
+} unix {
+    LIBS += -lgtest
+}
 
 
-QMAKE_CXXFLAGS +=  -Werror=constant-conversion
+macx {
+
+}
+
+unix {
+
+}
+
+
+QMAKE_CXXFLAGS += -Werror=constant-conversion
 
 
 SOURCES += test_gridlayout.cpp \

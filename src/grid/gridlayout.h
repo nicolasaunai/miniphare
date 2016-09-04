@@ -36,9 +36,9 @@ private:
 
 
     // test the validity of the GridLayout construction
-    bool isValid1D() const;
-    bool isValid2D() const;
-    bool isValid3D() const;
+    void throwNotValid1D() const;
+    void throwNotValid2D() const;
+    void throwNotValid3D() const;
 
 
 
@@ -67,9 +67,9 @@ public:
     double dy() const {return dy_;}
     double dz() const {return dz_;}
 
-    double odx()const { return utils::isZero(dx_) ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
-    double ody()const { return utils::isZero(dy_) ? throw error(errorInverseMesh +" dy() (dy==0)"): ody_;}
-    double odz()const { return utils::isZero(dz_) ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
+    double odx()const { return dx_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
+    double ody()const { return dy_ == 0. ? throw error(errorInverseMesh +" dy() (dy==0)"): ody_;}
+    double odz()const { return dz_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
 
     double nbrCellx() const {return nbrCellx_;}
     double nbrCelly() const {return nbrCelly_;}

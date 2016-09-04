@@ -417,22 +417,22 @@ INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutConstructorTest,
 TEST(MeshSizeTest, meshSize1DNullInvariant)
 {
     GridLayout gl( {0.1, 0, 0}, {15,0,0}, 1, "yee");
-    std::cout << gl.dy() << " " << utils::isZero(gl.dy())<< std::endl;
-    ASSERT_TRUE( utils::isZero(gl.dy()) && utils::isZero(gl.dz())  );
+   // std::cout << gl.dy() << " " << utils::isZero(gl.dy())<< std::endl;
+    ASSERT_TRUE( gl.dy() == 0. && gl.dz() == 0.  );
 }
 #if 1
 
 TEST(MeshSizeTest, meshSize1DNonZero)
 {
     GridLayout gl( {0.1, 0, 0}, {15,0,0}, 1, "yee");
-    ASSERT_TRUE( gl.dx() > 0  );
+    ASSERT_TRUE( gl.dx() > 0.  );
 }
 
 
 TEST(MeshSizeTest, meshSize2DNullInvariant)
 {
     GridLayout gl( {0.1, 0.1, 0}, {15,12,0}, 2, "yee");
-    ASSERT_TRUE( std::abs(gl.dz()) < 1e-12  );
+    ASSERT_TRUE( gl.dz() == 0.  );
 }
 
 
