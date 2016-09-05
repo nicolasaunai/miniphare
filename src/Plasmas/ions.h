@@ -3,15 +3,30 @@
 
 #include <vector>
 
-class Species;
-class Field;
+#include "species.h"
+#include "Field/field.h"
+#include "grid/gridlayout.h"
+#include "types.h"
 
 class Ions
 {
-public:
-    Ions();
-    ~Ions();
 
+private:
+    std::vector<Species> speciesArray_;
+
+public:
+
+    Ions(GridLayout gridlayout);
+    Ions(Ions const& source) = delete;
+    Ions& operator=(Ions const& source) = delete;
+
+
+    //void addSpecies(Species species);
+
+    uint32 nbrSpecies() {return static_cast<uint32>(speciesArray_.size()) ;}
+
+
+#if 0
     Field* getChargeDensity();
     Field* getBulkVelocity();
 
@@ -25,12 +40,14 @@ public:
 
 
 private:
-    std::vector<Species*> _speciesArr;
+    std::vector<Species> _speciesArr;
     Field* _rho;
     Field* _v;
 
 
     void _resetFields();
+#endif
+
 };
 
 #endif // IONS_H

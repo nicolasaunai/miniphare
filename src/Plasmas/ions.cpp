@@ -3,7 +3,7 @@
 
 
 
-Ions::Ions()
+Ions::Ions(GridLayout gridlayout)
 {
 
 }

@@ -19,13 +19,6 @@ macx {
 }
 
 
-macx {
-
-}
-
-unix {
-
-}
 
 
 QMAKE_CXXFLAGS += -Werror=constant-conversion
