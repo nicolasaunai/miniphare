@@ -14,8 +14,8 @@ private:
     Field bulkVel_;
 
 public:
-    explicit Species(GridLayout const& layout, std::string const& name);
-    explicit Species(GridLayout&& layout, std::string const& name);
+    Species(GridLayout const& layout, std::string const& name);
+    Species(GridLayout&& layout, std::string const& name);
 
     Species(Species const& source) = delete;
     Species& operator=(Species const& source)=delete;
@@ -26,6 +26,7 @@ public:
     //~Species();
 
     void resetMoments() {rho_.zero(); bulkVel_.zero();}
+
 
 #if 0
     Field* getChargeDensity();
