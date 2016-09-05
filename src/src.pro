@@ -7,7 +7,6 @@ SOURCES += main.cpp \
     Plasmas/ions.cpp \
     Plasmas/particles.cpp \
     Plasmas/species.cpp \
-    Field/field.cpp \
     pusher/pusher.cpp \
     Solver/solver.cpp \
     Electromag/electromag.cpp \
@@ -31,7 +30,6 @@ HEADERS += \
     Plasmas/ions.h \
     Plasmas/particles.h \
     Plasmas/species.h \
-    Field/field.h \
     pusher/pusher.h \
     Solver/solver.h \
     Electromag/electromag.h \
