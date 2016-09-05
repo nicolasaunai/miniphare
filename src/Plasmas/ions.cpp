@@ -21,3 +21,13 @@
 
 
 
+ Species const& Ions::species(uint32 index) const
+ {
+    return speciesArray_[index];
+ }
+
+
+ Species& Ions::species(uint32 index)
+ {
+    return const_cast<Species&>(const_cast<const Ions*>(this)->species(index)) ;
+ }
