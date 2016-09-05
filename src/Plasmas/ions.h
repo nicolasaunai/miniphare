@@ -12,23 +12,33 @@ class Ions
 {
 
 private:
+
     std::vector <Species> speciesArray_;
     GridLayout layout_;
     Field rho_;
     Field bulkVel_;
+
+
 
 public:
 
     explicit Ions(GridLayout const& layout);
     explicit Ions(GridLayout&& layout);
 
+    Ions(Ions&& source) = default;
+    Ions& operator=(Ions&& source) = default;
+
     Ions(Ions const& source) = delete;
     Ions& operator=(Ions const& source) = delete;
 
+    Species& species(uint32 index);
+    Species const& species(uint32 index) const;
 
     //void addSpecies(Species species);
 
-    uint32 nbrSpecies() {return static_cast<uint32>(speciesArray_.size()) ;}
+    void resetMoments(){rho_.zero(); bulkVel_.zero();}
+
+    uint32 nbrSpecies() const {return static_cast<uint32>(speciesArray_.size()) ;}
 
 
 #if 0
