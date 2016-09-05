@@ -28,13 +28,14 @@ SOURCES += test_ions.cpp \
            ../../src/grid/gridLayout.cpp \
            ../../src/grid/gridLayoutimpl.cpp \
            ../../src/grid/gridLayoutimplyee.cpp \
+           ../../src/Plasmas/species.cpp \
 
 
 HEADERS += ../../src/Plasmas/ions.h \
            ../../src/grid/gridLayout.h \
            ../../src/grid/gridLayoutimpl.h \
            ../../src/grid/gridLayoutimplyee.h \
-
+           ../../src/Plasmas/species.h \
 
 
 

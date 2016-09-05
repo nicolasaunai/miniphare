@@ -36,7 +36,8 @@ public:
 
     //void addSpecies(Species species);
 
-    void resetMoments(){rho_.zero(); bulkVel_.zero();}
+    void resetBulkMoments(){rho_.zero(); bulkVel_.zero();}
+    void resetSpeciesMoments(){for (Species& spe : speciesArray_) spe.resetMoments();}
 
     uint32 nbrSpecies() const {return static_cast<uint32>(speciesArray_.size()) ;}
 
