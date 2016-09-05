@@ -12,7 +12,7 @@
 
 
  Ions::Ions(GridLayout&& layout)
-     : layout_{std::move(layout)},// layout is DEAD
+     : layout_{std::move(layout)}, // layout is DEAD, use layout_ now
        rho_    {layout_.nx(), layout_.ny(), layout_.nz(), "_rhoTot"},
        bulkVel_{layout_.nx(), layout_.ny(), layout_.nz(), "_BulkVelTot"}
 {
