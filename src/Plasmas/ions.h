@@ -12,11 +12,16 @@ class Ions
 {
 
 private:
-    std::vector<Species> speciesArray_;
+    std::vector <Species> speciesArray_;
+    GridLayout layout_;
+    Field rho_;
+    Field bulkVel_;
 
 public:
 
-    Ions(GridLayout gridlayout);
+    explicit Ions(GridLayout const& layout);
+    explicit Ions(GridLayout&& layout);
+
     Ions(Ions const& source) = delete;
     Ions& operator=(Ions const& source) = delete;
 

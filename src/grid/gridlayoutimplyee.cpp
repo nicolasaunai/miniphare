@@ -11,19 +11,19 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims)
 
 uint32 GridLayoutImplYee::nx(uint32 nbrCellx) const
 {
-    return 0;
+    return nbrCellx+1;
 }
 
 
 uint32 GridLayoutImplYee::ny(uint32 nbrCelly) const
 {
-    return 0;
+    return nbrCelly+1;
 }
 
 
 uint32 GridLayoutImplYee::nz(uint32 nbrCellz) const
 {
-    return 0;
+    return nbrCellz+1;
 }
 
 

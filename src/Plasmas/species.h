@@ -9,7 +9,7 @@ class Species
 {
 public:
     Species();
-    ~Species();
+    //~Species();
 
     Field* getChargeDensity();
     Field* getBulkVelocity();

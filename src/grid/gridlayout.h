@@ -62,7 +62,6 @@ public:
     GridLayout& operator=(GridLayout const& source) = delete;
     GridLayout& operator=(GridLayout&& source) = delete;
 
-
     double dx() const {return dx_;}
     double dy() const {return dy_;}
     double dz() const {return dz_;}

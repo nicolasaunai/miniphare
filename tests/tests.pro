@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
-SUBDIRS += GridLayout
-SUBDIRS += Plasma
+SUBDIRS += GridLayout \
+           Plasma
+
+#SUBDIRS += Plasma
 
