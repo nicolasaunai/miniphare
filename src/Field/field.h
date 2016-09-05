@@ -21,12 +21,9 @@ public:
     Field& operator=(Field&& source) = default;
 
     Field(Field const& source) = default;
-
-    // http://en.cppreference.com/w/cpp/language/copy_assignment
-    // gets deleted if implicitly defined and if move construct and assign
-    // are declared ... why ? (lead to error un Ohm if not defaulted).
     Field& operator=(Field const& source) = default;
 
+    void zero() {for (double& x : data_) x=0;}
 
     std::string name() const {return name_;}
 

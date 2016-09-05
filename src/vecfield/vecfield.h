@@ -47,6 +47,7 @@ public:
 
     std::string name()const {return name_;}
 
+    void zero() {xComponent_.zero(); yComponent_.zero(); zComponent_.zero();}
 
     Field& component(uint32 iComp);
 
