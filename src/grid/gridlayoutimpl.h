@@ -47,7 +47,9 @@ protected:
     uint32 leftOffset_ ;
     uint32 rightOffset_ ;
 
-    uint32 nbrCellsPRA_ ;
+    uint32 nbrPaddingCellsX_ ;
+    uint32 nbrPaddingCellsY_ ;
+    uint32 nbrPaddingCellsZ_ ;
 
     void computeOffsets( uint32 interpOrder ) ;
 
@@ -61,18 +63,25 @@ public:
     static const uint32 minNbrCells = 10; // minimum nbr of cells in a
                                           // non-invariant direction
 
-    static const uint32 defaultNbrCellsPRA = 10;
+    static const uint32 defaultNbrPaddingCells = 10;
 
     explicit GridLayoutImplInternals(uint32 nbDims, uint32 interpOrder,
                                      std::array<uint32,3> nbrCellsXYZ);
 
     uint32 nbDimensions_() const { return nbdims_; }
 
+    uint32 nbrPaddingCells( uint32 direction ) const ;
+    uint32 nbrPhysicalCells( uint32 direction ) const ;
 
-    uint32 primalNumCellMin( uint32 direction ) const ;
-    uint32 primalNumCellMax( uint32 direction ) const ;
-    uint32 dualNumCellMin( uint32 direction ) const ;
-    uint32 dualNumCellMax( uint32 direction ) const ;
+    uint32 primalGhostCellNbrMax( uint32 direction ) const ;
+    uint32 dualGhostCellNbrMax( uint32 direction ) const ;
+
+    uint32 primalCellNbrMin( uint32 direction ) const ;
+    uint32 primalCellNbrMax( uint32 direction ) const ;
+    uint32 dualCellNbrMin( uint32 direction ) const ;
+    uint32 dualCellNbrMax( uint32 direction ) const ;
+
+
 };
 
 
