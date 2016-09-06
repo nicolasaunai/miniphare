@@ -4,6 +4,8 @@
 #include <array>
 
 #include "types.h"
+#include "gridconstants.h"
+
 #include "Field/field.h"
 
 class GridLayoutImpl
@@ -12,9 +14,9 @@ class GridLayoutImpl
 public:
 
 
-    virtual uint32 nx(uint32 nbrCellx) const = 0;
-    virtual uint32 ny(uint32 nbrCelly) const = 0;
-    virtual uint32 nz(uint32 nbrCellz) const = 0;
+    virtual uint32 allocSizeX( std::string fieldName, uint32 direction ) const = 0;
+    virtual uint32 allocSizeY( std::string fieldName, uint32 direction ) const = 0;
+    virtual uint32 allocSizeZ( std::string fieldName, uint32 direction ) const = 0;
 
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, uint32 direction) const = 0;
@@ -55,13 +57,8 @@ protected:
 
 public:
 
-    static const uint32 directionX = 0;
-    static const uint32 directionY = 1;
-    static const uint32 directionZ = 2;
-
-
-    static const uint32 minNbrCells = 10; // minimum nbr of cells in a
-                                          // non-invariant direction
+    // minimum nbr of cells in a non-invariant direction
+//    static const uint32 minNbrCells = 10;
 
     static const uint32 defaultNbrPaddingCells = 10;
 
@@ -70,16 +67,16 @@ public:
 
     uint32 nbDimensions_() const { return nbdims_; }
 
-    uint32 nbrPaddingCells( uint32 direction ) const ;
-    uint32 nbrPhysicalCells( uint32 direction ) const ;
+    uint32 nbrPaddingCells( Direction direction ) const noexcept;
+    uint32 nbrPhysicalCells( Direction direction ) const noexcept;
 
-    uint32 primalGhostCellNbrMax( uint32 direction ) const ;
-    uint32 dualGhostCellNbrMax( uint32 direction ) const ;
+    uint32 primalGhostCellNbrMax( Direction direction ) const ;
+    uint32 dualGhostCellNbrMax( Direction direction ) const ;
 
-    uint32 primalCellNbrMin( uint32 direction ) const ;
-    uint32 primalCellNbrMax( uint32 direction ) const ;
-    uint32 dualCellNbrMin( uint32 direction ) const ;
-    uint32 dualCellNbrMax( uint32 direction ) const ;
+    uint32 primalCellNbrMin( Direction direction ) const ;
+    uint32 primalCellNbrMax( Direction direction ) const ;
+    uint32 dualCellNbrMin( Direction direction ) const ;
+    uint32 dualCellNbrMax( Direction direction ) const ;
 
 
 };

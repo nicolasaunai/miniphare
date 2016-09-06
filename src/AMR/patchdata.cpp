@@ -8,6 +8,7 @@
 
 
 PatchData::PatchData(double dt, const GridLayout& layout)
-    : EMfields_{layout.nx(),layout.ny(),layout.nz(), "_currentEMfield"},
+    : EMfields_{layout.allocSize( EMFieldType::EVecField ),
+                layout.allocSize( EMFieldType::BVecField ), "_currentEMfield"},
       solver_{layout, dt}
 {}

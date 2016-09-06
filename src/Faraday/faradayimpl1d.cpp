@@ -5,8 +5,8 @@
 
 FaradayImpl1D::FaradayImpl1D(double dt, GridLayout const& layout)
     :FaradayImplInternals(dt, layout),
-      dxEz_( layout.nx(), layout.ny(), layout.nz(), "_dxEz"),
-      dxEy_( layout.nx(), layout.ny(), layout.nz(), "_dxEy")
+      dxEz_( layout.allocSizeX(), layout.allocSizeY(), layout.allocSizeZ(), "_dxEz"),
+      dxEy_( layout.allocSizeX(), layout.allocSizeY(), layout.allocSizeZ(), "_dxEy")
 {
 }
 

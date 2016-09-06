@@ -6,8 +6,8 @@
 
 
 OhmImplInternals::OhmImplInternals(GridLayout const& layout)
-    : idealTerm_{ layout.nx(), layout.ny(), layout.nz(), "_ideal" },
-      pressureTerm_{ layout.nx(), layout.ny(), layout.nz(), "_pressure" },
+    : idealTerm_{ layout.allocSizeX(), layout.allocSizeY(), layout.allocSizeZ(), "_ideal" },
+      pressureTerm_{ layout.allocSizeX(), layout.allocSizeY(), layout.allocSizeZ(), "_pressure" },
       layout_{ layout }
 {
 }

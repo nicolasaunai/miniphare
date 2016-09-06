@@ -79,23 +79,23 @@ GridLayout::GridLayout(GridLayout&& source)
 }
 
 
-uint32 GridLayout::nx() const
+uint32 GridLayout::allocSizeX(std::string fieldName, uint32 direction) const
 {
-    return implPtr_->nx(nbrCellx_);
+    return implPtr_->allocSizeX( fieldName, direction ) ;
 }
 
 
 
-uint32 GridLayout::ny() const
+uint32 GridLayout::allocSizeY(std::string fieldName, uint32 direction) const
 {
-    return implPtr_->ny(nbrCelly_);
+    return implPtr_->allocSizeY( fieldName, direction ) ;
 }
 
 
 
-uint32 GridLayout::nz() const
+uint32 GridLayout::allocSizeZ(std::string fieldName, uint32 direction) const
 {
-    return implPtr_->nz(nbrCellz_);
+    return implPtr_->allocSizeZ( fieldName, direction ) ;
 }
 
 

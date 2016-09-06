@@ -1,6 +1,8 @@
 
 #include "gridlayoutimpl.h"
 
+#include "gridconstants.h"
+
 #include <cmath>
 #include <stdexcept>
 
@@ -25,80 +27,74 @@ void GridLayoutImplInternals::computeOffsets(uint32 interpOrder)
 }
 
 
-uint32 GridLayoutImplInternals::nbrPaddingCells( uint32 direction ) const
+uint32 GridLayoutImplInternals::nbrPaddingCells( Direction direction ) const noexcept
 {
     uint32 number = 0 ;
 
     switch( direction )
     {
-    case GridLayoutImplInternals::directionX:
+    case Direction::directionX:
         number = nbrPaddingCellsX_ ;
         break ;
 
-    case GridLayoutImplInternals::directionY:
+    case Direction::directionY:
         number = nbrPaddingCellsY_ ;
         break ;
 
-    case GridLayoutImplInternals::directionZ:
+    case Direction::directionZ:
         number = nbrPaddingCellsZ_ ;
         break ;
-
-    default:
-        throw std::runtime_error("Can't get nbrPaddingCells : invalid direction");
     }
 
     return number ;
 }
 
 
-uint32 GridLayoutImplInternals::nbrPhysicalCells( uint32 direction ) const
+uint32 GridLayoutImplInternals::nbrPhysicalCells( Direction direction ) const noexcept
 {
     uint32 number = 0 ;
 
     switch( direction )
     {
-    case GridLayoutImplInternals::directionX:
+    case Direction::directionX:
         number = nbrCellx_ ;
         break ;
 
-    case GridLayoutImplInternals::directionY:
+    case Direction::directionY:
         number = nbrCelly_ ;
         break ;
 
-    case GridLayoutImplInternals::directionZ:
+    case Direction::directionZ:
         number = nbrCellz_ ;
         break ;
-
-    default:
-        throw std::runtime_error("Can't get nbrPhysicalCells : invalid direction");
     }
 
     return number ;
 }
 
 
-uint32 GridLayoutImplInternals::primalCellNbrMin( uint32 direction ) const
+uint32 GridLayoutImplInternals::primalCellNbrMin( Direction direction ) const
 {
     uint32 numCell = centeredOffset_ + nbrPaddingCells( direction ) ;
 
     return numCell ;
 }
 
-uint32 GridLayoutImplInternals::dualCellNbrMin( uint32 direction ) const
+uint32 GridLayoutImplInternals::dualCellNbrMin( Direction direction ) const
 {
     uint32 numCell = leftOffset_ + nbrPaddingCells( direction ) ;
 
     return numCell ;
 }
 
-uint32 GridLayoutImplInternals::primalCellNbrMax( uint32 direction ) const
+uint32 GridLayoutImplInternals::primalCellNbrMax( Direction direction ) const
 {
     uint32 numCell = primalCellNbrMin(direction) + nbrPhysicalCells( direction ) ;
 
     return numCell ;
 }
 
-uint32 GridLayoutImplInternals::dualCellNbrMax( uint32 direction ) const
+uint32 GridLayoutImplInternals::dualCellNbrMax( Direction direction ) const
 {
     uint32 numCell = dualCellNbrMin(direction) + nbrPhysicalCells( direction ) ;
 
@@ -107,7 +103,7 @@ uint32 GridLayoutImplInternals::dualCellNbrMax( uint32 direction ) const
 
 
 
-uint32 GridLayoutImplInternals::primalGhostCellNbrMax( uint32 direction ) const
+uint32 GridLayoutImplInternals::primalGhostCellNbrMax( Direction direction ) const
 {
     uint32 numCell = primalCellNbrMax( direction ) + centeredOffset_ ;
 
@@ -115,7 +111,7 @@ uint32 GridLayoutImplInternals::primalGhostCellNbrMax( uint32 direction ) const
 }
 
 
-uint32 GridLayoutImplInternals::dualGhostCellNbrMax( uint32 direction ) const
+uint32 GridLayoutImplInternals::dualGhostCellNbrMax( Direction direction ) const
 {
     uint32 numCell = dualCellNbrMax( direction ) + rightOffset_ ;
 

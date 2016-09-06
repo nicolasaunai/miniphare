@@ -8,13 +8,15 @@
 #include "vecfield/vecfield.h"
 
 
+enum class EMFieldType{ EVecField, BVecField } ;
 
 class Electromag
 {
 public:
 
-    Electromag(uint32 nx, uint32 ny, uint32 nz,  std::string name="");
-
+    Electromag(std::array<AllocSizeT ,3> E_AllocSizes,
+               std::array<AllocSizeT ,3> B_AllocSizes,
+               std::string name="");
 
     Field& getEi(uint32 component) {return E_.component(component);}
     Field& getBi(uint32 component) {return B_.component(component);}

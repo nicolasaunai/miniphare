@@ -35,6 +35,14 @@ public:
     static const uint32 VecZ = 2;
 
 
+    VecField(std::array<AllocSizeT ,3> allComponentSizes, std::string name)
+        : name_(name),
+          xComponent_( allComponentSizes[0].nx_, allComponentSizes[0].ny_, allComponentSizes[0].nz_, name ),
+          yComponent_( allComponentSizes[1].nx_, allComponentSizes[1].ny_, allComponentSizes[1].nz_, name ),
+          zComponent_( allComponentSizes[2].nx_, allComponentSizes[2].ny_, allComponentSizes[2].nz_, name ) {}
+
+
+    // Deprecated Constructor
     VecField(uint32 nx, uint32 ny, uint32 nz, std::string name):name_(name),
         xComponent_(nx, ny, nz, name.insert(1,"_x")),
         yComponent_(nx, ny, nz, name.insert(1,"_y")),

@@ -6,6 +6,9 @@
 #include <memory>
 
 #include "types.h"
+#include "gridconstants.h"
+
+#include "Electromag/electromag.h"
 #include "Field/field.h"
 #include "gridlayoutimpl.h"
 #include "utility.h"
@@ -44,10 +47,6 @@ private:
 
 public:
 
-    static const uint32 directionX = 0;
-    static const uint32 directionY = 1;
-    static const uint32 directionZ = 2;
-
     static const uint32 minNbrCells = 10; // minimum nbr of cells in a
                                           // non-invariant direction
 
@@ -76,23 +75,25 @@ public:
 
 
     // return the (total) number of mesh points
-    // this does depend on the layout
-    uint32 nx() const; // TODO should be added to unit test
-    uint32 ny() const; // TODO should be added to unit test
-    uint32 nz() const; // TODO should be added to unit test
+    // for the 3 components of Ex, Ey, Ez      ( if EMFieldType==EVecField )
+    // or for the 3 components of Bx, By, Bz   ( if EMFieldType==BVecField )
+    std::array<AllocSizeT ,3> allocSize( EMFieldType ) const ;
 
-    uint32 physicalStartIndex(Field const& field, uint32 direction) const;
-    uint32 physicalEndIndex  (Field const& field, uint32 direction) const;
+    // TODO : remove this
+//    uint32 allocSizeX( std::string fieldName, Direction direction ) const; // TODO should be added to unit test
+//    uint32 allocSizeY( std::string fieldName, Direction direction ) const; // TODO should be added to unit test
+//    uint32 allocSizeZ( std::string fieldName, Direction direction ) const; // TODO should be added to unit test
 
-    uint32 ghostStartIndex(Field const& field, uint32 direction) const;
-    uint32 ghostEndIndex  (Field const& field, uint32 direction) const;
+    uint32 physicalStartIndex(Field const& field, Direction direction) const;
+    uint32 physicalEndIndex  (Field const& field, Direction direction) const;
 
-    void deriv(Field const& operand, uint32 direction, Field& derivative)const;
+    uint32 ghostStartIndex(Field const& field, Direction direction) const;
+    uint32 ghostEndIndex  (Field const& field, Direction direction) const;
+
+    void deriv(Field const& operand, Direction direction, Field& derivative)const;
 
     uint32 nbDimensions() const;
 };
-
-
 
 
 

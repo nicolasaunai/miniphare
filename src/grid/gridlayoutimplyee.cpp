@@ -15,19 +15,19 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims,
 
 
 
-uint32 GridLayoutImplYee::nx(uint32 nbrCellx) const
+uint32 GridLayoutImplYee::allocSizeX( std::string fieldName, uint32 direction ) const
 {
     return 0;
 }
 
 
-uint32 GridLayoutImplYee::ny(uint32 nbrCelly) const
+uint32 GridLayoutImplYee::allocSizeY( std::string fieldName, uint32 direction ) const
 {
     return 0;
 }
 
 
-uint32 GridLayoutImplYee::nz(uint32 nbrCellz) const
+uint32 GridLayoutImplYee::allocSizeZ( std::string fieldName, uint32 direction ) const
 {
     return 0;
 }

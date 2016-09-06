@@ -54,7 +54,8 @@ HEADERS += \
     Plasmas/species.h \
     pusher/pusher.h \
     Solver/solver.h \
-    vecfield/vecfield.h
+    vecfield/vecfield.h \
+    gridconstants.h
 
 
 DISTFILES += \

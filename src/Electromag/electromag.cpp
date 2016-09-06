@@ -5,8 +5,14 @@
 
 
 
-Electromag::Electromag(uint32 nx, uint32 ny, uint32 nz, std::string name)
-    :E_(nx, ny, nz, "E"+name), B_(nx, ny, nz, "B"+name)
+Electromag::Electromag( std::array<AllocSizeT ,3> E_AllocSizes,
+                        std::array<AllocSizeT ,3> B_AllocSizes,
+                        std::string name )
+    : E_( E_AllocSizes, "E"+name ),
+      B_( B_AllocSizes, "B"+name )
 {
 
 }
+
+
+
