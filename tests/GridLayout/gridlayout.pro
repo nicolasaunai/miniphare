@@ -6,17 +6,27 @@ CONFIG -= qt
 SUBDIRS += gridlayout
 
 
-#INCLUDEPATH += /opt/local/include \
-#               ../../src
+# if macx else unix
+macx {
+    QMAKE_CXXFLAGS +=  -Werror=constant-conversion
 
-INCLUDEPATH += /usr/include/gtest \
+    INCLUDEPATH += /opt/local/include \
                ../../src
+}
 
-#LIBS += -L/opt/local/lib -lgtest
+unix {
+    INCLUDEPATH += /usr/include/gtest \
+               ../../src
+}
 
-LIBS += -L/usr/lib -lpthread -lgtest
 
-#QMAKE_CXXFLAGS +=  -Werror=constant-conversion
+# if macx else unix
+macx {
+    LIBS += -L/opt/local/lib -lgtest
+} unix {
+    LIBS += -L/usr/lib -lpthread -lgtest
+}
+
 
 
 SOURCES += test_gridlayout.cpp \
@@ -30,3 +40,4 @@ HEADERS += ../../src/grid/gridlayout.h \
            ../../src/grid/gridlayoutimpl.h \
            ../../src/types.h \
            ../../src/constants.h \
+           ../../src/utility.h \

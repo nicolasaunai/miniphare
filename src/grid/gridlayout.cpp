@@ -4,6 +4,17 @@
 #include "gridlayout.h"
 #include "gridlayoutimplfactory.h"
 #include "constants.h"
+#include "utility.h"
+
+
+
+
+/* ---------------------------------------------------------------------------
+ *
+ *                                  PUBLIC
+ *
+ * --------------------------------------------------------------------------- */
+
 
 
 
@@ -20,36 +31,21 @@ GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCell
 {
     switch (nbDims)
     {
-        case 1:
-            // 1D with tiny dx must be a problem
-            if ( (std::abs(dx_) < EPS12) )
-                throw std::runtime_error("Error - 1D requires non-zero dx");
+    case 1:
+        throwNotValid1D();
+        break;
 
-            // cant' be 1D and have only 1 point in x
-            if ( nbrCellx_ <= minNbrCells)
-                throw std::runtime_error("Error - direction X is too small");
+    case 2:
+        throwNotValid2D();
+        break;
 
-
-            // 1D but non-zero dy or dz
-            if ( (std::abs(dy_) >  EPS12) || (std::abs(dz_) > EPS12) )
-                throw std::runtime_error("Error - 1D requires dy=dz=0");
-
-            // 1D but non-zero dimensions 2 and 3.
-            if ( (nbrCelly_ != 0) || (nbrCellz_ != 0) )
-                throw  std::runtime_error("Error - 1D requires ny=nz=1");
-
-            break;
-
-        case 2:
-            if (std::abs(dz_) > EPS12)
-              throw  std::runtime_error("Error - 2D requires dz = 0");
-
-            if (nbrCellz_ != 0)
-                throw  std::runtime_error("Error - 2D requires nz = 1");
+    case 3:
+        throwNotValid3D();
         break;
     }
-
 }
+
+
 
 
 
@@ -143,5 +139,88 @@ void GridLayout::deriv(Field const& operand, uint32 direction, Field& derivative
 uint32 GridLayout::nbDimensions() const
 {
     return implPtr_->nbDimensions();
+}
+
+
+/* ---------------------------------------------------------------------------
+ *
+ *                                  PRIVATE
+ *
+ * --------------------------------------------------------------------------- */
+
+
+const std::string GridLayout::errorInverseMesh= "GridLayout error: Invalid use of";
+
+
+
+
+void GridLayout::throwNotValid1D()const
+{
+    // 1D with tiny dx must be a problem
+    if (dx_ == 0.0)
+        throw std::runtime_error("Error - 1D requires non-zero dx");
+
+    // dx should be > 0
+    if ( dx_ < 0)
+        throw std::runtime_error("Error - 1D requires positive dx");
+
+    // cant' be 1D and have less than minNbrCells point in X
+    if ( nbrCellx_ < minNbrCells)
+        throw std::runtime_error("Error - direction X is too small");
+
+    // 1D but non-zero dy or dz
+    if (dy_ != 0. || dz_ != 0.)
+        throw std::runtime_error("Error - 1D requires dy=dz=0");
+
+    // 1D but non-zero dimensions 2 and 3.
+    if ( (nbrCelly_ != 0) || (nbrCellz_ != 0) )
+        throw  std::runtime_error("Error - 1D requires ny=nz=1");
+
+}
+
+
+
+
+void GridLayout::throwNotValid2D() const
+{
+    if ( dx_ == 0. || dy_ == 0. )
+        throw std::runtime_error("Error - 2D requires both dx and dy to be non-zero");
+
+    // dx and dy should be > 0
+    if ( dx_ < 0. || dy_ < 0.)
+        throw std::runtime_error("Error - 2D requires positive dx and dy");
+
+
+
+    if ( dz_ != 0.)
+        throw  std::runtime_error("Error - 2D requires dz = 0");
+
+
+    // cant' be 2D and have less than minNbrCells point in X
+    if ( nbrCellx_ < minNbrCells || nbrCelly_ < minNbrCells)
+        throw std::runtime_error("Error - too few Cells in non-invariant directions");
+}
+
+
+
+
+
+void GridLayout::throwNotValid3D() const
+{
+    if (   dx_ != 0.
+        || dy_ != 0.
+        || dz_ != 0. )
+        throw std::runtime_error("Error - 3D requires dx, dy, dz to be all non-zero");
+
+    // dx dy and dz should be > 0
+    if ( dx_ < 0. || dy_ < 0.|| dz_ < 0.)
+        throw std::runtime_error("Error - 2D requires positive dx and dy");
+
+
+    // cant' be 2D and have less than minNbrCells point in X
+    if (    nbrCellx_ < minNbrCells
+         || nbrCelly_ < minNbrCells
+         || nbrCellz_ < minNbrCells)
+        throw std::runtime_error("Error - too few Cells in non-invariant directions");
 }
 

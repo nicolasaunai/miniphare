@@ -8,6 +8,7 @@
 #include "types.h"
 #include "Field/field.h"
 #include "gridlayoutimpl.h"
+#include "utility.h"
 
 
 
@@ -31,6 +32,16 @@ private:
 
     std::unique_ptr<GridLayoutImpl> implPtr_;
 
+    using error = std::runtime_error;
+    static const std::string errorInverseMesh;
+
+
+    // test the validity of the GridLayout construction
+    void throwNotValid1D() const;
+    void throwNotValid2D() const;
+    void throwNotValid3D() const;
+
+
 public:
 
     static const uint32 directionX = 0;
@@ -43,17 +54,21 @@ public:
     GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
                uint32 nbDims      , std::string layoutName,
                uint32 interpOrder );
+
     GridLayout(GridLayout const& source);
     GridLayout(GridLayout&& source);
+
+    GridLayout& operator=(GridLayout const& source) = delete;
+    GridLayout& operator=(GridLayout&& source) = delete;
 
 
     double dx() const {return dx_;}
     double dy() const {return dy_;}
     double dz() const {return dz_;}
 
-    double odx()const {return odx_;}
-    double ody()const {return ody_;}
-    double odz()const {return odz_;}
+    double odx()const { return dx_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
+    double ody()const { return dy_ == 0. ? throw error(errorInverseMesh +" dy() (dy==0)"): ody_;}
+    double odz()const { return dz_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
 
     double nbrCellx() const {return nbrCellx_;}
     double nbrCelly() const {return nbrCelly_;}
@@ -62,9 +77,9 @@ public:
 
     // return the (total) number of mesh points
     // this does depend on the layout
-    uint32 nx() const;
-    uint32 ny() const;
-    uint32 nz() const;
+    uint32 nx() const; // TODO should be added to unit test
+    uint32 ny() const; // TODO should be added to unit test
+    uint32 nz() const; // TODO should be added to unit test
 
     uint32 physicalStartIndex(Field const& field, uint32 direction) const;
     uint32 physicalEndIndex  (Field const& field, uint32 direction) const;

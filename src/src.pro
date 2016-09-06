@@ -3,58 +3,58 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SOURCES += main.cpp \
-    Plasmas/ions.cpp \
-    Plasmas/particles.cpp \
-    Plasmas/species.cpp \
-    Field/field.cpp \
-    pusher/pusher.cpp \
-    Solver/solver.cpp \
-    Electromag/electromag.cpp \
-    vecfield/vecfield.cpp \
-    Field/field.cpp \
-    Faraday/faraday.cpp \
-    Plasmas/electrons.cpp \
+SOURCES += \
+    main.cpp \
+    utility.cpp \
+    AMR/hierarchy.cpp \
     AMR/patch.cpp \
     AMR/patchdata.cpp \
-    AMR/hierarchy.cpp \
-    grid/gridlayout.cpp \
     AMR/mlmd.cpp \
+    Electromag/electromag.cpp \
+    Faraday/faraday.cpp \
+    Faraday/faradayimpl1d.cpp \
+    Field/field.cpp \
+    grid/gridlayout.cpp \
+    grid/gridlayoutimpl.cpp \
     grid/gridlayoutimplyee.cpp \
     Ohm/ohm.cpp \
     Ohm/ohmimpl1d.cpp \
-    Faraday/faradayimpl1d.cpp \
-    grid/gridlayoutimpl.cpp
+    Plasmas/electrons.cpp \
+    Plasmas/ions.cpp \
+    Plasmas/particles.cpp \
+    Plasmas/species.cpp \
+    pusher/pusher.cpp \
+    Solver/solver.cpp \
+    vecfield/vecfield.cpp
 
 HEADERS += \
-    Plasmas/ions.h \
-    Plasmas/particles.h \
-    Plasmas/species.h \
-    Field/field.h \
-    pusher/pusher.h \
-    Solver/solver.h \
-    Electromag/electromag.h \
+    constants.h \
     types.h \
-    vecfield/vecfield.h \
-    Field/field.h \
-    Faraday/faraday.h \
-    Faraday/faradayfactory.h \
-    Plasmas/electrons.h \
+    utility.h \
     AMR/patch.h \
     AMR/patchdata.h \
     AMR/hierarchy.h \
-    grid/gridlayout.h \
     AMR/mlmd.h \
+    Electromag/electromag.h \
+    Faraday/faraday.h \
+    Faraday/faradayimpl.h \
+    Faraday/faradayimpl1d.h \
+    Faraday/faradayfactory.h \
+    Field/field.h \
+    grid/gridlayout.h \
+    grid/gridlayoutimpl.h \
     grid/gridlayoutimplyee.h \
     grid/gridlayoutimplfactory.h \
     Ohm/ohm.h \
     Ohm/ohmimplfactory.h \
     Ohm/ohmimpl1d.h \
-    Faraday/faradayimpl1d.h \
-    grid/gridlayoutimpl.h \
-    constants.h \
-    Faraday/faradayimpl.h
-
+    Plasmas/electrons.h \
+    Plasmas/ions.h \
+    Plasmas/particles.h \
+    Plasmas/species.h \
+    pusher/pusher.h \
+    Solver/solver.h \
+    vecfield/vecfield.h
 
 
 DISTFILES += \
