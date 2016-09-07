@@ -27,6 +27,10 @@ public:
 
     void resetMoments() {rho_.zero(); bulkVel_.zero();}
 
+    Field& rho() {return rho_;}
+    Field const& rho() const {return rho_;}
+    //Field& rho() {return rho_;}
+
 
 #if 0
     Field* getChargeDensity();
