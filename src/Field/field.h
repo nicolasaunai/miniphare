@@ -40,6 +40,13 @@ public:
     double& operator()(uint32 ix, uint32 iy, uint32 iz)
     {return data_[iz + shape_[2]*iy + shape_[1]*shape_[2]*ix]; }
 
+
+    std::vector<double>::iterator begin() {return data_.begin();}
+    std::vector<double>::const_iterator begin() const {return data_.begin();}
+
+    std::vector<double>::iterator end() {return data_.end();}
+    std::vector<double>::const_iterator end() const {return data_.end();}
+
     std::vector<uint32> shape() const {return shape_;}
     uint32 nbDimensions()const{return ndims_;}
 
