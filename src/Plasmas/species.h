@@ -3,6 +3,7 @@
 
 #include "Field/field.h"
 #include "grid/gridlayout.h"
+#include "particles.h"
 
 
 class Species
@@ -12,6 +13,7 @@ private:
     GridLayout layout_;
     Field rho_;
     Field bulkVel_;
+    std::vector<Particle> particleArray_;
 
 public:
     Species(GridLayout const& layout, std::string const& name);

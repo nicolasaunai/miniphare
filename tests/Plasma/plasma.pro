@@ -24,6 +24,7 @@ QMAKE_CXXFLAGS += -Werror=constant-conversion
 
 
 SOURCES += test_ions.cpp \
+           test_species.cpp \
            ../../src/Plasmas/ions.cpp \
            ../../src/grid/gridLayout.cpp \
            ../../src/grid/gridLayoutimpl.cpp \
@@ -31,11 +32,13 @@ SOURCES += test_ions.cpp \
            ../../src/Plasmas/species.cpp \
 
 
+
 HEADERS += ../../src/Plasmas/ions.h \
            ../../src/grid/gridLayout.h \
            ../../src/grid/gridLayoutimpl.h \
            ../../src/grid/gridLayoutimplyee.h \
            ../../src/Plasmas/species.h \
+           ../../src/Field/field.h \
 
 
 
