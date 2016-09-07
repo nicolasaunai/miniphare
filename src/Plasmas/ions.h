@@ -8,6 +8,20 @@
 #include "grid/gridlayout.h"
 #include "types.h"
 
+
+/**
+ * @brief The Ions class holds data dealing with ions. It holds ion Species
+ *        themselves holding Particle data.
+ *
+ * Because it generally holds a **lot** of data, Ions object are move-only.
+ * Ion objects give access to total ion quantities, such as:
+ *
+ *  - the total ion charge density
+ *  - the total ion bulk velocity, etc.
+ *
+ * Ions can also be used to access Species.
+ *
+ */
 class Ions
 {
 
@@ -17,7 +31,6 @@ private:
     GridLayout layout_;
     Field rho_;
     Field bulkVel_;
-
 
 
 public:
@@ -38,6 +51,8 @@ public:
 
     void resetBulkMoments(){rho_.zero(); bulkVel_.zero();}
     void resetSpeciesMoments(){for (Species& spe : speciesArray_) spe.resetMoments();}
+
+    void computeChargeDensity();
 
     uint32 nbrSpecies() const {return static_cast<uint32>(speciesArray_.size()) ;}
 
