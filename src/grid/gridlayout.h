@@ -77,12 +77,11 @@ public:
     // return the (total) number of mesh points
     // for the 3 components of Ex, Ey, Ez      ( if EMFieldType==EVecField )
     // or for the 3 components of Bx, By, Bz   ( if EMFieldType==BVecField )
-    std::array<AllocSizeT ,3> allocSize( EMFieldType ) const ;
+    std::array<AllocSizeT ,3> allocSize( EMFieldType fieldType ) const ;
 
-    // TODO : remove this
-//    uint32 allocSizeX( std::string fieldName, Direction direction ) const; // TODO should be added to unit test
-//    uint32 allocSizeY( std::string fieldName, Direction direction ) const; // TODO should be added to unit test
-//    uint32 allocSizeZ( std::string fieldName, Direction direction ) const; // TODO should be added to unit test
+    std::array<AllocSizeT ,3> allocSize( OhmTerm term ) const ;
+
+    AllocSizeT allocSize( DerivedEMField derivedField ) const ;
 
     uint32 physicalStartIndex(Field const& field, Direction direction) const;
     uint32 physicalEndIndex  (Field const& field, Direction direction) const;

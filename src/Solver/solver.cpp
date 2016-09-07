@@ -10,8 +10,10 @@
 
 
 Solver::Solver(GridLayout const& layout, double dt)
-    :EMFieldsPred_{layout.allocSizeX(), layout.allocSizeY(), layout.allocSizeZ(), "_pred"},
-     EMFieldsAvg_ {layout.allocSizeX(), layout.allocSizeY(), layout.allocSizeZ(), "_avg"},
+    :EMFieldsPred_{layout.allocSize( EMFieldType::EVecField ),
+                   layout.allocSize( EMFieldType::BVecField ), "_pred"},
+     EMFieldsAvg_ {layout.allocSize( EMFieldType::EVecField ),
+                   layout.allocSize( EMFieldType::BVecField ), "_avg"},
      faraday_{dt, layout}
 {
 

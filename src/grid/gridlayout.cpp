@@ -79,56 +79,53 @@ GridLayout::GridLayout(GridLayout&& source)
 }
 
 
-uint32 GridLayout::allocSizeX(std::string fieldName, uint32 direction) const
+std::array<AllocSizeT ,3> GridLayout::allocSize( EMFieldType fieldType ) const
 {
-    return implPtr_->allocSizeX( fieldName, direction ) ;
+    return implPtr_->allocSize( fieldType ) ;
 }
 
 
-
-uint32 GridLayout::allocSizeY(std::string fieldName, uint32 direction) const
+std::array<AllocSizeT ,3> GridLayout::allocSize( OhmTerm term ) const
 {
-    return implPtr_->allocSizeY( fieldName, direction ) ;
+    return implPtr_->allocSize( term ) ;
 }
 
 
-
-uint32 GridLayout::allocSizeZ(std::string fieldName, uint32 direction) const
+AllocSizeT GridLayout::allocSize( DerivedEMField derivedField ) const
 {
-    return implPtr_->allocSizeZ( fieldName, direction ) ;
+    return implPtr_->allocSize( derivedField ) ;
 }
 
 
-
-uint32 GridLayout::physicalStartIndex(Field const& field, uint32 direction) const
+uint32 GridLayout::physicalStartIndex(Field const& field, Direction direction) const
 {
     return implPtr_->physicalStartIndex(field, direction);
 }
 
 
 
-uint32 GridLayout::physicalEndIndex(Field const& field, uint32 direction) const
+uint32 GridLayout::physicalEndIndex(Field const& field, Direction direction) const
 {
     return  implPtr_->physicalEndIndex(field, direction);
 }
 
 
 
-uint32 GridLayout::ghostStartIndex(Field const& field, uint32 direction) const
+uint32 GridLayout::ghostStartIndex(Field const& field, Direction direction) const
 {
     return implPtr_->ghostStartIndex(field, direction);
 }
 
 
 
-uint32 GridLayout::ghostEndIndex  (Field const& field, uint32 direction) const
+uint32 GridLayout::ghostEndIndex  (Field const& field, Direction direction) const
 {
     return implPtr_->ghostStartIndex(field, direction);
 }
 
 
 
-void GridLayout::deriv(Field const& operand, uint32 direction, Field& derivative)const
+void GridLayout::deriv(Field const& operand, Direction direction, Field& derivative)const
 {
     implPtr_->deriv(operand, direction, derivative);
 }

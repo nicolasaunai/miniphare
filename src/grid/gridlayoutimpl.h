@@ -13,19 +13,19 @@ class GridLayoutImpl
 
 public:
 
+    virtual std::array<AllocSizeT ,3> allocSize( EMFieldType vecField ) const = 0 ;
+    virtual std::array<AllocSizeT ,3> allocSize( OhmTerm vecfield ) const = 0 ;
 
-    virtual uint32 allocSizeX( std::string fieldName, uint32 direction ) const = 0;
-    virtual uint32 allocSizeY( std::string fieldName, uint32 direction ) const = 0;
-    virtual uint32 allocSizeZ( std::string fieldName, uint32 direction ) const = 0;
+    virtual AllocSizeT allocSize( DerivedEMField field ) const = 0 ;
 
     // start and end index used in computing loops
-    virtual uint32 physicalStartIndex(Field const& field, uint32 direction) const = 0;
-    virtual uint32 physicalEndIndex  (Field const& field, uint32 direction) const = 0;
+    virtual uint32 physicalStartIndex(Field const& field, Direction direction) const = 0;
+    virtual uint32 physicalEndIndex  (Field const& field, Direction direction) const = 0;
 
-    virtual uint32 ghostStartIndex(Field const& field, uint32 direction) const = 0;
-    virtual uint32 ghostEndIndex  (Field const& field, uint32 direction) const = 0;
+    virtual uint32 ghostStartIndex(Field const& field, Direction direction) const = 0;
+    virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const = 0;
 
-    virtual void deriv(Field const& operand, uint32 direction, Field& derivative)const = 0;
+    virtual void deriv(Field const& operand, Direction direction, Field& derivative)const = 0;
 
     virtual uint32 nbDimensions() const = 0;
 
@@ -61,6 +61,12 @@ public:
 //    static const uint32 minNbrCells = 10;
 
     static const uint32 defaultNbrPaddingCells = 10;
+
+    std::array< std::array<uint32,3>, 9 > physicalStartIndex_;
+    std::array< std::array<uint32,3>, 9 > physicalEndIndex_;
+    std::array< std::array<uint32,3>, 9 > ghostStartIndex_;
+    std::array< std::array<uint32,3>, 9 > ghostEndIndex_;
+
 
     explicit GridLayoutImplInternals(uint32 nbDims, uint32 interpOrder,
                                      std::array<uint32,3> nbrCellsXYZ);

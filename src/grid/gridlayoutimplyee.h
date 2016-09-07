@@ -5,8 +5,11 @@
 #include <vector>
 #include <array>
 
-#include "gridlayoutimpl.h"
 #include "types.h"
+#include "gridconstants.h"
+
+#include "gridlayoutimpl.h"
+
 
 
 
@@ -27,18 +30,21 @@ public:
 
     virtual uint32 nbDimensions() const override {return nbDimensions_();}
 
-    virtual uint32 allocSizeX( std::string fieldName, uint32 direction ) const override;
-    virtual uint32 allocSizeY( std::string fieldName, uint32 direction ) const override;
-    virtual uint32 allocSizeZ( std::string fieldName, uint32 direction ) const override;
+    virtual std::array<AllocSizeT ,3> allocSize( EMFieldType fieldType ) const override ;
+
+    virtual std::array<AllocSizeT ,3> allocSize( OhmTerm term ) const override ;
+
+    virtual AllocSizeT allocSize( DerivedEMField derivedField ) const override ;
+
 
     // start and end index used in computing loops
-    virtual uint32 physicalStartIndex(Field const& field, uint32 direction) const override;
-    virtual uint32 physicalEndIndex  (Field const& field, uint32 direction) const override;
+    virtual uint32 physicalStartIndex(Field const& field, Direction direction) const override;
+    virtual uint32 physicalEndIndex  (Field const& field, Direction direction) const override;
 
-    virtual uint32 ghostStartIndex(Field const& field, uint32 direction) const override;
-    virtual uint32 ghostEndIndex  (Field const& field, uint32 direction) const override;
+    virtual uint32 ghostStartIndex(Field const& field, Direction direction) const override;
+    virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const override;
 
-    virtual void deriv(Field const& operand, uint32 direction, Field& derivative) const override;
+    virtual void deriv(Field const& operand, Direction direction, Field& derivative) const override;
 
 
 };

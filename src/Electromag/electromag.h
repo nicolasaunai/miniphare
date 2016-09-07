@@ -8,7 +8,6 @@
 #include "vecfield/vecfield.h"
 
 
-enum class EMFieldType{ EVecField, BVecField } ;
 
 class Electromag
 {

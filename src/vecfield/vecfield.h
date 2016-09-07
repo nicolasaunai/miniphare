@@ -35,18 +35,22 @@ public:
     static const uint32 VecZ = 2;
 
 
-    VecField(std::array<AllocSizeT ,3> allComponentSizes, std::string name)
+    VecField(std::array<AllocSizeT, 3> allComponentSizes,
+             std::array<HybridQuantity, 3> qtyType, std::string name)
         : name_(name),
-          xComponent_( allComponentSizes[0].nx_, allComponentSizes[0].ny_, allComponentSizes[0].nz_, name ),
-          yComponent_( allComponentSizes[1].nx_, allComponentSizes[1].ny_, allComponentSizes[1].nz_, name ),
-          zComponent_( allComponentSizes[2].nx_, allComponentSizes[2].ny_, allComponentSizes[2].nz_, name ) {}
+          xComponent_( allComponentSizes[0].nx_, allComponentSizes[0].ny_,
+          allComponentSizes[0].nz_, qtyType[0], name.insert(1,"_x") ),
+          yComponent_( allComponentSizes[1].nx_, allComponentSizes[1].ny_,
+          allComponentSizes[1].nz_, qtyType[1], name.insert(1,"_y") ),
+          zComponent_( allComponentSizes[2].nx_, allComponentSizes[2].ny_,
+          allComponentSizes[2].nz_, qtyType[2], name.insert(1,"_z") ) {}
 
 
     // Deprecated Constructor
-    VecField(uint32 nx, uint32 ny, uint32 nz, std::string name):name_(name),
-        xComponent_(nx, ny, nz, name.insert(1,"_x")),
-        yComponent_(nx, ny, nz, name.insert(1,"_y")),
-        zComponent_(nx, ny, nz, name.insert(1,"_z")) {}
+//    VecField(uint32 nx, uint32 ny, uint32 nz, std::string name):name_(name),
+//        xComponent_(nx, ny, nz, name.insert(1,"_x")),
+//        yComponent_(nx, ny, nz, name.insert(1,"_y")),
+//        zComponent_(nx, ny, nz, name.insert(1,"_z")) {}
 
 
     // I don't like calling 3 times shape()

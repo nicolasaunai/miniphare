@@ -1,4 +1,5 @@
 
+#include "gridconstants.h"
 
 #include "ohm.h"
 #include "ohmimplfactory.h"
@@ -6,13 +7,13 @@
 
 
 OhmImplInternals::OhmImplInternals(GridLayout const& layout)
-    : idealTerm_{ layout.allocSizeX(), layout.allocSizeY(), layout.allocSizeZ(), "_ideal" },
-      pressureTerm_{ layout.allocSizeX(), layout.allocSizeY(), layout.allocSizeZ(), "_pressure" },
+    : idealTerm_{ layout.allocSize(OhmTerm::Ideal),
+      {{HybridQuantity::Ohm, HybridQuantity::Ohm, HybridQuantity::Ohm}}, "_ideal" },
+      pressureTerm_{ layout.allocSize(OhmTerm::Pressure),
+      {{HybridQuantity::Ohm, HybridQuantity::Ohm, HybridQuantity::Ohm}}, "_pressure" },
       layout_{ layout }
 {
 }
-
-
 
 
 Ohm::Ohm(GridLayout const& layout)
