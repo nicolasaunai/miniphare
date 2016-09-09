@@ -75,50 +75,49 @@ uint32 GridLayoutImplInternals::nbrPhysicalCells( Direction direction ) const no
 }
 
 
-uint32 GridLayoutImplInternals::primalCellNbrMin( Direction direction ) const
+uint32 GridLayoutImplInternals::cellNbrMin( LayoutType centering,
+                                            Direction direction ) const
 {
-    uint32 numCell = centeredOffset_ + nbrPaddingCells( direction ) ;
 
-    return numCell ;
-}
+    uint32 numCell = nbrPaddingCells( direction ) ;
 
-uint32 GridLayoutImplInternals::dualCellNbrMin( Direction direction ) const
-{
-    uint32 numCell = leftOffset_ + nbrPaddingCells( direction ) ;
-
-    return numCell ;
-}
-
-uint32 GridLayoutImplInternals::primalCellNbrMax( Direction direction ) const
-{
-    uint32 numCell = primalCellNbrMin(direction) + nbrPhysicalCells( direction ) ;
-
-    return numCell ;
-}
-
-uint32 GridLayoutImplInternals::dualCellNbrMax( Direction direction ) const
-{
-    uint32 numCell = dualCellNbrMin(direction) + nbrPhysicalCells( direction ) ;
+    if( centering == LayoutType::primal)
+    {
+        numCell += centeredOffset_ ;
+    } else
+    {
+        numCell += leftOffset_ ;
+    }
 
     return numCell ;
 }
 
 
-
-uint32 GridLayoutImplInternals::primalGhostCellNbrMax( Direction direction ) const
+uint32 GridLayoutImplInternals::cellNbrMax( LayoutType centering,
+                                            Direction direction ) const
 {
-    uint32 numCell = primalCellNbrMax( direction ) + centeredOffset_ ;
+    uint32 numCell = cellNbrMin(centering, direction) + nbrPhysicalCells( direction ) ;
 
     return numCell ;
 }
 
 
-uint32 GridLayoutImplInternals::dualGhostCellNbrMax( Direction direction ) const
+uint32 GridLayoutImplInternals::ghostCellNbrMax( LayoutType centering,
+                                                 Direction direction ) const
 {
-    uint32 numCell = dualCellNbrMax( direction ) + rightOffset_ ;
+    uint32 numCell = cellNbrMax( centering, direction ) ;
+
+    if( centering == LayoutType::primal)
+    {
+        numCell += centeredOffset_ ;
+    } else
+    {
+        numCell += rightOffset_ ;
+    }
 
     return numCell ;
 }
+
 
 
 

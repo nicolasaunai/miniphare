@@ -86,19 +86,11 @@ public:
     uint32 nbrPaddingCells( Direction direction ) const noexcept;
     uint32 nbrPhysicalCells( Direction direction ) const noexcept;
 
-    uint32 primalGhostCellNbrMax( Direction direction ) const ;
-    uint32 dualGhostCellNbrMax( Direction direction ) const ;
+    uint32 cellNbrMin( LayoutType centering, Direction direction ) const ;
+    uint32 cellNbrMax( LayoutType centering, Direction direction ) const ;
 
-    uint32 primalCellNbrMin( Direction direction ) const ;
-    uint32 primalCellNbrMax( Direction direction ) const ;
-    uint32 dualCellNbrMin( Direction direction ) const ;
-    uint32 dualCellNbrMax( Direction direction ) const ;
-
-
+    uint32 ghostCellNbrMax( LayoutType centering, Direction direction ) const ;
 };
-
-
-
 
 
 

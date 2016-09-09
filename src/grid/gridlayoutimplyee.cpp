@@ -73,78 +73,78 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
     hybridQtyCentering_[iP][idirZ]   = primal ;
 
 
-    physicalStartIndex_[iBx][idirX]  = primalCellNbrMin( dirX ) ;
-    physicalStartIndex_[iBy][idirX]  = dualCellNbrMin  ( dirX ) ;
-    physicalStartIndex_[iBz][idirX]  = dualCellNbrMin  ( dirX ) ;
+    physicalStartIndex_[iBx][idirX]  = cellNbrMin( hybridQtyCentering_[iBx][idirX], dirX ) ;
+    physicalStartIndex_[iBy][idirX]  = cellNbrMin( hybridQtyCentering_[iBy][idirX], dirX ) ;
+    physicalStartIndex_[iBz][idirX]  = cellNbrMin( hybridQtyCentering_[iBz][idirX], dirX ) ;
 
-    physicalStartIndex_[iBx][idirY]  = dualCellNbrMin  ( dirY ) ;
-    physicalStartIndex_[iBy][idirY]  = primalCellNbrMin( dirY ) ;
-    physicalStartIndex_[iBz][idirY]  = dualCellNbrMin  ( dirY ) ;
+    physicalStartIndex_[iBx][idirY]  = cellNbrMin( hybridQtyCentering_[iBx][idirY], dirY ) ;
+    physicalStartIndex_[iBy][idirY]  = cellNbrMin( hybridQtyCentering_[iBy][idirY], dirY ) ;
+    physicalStartIndex_[iBz][idirY]  = cellNbrMin( hybridQtyCentering_[iBz][idirY], dirY ) ;
 
-    physicalStartIndex_[iBx][idirZ]  = dualCellNbrMin  ( dirZ ) ;
-    physicalStartIndex_[iBy][idirZ]  = dualCellNbrMin  ( dirZ ) ;
-    physicalStartIndex_[iBz][idirZ]  = primalCellNbrMin( dirZ ) ;
+    physicalStartIndex_[iBx][idirZ]  = cellNbrMin( hybridQtyCentering_[iBx][idirZ], dirZ ) ;
+    physicalStartIndex_[iBy][idirZ]  = cellNbrMin( hybridQtyCentering_[iBy][idirZ], dirZ ) ;
+    physicalStartIndex_[iBz][idirZ]  = cellNbrMin( hybridQtyCentering_[iBz][idirZ], dirZ ) ;
 
-    physicalStartIndex_[iEx][idirX]  = dualCellNbrMin  ( dirX ) ;
-    physicalStartIndex_[iEy][idirX]  = primalCellNbrMin( dirX ) ;
-    physicalStartIndex_[iEz][idirX]  = primalCellNbrMin( dirX ) ;
+    physicalStartIndex_[iEx][idirX]  = cellNbrMin( hybridQtyCentering_[iEx][idirX], dirX ) ;
+    physicalStartIndex_[iEy][idirX]  = cellNbrMin( hybridQtyCentering_[iEy][idirX], dirX ) ;
+    physicalStartIndex_[iEz][idirX]  = cellNbrMin( hybridQtyCentering_[iEz][idirX], dirX ) ;
 
-    physicalStartIndex_[iEx][idirY]  = primalCellNbrMin( dirY ) ;
-    physicalStartIndex_[iEy][idirY]  = dualCellNbrMin  ( dirY ) ;
-    physicalStartIndex_[iEz][idirY]  = primalCellNbrMin( dirY ) ;
+    physicalStartIndex_[iEx][idirY]  = cellNbrMin( hybridQtyCentering_[iEx][idirY], dirY ) ;
+    physicalStartIndex_[iEy][idirY]  = cellNbrMin( hybridQtyCentering_[iEy][idirY], dirY ) ;
+    physicalStartIndex_[iEz][idirY]  = cellNbrMin( hybridQtyCentering_[iEz][idirY], dirY ) ;
 
-    physicalStartIndex_[iEx][idirZ]  = primalCellNbrMin( dirZ ) ;
-    physicalStartIndex_[iEy][idirZ]  = primalCellNbrMin( dirZ ) ;
-    physicalStartIndex_[iEz][idirZ]  = dualCellNbrMin  ( dirZ ) ;
+    physicalStartIndex_[iEx][idirZ]  = cellNbrMin( hybridQtyCentering_[iEx][idirZ], dirZ ) ;
+    physicalStartIndex_[iEy][idirZ]  = cellNbrMin( hybridQtyCentering_[iEy][idirZ], dirZ ) ;
+    physicalStartIndex_[iEz][idirZ]  = cellNbrMin( hybridQtyCentering_[iEz][idirZ], dirZ ) ;
 
-    physicalStartIndex_[irho][idirX] = primalCellNbrMin( dirX ) ;
-    physicalStartIndex_[iV][idirX]   = primalCellNbrMin( dirX ) ;
-    physicalStartIndex_[iP][idirX]   = primalCellNbrMin( dirX ) ;
+    physicalStartIndex_[irho][idirX] = cellNbrMin( hybridQtyCentering_[irho][idirX], dirX ) ;
+    physicalStartIndex_[iV  ][idirX] = cellNbrMin( hybridQtyCentering_[iV  ][idirX], dirX ) ;
+    physicalStartIndex_[iP  ][idirX] = cellNbrMin( hybridQtyCentering_[iP  ][idirX], dirX ) ;
 
-    physicalStartIndex_[irho][idirY] = primalCellNbrMin( dirY ) ;
-    physicalStartIndex_[iV][idirY]   = primalCellNbrMin( dirY ) ;
-    physicalStartIndex_[iP][idirY]   = primalCellNbrMin( dirY ) ;
+    physicalStartIndex_[irho][idirY] = cellNbrMin( hybridQtyCentering_[irho][idirY], dirY ) ;
+    physicalStartIndex_[iV  ][idirY] = cellNbrMin( hybridQtyCentering_[iV  ][idirY], dirY ) ;
+    physicalStartIndex_[iP  ][idirY] = cellNbrMin( hybridQtyCentering_[iP  ][idirY], dirY ) ;
 
-    physicalStartIndex_[irho][idirZ] = primalCellNbrMin( dirZ ) ;
-    physicalStartIndex_[iV][idirZ]   = primalCellNbrMin( dirZ ) ;
-    physicalStartIndex_[iP][idirZ]   = primalCellNbrMin( dirZ ) ;
+    physicalStartIndex_[irho][idirZ] = cellNbrMin( hybridQtyCentering_[irho][idirZ], dirZ ) ;
+    physicalStartIndex_[iV  ][idirZ] = cellNbrMin( hybridQtyCentering_[iV  ][idirZ], dirZ ) ;
+    physicalStartIndex_[iP  ][idirZ] = cellNbrMin( hybridQtyCentering_[iP  ][idirZ], dirZ ) ;
 
 
-    physicalEndIndex_[iBx][idirX]  = primalCellNbrMax( dirX ) ;
-    physicalEndIndex_[iBy][idirX]  = dualCellNbrMax  ( dirX ) ;
-    physicalEndIndex_[iBz][idirX]  = dualCellNbrMax  ( dirX ) ;
+    physicalEndIndex_[iBx][idirX]  = cellNbrMax( hybridQtyCentering_[iBx][idirX], dirX ) ;
+    physicalEndIndex_[iBy][idirX]  = cellNbrMax( hybridQtyCentering_[iBy][idirX], dirX ) ;
+    physicalEndIndex_[iBz][idirX]  = cellNbrMax( hybridQtyCentering_[iBz][idirX], dirX ) ;
 
-    physicalEndIndex_[iBx][idirY]  = dualCellNbrMax  ( dirY ) ;
-    physicalEndIndex_[iBy][idirY]  = primalCellNbrMax( dirY ) ;
-    physicalEndIndex_[iBz][idirY]  = dualCellNbrMax  ( dirY ) ;
+    physicalEndIndex_[iBx][idirY]  = cellNbrMax( hybridQtyCentering_[iBx][idirY], dirY ) ;
+    physicalEndIndex_[iBy][idirY]  = cellNbrMax( hybridQtyCentering_[iBy][idirY], dirY ) ;
+    physicalEndIndex_[iBz][idirY]  = cellNbrMax( hybridQtyCentering_[iBz][idirY], dirY ) ;
 
-    physicalEndIndex_[iBx][idirZ]  = dualCellNbrMax  ( dirZ ) ;
-    physicalEndIndex_[iBy][idirZ]  = dualCellNbrMax  ( dirZ ) ;
-    physicalEndIndex_[iBz][idirZ]  = primalCellNbrMax( dirZ ) ;
+    physicalEndIndex_[iBx][idirZ]  = cellNbrMax( hybridQtyCentering_[iBx][idirZ], dirZ ) ;
+    physicalEndIndex_[iBy][idirZ]  = cellNbrMax( hybridQtyCentering_[iBy][idirZ], dirZ ) ;
+    physicalEndIndex_[iBz][idirZ]  = cellNbrMax( hybridQtyCentering_[iBz][idirZ], dirZ ) ;
 
-    physicalEndIndex_[iEx][idirX]  = dualCellNbrMax  ( dirX ) ;
-    physicalEndIndex_[iEy][idirX]  = primalCellNbrMax( dirX ) ;
-    physicalEndIndex_[iEz][idirX]  = primalCellNbrMax( dirX ) ;
+    physicalEndIndex_[iEx][idirX]  = cellNbrMax( hybridQtyCentering_[iEx][idirX], dirX ) ;
+    physicalEndIndex_[iEy][idirX]  = cellNbrMax( hybridQtyCentering_[iEy][idirX], dirX ) ;
+    physicalEndIndex_[iEz][idirX]  = cellNbrMax( hybridQtyCentering_[iEz][idirX], dirX ) ;
 
-    physicalEndIndex_[iEx][idirY]  = primalCellNbrMax( dirY ) ;
-    physicalEndIndex_[iEy][idirY]  = dualCellNbrMax  ( dirY ) ;
-    physicalEndIndex_[iEz][idirY]  = primalCellNbrMax( dirY ) ;
+    physicalEndIndex_[iEx][idirY]  = cellNbrMax( hybridQtyCentering_[iEx][idirY], dirY ) ;
+    physicalEndIndex_[iEy][idirY]  = cellNbrMax( hybridQtyCentering_[iEy][idirY], dirY ) ;
+    physicalEndIndex_[iEz][idirY]  = cellNbrMax( hybridQtyCentering_[iEz][idirY], dirY ) ;
 
-    physicalEndIndex_[iEx][idirZ]  = primalCellNbrMax( dirZ ) ;
-    physicalEndIndex_[iEy][idirZ]  = primalCellNbrMax( dirZ ) ;
-    physicalEndIndex_[iEz][idirZ]  = dualCellNbrMax  ( dirZ ) ;
+    physicalEndIndex_[iEx][idirZ]  = cellNbrMax( hybridQtyCentering_[iEx][idirZ], dirZ ) ;
+    physicalEndIndex_[iEy][idirZ]  = cellNbrMax( hybridQtyCentering_[iEy][idirZ], dirZ ) ;
+    physicalEndIndex_[iEz][idirZ]  = cellNbrMax( hybridQtyCentering_[iEz][idirZ], dirZ ) ;
 
-    physicalEndIndex_[irho][idirX] = primalCellNbrMax( dirX ) ;
-    physicalEndIndex_[iV][idirX]   = primalCellNbrMax( dirX ) ;
-    physicalEndIndex_[iP][idirX]   = primalCellNbrMax( dirX ) ;
+    physicalEndIndex_[irho][idirX] = cellNbrMax( hybridQtyCentering_[irho][idirX], dirX ) ;
+    physicalEndIndex_[iV  ][idirX] = cellNbrMax( hybridQtyCentering_[iV  ][idirX], dirX ) ;
+    physicalEndIndex_[iP  ][idirX] = cellNbrMax( hybridQtyCentering_[iP  ][idirX], dirX ) ;
 
-    physicalEndIndex_[irho][idirY] = primalCellNbrMax( dirY ) ;
-    physicalEndIndex_[iV][idirY]   = primalCellNbrMax( dirY ) ;
-    physicalEndIndex_[iP][idirY]   = primalCellNbrMax( dirY ) ;
+    physicalEndIndex_[irho][idirY] = cellNbrMax( hybridQtyCentering_[irho][idirY], dirY ) ;
+    physicalEndIndex_[iV  ][idirY] = cellNbrMax( hybridQtyCentering_[iV  ][idirY], dirY ) ;
+    physicalEndIndex_[iP  ][idirY] = cellNbrMax( hybridQtyCentering_[iP  ][idirY], dirY ) ;
 
-    physicalEndIndex_[irho][idirZ] = primalCellNbrMax( dirZ ) ;
-    physicalEndIndex_[iV][idirZ]   = primalCellNbrMax( dirZ ) ;
-    physicalEndIndex_[iP][idirZ]   = primalCellNbrMax( dirZ ) ;
+    physicalEndIndex_[irho][idirZ] = cellNbrMax( hybridQtyCentering_[irho][idirZ], dirZ ) ;
+    physicalEndIndex_[iV  ][idirZ] = cellNbrMax( hybridQtyCentering_[iV  ][idirZ], dirZ ) ;
+    physicalEndIndex_[iP  ][idirZ] = cellNbrMax( hybridQtyCentering_[iP  ][idirZ], dirZ ) ;
 
 
     ghostStartIndex_[iBx][idirX]  = nbrPaddingCells( dirX ) ;
@@ -172,53 +172,53 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
     ghostStartIndex_[iEz][idirZ]  = nbrPaddingCells( dirZ ) ;
 
     ghostStartIndex_[irho][idirX] = nbrPaddingCells( dirX ) ;
-    ghostStartIndex_[iV][idirX]   = nbrPaddingCells( dirX ) ;
-    ghostStartIndex_[iP][idirX]   = nbrPaddingCells( dirX ) ;
+    ghostStartIndex_[iV  ][idirX] = nbrPaddingCells( dirX ) ;
+    ghostStartIndex_[iP  ][idirX] = nbrPaddingCells( dirX ) ;
 
     ghostStartIndex_[irho][idirY] = nbrPaddingCells( dirY ) ;
-    ghostStartIndex_[iV][idirY]   = nbrPaddingCells( dirY ) ;
-    ghostStartIndex_[iP][idirY]   = nbrPaddingCells( dirY ) ;
+    ghostStartIndex_[iV  ][idirY] = nbrPaddingCells( dirY ) ;
+    ghostStartIndex_[iP  ][idirY] = nbrPaddingCells( dirY ) ;
 
     ghostStartIndex_[irho][idirZ] = nbrPaddingCells( dirZ ) ;
-    ghostStartIndex_[iV][idirZ]   = nbrPaddingCells( dirZ ) ;
-    ghostStartIndex_[iP][idirZ]   = nbrPaddingCells( dirZ ) ;
+    ghostStartIndex_[iV  ][idirZ] = nbrPaddingCells( dirZ ) ;
+    ghostStartIndex_[iP  ][idirZ] = nbrPaddingCells( dirZ ) ;
 
 
-    ghostEndIndex_[iBx][idirX]  = primalGhostCellNbrMax( dirX ) ;
-    ghostEndIndex_[iBy][idirX]  = dualGhostCellNbrMax  ( dirX ) ;
-    ghostEndIndex_[iBz][idirX]  = dualGhostCellNbrMax  ( dirX ) ;
+    ghostEndIndex_[iBx][idirX]  = ghostCellNbrMax( hybridQtyCentering_[iBx][idirX], dirX ) ;
+    ghostEndIndex_[iBy][idirX]  = ghostCellNbrMax( hybridQtyCentering_[iBy][idirX], dirX ) ;
+    ghostEndIndex_[iBz][idirX]  = ghostCellNbrMax( hybridQtyCentering_[iBz][idirX], dirX ) ;
 
-    ghostEndIndex_[iBx][idirY]  = dualGhostCellNbrMax  ( dirY ) ;
-    ghostEndIndex_[iBy][idirY]  = primalGhostCellNbrMax( dirY ) ;
-    ghostEndIndex_[iBz][idirY]  = dualGhostCellNbrMax  ( dirY ) ;
+    ghostEndIndex_[iBx][idirY]  = ghostCellNbrMax( hybridQtyCentering_[iBx][idirY], dirY ) ;
+    ghostEndIndex_[iBy][idirY]  = ghostCellNbrMax( hybridQtyCentering_[iBy][idirY], dirY ) ;
+    ghostEndIndex_[iBz][idirY]  = ghostCellNbrMax( hybridQtyCentering_[iBz][idirY], dirY ) ;
 
-    ghostEndIndex_[iBx][idirZ]  = dualGhostCellNbrMax  ( dirZ ) ;
-    ghostEndIndex_[iBy][idirZ]  = dualGhostCellNbrMax  ( dirZ ) ;
-    ghostEndIndex_[iBz][idirZ]  = primalGhostCellNbrMax( dirZ ) ;
+    ghostEndIndex_[iBx][idirZ]  = ghostCellNbrMax( hybridQtyCentering_[iBx][idirZ], dirZ ) ;
+    ghostEndIndex_[iBy][idirZ]  = ghostCellNbrMax( hybridQtyCentering_[iBy][idirZ], dirZ ) ;
+    ghostEndIndex_[iBz][idirZ]  = ghostCellNbrMax( hybridQtyCentering_[iBz][idirZ], dirZ ) ;
 
-    ghostEndIndex_[iEx][idirX]  = dualGhostCellNbrMax  ( dirX ) ;
-    ghostEndIndex_[iEy][idirX]  = primalGhostCellNbrMax( dirX ) ;
-    ghostEndIndex_[iEz][idirX]  = primalGhostCellNbrMax( dirX ) ;
+    ghostEndIndex_[iEx][idirX]  = ghostCellNbrMax( hybridQtyCentering_[iEx][idirX], dirX ) ;
+    ghostEndIndex_[iEy][idirX]  = ghostCellNbrMax( hybridQtyCentering_[iEy][idirX], dirX ) ;
+    ghostEndIndex_[iEz][idirX]  = ghostCellNbrMax( hybridQtyCentering_[iEz][idirX], dirX ) ;
 
-    ghostEndIndex_[iEx][idirY]  = primalGhostCellNbrMax( dirY ) ;
-    ghostEndIndex_[iEy][idirY]  = dualGhostCellNbrMax  ( dirY ) ;
-    ghostEndIndex_[iEz][idirY]  = primalGhostCellNbrMax( dirY ) ;
+    ghostEndIndex_[iEx][idirY]  = ghostCellNbrMax( hybridQtyCentering_[iEx][idirY], dirY ) ;
+    ghostEndIndex_[iEy][idirY]  = ghostCellNbrMax( hybridQtyCentering_[iEy][idirY], dirY ) ;
+    ghostEndIndex_[iEz][idirY]  = ghostCellNbrMax( hybridQtyCentering_[iEz][idirY], dirY ) ;
 
-    ghostEndIndex_[iEx][idirZ]  = primalGhostCellNbrMax( dirZ ) ;
-    ghostEndIndex_[iEy][idirZ]  = primalGhostCellNbrMax( dirZ ) ;
-    ghostEndIndex_[iEz][idirZ]  = dualGhostCellNbrMax  ( dirZ ) ;
+    ghostEndIndex_[iEx][idirZ]  = ghostCellNbrMax( hybridQtyCentering_[iEx][idirZ], dirZ ) ;
+    ghostEndIndex_[iEy][idirZ]  = ghostCellNbrMax( hybridQtyCentering_[iEy][idirZ], dirZ ) ;
+    ghostEndIndex_[iEz][idirZ]  = ghostCellNbrMax( hybridQtyCentering_[iEz][idirZ], dirZ ) ;
 
-    ghostEndIndex_[irho][idirX] = primalGhostCellNbrMax( dirX ) ;
-    ghostEndIndex_[iV][idirX]   = primalGhostCellNbrMax( dirX ) ;
-    ghostEndIndex_[iP][idirX]   = primalGhostCellNbrMax( dirX ) ;
+    ghostEndIndex_[irho][idirX] = ghostCellNbrMax( hybridQtyCentering_[irho][idirX], dirX ) ;
+    ghostEndIndex_[iV  ][idirX] = ghostCellNbrMax( hybridQtyCentering_[iV  ][idirX], dirX ) ;
+    ghostEndIndex_[iP  ][idirX] = ghostCellNbrMax( hybridQtyCentering_[iP  ][idirX], dirX ) ;
 
-    ghostEndIndex_[irho][idirY] = primalGhostCellNbrMax( dirY ) ;
-    ghostEndIndex_[iV][idirY]   = primalGhostCellNbrMax( dirY ) ;
-    ghostEndIndex_[iP][idirY]   = primalGhostCellNbrMax( dirY ) ;
+    ghostEndIndex_[irho][idirY] = ghostCellNbrMax( hybridQtyCentering_[irho][idirY], dirY ) ;
+    ghostEndIndex_[iV  ][idirY] = ghostCellNbrMax( hybridQtyCentering_[iV  ][idirY], dirY ) ;
+    ghostEndIndex_[iP  ][idirY] = ghostCellNbrMax( hybridQtyCentering_[iP  ][idirY], dirY ) ;
 
-    ghostEndIndex_[irho][idirZ] = primalGhostCellNbrMax( dirZ ) ;
-    ghostEndIndex_[iV][idirZ]   = primalGhostCellNbrMax( dirZ ) ;
-    ghostEndIndex_[iP][idirZ]   = primalGhostCellNbrMax( dirZ ) ;
+    ghostEndIndex_[irho][idirZ] = ghostCellNbrMax( hybridQtyCentering_[irho][idirZ], dirZ ) ;
+    ghostEndIndex_[iV  ][idirZ] = ghostCellNbrMax( hybridQtyCentering_[iV  ][idirZ], dirZ ) ;
+    ghostEndIndex_[iP  ][idirZ] = ghostCellNbrMax( hybridQtyCentering_[iP  ][idirZ], dirZ ) ;
 
 }
 
