@@ -15,7 +15,6 @@
 
 
 
-
 class GridLayout
 {
 private:
@@ -73,6 +72,8 @@ public:
     double nbrCelly() const {return nbrCelly_;}
     double nbrCellz() const {return nbrCellz_;}
 
+    std::vector < std::tuple < uint32, Point> >
+    fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const;
 
     // return the (total) number of mesh points
     // for the 3 components of Ex, Ey, Ez      ( if EMFieldType==EVecField )

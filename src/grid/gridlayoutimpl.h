@@ -13,6 +13,9 @@ class GridLayoutImpl
 
 public:
 
+    virtual std::vector < std::tuple < uint32, Point> >
+    fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const = 0;
+
     virtual std::array<AllocSizeT ,3> allocSize( EMFieldType vecField ) const = 0 ;
     virtual std::array<AllocSizeT ,3> allocSize( OhmTerm vecfield ) const = 0 ;
 
@@ -53,6 +56,10 @@ protected:
     uint32 nbrPaddingCellsY_ ;
     uint32 nbrPaddingCellsZ_ ;
 
+    double dx_ ;
+    double dy_ ;
+    double dz_ ;
+
     void computeOffsets( uint32 interpOrder ) ;
 
 public:
@@ -62,6 +69,8 @@ public:
 
     static const uint32 defaultNbrPaddingCells = 10;
 
+    std::array< std::array<LayoutType,3>, 9 > hybridQtyCentering_ ;
+
     std::array< std::array<uint32,3>, 9 > physicalStartIndex_;
     std::array< std::array<uint32,3>, 9 > physicalEndIndex_;
     std::array< std::array<uint32,3>, 9 > ghostStartIndex_;
@@ -69,7 +78,8 @@ public:
 
 
     explicit GridLayoutImplInternals(uint32 nbDims, uint32 interpOrder,
-                                     std::array<uint32,3> nbrCellsXYZ);
+                                     std::array<uint32,3> nbrCellsXYZ ,
+                                     std::array<double,3> dxdydz      );
 
     uint32 nbDimensions_() const { return nbdims_; }
 

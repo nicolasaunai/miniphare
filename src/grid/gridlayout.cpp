@@ -27,7 +27,7 @@ GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCell
       nbrCellx_{nbrCells[0]}, nbrCelly_{nbrCells[1]}, nbrCellz_{nbrCells[2]},
       interpOrder_{interpOrder},
       implPtr_{ GridLayoutImplFactory::createGridLayoutImpl(
-                    nbDims, interpOrder, layoutName, nbrCells ) }
+                    nbDims, interpOrder, layoutName, nbrCells, dxdydz ) }
 {
     switch (nbDims)
     {
@@ -47,8 +47,6 @@ GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCell
 
 
 
-
-
 GridLayout::GridLayout(GridLayout const& source)
     : dx_{source.dx_}, dy_{source.dy_}, dz_{source.dz_},
       odx_{source.odx_},
@@ -63,9 +61,9 @@ GridLayout::GridLayout(GridLayout const& source)
 
     //TODO : "yee" bad hardcoded. make a clone
     implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(
-                nbDims, interpOrder_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} }) ;
+                nbDims, interpOrder_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} },
+                { {dx_, dy_, dz_} } ) ;
 }
-
 
 
 GridLayout::GridLayout(GridLayout&& source)
@@ -76,6 +74,13 @@ GridLayout::GridLayout(GridLayout&& source)
       nbrCellz_{std::move(source.nbrCellz_)},
       implPtr_{std::move(source.implPtr_)}
 {
+}
+
+
+std::vector< std::tuple <uint32, Point> >
+GridLayout::fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const
+{
+    return implPtr_->fieldNodeCoordinates1D( field, patchOrigin ) ;
 }
 
 

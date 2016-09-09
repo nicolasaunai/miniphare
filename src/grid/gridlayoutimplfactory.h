@@ -16,7 +16,8 @@ public:
     createGridLayoutImpl(uint32 nbDims,
                          uint32 interpOrder,
                          std::string const& layoutName,
-                         std::array<uint32,3> nbrCellsXYZ )
+                         std::array<uint32,3> nbrCellsXYZ,
+                         std::array<double,3> dxdydz     )
     {
         if (nbDims != 1 && nbDims != 2 && nbDims != 3)
         {
@@ -26,7 +27,8 @@ public:
         if (layoutName == "yee")
         {
             return std::unique_ptr<GridLayoutImpl> (
-                        new GridLayoutImplYee( nbDims, interpOrder, nbrCellsXYZ));
+                        new GridLayoutImplYee( nbDims, interpOrder,
+                                               nbrCellsXYZ, dxdydz ));
         }
         //else if{}
 

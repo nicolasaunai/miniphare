@@ -3,6 +3,8 @@
 
 enum class Direction{ directionX, directionY, directionZ } ;
 
+enum class LayoutType{ primal, dual } ;
+
 enum class EMFieldType{ EVecField, BVecField } ;
 
 enum class HybridQuantity{ Bx, By, Bz, Ex, Ey, Ez, rho, V, P, Ohm, derived, none };

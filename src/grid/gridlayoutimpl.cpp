@@ -8,12 +8,14 @@
 
 
 GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims, uint32 interpOrder,
-                                                 std::array<uint32,3> nbrCellsXYZ)
+                                                 std::array<uint32,3> nbrCellsXYZ ,
+                                                 std::array<double,3> dxdydz      )
      : nbdims_{nbDims},
        nbrCellx_{nbrCellsXYZ[0]}, nbrCelly_{nbrCellsXYZ[1]}, nbrCellz_{nbrCellsXYZ[2]},
        nbrPaddingCellsX_{defaultNbrPaddingCells},
        nbrPaddingCellsY_{defaultNbrPaddingCells},
-       nbrPaddingCellsZ_{defaultNbrPaddingCells}
+       nbrPaddingCellsZ_{defaultNbrPaddingCells},
+       dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]}
 {
     computeOffsets( interpOrder );
 }

@@ -26,6 +26,15 @@ struct AllocSize{
 
 using AllocSizeT = struct AllocSize ;
 
+struct Point
+{
+    double x_,y_,z_;
 
+    Point(double x, double y, double z):
+        x_{x}, y_{y}, z_{z} {}
+
+} ;
+
+using PointT = struct Point ;
 
 #endif // TYPES_H

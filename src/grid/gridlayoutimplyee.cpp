@@ -1,18 +1,23 @@
 #include <stdexcept>
+#include <tuple>
 
 #include "gridlayoutimplyee.h"
 
 
 
 
-GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims,
-                                     uint32 interpOrder,
-                                     std::array<uint32,3> nbrCellsXYZ)
-    : GridLayoutImplInternals(nbDims, interpOrder, nbrCellsXYZ)
+GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
+                                     std::array<uint32,3> nbrCellsXYZ ,
+                                     std::array<double,3> dxdydz      )
+    : GridLayoutImplInternals(nbDims, interpOrder,
+                              nbrCellsXYZ, dxdydz)
 {
     Direction dirX = Direction::directionX ;
     Direction dirY = Direction::directionY ;
     Direction dirZ = Direction::directionZ ;
+
+    LayoutType primal = LayoutType::primal ;
+    LayoutType dual   = LayoutType::dual   ;
 
     uint32 idirX = static_cast<uint32>(Direction::directionX) ;
     uint32 idirY = static_cast<uint32>(Direction::directionY) ;
@@ -29,6 +34,44 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims,
     uint32 irho = static_cast<uint32>(HybridQuantity::rho) ;
     uint32 iV = static_cast<uint32>(HybridQuantity::V) ;
     uint32 iP = static_cast<uint32>(HybridQuantity::P) ;
+
+
+    hybridQtyCentering_[iBx][idirX]  = primal ;
+    hybridQtyCentering_[iBy][idirX]  = dual   ;
+    hybridQtyCentering_[iBz][idirX]  = dual   ;
+
+    hybridQtyCentering_[iBx][idirY]  = dual   ;
+    hybridQtyCentering_[iBy][idirY]  = primal ;
+    hybridQtyCentering_[iBz][idirY]  = dual   ;
+
+    hybridQtyCentering_[iBx][idirZ]  = dual   ;
+    hybridQtyCentering_[iBy][idirZ]  = dual   ;
+    hybridQtyCentering_[iBz][idirZ]  = primal ;
+
+    hybridQtyCentering_[iEx][idirX]  = dual   ;
+    hybridQtyCentering_[iEy][idirX]  = primal ;
+    hybridQtyCentering_[iEz][idirX]  = primal ;
+
+    hybridQtyCentering_[iEx][idirY]  = primal ;
+    hybridQtyCentering_[iEy][idirY]  = dual   ;
+    hybridQtyCentering_[iEz][idirY]  = primal ;
+
+    hybridQtyCentering_[iEx][idirZ]  = primal ;
+    hybridQtyCentering_[iEy][idirZ]  = primal ;
+    hybridQtyCentering_[iEz][idirZ]  = dual   ;
+
+    hybridQtyCentering_[irho][idirX] = primal ;
+    hybridQtyCentering_[iV][idirX]   = primal ;
+    hybridQtyCentering_[iP][idirX]   = primal ;
+
+    hybridQtyCentering_[irho][idirY] = primal ;
+    hybridQtyCentering_[iV][idirY]   = primal ;
+    hybridQtyCentering_[iP][idirY]   = primal ;
+
+    hybridQtyCentering_[irho][idirZ] = primal ;
+    hybridQtyCentering_[iV][idirZ]   = primal ;
+    hybridQtyCentering_[iP][idirZ]   = primal ;
+
 
     physicalStartIndex_[iBx][idirX]  = primalCellNbrMin( dirX ) ;
     physicalStartIndex_[iBy][idirX]  = dualCellNbrMin  ( dirX ) ;
@@ -255,6 +298,48 @@ AllocSizeT GridLayoutImplYee::allocSize( DerivedEMField derivedField ) const
 
 }
 
+
+std::vector< std::tuple <uint32, Point> >
+GridLayoutImplYee::fieldNodeCoordinates1D(
+        const Field & field, const Point & patchOrigin ) const
+{
+    Direction dirX = Direction::directionX ;
+
+    uint32 idirX = static_cast<uint32>(dirX) ;
+
+    std::vector< std::tuple<uint32, Point> > nodeList ;
+
+    double half_cell = 0. ;
+
+    uint32 iFx = static_cast<uint32>(field.type()) ;
+
+    LayoutType centering = hybridQtyCentering_[iFx][idirX] ;
+
+    if( centering == LayoutType::dual )
+    {
+        half_cell = 0.5 ;
+    }
+
+
+    double y = patchOrigin.y_ ;
+    double z = patchOrigin.z_ ;
+
+    uint32 ixStart = physicalStartIndex(field, dirX) ;
+    uint32 ixEnd   = physicalEndIndex  (field, dirX) ;
+
+    for( uint32 ix= ixStart; ix< ixEnd ; ++ix )
+    {
+        double x = ( (ix-ixStart) + half_cell)*dx_ + patchOrigin.x_ ;
+
+        PointT point( x, y, z ) ;
+
+        auto nodeCoordinates = std::make_tuple(ix, point) ;
+
+        nodeList.push_back( nodeCoordinates ) ;
+    }
+
+    return nodeList ;
+}
 
 
 // start and end index used in computing loops

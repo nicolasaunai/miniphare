@@ -22,13 +22,18 @@ private:
 
 public:
 
-    explicit GridLayoutImplYee(uint32 nbDims,
-                               uint32 interpOrder,
-                               std::array<uint32,3> nbrCellsXYZ);
+    explicit GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
+                               std::array<uint32,3> nbrCellsXYZ ,
+                               std::array<double,3> dxdydz      );
+
     virtual ~GridLayoutImplYee() = default;
 
-
     virtual uint32 nbDimensions() const override {return nbDimensions_();}
+
+    virtual std::vector < std::tuple < uint32, Point> >
+    fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const override ;
+
+
 
     virtual std::array<AllocSizeT ,3> allocSize( EMFieldType fieldType ) const override ;
 
