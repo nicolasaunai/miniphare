@@ -192,13 +192,7 @@ std::array<AllocSizeT ,3> GridLayoutImplYee::allocSize( EMFieldType fieldType ) 
     uint32 idirY = static_cast<uint32>(Direction::directionY) ;
     uint32 idirZ = static_cast<uint32>(Direction::directionZ) ;
 
-    uint32 iBx = static_cast<uint32>(HybridQuantity::Bx) ;
-    uint32 iBy = static_cast<uint32>(HybridQuantity::By) ;
-    uint32 iBz = static_cast<uint32>(HybridQuantity::Bz) ;
-
-    uint32 iEx = static_cast<uint32>(HybridQuantity::Ex) ;
-    uint32 iEy = static_cast<uint32>(HybridQuantity::Ey) ;
-    uint32 iEz = static_cast<uint32>(HybridQuantity::Ez) ;
+    uint32 iFx, iFy, iFz ;
 
     uint32 VFx_nx, VFx_ny, VFx_nz ;
     uint32 VFy_nx, VFy_ny, VFy_nz ;
@@ -207,49 +201,37 @@ std::array<AllocSizeT ,3> GridLayoutImplYee::allocSize( EMFieldType fieldType ) 
     switch( fieldType )
     {
     case EMFieldType::EVecField:
-        VFx_nx = ghostEndIndex_[iEx][idirX] - ghostStartIndex_[iEx][idirX] + 1
-                + 2*nbrPaddingCells(dirX) ;
-        VFx_ny = ghostEndIndex_[iEx][idirY] - ghostStartIndex_[iEx][idirY] + 1
-                + 2*nbrPaddingCells(dirY) ;
-        VFx_nz = ghostEndIndex_[iEx][idirZ] - ghostStartIndex_[iEx][idirZ] + 1
-                + 2*nbrPaddingCells(dirZ) ;
-        VFy_nx = ghostEndIndex_[iEy][idirX] - ghostStartIndex_[iEy][idirX] + 1
-                + 2*nbrPaddingCells(dirX) ;
-        VFy_ny = ghostEndIndex_[iEy][idirY] - ghostStartIndex_[iEy][idirY] + 1
-                + 2*nbrPaddingCells(dirY) ;
-        VFy_nz = ghostEndIndex_[iEy][idirZ] - ghostStartIndex_[iEy][idirZ] + 1
-                + 2*nbrPaddingCells(dirZ) ;
-        VFz_nx = ghostEndIndex_[iEz][idirX] - ghostStartIndex_[iEz][idirX] + 1
-                + 2*nbrPaddingCells(dirX) ;
-        VFz_ny = ghostEndIndex_[iEz][idirY] - ghostStartIndex_[iEz][idirY] + 1
-                + 2*nbrPaddingCells(dirY) ;
-        VFz_nz = ghostEndIndex_[iEz][idirZ] - ghostStartIndex_[iEz][idirZ] + 1
-                + 2*nbrPaddingCells(dirZ) ;
-
-        break;
+        iFx = static_cast<uint32>(HybridQuantity::Ex) ;
+        iFy = static_cast<uint32>(HybridQuantity::Ey) ;
+        iFz = static_cast<uint32>(HybridQuantity::Ez) ;
+        break ;
 
     case EMFieldType::BVecField:
-        VFx_nx = ghostEndIndex_[iBx][idirX] - ghostStartIndex_[iBx][idirX] + 1
-                + 2*nbrPaddingCells(dirX) ;
-        VFx_ny = ghostEndIndex_[iBx][idirY] - ghostStartIndex_[iBx][idirY] + 1
-                + 2*nbrPaddingCells(dirY) ;
-        VFx_nz = ghostEndIndex_[iBx][idirZ] - ghostStartIndex_[iBx][idirZ] + 1
-                + 2*nbrPaddingCells(dirZ) ;
-        VFy_nx = ghostEndIndex_[iBy][idirX] - ghostStartIndex_[iBy][idirX] + 1
-                + 2*nbrPaddingCells(dirX) ;
-        VFy_ny = ghostEndIndex_[iBy][idirY] - ghostStartIndex_[iBy][idirY] + 1
-                + 2*nbrPaddingCells(dirY) ;
-        VFy_nz = ghostEndIndex_[iBy][idirZ] - ghostStartIndex_[iBy][idirZ] + 1
-                + 2*nbrPaddingCells(dirZ) ;
-        VFz_nx = ghostEndIndex_[iBz][idirX] - ghostStartIndex_[iBz][idirX] + 1
-                + 2*nbrPaddingCells(dirX) ;
-        VFz_ny = ghostEndIndex_[iBz][idirY] - ghostStartIndex_[iBz][idirY] + 1
-                + 2*nbrPaddingCells(dirY) ;
-        VFz_nz = ghostEndIndex_[iBz][idirZ] - ghostStartIndex_[iBz][idirZ] + 1
-                + 2*nbrPaddingCells(dirZ) ;
-
-        break;
+        iFx = static_cast<uint32>(HybridQuantity::Bx) ;
+        iFy = static_cast<uint32>(HybridQuantity::By) ;
+        iFz = static_cast<uint32>(HybridQuantity::Bz) ;
+        break ;
     }
+
+    VFx_nx = ghostEndIndex_[iFx][idirX] - ghostStartIndex_[iFx][idirX] + 1
+            + 2*nbrPaddingCells(dirX) ;
+    VFx_ny = ghostEndIndex_[iFx][idirY] - ghostStartIndex_[iFx][idirY] + 1
+            + 2*nbrPaddingCells(dirY) ;
+    VFx_nz = ghostEndIndex_[iFx][idirZ] - ghostStartIndex_[iFx][idirZ] + 1
+            + 2*nbrPaddingCells(dirZ) ;
+    VFy_nx = ghostEndIndex_[iFy][idirX] - ghostStartIndex_[iFy][idirX] + 1
+            + 2*nbrPaddingCells(dirX) ;
+    VFy_ny = ghostEndIndex_[iFy][idirY] - ghostStartIndex_[iFy][idirY] + 1
+            + 2*nbrPaddingCells(dirY) ;
+    VFy_nz = ghostEndIndex_[iFy][idirZ] - ghostStartIndex_[iFy][idirZ] + 1
+            + 2*nbrPaddingCells(dirZ) ;
+    VFz_nx = ghostEndIndex_[iFz][idirX] - ghostStartIndex_[iFz][idirX] + 1
+            + 2*nbrPaddingCells(dirX) ;
+    VFz_ny = ghostEndIndex_[iFz][idirY] - ghostStartIndex_[iFz][idirY] + 1
+            + 2*nbrPaddingCells(dirY) ;
+    VFz_nz = ghostEndIndex_[iFz][idirZ] - ghostStartIndex_[iFz][idirZ] + 1
+            + 2*nbrPaddingCells(dirZ) ;
+
 
     std::array<Alloc ,3> VecFieldSizes{
                    {Alloc(VFx_nx, VFx_ny, VFx_nz),
@@ -258,6 +240,7 @@ std::array<AllocSizeT ,3> GridLayoutImplYee::allocSize( EMFieldType fieldType ) 
 
     return VecFieldSizes ;
 }
+
 
 std::array<AllocSizeT ,3> GridLayoutImplYee::allocSize( OhmTerm term ) const
 {
