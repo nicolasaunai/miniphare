@@ -17,9 +17,9 @@ public:
     fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const = 0;
 
     virtual std::array<AllocSizeT ,3> allocSize( EMFieldType vecField ) const = 0 ;
-    virtual std::array<AllocSizeT ,3> allocSize( OhmTerm vecfield ) const = 0 ;
 
-    virtual AllocSizeT allocSize( DerivedEMField field ) const = 0 ;
+    virtual AllocSizeT  allocSize( LayoutType layout ) const = 0 ;
+
 
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, Direction direction) const = 0;
@@ -80,6 +80,10 @@ public:
     explicit GridLayoutImplInternals(uint32 nbDims, uint32 interpOrder,
                                      std::array<uint32,3> nbrCellsXYZ ,
                                      std::array<double,3> dxdydz      );
+
+    LayoutType changeLayout( const LayoutType & layout ) const ;
+
+    LayoutType derivedLayout( const HybridQuantity & qty, Direction dir) const ;
 
     uint32 nbDimensions_() const { return nbdims_; }
 

@@ -37,10 +37,7 @@ public:
 
     virtual std::array<AllocSizeT ,3> allocSize( EMFieldType fieldType ) const override ;
 
-    virtual std::array<AllocSizeT ,3> allocSize( OhmTerm term ) const override ;
-
-    virtual AllocSizeT allocSize( DerivedEMField derivedField ) const override ;
-
+    virtual AllocSizeT  allocSize( LayoutType layout ) const override ;
 
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, Direction direction) const override;

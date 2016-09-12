@@ -80,9 +80,8 @@ public:
     // or for the 3 components of Bx, By, Bz   ( if EMFieldType==BVecField )
     std::array<AllocSizeT ,3> allocSize( EMFieldType fieldType ) const ;
 
-    std::array<AllocSizeT ,3> allocSize( OhmTerm term ) const ;
+    AllocSizeT  allocSize( LayoutType layout ) const ;
 
-    AllocSizeT allocSize( DerivedEMField derivedField ) const ;
 
     uint32 physicalStartIndex(Field const& field, Direction direction) const;
     uint32 physicalEndIndex  (Field const& field, Direction direction) const;

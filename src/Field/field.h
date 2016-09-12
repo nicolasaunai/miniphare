@@ -17,13 +17,7 @@ public:
 
     Field(uint32 nx, uint32 ny, uint32 nz,
           HybridQuantity qtyType, std::string name):
-        name_(name), qtyType_{qtyType}, derived_{DerivedEMField::none},
-        shape_{nx,ny,nz}, ndims_{2},
-        data_{}  {data_.resize(nx*ny*nz);}
-
-    Field(uint32 nx, uint32 ny, uint32 nz,
-          DerivedEMField derived, std::string name):
-        name_(name), qtyType_{HybridQuantity::derived}, derived_{derived},
+        name_(name), qtyType_{qtyType},
         shape_{nx,ny,nz}, ndims_{2},
         data_{}  {data_.resize(nx*ny*nz);}
 
@@ -62,7 +56,6 @@ private:
 
     std::string name_;
     HybridQuantity qtyType_ ;
-    DerivedEMField derived_ ;
 
     std::vector<uint32> shape_;
     uint32 ndims_;

@@ -90,16 +90,11 @@ std::array<AllocSizeT ,3> GridLayout::allocSize( EMFieldType fieldType ) const
 }
 
 
-std::array<AllocSizeT ,3> GridLayout::allocSize( OhmTerm term ) const
+AllocSizeT  GridLayout::allocSize( LayoutType layout ) const
 {
-    return implPtr_->allocSize( term ) ;
+    return implPtr_->allocSize( layout ) ;
 }
 
-
-AllocSizeT GridLayout::allocSize( DerivedEMField derivedField ) const
-{
-    return implPtr_->allocSize( derivedField ) ;
-}
 
 
 uint32 GridLayout::physicalStartIndex(Field const& field, Direction direction) const

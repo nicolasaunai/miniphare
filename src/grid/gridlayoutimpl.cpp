@@ -21,6 +21,33 @@ GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims, uint32 interpOrd
 }
 
 
+LayoutType GridLayoutImplInternals::changeLayout( const LayoutType & layout ) const
+{
+    LayoutType newLayout ;
+
+    if( layout == LayoutType::primal )
+    {
+        newLayout = LayoutType::dual ;
+    } else
+    {
+        newLayout = LayoutType::primal ;
+    }
+
+    return newLayout ;
+}
+
+
+LayoutType GridLayoutImplInternals::derivedLayout( const HybridQuantity & qty, Direction dir) const
+{
+
+    uint32 iField = static_cast<uint32>( qty ) ;
+    uint32 idir   = static_cast<uint32>( dir ) ;
+
+    LayoutType newLayout = changeLayout( hybridQtyCentering_[iField][idir] ) ;
+
+    return newLayout ;
+}
+
 void GridLayoutImplInternals::computeOffsets(uint32 interpOrder)
 {
     centeredOffset_ = static_cast<uint32> ( std::floor(interpOrder/2.) )      ;

@@ -8,7 +8,7 @@
 
 FaradayImpl1D::FaradayImpl1D(double dt, GridLayout const& layout)
     :FaradayImplInternals(dt, layout),
-      dxEz_( layout.allocSize(DerivedEMField::dxEz).nx_,
+      dxEz_( layout.allocSize(layout.de derivedLayout()).nx_,
              layout.allocSize(DerivedEMField::dxEz).ny_,
              layout.allocSize(DerivedEMField::dxEz).nz_,
              DerivedEMField::dxEz, "_dxEz"),
