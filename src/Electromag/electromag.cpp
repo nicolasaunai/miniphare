@@ -1,12 +1,12 @@
 
+#include "constants.h"
+
 #include "electromag.h"
 #include "vecfield/vecfield.h"
 
 
-
-
-Electromag::Electromag( std::array<AllocSizeT ,3> E_AllocSizes,
-                        std::array<AllocSizeT ,3> B_AllocSizes,
+Electromag::Electromag( std::array<AllocSizeT, NBR_COMPO> E_AllocSizes,
+                        std::array<AllocSizeT, NBR_COMPO> B_AllocSizes,
                         std::string name )
     : E_( E_AllocSizes, {{HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez}},
           "E"+name ),

@@ -4,6 +4,7 @@
 
 #include <string>
 
+#include "constants.h"
 #include "types.h"
 #include "vecfield/vecfield.h"
 
@@ -13,8 +14,8 @@ class Electromag
 {
 public:
 
-    Electromag(std::array<AllocSizeT ,3> E_AllocSizes,
-               std::array<AllocSizeT ,3> B_AllocSizes,
+    Electromag(std::array<AllocSizeT, NBR_COMPO> E_AllocSizes,
+               std::array<AllocSizeT, NBR_COMPO> B_AllocSizes,
                std::string name="");
 
     Field& getEi(uint32 component) {return E_.component(component);}

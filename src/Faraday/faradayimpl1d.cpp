@@ -1,5 +1,5 @@
 
-#include "gridconstants.h"
+#include "hybridenums.h"
 
 #include "faradayimpl1d.h"
 
@@ -8,14 +8,14 @@
 
 FaradayImpl1D::FaradayImpl1D(double dt, GridLayout const& layout)
     :FaradayImplInternals(dt, layout),
-      dxEz_( layout.allocSize(layout.de derivedLayout()).nx_,
-             layout.allocSize(DerivedEMField::dxEz).ny_,
-             layout.allocSize(DerivedEMField::dxEz).nz_,
-             DerivedEMField::dxEz, "_dxEz"),
-      dxEy_( layout.allocSize(DerivedEMField::dxEy).nx_,
-             layout.allocSize(DerivedEMField::dxEy).ny_,
-             layout.allocSize(DerivedEMField::dxEy).nz_,
-             DerivedEMField::dxEy, "_dxEy")
+      dxEz_( layout.allocSizeDerived(HybridQuantity::Ez, Direction::directionX).nx_ ,
+             layout.allocSizeDerived(HybridQuantity::Ez, Direction::directionX).ny_ ,
+             layout.allocSizeDerived(HybridQuantity::Ez, Direction::directionX).nz_ ,
+             HybridQuantity::temporary, "_dxEz"),
+      dxEy_( layout.allocSizeDerived(HybridQuantity::Ey, Direction::directionX).nx_ ,
+             layout.allocSizeDerived(HybridQuantity::Ey, Direction::directionX).ny_ ,
+             layout.allocSizeDerived(HybridQuantity::Ey, Direction::directionX).nz_ ,
+             HybridQuantity::temporary, "_dxEy")
 {
 }
 

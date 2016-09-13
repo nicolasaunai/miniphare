@@ -3,10 +3,20 @@
 
 #include <array>
 
+#include "constants.h"
 #include "types.h"
-#include "gridconstants.h"
+#include "hybridenums.h"
 
 #include "Field/field.h"
+
+
+
+enum class Direction{ directionX, directionY, directionZ } ;
+
+enum class LayoutType{ primal, dual } ;
+
+enum class EMFieldType{ EVecField, BVecField } ;
+
 
 class GridLayoutImpl
 {
@@ -16,10 +26,10 @@ public:
     virtual std::vector < std::tuple < uint32, Point> >
     fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const = 0;
 
-    virtual std::array<AllocSizeT ,3> allocSize( EMFieldType vecField ) const = 0 ;
+    virtual std::array<AllocSizeT, NBR_COMPO> allocSize( EMFieldType vecField ) const = 0 ;
+    virtual std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const = 0;
 
-    virtual AllocSizeT  allocSize( LayoutType layout ) const = 0 ;
-
+    virtual AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const = 0 ;
 
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, Direction direction) const = 0;
@@ -35,7 +45,6 @@ public:
     virtual ~GridLayoutImpl() = default;
 
 };
-
 
 
 
@@ -60,6 +69,13 @@ protected:
     double dy_ ;
     double dz_ ;
 
+    std::array< std::array<LayoutType,NBR_COMPO>, NBR_HYBRID_QTY > hybridQtyCentering_ ;
+
+    std::array< std::array<uint32,NBR_COMPO>, NBR_HYBRID_QTY > physicalStartIndex_;
+    std::array< std::array<uint32,NBR_COMPO>, NBR_HYBRID_QTY > physicalEndIndex_;
+    std::array< std::array<uint32,NBR_COMPO>, NBR_HYBRID_QTY > ghostStartIndex_;
+    std::array< std::array<uint32,NBR_COMPO>, NBR_HYBRID_QTY > ghostEndIndex_;
+
     void computeOffsets( uint32 interpOrder ) ;
 
 public:
@@ -69,31 +85,24 @@ public:
 
     static const uint32 defaultNbrPaddingCells = 10;
 
-    std::array< std::array<LayoutType,3>, 9 > hybridQtyCentering_ ;
-
-    std::array< std::array<uint32,3>, 9 > physicalStartIndex_;
-    std::array< std::array<uint32,3>, 9 > physicalEndIndex_;
-    std::array< std::array<uint32,3>, 9 > ghostStartIndex_;
-    std::array< std::array<uint32,3>, 9 > ghostEndIndex_;
-
-
     explicit GridLayoutImplInternals(uint32 nbDims, uint32 interpOrder,
                                      std::array<uint32,3> nbrCellsXYZ ,
                                      std::array<double,3> dxdydz      );
 
-    LayoutType changeLayout( const LayoutType & layout ) const ;
+    LayoutType changeLayout( LayoutType layout ) const ;
 
-    LayoutType derivedLayout( const HybridQuantity & qty, Direction dir) const ;
-
-    uint32 nbDimensions_() const { return nbdims_; }
+    LayoutType derivedLayout( HybridQuantity qty, Direction dir) const ;
 
     uint32 nbrPaddingCells( Direction direction ) const noexcept;
     uint32 nbrPhysicalCells( Direction direction ) const noexcept;
 
-    uint32 cellNbrMin( LayoutType centering, Direction direction ) const ;
-    uint32 cellNbrMax( LayoutType centering, Direction direction ) const ;
+    uint32 nbrGhostAtMin( LayoutType centering ) const noexcept;
+    uint32 nbrGhostAtMax( LayoutType centering ) const noexcept;
 
-    uint32 ghostCellNbrMax( LayoutType centering, Direction direction ) const ;
+    uint32 cellIndexAtMin( LayoutType centering, Direction direction ) const ;
+    uint32 cellIndexAtMax( LayoutType centering, Direction direction ) const ;
+
+    uint32 ghostCellIndexAtMax( LayoutType centering, Direction direction ) const ;
 };
 
 

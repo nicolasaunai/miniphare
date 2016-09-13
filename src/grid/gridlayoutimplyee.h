@@ -6,7 +6,7 @@
 #include <array>
 
 #include "types.h"
-#include "gridconstants.h"
+#include "hybridenums.h"
 
 #include "gridlayoutimpl.h"
 
@@ -28,16 +28,16 @@ public:
 
     virtual ~GridLayoutImplYee() = default;
 
-    virtual uint32 nbDimensions() const override {return nbDimensions_();}
+    virtual uint32 nbDimensions() const override {return nbdims_;}
 
     virtual std::vector < std::tuple < uint32, Point> >
     fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const override ;
 
+    virtual std::array<AllocSizeT, NBR_COMPO> allocSize( EMFieldType fieldType ) const override ;
 
+    virtual std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const override ;
 
-    virtual std::array<AllocSizeT ,3> allocSize( EMFieldType fieldType ) const override ;
-
-    virtual AllocSizeT  allocSize( LayoutType layout ) const override ;
+    virtual AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const override ;
 
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, Direction direction) const override;

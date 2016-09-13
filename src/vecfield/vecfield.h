@@ -7,9 +7,10 @@
 #include <memory>
 #include <iostream>
 
-#include "Field/field.h"
+#include "constants.h"
 #include "types.h"
 
+#include "Field/field.h"
 
 //namespace VectorField{
 
@@ -35,8 +36,8 @@ public:
     static const uint32 VecZ = 2;
 
 
-    VecField(std::array<AllocSizeT, 3> allComponentSizes,
-             std::array<HybridQuantity, 3> qtyType, std::string name)
+    VecField(std::array<AllocSizeT, NBR_COMPO> allComponentSizes,
+             std::array<HybridQuantity, NBR_COMPO> qtyType, std::string name)
         : name_(name),
           xComponent_( allComponentSizes[0].nx_, allComponentSizes[0].ny_,
           allComponentSizes[0].nz_, qtyType[0], name.insert(1,"_x") ),

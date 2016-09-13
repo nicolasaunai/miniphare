@@ -1,7 +1,7 @@
 
 #include "gridlayoutimpl.h"
 
-#include "gridconstants.h"
+#include "hybridenums.h"
 
 #include <cmath>
 #include <stdexcept>
@@ -10,34 +10,18 @@
 GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims, uint32 interpOrder,
                                                  std::array<uint32,3> nbrCellsXYZ ,
                                                  std::array<double,3> dxdydz      )
-     : nbdims_{nbDims},
-       nbrCellx_{nbrCellsXYZ[0]}, nbrCelly_{nbrCellsXYZ[1]}, nbrCellz_{nbrCellsXYZ[2]},
-       nbrPaddingCellsX_{defaultNbrPaddingCells},
-       nbrPaddingCellsY_{defaultNbrPaddingCells},
-       nbrPaddingCellsZ_{defaultNbrPaddingCells},
-       dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]}
+    : nbdims_{nbDims},
+      nbrCellx_{nbrCellsXYZ[0]}, nbrCelly_{nbrCellsXYZ[1]}, nbrCellz_{nbrCellsXYZ[2]},
+      nbrPaddingCellsX_{defaultNbrPaddingCells},
+      nbrPaddingCellsY_{defaultNbrPaddingCells},
+      nbrPaddingCellsZ_{defaultNbrPaddingCells},
+      dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]}
 {
     computeOffsets( interpOrder );
 }
 
 
-LayoutType GridLayoutImplInternals::changeLayout( const LayoutType & layout ) const
-{
-    LayoutType newLayout ;
-
-    if( layout == LayoutType::primal )
-    {
-        newLayout = LayoutType::dual ;
-    } else
-    {
-        newLayout = LayoutType::primal ;
-    }
-
-    return newLayout ;
-}
-
-
-LayoutType GridLayoutImplInternals::derivedLayout( const HybridQuantity & qty, Direction dir) const
+LayoutType GridLayoutImplInternals::derivedLayout(HybridQuantity qty, Direction dir) const
 {
 
     uint32 iField = static_cast<uint32>( qty ) ;
@@ -47,6 +31,20 @@ LayoutType GridLayoutImplInternals::derivedLayout( const HybridQuantity & qty, D
 
     return newLayout ;
 }
+
+
+LayoutType GridLayoutImplInternals::changeLayout(LayoutType layout ) const
+{
+    LayoutType newLayout = LayoutType::primal ;
+
+    if( layout == LayoutType::primal )
+    {
+        newLayout = LayoutType::dual ;
+    }
+
+    return newLayout ;
+}
+
 
 void GridLayoutImplInternals::computeOffsets(uint32 interpOrder)
 {
@@ -102,50 +100,56 @@ uint32 GridLayoutImplInternals::nbrPhysicalCells( Direction direction ) const no
 }
 
 
-uint32 GridLayoutImplInternals::cellNbrMin( LayoutType centering,
-                                            Direction direction ) const
+uint32 GridLayoutImplInternals::cellIndexAtMin( LayoutType centering,
+                                                Direction direction ) const
 {
 
-    uint32 numCell = nbrPaddingCells( direction ) ;
+    uint32 numCell = nbrPaddingCells( direction ) + nbrGhostAtMin( centering );
 
-    if( centering == LayoutType::primal)
+    return numCell ;
+}
+
+
+uint32 GridLayoutImplInternals::cellIndexAtMax( LayoutType centering,
+                                                Direction direction ) const
+{
+    uint32 numCell = cellIndexAtMin(centering, direction) + nbrPhysicalCells( direction ) ;
+
+    return numCell ;
+}
+
+
+uint32 GridLayoutImplInternals::ghostCellIndexAtMax( LayoutType centering,
+                                                     Direction direction ) const
+{
+    uint32 numCell = cellIndexAtMax( centering, direction ) + nbrGhostAtMax( centering );
+
+    return numCell ;
+}
+
+uint32 GridLayoutImplInternals::nbrGhostAtMin( LayoutType centering ) const noexcept
+{
+    uint32 nbrGhosts = centeredOffset_ ;
+
+    if( centering == LayoutType::dual )
     {
-        numCell += centeredOffset_ ;
-    } else
-    {
-        numCell += leftOffset_ ;
+        nbrGhosts = leftOffset_;
     }
 
-    return numCell ;
+    return nbrGhosts ;
 }
 
-
-uint32 GridLayoutImplInternals::cellNbrMax( LayoutType centering,
-                                            Direction direction ) const
+uint32 GridLayoutImplInternals::nbrGhostAtMax( LayoutType centering ) const noexcept
 {
-    uint32 numCell = cellNbrMin(centering, direction) + nbrPhysicalCells( direction ) ;
+    uint32 nbrGhosts = centeredOffset_ ;
 
-    return numCell ;
-}
-
-
-uint32 GridLayoutImplInternals::ghostCellNbrMax( LayoutType centering,
-                                                 Direction direction ) const
-{
-    uint32 numCell = cellNbrMax( centering, direction ) ;
-
-    if( centering == LayoutType::primal)
+    if( centering == LayoutType::dual )
     {
-        numCell += centeredOffset_ ;
-    } else
-    {
-        numCell += rightOffset_ ;
+        nbrGhosts = rightOffset_ ;
     }
 
-    return numCell ;
+    return nbrGhosts ;
 }
-
-
 
 
 

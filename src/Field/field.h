@@ -7,7 +7,7 @@
 #include <cstddef>
 
 #include "types.h"
-#include "gridconstants.h"
+#include "hybridenums.h"
 
 
 class Field
@@ -18,8 +18,7 @@ public:
     Field(uint32 nx, uint32 ny, uint32 nz,
           HybridQuantity qtyType, std::string name):
         name_(name), qtyType_{qtyType},
-        shape_{nx,ny,nz}, ndims_{2},
-        data_{}  {data_.resize(nx*ny*nz);}
+        shape_{nx,ny,nz},data_{}  {data_.resize(nx*ny*nz);}
 
     Field(Field&& source) = default;
     Field& operator=(Field&& source) = default;
@@ -48,7 +47,6 @@ public:
     {return data_[iz + shape_[2]*iy + shape_[1]*shape_[2]*ix]; }
 
     std::vector<uint32> shape() const {return shape_;}
-    uint32 nbDimensions()const{return ndims_;}
 
     HybridQuantity type() const {return qtyType_;}
 
@@ -58,7 +56,7 @@ private:
     HybridQuantity qtyType_ ;
 
     std::vector<uint32> shape_;
-    uint32 ndims_;
+
     std::vector<double> data_;
 
 

@@ -55,7 +55,7 @@ HEADERS += \
     pusher/pusher.h \
     Solver/solver.h \
     vecfield/vecfield.h \
-    gridconstants.h
+    hybridenums.h
 
 
 DISTFILES += \

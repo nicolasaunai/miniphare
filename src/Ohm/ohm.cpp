@@ -1,5 +1,5 @@
 
-#include "gridconstants.h"
+#include "hybridenums.h"
 
 #include "ohm.h"
 #include "ohmimplfactory.h"

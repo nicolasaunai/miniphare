@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "types.h"
-#include "gridconstants.h"
+#include "hybridenums.h"
 
 #include "Electromag/electromag.h"
 #include "Field/field.h"
@@ -59,6 +59,7 @@ public:
     GridLayout& operator=(GridLayout const& source) = delete;
     GridLayout& operator=(GridLayout&& source) = delete;
 
+    uint32 nbDimensions() const ;
 
     double dx() const {return dx_;}
     double dy() const {return dy_;}
@@ -78,9 +79,11 @@ public:
     // return the (total) number of mesh points
     // for the 3 components of Ex, Ey, Ez      ( if EMFieldType==EVecField )
     // or for the 3 components of Bx, By, Bz   ( if EMFieldType==BVecField )
-    std::array<AllocSizeT ,3> allocSize( EMFieldType fieldType ) const ;
+    std::array<AllocSizeT, NBR_COMPO> allocSize( EMFieldType fieldType ) const ;
 
-    AllocSizeT  allocSize( LayoutType layout ) const ;
+    std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const ;
+
+    AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const ;
 
 
     uint32 physicalStartIndex(Field const& field, Direction direction) const;
@@ -91,7 +94,6 @@ public:
 
     void deriv(Field const& operand, Direction direction, Field& derivative)const;
 
-    uint32 nbDimensions() const;
 };
 
 
