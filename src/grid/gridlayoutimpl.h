@@ -27,9 +27,10 @@ public:
     fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const = 0;
 
     virtual std::array<AllocSizeT, NBR_COMPO> allocSize( EMFieldType vecField ) const = 0 ;
-    virtual std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const = 0;
 
     virtual AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const = 0 ;
+
+    virtual std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const = 0;
 
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, Direction direction) const = 0;
@@ -38,7 +39,7 @@ public:
     virtual uint32 ghostStartIndex(Field const& field, Direction direction) const = 0;
     virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const = 0;
 
-    virtual void deriv(Field const& operand, Direction direction, Field& derivative)const = 0;
+    virtual void deriv1D(Field const& operand, Direction direction, Field& derivative)const = 0;
 
     virtual uint32 nbDimensions() const = 0;
 
@@ -69,6 +70,10 @@ protected:
     double dy_ ;
     double dz_ ;
 
+    double odx_ ;
+    double ody_ ;
+    double odz_ ;
+
     std::array< std::array<LayoutType,NBR_COMPO>, NBR_HYBRID_QTY > hybridQtyCentering_ ;
 
     std::array< std::array<uint32,NBR_COMPO>, NBR_HYBRID_QTY > physicalStartIndex_;
@@ -76,7 +81,9 @@ protected:
     std::array< std::array<uint32,NBR_COMPO>, NBR_HYBRID_QTY > ghostStartIndex_;
     std::array< std::array<uint32,NBR_COMPO>, NBR_HYBRID_QTY > ghostEndIndex_;
 
-    void computeOffsets( uint32 interpOrder ) ;
+    void computeOffsets(uint32 ghostParameter ) ;
+
+    double inverseSpatialStep( Direction direction ) const noexcept ;
 
 public:
 
@@ -85,7 +92,7 @@ public:
 
     static const uint32 defaultNbrPaddingCells = 10;
 
-    explicit GridLayoutImplInternals(uint32 nbDims, uint32 interpOrder,
+    explicit GridLayoutImplInternals(uint32 nbDims, uint32 ghostParameter,
                                      std::array<uint32,3> nbrCellsXYZ ,
                                      std::array<double,3> dxdydz      );
 

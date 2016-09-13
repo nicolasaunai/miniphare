@@ -35,9 +35,9 @@ public:
 
     virtual std::array<AllocSizeT, NBR_COMPO> allocSize( EMFieldType fieldType ) const override ;
 
-    virtual std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const override ;
-
     virtual AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const override ;
+
+    virtual std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const override ;
 
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, Direction direction) const override;
@@ -46,7 +46,7 @@ public:
     virtual uint32 ghostStartIndex(Field const& field, Direction direction) const override;
     virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const override;
 
-    virtual void deriv(Field const& operand, Direction direction, Field& derivative) const override;
+    virtual void deriv1D(Field const& operand, Direction direction, Field& derivative) const override;
 
 
 };

@@ -20,14 +20,15 @@
 
 GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
                        uint32 nbDims      , std::string layoutName,
-                       uint32 interpOrder )
+                       uint32 ghostParameter )
 
-    : dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]},
+    : nbDims_{nbDims},
+      dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]},
       odx_{1./dx_}, ody_{1./dy_}, odz_{1./dz_},
       nbrCellx_{nbrCells[0]}, nbrCelly_{nbrCells[1]}, nbrCellz_{nbrCells[2]},
-      interpOrder_{interpOrder},
+      ghostParameter_{ghostParameter},
       implPtr_{ GridLayoutImplFactory::createGridLayoutImpl(
-                    nbDims, interpOrder, layoutName, nbrCells, dxdydz ) }
+                    nbDims, ghostParameter, layoutName, nbrCells, dxdydz ) }
 {
     switch (nbDims)
     {
@@ -55,13 +56,13 @@ GridLayout::GridLayout(GridLayout const& source)
       nbrCellx_{source.nbrCellx_},
       nbrCelly_{source.nbrCelly_},
       nbrCellz_{source.nbrCellz_},
-      interpOrder_{source.interpOrder_}
+      ghostParameter_{source.ghostParameter_}
 {
     uint32 nbDims = source.nbDimensions();
 
     //TODO : "yee" bad hardcoded. make a clone
     implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(
-                nbDims, interpOrder_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} },
+                nbDims, ghostParameter_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} },
                 { {dx_, dy_, dz_} } ) ;
 }
 
@@ -130,16 +131,23 @@ uint32 GridLayout::ghostEndIndex  (Field const& field, Direction direction) cons
 
 void GridLayout::deriv(Field const& operand, Direction direction, Field& derivative)const
 {
-    implPtr_->deriv(operand, direction, derivative);
+    switch(nbDims_)
+    {
+    case 1:
+        implPtr_->deriv1D(operand, direction, derivative);
+        break ;
+
+    default:
+        throw std::runtime_error("Error - only 1D fields are handled for the moment ");
+    }
+
 }
 
 
-
-
-uint32 GridLayout::nbDimensions() const
-{
-    return implPtr_->nbDimensions();
-}
+//uint32 GridLayout::nbDimensions() const
+//{
+//    return implPtr_->nbDimensions();
+//}
 
 
 /* ---------------------------------------------------------------------------

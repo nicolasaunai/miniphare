@@ -325,8 +325,6 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
 
 std::array<AllocSizeT, NBR_COMPO> GridLayoutImplYee::allocSize( OhmTerm term ) const
 {
-
-
 }
 
 
@@ -342,7 +340,7 @@ GridLayoutImplYee::fieldNodeCoordinates1D(
 
     double half_cell = 0. ;
 
-    uint32 iFx = static_cast<uint32>(field.type()) ;
+    uint32 iFx = static_cast<uint32>(field.hybridQty()) ;
 
     LayoutType centering = hybridQtyCentering_[iFx][idirX] ;
 
@@ -373,16 +371,37 @@ GridLayoutImplYee::fieldNodeCoordinates1D(
 }
 
 
-void GridLayoutImplYee::deriv(Field const& operand, Direction direction, Field& derivative) const
+void GridLayoutImplYee::deriv1D(Field const& operand, Direction direction, Field& derivative) const
 {
 
-    uint32 iStart = physicalStartIndex( operand, direction ) ;
+    uint32 iOpStart = physicalStartIndex( operand, direction ) ;
+    uint32 iOpEnd   = physicalEndIndex  ( operand, direction ) ;
 
-//    for( uint32 ik=physicalStartIndex())
-//    {
+    uint32 iDerStart = physicalStartIndex( derivative, direction ) ;
+//    uint32 iDerEnd   = physicalEndIndex  ( derivative, direction ) ;
 
-//    }
+    uint32 iDirX = static_cast<uint32>( Direction::directionX ) ;
 
+    uint32 iHybridQty = static_cast<uint32>( operand.hybridQty() ) ;
+
+    LayoutType opLayout = hybridQtyCentering_[iHybridQty][iDirX] ;
+
+    double ods = inverseSpatialStep( direction ) ;
+
+    uint32 iDer = 0 ;
+    if( opLayout == LayoutType::primal )
+    {
+        iDer = iDerStart + 1 ;
+    } else  // opLayout on the dual
+    {
+        iDer = iDerStart ;
+    }
+
+    for( uint32 iOp=iOpStart ; iOp<iOpEnd ; ++iOp )
+    {
+        derivative(iDer) = ods * ( operand(iOp+1) - operand(iOp) ) ;
+        ++iDer ;
+    }
 
 }
 
@@ -391,14 +410,14 @@ void GridLayoutImplYee::deriv(Field const& operand, Direction direction, Field& 
 uint32 GridLayoutImplYee::physicalStartIndex(Field const& field, Direction direction) const
 {
 
-    return physicalStartIndex_[static_cast<uint32>(field.type())][static_cast<uint32>(direction)];
+    return physicalStartIndex_[static_cast<uint32>(field.hybridQty())][static_cast<uint32>(direction)];
 }
 
 
 uint32 GridLayoutImplYee::physicalEndIndex(Field const& field, Direction direction) const
 {
 
-    return physicalEndIndex_[static_cast<uint32>(field.type())][static_cast<uint32>(direction)];
+    return physicalEndIndex_[static_cast<uint32>(field.hybridQty())][static_cast<uint32>(direction)];
 }
 
 
@@ -406,14 +425,14 @@ uint32 GridLayoutImplYee::physicalEndIndex(Field const& field, Direction directi
 uint32 GridLayoutImplYee::ghostStartIndex(Field const& field, Direction direction) const
 {
 
-    return ghostStartIndex_[static_cast<uint32>(field.type())][static_cast<uint32>(direction)];
+    return ghostStartIndex_[static_cast<uint32>(field.hybridQty())][static_cast<uint32>(direction)];
 }
 
 
 uint32 GridLayoutImplYee::ghostEndIndex(Field const& field, Direction direction) const
 {
 
-    return ghostEndIndex_[static_cast<uint32>(field.type())][static_cast<uint32>(direction)];
+    return ghostEndIndex_[static_cast<uint32>(field.hybridQty())][static_cast<uint32>(direction)];
 }
 
 

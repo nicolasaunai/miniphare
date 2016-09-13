@@ -7,7 +7,7 @@
 #include <stdexcept>
 
 
-GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims, uint32 interpOrder,
+GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims, uint32 ghostParameter,
                                                  std::array<uint32,3> nbrCellsXYZ ,
                                                  std::array<double,3> dxdydz      )
     : nbdims_{nbDims},
@@ -15,9 +15,10 @@ GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims, uint32 interpOrd
       nbrPaddingCellsX_{defaultNbrPaddingCells},
       nbrPaddingCellsY_{defaultNbrPaddingCells},
       nbrPaddingCellsZ_{defaultNbrPaddingCells},
-      dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]}
+      dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]},
+      odx_{1./dx_}, ody_{1./dy_}, odz_{1./dz_}
 {
-    computeOffsets( interpOrder );
+    computeOffsets( ghostParameter );
 }
 
 
@@ -46,11 +47,34 @@ LayoutType GridLayoutImplInternals::changeLayout(LayoutType layout ) const
 }
 
 
-void GridLayoutImplInternals::computeOffsets(uint32 interpOrder)
+void GridLayoutImplInternals::computeOffsets(uint32 ghostParameter)
 {
-    centeredOffset_ = static_cast<uint32> ( std::floor(interpOrder/2.) )      ;
-    leftOffset_     = static_cast<uint32> ( std::floor((interpOrder -1)/2.) ) ;
-    rightOffset_    = static_cast<uint32> ( std::floor((interpOrder +1)/2.) ) ;
+    centeredOffset_ = static_cast<uint32> ( std::floor(ghostParameter/2.) )      ;
+    leftOffset_     = static_cast<uint32> ( std::floor((ghostParameter -1)/2.) ) ;
+    rightOffset_    = static_cast<uint32> ( std::floor((ghostParameter +1)/2.) ) ;
+}
+
+
+double GridLayoutImplInternals::inverseSpatialStep( Direction direction ) const noexcept
+{
+    double ods = 0. ;
+
+    switch( direction )
+    {
+    case Direction::directionX:
+        ods = odx_;
+        break;
+
+    case Direction::directionY:
+        ods = ody_ ;
+        break;
+
+    case Direction::directionZ:
+        ods = odz_ ;
+        break;
+    }
+
+    return ods ;
 }
 
 

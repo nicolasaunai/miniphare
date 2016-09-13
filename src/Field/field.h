@@ -48,7 +48,7 @@ public:
 
     std::vector<uint32> shape() const {return shape_;}
 
-    HybridQuantity type() const {return qtyType_;}
+    HybridQuantity hybridQty() const {return qtyType_;}
 
 private:
 

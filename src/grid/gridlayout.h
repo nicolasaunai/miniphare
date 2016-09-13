@@ -18,6 +18,8 @@
 class GridLayout
 {
 private:
+    uint32 nbDims_ ;
+
     double dx_ ;        // mesh sizes
     double dy_ ;        // mesh sizes
     double dz_ ;        // mesh sizes
@@ -30,7 +32,7 @@ private:
     uint32 nbrCelly_  ;
     uint32 nbrCellz_  ;
 
-    uint32 interpOrder_ ;
+    uint32 ghostParameter_ ;
 
     std::unique_ptr<GridLayoutImpl> implPtr_;
 
@@ -51,7 +53,7 @@ public:
 
     GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
                uint32 nbDims      , std::string layoutName,
-               uint32 interpOrder );
+               uint32 ghostParameter );
 
     GridLayout(GridLayout const& source);
     GridLayout(GridLayout&& source);
@@ -59,7 +61,7 @@ public:
     GridLayout& operator=(GridLayout const& source) = delete;
     GridLayout& operator=(GridLayout&& source) = delete;
 
-    uint32 nbDimensions() const ;
+    uint32 nbDimensions() const { return nbDims_ ; }
 
     double dx() const {return dx_;}
     double dy() const {return dy_;}
