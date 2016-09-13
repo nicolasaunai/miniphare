@@ -29,7 +29,9 @@ SOURCES += main.cpp \
     Initializer/ionsinitializer.cpp \
     Initializer/electromaginitializer.cpp \
     Initializer/ohminitializer.cpp \
-    Initializer/pythoninitializerfactory.cpp
+    Initializer/pythoninitializerfactory.cpp \
+    Initializer/particleinitializer.cpp \
+    Initializer/fluidparticleinitializer.cpp
 
 
 HEADERS += \
@@ -64,7 +66,9 @@ HEADERS += \
     Initializer/ionsinitializer.h \
     Initializer/electromaginitializer.h \
     Initializer/ohminitializer.h \
-    Initializer/pythoninitializerfactory.h
+    Initializer/pythoninitializerfactory.h \
+    Initializer/particleinitializer.h \
+    Initializer/fluidparticleinitializer.h
 
 
 
