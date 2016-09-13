@@ -25,7 +25,12 @@ SOURCES += main.cpp \
     Faraday/faradayimpl1d.cpp \
     grid/gridlayoutimpl.cpp \
     utility.cpp \
-    Plasmas/particleloader.cpp
+    Plasmas/particleloader.cpp \
+    Initializer/ionsinitializer.cpp \
+    Initializer/electromaginitializer.cpp \
+    Initializer/ohminitializer.cpp \
+    Initializer/pythoninitializerfactory.cpp
+
 
 HEADERS += \
     Plasmas/ions.h \
@@ -54,7 +59,12 @@ HEADERS += \
     grid/gridlayoutimpl.h \
     constants.h \
     utility.h \
-    Plasmas/particleloader.h
+    Plasmas/particleloader.h \
+    Initializer/initializerfactory.h \
+    Initializer/ionsinitializer.h \
+    Initializer/electromaginitializer.h \
+    Initializer/ohminitializer.h \
+    Initializer/pythoninitializerfactory.h
 
 
 
