@@ -24,7 +24,8 @@ SOURCES += main.cpp \
     Ohm/ohmimpl1d.cpp \
     Faraday/faradayimpl1d.cpp \
     grid/gridlayoutimpl.cpp \
-    utility.cpp
+    utility.cpp \
+    Plasmas/particleloader.cpp
 
 HEADERS += \
     Plasmas/ions.h \
@@ -52,9 +53,11 @@ HEADERS += \
     Faraday/faradayimpl1d.h \
     grid/gridlayoutimpl.h \
     constants.h \
-    utility.h
+    utility.h \
+    Plasmas/particleloader.h
 
 
 
 DISTFILES += \
-    pusher/ModelPusher.qmodel
+    pusher/ModelPusher.qmodel \
+    Plasmas/Plasma.qmodel

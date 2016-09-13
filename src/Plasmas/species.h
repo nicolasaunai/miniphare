@@ -4,6 +4,31 @@
 #include "Field/field.h"
 #include "grid/gridlayout.h"
 #include "particles.h"
+#include "particleloader.h"
+
+
+// load particles according to
+//    - a profile
+//    - a distribution strategy
+/*
+
+  ParticleLoader
+  {
+    DistributionStrategy;
+
+    struct CellCenterPosition
+    {
+        double x,y,z;
+    };
+    std::vector<CellCenterPosition> cellpos; // is filled by who? layout.cellCenters()
+
+    load()
+    {
+
+    }
+  };
+
+  */
 
 
 class Species
@@ -14,6 +39,7 @@ private:
     Field rho_;
     Field bulkVel_;
     std::vector<Particle> particleArray_;
+    // ParticleLoader pload;
 
 public:
     Species(GridLayout const& layout, std::string const& name);

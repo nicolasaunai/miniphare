@@ -8,7 +8,7 @@
 #include "Plasmas/ions.h"
 
 
-
+#if 1
 TEST(IonTest, ionIsConstructible)
 {
     ASSERT_FALSE( std::is_copy_constructible<Ions>::value );
@@ -21,12 +21,12 @@ TEST(IonTest, ionIsAssignCopy)
 }
 
 
-#if 0
+
 TEST(IonTest, ionMoveCtorIsNoexcept)
 {
    // ASSERT_TRUE( noexcept(Ions(std::declval<Ions>())) );
 }
-#endif
+
 
 
 
@@ -56,7 +56,7 @@ TEST(IonTest, speciesGetterNonConst)
 
 
 
-
+#endif
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
