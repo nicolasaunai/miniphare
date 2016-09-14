@@ -5,6 +5,12 @@
 #include "particleinitializer.h"
 
 
+/**
+ * @brief FluidParticleInitializer is a ParticleInitializer where
+ *        particles are created following density, bulk velocity and temperature
+ *        profiles and are distributed according to a locally Mawwellian
+ *        distribution function.
+ */
 class FluidParticleInitializer : public ParticleInitializer
 {
 
