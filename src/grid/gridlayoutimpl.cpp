@@ -46,7 +46,18 @@ LayoutType GridLayoutImplInternals::changeLayout(LayoutType layout ) const
     return newLayout ;
 }
 
-
+/**
+ * @brief GridLayoutImplInternals::computeOffsets
+ * This method computes the number of ghost cells for fields.
+ * On the primal mesh the number of ghosts depends on centeredOffset_
+ * On the dual mesh the number of ghosts depends on
+ * leftOffset_ and rightOffset_
+ *
+ * This is explained in details on the wiki page
+ * https://hephaistos.lpp.polytechnique.fr/redmine/projects/hyb-par/wiki/PrimalDual
+ *
+ * @param ghostParameter, corresponds to the interpolation order
+ */
 void GridLayoutImplInternals::computeOffsets(uint32 ghostParameter)
 {
     centeredOffset_ = static_cast<uint32> ( std::floor(ghostParameter/2.) )      ;
@@ -57,70 +68,25 @@ void GridLayoutImplInternals::computeOffsets(uint32 ghostParameter)
 
 double GridLayoutImplInternals::inverseSpatialStep( Direction direction ) const noexcept
 {
-    double ods = 0. ;
+    uint32 iDir = static_cast<uint32>( direction ) ;
 
-    switch( direction )
-    {
-    case Direction::directionX:
-        ods = odx_;
-        break;
-
-    case Direction::directionY:
-        ods = ody_ ;
-        break;
-
-    case Direction::directionZ:
-        ods = odz_ ;
-        break;
-    }
-
-    return ods ;
+    return odxdydz_[iDir] ;
 }
 
 
 uint32 GridLayoutImplInternals::nbrPaddingCells( Direction direction ) const noexcept
 {
-    uint32 number = 0 ;
+    uint32 iDir = static_cast<uint32>( direction ) ;
 
-    switch( direction )
-    {
-    case Direction::directionX:
-        number = nbrPaddingCellsX_ ;
-        break ;
-
-    case Direction::directionY:
-        number = nbrPaddingCellsY_ ;
-        break ;
-
-    case Direction::directionZ:
-        number = nbrPaddingCellsZ_ ;
-        break ;
-    }
-
-    return number ;
+    return nbrPaddingCells_[iDir] ;
 }
 
 
 uint32 GridLayoutImplInternals::nbrPhysicalCells( Direction direction ) const noexcept
 {
-    uint32 number = 0 ;
+    uint32 iDir = static_cast<uint32>( direction ) ;
 
-    switch( direction )
-    {
-    case Direction::directionX:
-        number = nbrCellx_ ;
-        break ;
-
-    case Direction::directionY:
-        number = nbrCelly_ ;
-        break ;
-
-    case Direction::directionZ:
-        number = nbrCellz_ ;
-        break ;
-    }
-
-    return number ;
+    return nbrPhysicalCells_[iDir] ;
 }
 
 
@@ -128,27 +94,27 @@ uint32 GridLayoutImplInternals::cellIndexAtMin( LayoutType centering,
                                                 Direction direction ) const
 {
 
-    uint32 numCell = nbrPaddingCells( direction ) + nbrGhostAtMin( centering );
+    uint32 cellIndex = nbrPaddingCells( direction ) + nbrGhostAtMin( centering );
 
-    return numCell ;
+    return cellIndex ;
 }
 
 
 uint32 GridLayoutImplInternals::cellIndexAtMax( LayoutType centering,
                                                 Direction direction ) const
 {
-    uint32 numCell = cellIndexAtMin(centering, direction) + nbrPhysicalCells( direction ) ;
+    uint32 cellIndex = cellIndexAtMin(centering, direction) + nbrPhysicalCells( direction ) ;
 
-    return numCell ;
+    return cellIndex ;
 }
 
 
 uint32 GridLayoutImplInternals::ghostCellIndexAtMax( LayoutType centering,
                                                      Direction direction ) const
 {
-    uint32 numCell = cellIndexAtMax( centering, direction ) + nbrGhostAtMax( centering );
+    uint32 cellIndex = cellIndexAtMax( centering, direction ) + nbrGhostAtMax( centering );
 
-    return numCell ;
+    return cellIndex ;
 }
 
 uint32 GridLayoutImplInternals::nbrGhostAtMin( LayoutType centering ) const noexcept

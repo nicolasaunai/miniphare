@@ -12,29 +12,40 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
     : GridLayoutImplInternals(nbDims, interpOrder,
                               nbrCellsXYZ, dxdydz)
 {
-    Direction dirX = Direction::directionX ;
-    Direction dirY = Direction::directionY ;
-    Direction dirZ = Direction::directionZ ;
 
-    LayoutType primal = LayoutType::primal ;
-    LayoutType dual   = LayoutType::dual   ;
+    gridDataT staticData{} ;
 
-    uint32 idirX = static_cast<uint32>(Direction::directionX) ;
-    uint32 idirY = static_cast<uint32>(Direction::directionY) ;
-    uint32 idirZ = static_cast<uint32>(Direction::directionZ) ;
+    initGridLayoutImpl01( staticData ) ;
+    initGridLayoutImpl02( staticData ) ;
+    initGridLayoutImpl03( staticData ) ;
+    initGridLayoutImpl04( staticData ) ;
+    initGridLayoutImpl05( staticData ) ;
+    initGridLayoutImpl06( staticData ) ;
 
-    uint32 iBx = static_cast<uint32>(HybridQuantity::Bx) ;
-    uint32 iBy = static_cast<uint32>(HybridQuantity::By) ;
-    uint32 iBz = static_cast<uint32>(HybridQuantity::Bz) ;
+}
 
-    uint32 iEx = static_cast<uint32>(HybridQuantity::Ex) ;
-    uint32 iEy = static_cast<uint32>(HybridQuantity::Ey) ;
-    uint32 iEz = static_cast<uint32>(HybridQuantity::Ez) ;
 
-    uint32 irho = static_cast<uint32>(HybridQuantity::rho) ;
-    uint32 iV = static_cast<uint32>(HybridQuantity::V) ;
-    uint32 iP = static_cast<uint32>(HybridQuantity::P) ;
 
+
+
+void GridLayoutImplYee::initGridLayoutImpl01( const gridDataT & staticData )
+{
+    odxdydz_[idirX] = odx_ ;
+    odxdydz_[idirY] = ody_ ;
+    odxdydz_[idirZ] = odz_ ;
+
+    nbrPaddingCells_[idirX] = nbrPaddingCellsX_ ;
+    nbrPaddingCells_[idirY] = nbrPaddingCellsY_ ;
+    nbrPaddingCells_[idirZ] = nbrPaddingCellsZ_ ;
+
+    nbrPhysicalCells_[idirX] = nbrCellx_ ;
+    nbrPhysicalCells_[idirY] = nbrCelly_ ;
+    nbrPhysicalCells_[idirZ] = nbrCellz_ ;
+
+}
+
+void GridLayoutImplYee::initGridLayoutImpl02( const gridDataT & staticData )
+{
 
     hybridQtyCentering_[iBx][idirX]  = primal ;
     hybridQtyCentering_[iBx][idirY]  = dual   ;
@@ -72,7 +83,10 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
     hybridQtyCentering_[iP][idirY]   = primal ;
     hybridQtyCentering_[iP][idirZ]   = primal ;
 
+}
 
+void GridLayoutImplYee::initGridLayoutImpl03( const gridDataT & staticData )
+{
     physicalStartIndex_[iBx][idirX]  = cellIndexAtMin( hybridQtyCentering_[iBx][idirX], dirX ) ;
     physicalStartIndex_[iBx][idirY]  = cellIndexAtMin( hybridQtyCentering_[iBx][idirY], dirY ) ;
     physicalStartIndex_[iBx][idirZ]  = cellIndexAtMin( hybridQtyCentering_[iBx][idirZ], dirZ ) ;
@@ -109,6 +123,10 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
     physicalStartIndex_[iP  ][idirY] = cellIndexAtMin( hybridQtyCentering_[iP  ][idirY], dirY ) ;
     physicalStartIndex_[iP  ][idirZ] = cellIndexAtMin( hybridQtyCentering_[iP  ][idirZ], dirZ ) ;
 
+}
+
+void GridLayoutImplYee::initGridLayoutImpl04( const gridDataT & staticData )
+{
 
     physicalEndIndex_[iBx][idirX]  = cellIndexAtMax( hybridQtyCentering_[iBx][idirX], dirX ) ;
     physicalEndIndex_[iBx][idirY]  = cellIndexAtMax( hybridQtyCentering_[iBx][idirY], dirY ) ;
@@ -146,43 +164,52 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
     physicalEndIndex_[iP  ][idirY] = cellIndexAtMax( hybridQtyCentering_[iP  ][idirY], dirY ) ;
     physicalEndIndex_[iP  ][idirZ] = cellIndexAtMax( hybridQtyCentering_[iP  ][idirZ], dirZ ) ;
 
+}
 
-    ghostStartIndex_[iBx][idirX]  = nbrPaddingCells( dirX ) ;
-    ghostStartIndex_[iBx][idirY]  = nbrPaddingCells( dirY ) ;
-    ghostStartIndex_[iBx][idirZ]  = nbrPaddingCells( dirZ ) ;
+void GridLayoutImplYee::initGridLayoutImpl05( const gridDataT & staticData )
+{
 
-    ghostStartIndex_[iBy][idirX]  = nbrPaddingCells( dirX ) ;
-    ghostStartIndex_[iBy][idirY]  = nbrPaddingCells( dirY ) ;
-    ghostStartIndex_[iBy][idirZ]  = nbrPaddingCells( dirZ ) ;
+    ghostStartIndex_[iBx][idirX]  = nbrPaddingCells_[idirX] ;
+    ghostStartIndex_[iBx][idirY]  = nbrPaddingCells_[idirY] ;
+    ghostStartIndex_[iBx][idirZ]  = nbrPaddingCells_[idirZ] ;
 
-    ghostStartIndex_[iBz][idirX]  = nbrPaddingCells( dirX ) ;
-    ghostStartIndex_[iBz][idirY]  = nbrPaddingCells( dirY ) ;
-    ghostStartIndex_[iBz][idirZ]  = nbrPaddingCells( dirZ ) ;
+    ghostStartIndex_[iBy][idirX]  = nbrPaddingCells_[idirX] ;
+    ghostStartIndex_[iBy][idirY]  = nbrPaddingCells_[idirY] ;
+    ghostStartIndex_[iBy][idirZ]  = nbrPaddingCells_[idirZ] ;
 
-    ghostStartIndex_[iEx][idirX]  = nbrPaddingCells( dirX ) ;
-    ghostStartIndex_[iEx][idirY]  = nbrPaddingCells( dirY ) ;
-    ghostStartIndex_[iEx][idirZ]  = nbrPaddingCells( dirZ ) ;
+    ghostStartIndex_[iBz][idirX]  = nbrPaddingCells_[idirX] ;
+    ghostStartIndex_[iBz][idirY]  = nbrPaddingCells_[idirY] ;
+    ghostStartIndex_[iBz][idirZ]  = nbrPaddingCells_[idirZ] ;
 
-    ghostStartIndex_[iEy][idirX]  = nbrPaddingCells( dirX ) ;
-    ghostStartIndex_[iEy][idirY]  = nbrPaddingCells( dirY ) ;
-    ghostStartIndex_[iEy][idirZ]  = nbrPaddingCells( dirZ ) ;
+    ghostStartIndex_[iEx][idirX]  = nbrPaddingCells_[idirX] ;
+    ghostStartIndex_[iEx][idirY]  = nbrPaddingCells_[idirY] ;
+    ghostStartIndex_[iEx][idirZ]  = nbrPaddingCells_[idirZ] ;
 
-    ghostStartIndex_[iEz][idirX]  = nbrPaddingCells( dirX ) ;
-    ghostStartIndex_[iEz][idirY]  = nbrPaddingCells( dirY ) ;
-    ghostStartIndex_[iEz][idirZ]  = nbrPaddingCells( dirZ ) ;
+    ghostStartIndex_[iEy][idirX]  = nbrPaddingCells_[idirX] ;
+    ghostStartIndex_[iEy][idirY]  = nbrPaddingCells_[idirY] ;
+    ghostStartIndex_[iEy][idirZ]  = nbrPaddingCells_[idirZ] ;
 
-    ghostStartIndex_[irho][idirX] = nbrPaddingCells( dirX ) ;
-    ghostStartIndex_[irho][idirY] = nbrPaddingCells( dirY ) ;
-    ghostStartIndex_[irho][idirZ] = nbrPaddingCells( dirZ ) ;
+    ghostStartIndex_[iEz][idirX]  = nbrPaddingCells_[idirX] ;
+    ghostStartIndex_[iEz][idirY]  = nbrPaddingCells_[idirY] ;
+    ghostStartIndex_[iEz][idirZ]  = nbrPaddingCells_[idirZ] ;
 
-    ghostStartIndex_[iV  ][idirX] = nbrPaddingCells( dirX ) ;
-    ghostStartIndex_[iV  ][idirY] = nbrPaddingCells( dirY ) ;
-    ghostStartIndex_[iV  ][idirZ] = nbrPaddingCells( dirZ ) ;
+    ghostStartIndex_[irho][idirX] = nbrPaddingCells_[idirX] ;
+    ghostStartIndex_[irho][idirY] = nbrPaddingCells_[idirY] ;
+    ghostStartIndex_[irho][idirZ] = nbrPaddingCells_[idirZ] ;
 
-    ghostStartIndex_[iP  ][idirX] = nbrPaddingCells( dirX ) ;
-    ghostStartIndex_[iP  ][idirY] = nbrPaddingCells( dirY ) ;
-    ghostStartIndex_[iP  ][idirZ] = nbrPaddingCells( dirZ ) ;
+    ghostStartIndex_[iV  ][idirX] = nbrPaddingCells_[idirX] ;
+    ghostStartIndex_[iV  ][idirY] = nbrPaddingCells_[idirY] ;
+    ghostStartIndex_[iV  ][idirZ] = nbrPaddingCells_[idirZ] ;
 
+    ghostStartIndex_[iP  ][idirX] = nbrPaddingCells_[idirX] ;
+    ghostStartIndex_[iP  ][idirY] = nbrPaddingCells_[idirY] ;
+    ghostStartIndex_[iP  ][idirZ] = nbrPaddingCells_[idirZ] ;
+
+}
+
+
+void GridLayoutImplYee::initGridLayoutImpl06( const gridDataT & staticData )
+{
 
     ghostEndIndex_[iBx][idirX]  = ghostCellIndexAtMax( hybridQtyCentering_[iBx][idirX], dirX ) ;
     ghostEndIndex_[iBx][idirY]  = ghostCellIndexAtMax( hybridQtyCentering_[iBx][idirY], dirY ) ;
@@ -221,7 +248,6 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
     ghostEndIndex_[iP  ][idirZ] = ghostCellIndexAtMax( hybridQtyCentering_[iP  ][idirZ], dirZ ) ;
 
 }
-
 
 std::array<AllocSizeT, NBR_COMPO> GridLayoutImplYee::allocSize( EMFieldType fieldType ) const
 {    

@@ -17,6 +17,33 @@ enum class LayoutType{ primal, dual } ;
 
 enum class EMFieldType{ EVecField, BVecField } ;
 
+struct gridData {
+Direction dirX = Direction::directionX ;
+Direction dirY = Direction::directionY ;
+Direction dirZ = Direction::directionZ ;
+
+LayoutType primal = LayoutType::primal ;
+LayoutType dual   = LayoutType::dual   ;
+
+uint32 idirX = static_cast<uint32>(Direction::directionX) ;
+uint32 idirY = static_cast<uint32>(Direction::directionY) ;
+uint32 idirZ = static_cast<uint32>(Direction::directionZ) ;
+
+uint32 iBx = static_cast<uint32>(HybridQuantity::Bx) ;
+uint32 iBy = static_cast<uint32>(HybridQuantity::By) ;
+uint32 iBz = static_cast<uint32>(HybridQuantity::Bz) ;
+
+uint32 iEx = static_cast<uint32>(HybridQuantity::Ex) ;
+uint32 iEy = static_cast<uint32>(HybridQuantity::Ey) ;
+uint32 iEz = static_cast<uint32>(HybridQuantity::Ez) ;
+
+uint32 irho = static_cast<uint32>(HybridQuantity::rho) ;
+uint32 iV = static_cast<uint32>(HybridQuantity::V) ;
+uint32 iP = static_cast<uint32>(HybridQuantity::P) ;
+};
+
+using gridDataT = struct gridData ;
+
 
 class GridLayoutImpl
 {
@@ -74,6 +101,11 @@ protected:
     double ody_ ;
     double odz_ ;
 
+    std::array<double, NBR_COMPO> odxdydz_ ;
+
+    std::array<uint32, NBR_COMPO> nbrPaddingCells_  ;
+    std::array<uint32, NBR_COMPO> nbrPhysicalCells_ ;
+
     std::array< std::array<LayoutType,NBR_COMPO>, NBR_HYBRID_QTY > hybridQtyCentering_ ;
 
     std::array< std::array<uint32,NBR_COMPO>, NBR_HYBRID_QTY > physicalStartIndex_;
@@ -92,9 +124,17 @@ public:
 
     static const uint32 defaultNbrPaddingCells = 10;
 
-    explicit GridLayoutImplInternals(uint32 nbDims, uint32 ghostParameter,
-                                     std::array<uint32,3> nbrCellsXYZ ,
-                                     std::array<double,3> dxdydz      );
+    GridLayoutImplInternals(uint32 nbDims, uint32 ghostParameter,
+                            std::array<uint32,3> nbrCellsXYZ ,
+                            std::array<double,3> dxdydz      );
+
+
+    void initGridLayoutImpl01( const gridDataT & staticData ) ;
+    void initGridLayoutImpl02( const gridDataT & staticData ) ;
+    void initGridLayoutImpl03( const gridDataT & staticData ) ;
+    void initGridLayoutImpl04( const gridDataT & staticData ) ;
+    void initGridLayoutImpl05( const gridDataT & staticData ) ;
+    void initGridLayoutImpl06( const gridDataT & staticData ) ;
 
     LayoutType changeLayout( LayoutType layout ) const ;
 
