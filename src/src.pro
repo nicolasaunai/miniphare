@@ -25,7 +25,6 @@ SOURCES += main.cpp \
     Faraday/faradayimpl1d.cpp \
     grid/gridlayoutimpl.cpp \
     utility.cpp \
-    Plasmas/particleloader.cpp \
     Initializer/ionsinitializer.cpp \
     Initializer/electromaginitializer.cpp \
     Initializer/ohminitializer.cpp \
@@ -61,7 +60,6 @@ HEADERS += \
     grid/gridlayoutimpl.h \
     constants.h \
     utility.h \
-    Plasmas/particleloader.h \
     Initializer/initializerfactory.h \
     Initializer/ionsinitializer.h \
     Initializer/electromaginitializer.h \

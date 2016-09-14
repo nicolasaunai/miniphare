@@ -10,7 +10,7 @@ class ParticleInitializer
 
 public:
 
-    ParticleInitializer();
+    virtual std::unique_ptr<ParticleInitializer> clone() const = 0;
 
     virtual void loadParticles(std::vector<Particle>& particles) const = 0;
 

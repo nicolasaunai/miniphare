@@ -7,6 +7,7 @@
 #include "Field/field.h"
 #include "grid/gridlayout.h"
 #include "types.h"
+#include "Initializer/ionsinitializer.h"
 
 
 /**
@@ -35,8 +36,8 @@ private:
 
 public:
 
-    explicit Ions(GridLayout const& layout);
-    explicit Ions(GridLayout&& layout);
+    Ions(GridLayout const& layout, IonsInitializer const& ionInitializer);
+    //Ions(GridLayout&& layout);
 
     Ions(Ions&& source) = default;
     Ions& operator=(Ions&& source) = default;
@@ -44,17 +45,25 @@ public:
     Ions(Ions const& source) = delete;
     Ions& operator=(Ions const& source) = delete;
 
-    Species& species(uint32 index);
-    Species const& species(uint32 index) const;
 
-    //void addSpecies(Species species);
 
     void resetBulkMoments(){rho_.zero(); bulkVel_.zero();}
+
     void resetSpeciesMoments(){for (Species& spe : speciesArray_) spe.resetMoments();}
+
+    uint32 nbrSpecies() const {return static_cast<uint32>(speciesArray_.size()) ;}
+
+
+
+
+    Species& species(uint32 index);
+
+    Species const& species(uint32 index) const;
+
+    void loadParticles();
 
     void computeChargeDensity();
 
-    uint32 nbrSpecies() const {return static_cast<uint32>(speciesArray_.size()) ;}
 
 
 #if 0
