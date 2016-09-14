@@ -14,22 +14,6 @@ This document is a **developer** documentation. Its aim is to explain the projec
 * [Coding Rules](codingrules.md)
 
 
-## Contribution policy
-
-Contribution to the MiniPHARE code is possible under the following rules.
-
-* Each contributor works on personal clones of the official repository
-* The official repository is subject to rebasing from official maintainers.
-* Contributed code is suggested via Pull Requests or patches
-* Contributed code is reviewed
-* Will not be pushed on the official repository:
-    * code that does not meet the coding (clean) style policy
-    * code that does not compile
-    * code that comes without documentation following [documentation standards](docstandards.md)
-    * code not coming with (passing) unit tests
-    * code that does not come with new/updated UML diagram
-
-
 
 ## Team
 
