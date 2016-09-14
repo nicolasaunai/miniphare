@@ -15,239 +15,52 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
 
     gridDataT staticData{} ;
 
-    initGridLayoutImpl01( staticData ) ;
-    initGridLayoutImpl02( staticData ) ;
-    initGridLayoutImpl03( staticData ) ;
-    initGridLayoutImpl04( staticData ) ;
-    initGridLayoutImpl05( staticData ) ;
-    initGridLayoutImpl06( staticData ) ;
+    initGridUtils( staticData ) ;
+
+    initLayoutCentering( staticData ) ;
+
+    initPhysicalStart( staticData ) ;
+    initPhysicalEnd  ( staticData ) ;
+    initGhostStart( staticData ) ;
+    initGhostEnd  ( staticData ) ;
 
 }
 
 
-
-
-
-void GridLayoutImplYee::initGridLayoutImpl01( const gridDataT & staticData )
-{
-    odxdydz_[idirX] = odx_ ;
-    odxdydz_[idirY] = ody_ ;
-    odxdydz_[idirZ] = odz_ ;
-
-    nbrPaddingCells_[idirX] = nbrPaddingCellsX_ ;
-    nbrPaddingCells_[idirY] = nbrPaddingCellsY_ ;
-    nbrPaddingCells_[idirZ] = nbrPaddingCellsZ_ ;
-
-    nbrPhysicalCells_[idirX] = nbrCellx_ ;
-    nbrPhysicalCells_[idirY] = nbrCelly_ ;
-    nbrPhysicalCells_[idirZ] = nbrCellz_ ;
-
-}
-
-void GridLayoutImplYee::initGridLayoutImpl02( const gridDataT & staticData )
+void GridLayoutImplYee::initLayoutCentering( const gridDataT & data )
 {
 
-    hybridQtyCentering_[iBx][idirX]  = primal ;
-    hybridQtyCentering_[iBx][idirY]  = dual   ;
-    hybridQtyCentering_[iBx][idirZ]  = dual   ;
-
-    hybridQtyCentering_[iBy][idirX]  = dual   ;
-    hybridQtyCentering_[iBy][idirY]  = primal ;
-    hybridQtyCentering_[iBy][idirZ]  = dual   ;
-
-    hybridQtyCentering_[iBz][idirX]  = dual   ;
-    hybridQtyCentering_[iBz][idirY]  = dual   ;
-    hybridQtyCentering_[iBz][idirZ]  = primal ;
-
-    hybridQtyCentering_[iEx][idirX]  = dual   ;
-    hybridQtyCentering_[iEx][idirY]  = primal ;
-    hybridQtyCentering_[iEx][idirZ]  = primal ;
-
-    hybridQtyCentering_[iEy][idirX]  = primal ;
-    hybridQtyCentering_[iEy][idirY]  = dual   ;
-    hybridQtyCentering_[iEy][idirZ]  = primal ;
-
-    hybridQtyCentering_[iEz][idirX]  = primal ;
-    hybridQtyCentering_[iEz][idirY]  = primal ;
-    hybridQtyCentering_[iEz][idirZ]  = dual   ;
-
-    hybridQtyCentering_[irho][idirX] = primal ;
-    hybridQtyCentering_[irho][idirY] = primal ;
-    hybridQtyCentering_[irho][idirZ] = primal ;
-
-    hybridQtyCentering_[iV][idirX]   = primal ;
-    hybridQtyCentering_[iV][idirY]   = primal ;
-    hybridQtyCentering_[iV][idirZ]   = primal ;
-
-    hybridQtyCentering_[iP][idirX]   = primal ;
-    hybridQtyCentering_[iP][idirY]   = primal ;
-    hybridQtyCentering_[iP][idirZ]   = primal ;
-
-}
-
-void GridLayoutImplYee::initGridLayoutImpl03( const gridDataT & staticData )
-{
-    physicalStartIndex_[iBx][idirX]  = cellIndexAtMin( hybridQtyCentering_[iBx][idirX], dirX ) ;
-    physicalStartIndex_[iBx][idirY]  = cellIndexAtMin( hybridQtyCentering_[iBx][idirY], dirY ) ;
-    physicalStartIndex_[iBx][idirZ]  = cellIndexAtMin( hybridQtyCentering_[iBx][idirZ], dirZ ) ;
-
-    physicalStartIndex_[iBy][idirX]  = cellIndexAtMin( hybridQtyCentering_[iBy][idirX], dirX ) ;
-    physicalStartIndex_[iBy][idirY]  = cellIndexAtMin( hybridQtyCentering_[iBy][idirY], dirY ) ;
-    physicalStartIndex_[iBy][idirZ]  = cellIndexAtMin( hybridQtyCentering_[iBy][idirZ], dirZ ) ;
-
-    physicalStartIndex_[iBz][idirX]  = cellIndexAtMin( hybridQtyCentering_[iBz][idirX], dirX ) ;
-    physicalStartIndex_[iBz][idirY]  = cellIndexAtMin( hybridQtyCentering_[iBz][idirY], dirY ) ;
-    physicalStartIndex_[iBz][idirZ]  = cellIndexAtMin( hybridQtyCentering_[iBz][idirZ], dirZ ) ;
-
-    physicalStartIndex_[iEx][idirX]  = cellIndexAtMin( hybridQtyCentering_[iEx][idirX], dirX ) ;
-    physicalStartIndex_[iEy][idirX]  = cellIndexAtMin( hybridQtyCentering_[iEy][idirX], dirX ) ;
-    physicalStartIndex_[iEz][idirX]  = cellIndexAtMin( hybridQtyCentering_[iEz][idirX], dirX ) ;
-
-    physicalStartIndex_[iEx][idirY]  = cellIndexAtMin( hybridQtyCentering_[iEx][idirY], dirY ) ;
-    physicalStartIndex_[iEy][idirY]  = cellIndexAtMin( hybridQtyCentering_[iEy][idirY], dirY ) ;
-    physicalStartIndex_[iEz][idirY]  = cellIndexAtMin( hybridQtyCentering_[iEz][idirY], dirY ) ;
-
-    physicalStartIndex_[iEx][idirZ]  = cellIndexAtMin( hybridQtyCentering_[iEx][idirZ], dirZ ) ;
-    physicalStartIndex_[iEy][idirZ]  = cellIndexAtMin( hybridQtyCentering_[iEy][idirZ], dirZ ) ;
-    physicalStartIndex_[iEz][idirZ]  = cellIndexAtMin( hybridQtyCentering_[iEz][idirZ], dirZ ) ;
-
-    physicalStartIndex_[irho][idirX] = cellIndexAtMin( hybridQtyCentering_[irho][idirX], dirX ) ;
-    physicalStartIndex_[irho][idirY] = cellIndexAtMin( hybridQtyCentering_[irho][idirY], dirY ) ;
-    physicalStartIndex_[irho][idirZ] = cellIndexAtMin( hybridQtyCentering_[irho][idirZ], dirZ ) ;
-
-    physicalStartIndex_[iV  ][idirX] = cellIndexAtMin( hybridQtyCentering_[iV  ][idirX], dirX ) ;
-    physicalStartIndex_[iV  ][idirY] = cellIndexAtMin( hybridQtyCentering_[iV  ][idirY], dirY ) ;
-    physicalStartIndex_[iV  ][idirZ] = cellIndexAtMin( hybridQtyCentering_[iV  ][idirZ], dirZ ) ;
-
-    physicalStartIndex_[iP  ][idirX] = cellIndexAtMin( hybridQtyCentering_[iP  ][idirX], dirX ) ;
-    physicalStartIndex_[iP  ][idirY] = cellIndexAtMin( hybridQtyCentering_[iP  ][idirY], dirY ) ;
-    physicalStartIndex_[iP  ][idirZ] = cellIndexAtMin( hybridQtyCentering_[iP  ][idirZ], dirZ ) ;
-
-}
-
-void GridLayoutImplYee::initGridLayoutImpl04( const gridDataT & staticData )
-{
-
-    physicalEndIndex_[iBx][idirX]  = cellIndexAtMax( hybridQtyCentering_[iBx][idirX], dirX ) ;
-    physicalEndIndex_[iBx][idirY]  = cellIndexAtMax( hybridQtyCentering_[iBx][idirY], dirY ) ;
-    physicalEndIndex_[iBx][idirZ]  = cellIndexAtMax( hybridQtyCentering_[iBx][idirZ], dirZ ) ;
-
-    physicalEndIndex_[iBy][idirX]  = cellIndexAtMax( hybridQtyCentering_[iBy][idirX], dirX ) ;
-    physicalEndIndex_[iBy][idirY]  = cellIndexAtMax( hybridQtyCentering_[iBy][idirY], dirY ) ;
-    physicalEndIndex_[iBy][idirZ]  = cellIndexAtMax( hybridQtyCentering_[iBy][idirZ], dirZ ) ;
-
-    physicalEndIndex_[iBz][idirX]  = cellIndexAtMax( hybridQtyCentering_[iBz][idirX], dirX ) ;
-    physicalEndIndex_[iBz][idirY]  = cellIndexAtMax( hybridQtyCentering_[iBz][idirY], dirY ) ;
-    physicalEndIndex_[iBz][idirZ]  = cellIndexAtMax( hybridQtyCentering_[iBz][idirZ], dirZ ) ;
-
-    physicalEndIndex_[iEx][idirX]  = cellIndexAtMax( hybridQtyCentering_[iEx][idirX], dirX ) ;
-    physicalEndIndex_[iEx][idirY]  = cellIndexAtMax( hybridQtyCentering_[iEx][idirY], dirY ) ;
-    physicalEndIndex_[iEx][idirZ]  = cellIndexAtMax( hybridQtyCentering_[iEx][idirZ], dirZ ) ;
-
-    physicalEndIndex_[iEy][idirX]  = cellIndexAtMax( hybridQtyCentering_[iEy][idirX], dirX ) ;
-    physicalEndIndex_[iEy][idirY]  = cellIndexAtMax( hybridQtyCentering_[iEy][idirY], dirY ) ;
-    physicalEndIndex_[iEy][idirZ]  = cellIndexAtMax( hybridQtyCentering_[iEy][idirZ], dirZ ) ;
-
-    physicalEndIndex_[iEz][idirX]  = cellIndexAtMax( hybridQtyCentering_[iEz][idirX], dirX ) ;
-    physicalEndIndex_[iEz][idirY]  = cellIndexAtMax( hybridQtyCentering_[iEz][idirY], dirY ) ;
-    physicalEndIndex_[iEz][idirZ]  = cellIndexAtMax( hybridQtyCentering_[iEz][idirZ], dirZ ) ;
-
-    physicalEndIndex_[irho][idirX] = cellIndexAtMax( hybridQtyCentering_[irho][idirX], dirX ) ;
-    physicalEndIndex_[irho][idirY] = cellIndexAtMax( hybridQtyCentering_[irho][idirY], dirY ) ;
-    physicalEndIndex_[irho][idirZ] = cellIndexAtMax( hybridQtyCentering_[irho][idirZ], dirZ ) ;
-
-    physicalEndIndex_[iV  ][idirX] = cellIndexAtMax( hybridQtyCentering_[iV  ][idirX], dirX ) ;
-    physicalEndIndex_[iV  ][idirY] = cellIndexAtMax( hybridQtyCentering_[iV  ][idirY], dirY ) ;
-    physicalEndIndex_[iV  ][idirZ] = cellIndexAtMax( hybridQtyCentering_[iV  ][idirZ], dirZ ) ;
-
-    physicalEndIndex_[iP  ][idirX] = cellIndexAtMax( hybridQtyCentering_[iP  ][idirX], dirX ) ;
-    physicalEndIndex_[iP  ][idirY] = cellIndexAtMax( hybridQtyCentering_[iP  ][idirY], dirY ) ;
-    physicalEndIndex_[iP  ][idirZ] = cellIndexAtMax( hybridQtyCentering_[iP  ][idirZ], dirZ ) ;
-
-}
-
-void GridLayoutImplYee::initGridLayoutImpl05( const gridDataT & staticData )
-{
-
-    ghostStartIndex_[iBx][idirX]  = nbrPaddingCells_[idirX] ;
-    ghostStartIndex_[iBx][idirY]  = nbrPaddingCells_[idirY] ;
-    ghostStartIndex_[iBx][idirZ]  = nbrPaddingCells_[idirZ] ;
-
-    ghostStartIndex_[iBy][idirX]  = nbrPaddingCells_[idirX] ;
-    ghostStartIndex_[iBy][idirY]  = nbrPaddingCells_[idirY] ;
-    ghostStartIndex_[iBy][idirZ]  = nbrPaddingCells_[idirZ] ;
-
-    ghostStartIndex_[iBz][idirX]  = nbrPaddingCells_[idirX] ;
-    ghostStartIndex_[iBz][idirY]  = nbrPaddingCells_[idirY] ;
-    ghostStartIndex_[iBz][idirZ]  = nbrPaddingCells_[idirZ] ;
-
-    ghostStartIndex_[iEx][idirX]  = nbrPaddingCells_[idirX] ;
-    ghostStartIndex_[iEx][idirY]  = nbrPaddingCells_[idirY] ;
-    ghostStartIndex_[iEx][idirZ]  = nbrPaddingCells_[idirZ] ;
-
-    ghostStartIndex_[iEy][idirX]  = nbrPaddingCells_[idirX] ;
-    ghostStartIndex_[iEy][idirY]  = nbrPaddingCells_[idirY] ;
-    ghostStartIndex_[iEy][idirZ]  = nbrPaddingCells_[idirZ] ;
-
-    ghostStartIndex_[iEz][idirX]  = nbrPaddingCells_[idirX] ;
-    ghostStartIndex_[iEz][idirY]  = nbrPaddingCells_[idirY] ;
-    ghostStartIndex_[iEz][idirZ]  = nbrPaddingCells_[idirZ] ;
-
-    ghostStartIndex_[irho][idirX] = nbrPaddingCells_[idirX] ;
-    ghostStartIndex_[irho][idirY] = nbrPaddingCells_[idirY] ;
-    ghostStartIndex_[irho][idirZ] = nbrPaddingCells_[idirZ] ;
-
-    ghostStartIndex_[iV  ][idirX] = nbrPaddingCells_[idirX] ;
-    ghostStartIndex_[iV  ][idirY] = nbrPaddingCells_[idirY] ;
-    ghostStartIndex_[iV  ][idirZ] = nbrPaddingCells_[idirZ] ;
-
-    ghostStartIndex_[iP  ][idirX] = nbrPaddingCells_[idirX] ;
-    ghostStartIndex_[iP  ][idirY] = nbrPaddingCells_[idirY] ;
-    ghostStartIndex_[iP  ][idirZ] = nbrPaddingCells_[idirZ] ;
+    hybridQtyCentering_[data.iBx ][data.idirX] = data.primal ;
+    hybridQtyCentering_[data.iBx ][data.idirY] = data.dual   ;
+    hybridQtyCentering_[data.iBx ][data.idirZ] = data.dual   ;
+    hybridQtyCentering_[data.iBy ][data.idirX] = data.dual   ;
+    hybridQtyCentering_[data.iBy ][data.idirY] = data.primal ;
+    hybridQtyCentering_[data.iBy ][data.idirZ] = data.dual   ;
+    hybridQtyCentering_[data.iBz ][data.idirX] = data.dual   ;
+    hybridQtyCentering_[data.iBz ][data.idirY] = data.dual   ;
+    hybridQtyCentering_[data.iBz ][data.idirZ] = data.primal ;
+    hybridQtyCentering_[data.iEx ][data.idirX] = data.dual   ;
+    hybridQtyCentering_[data.iEx ][data.idirY] = data.primal ;
+    hybridQtyCentering_[data.iEx ][data.idirZ] = data.primal ;
+    hybridQtyCentering_[data.iEy ][data.idirX] = data.primal ;
+    hybridQtyCentering_[data.iEy ][data.idirY] = data.dual   ;
+    hybridQtyCentering_[data.iEy ][data.idirZ] = data.primal ;
+    hybridQtyCentering_[data.iEz ][data.idirX] = data.primal ;
+    hybridQtyCentering_[data.iEz ][data.idirY] = data.primal ;
+    hybridQtyCentering_[data.iEz ][data.idirZ] = data.dual   ;
+    hybridQtyCentering_[data.irho][data.idirX] = data.primal ;
+    hybridQtyCentering_[data.irho][data.idirY] = data.primal ;
+    hybridQtyCentering_[data.irho][data.idirZ] = data.primal ;
+    hybridQtyCentering_[data.iV  ][data.idirX] = data.primal ;
+    hybridQtyCentering_[data.iV  ][data.idirY] = data.primal ;
+    hybridQtyCentering_[data.iV  ][data.idirZ] = data.primal ;
+    hybridQtyCentering_[data.iP  ][data.idirX] = data.primal ;
+    hybridQtyCentering_[data.iP  ][data.idirY] = data.primal ;
+    hybridQtyCentering_[data.iP  ][data.idirZ] = data.primal ;
 
 }
 
 
-void GridLayoutImplYee::initGridLayoutImpl06( const gridDataT & staticData )
-{
-
-    ghostEndIndex_[iBx][idirX]  = ghostCellIndexAtMax( hybridQtyCentering_[iBx][idirX], dirX ) ;
-    ghostEndIndex_[iBx][idirY]  = ghostCellIndexAtMax( hybridQtyCentering_[iBx][idirY], dirY ) ;
-    ghostEndIndex_[iBx][idirZ]  = ghostCellIndexAtMax( hybridQtyCentering_[iBx][idirZ], dirZ ) ;
-
-    ghostEndIndex_[iBy][idirX]  = ghostCellIndexAtMax( hybridQtyCentering_[iBy][idirX], dirX ) ;
-    ghostEndIndex_[iBy][idirY]  = ghostCellIndexAtMax( hybridQtyCentering_[iBy][idirY], dirY ) ;
-    ghostEndIndex_[iBy][idirZ]  = ghostCellIndexAtMax( hybridQtyCentering_[iBy][idirZ], dirZ ) ;
-
-    ghostEndIndex_[iBz][idirX]  = ghostCellIndexAtMax( hybridQtyCentering_[iBz][idirX], dirX ) ;
-    ghostEndIndex_[iBz][idirY]  = ghostCellIndexAtMax( hybridQtyCentering_[iBz][idirY], dirY ) ;
-    ghostEndIndex_[iBz][idirZ]  = ghostCellIndexAtMax( hybridQtyCentering_[iBz][idirZ], dirZ ) ;
-
-    ghostEndIndex_[iEx][idirX]  = ghostCellIndexAtMax( hybridQtyCentering_[iEx][idirX], dirX ) ;
-    ghostEndIndex_[iEx][idirY]  = ghostCellIndexAtMax( hybridQtyCentering_[iEx][idirY], dirY ) ;
-    ghostEndIndex_[iEx][idirZ]  = ghostCellIndexAtMax( hybridQtyCentering_[iEx][idirZ], dirZ ) ;
-
-    ghostEndIndex_[iEy][idirX]  = ghostCellIndexAtMax( hybridQtyCentering_[iEy][idirX], dirX ) ;
-    ghostEndIndex_[iEy][idirY]  = ghostCellIndexAtMax( hybridQtyCentering_[iEy][idirY], dirY ) ;
-    ghostEndIndex_[iEy][idirZ]  = ghostCellIndexAtMax( hybridQtyCentering_[iEy][idirZ], dirZ ) ;
-
-    ghostEndIndex_[iEz][idirX]  = ghostCellIndexAtMax( hybridQtyCentering_[iEz][idirX], dirX ) ;
-    ghostEndIndex_[iEz][idirY]  = ghostCellIndexAtMax( hybridQtyCentering_[iEz][idirY], dirY ) ;
-    ghostEndIndex_[iEz][idirZ]  = ghostCellIndexAtMax( hybridQtyCentering_[iEz][idirZ], dirZ ) ;
-
-    ghostEndIndex_[irho][idirX] = ghostCellIndexAtMax( hybridQtyCentering_[irho][idirX], dirX ) ;
-    ghostEndIndex_[irho][idirY] = ghostCellIndexAtMax( hybridQtyCentering_[irho][idirY], dirY ) ;
-    ghostEndIndex_[irho][idirZ] = ghostCellIndexAtMax( hybridQtyCentering_[irho][idirZ], dirZ ) ;
-
-    ghostEndIndex_[iV  ][idirX] = ghostCellIndexAtMax( hybridQtyCentering_[iV  ][idirX], dirX ) ;
-    ghostEndIndex_[iV  ][idirY] = ghostCellIndexAtMax( hybridQtyCentering_[iV  ][idirY], dirY ) ;
-    ghostEndIndex_[iV  ][idirZ] = ghostCellIndexAtMax( hybridQtyCentering_[iV  ][idirZ], dirZ ) ;
-
-    ghostEndIndex_[iP  ][idirX] = ghostCellIndexAtMax( hybridQtyCentering_[iP  ][idirX], dirX ) ;
-    ghostEndIndex_[iP  ][idirY] = ghostCellIndexAtMax( hybridQtyCentering_[iP  ][idirY], dirY ) ;
-    ghostEndIndex_[iP  ][idirZ] = ghostCellIndexAtMax( hybridQtyCentering_[iP  ][idirZ], dirZ ) ;
-
-}
 
 std::array<AllocSizeT, NBR_COMPO> GridLayoutImplYee::allocSize( EMFieldType fieldType ) const
 {    
@@ -334,13 +147,13 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
 
     qtyLayouts[iDerivedDir] = layout ;
 
-    uint32 nx =  2*nbrPaddingCells( dirX ) + nbrPhysicalCells( dirX )
+    uint32 nx =  2*nbrPaddingCells( dirX ) + nbrPhysicalCells( dirX ) + 1
                + nbrGhostAtMin( qtyLayouts[idirX] ) + nbrGhostAtMax( qtyLayouts[idirX] ) ;
 
-    uint32 ny =  2*nbrPaddingCells( dirY ) + nbrPhysicalCells( dirY )
+    uint32 ny =  2*nbrPaddingCells( dirY ) + nbrPhysicalCells( dirY ) + 1
                + nbrGhostAtMin( qtyLayouts[idirY] ) + nbrGhostAtMax( qtyLayouts[idirY] ) ;
 
-    uint32 nz =  2*nbrPaddingCells( dirZ ) + nbrPhysicalCells( dirZ )
+    uint32 nz =  2*nbrPaddingCells( dirZ ) + nbrPhysicalCells( dirZ ) + 1
                + nbrGhostAtMin( qtyLayouts[idirZ] ) + nbrGhostAtMax( qtyLayouts[idirZ] ) ;
 
     AllocSizeT allocSizes( nx, ny, nz ) ;

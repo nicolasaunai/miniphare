@@ -128,13 +128,12 @@ public:
                             std::array<uint32,3> nbrCellsXYZ ,
                             std::array<double,3> dxdydz      );
 
+    void initGridUtils( const gridDataT & staticData ) ;
 
-    void initGridLayoutImpl01( const gridDataT & staticData ) ;
-    void initGridLayoutImpl02( const gridDataT & staticData ) ;
-    void initGridLayoutImpl03( const gridDataT & staticData ) ;
-    void initGridLayoutImpl04( const gridDataT & staticData ) ;
-    void initGridLayoutImpl05( const gridDataT & staticData ) ;
-    void initGridLayoutImpl06( const gridDataT & staticData ) ;
+    void initPhysicalStart( const gridDataT & staticData ) ;
+    void initPhysicalEnd  ( const gridDataT & staticData ) ;
+    void initGhostStart( const gridDataT & staticData ) ;
+    void initGhostEnd  ( const gridDataT & staticData ) ;
 
     LayoutType changeLayout( LayoutType layout ) const ;
 

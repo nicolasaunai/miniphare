@@ -18,6 +18,7 @@ class GridLayoutImplYee : public GridLayoutImpl, private GridLayoutImplInternals
 {
 private:
 
+    void initLayoutCentering( const gridDataT & staticData ) ;
 
 
 public:
