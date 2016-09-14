@@ -2,7 +2,10 @@
 #define FLUIDPARTICLEINITIALIZER_H
 
 
+#include "grid/gridlayout.h"
 #include "particleinitializer.h"
+
+
 
 
 /**
@@ -16,11 +19,12 @@ class FluidParticleInitializer : public ParticleInitializer
 
 private:
 
-    using Function = double (*) (double x, double y, double z);
+    GridLayout layout_;
+
 
 public:
 
-    FluidParticleInitializer();
+    FluidParticleInitializer(GridLayout const& layout):layout_{layout} {}
 
     virtual std::unique_ptr<ParticleInitializer> clone() const override;
 
@@ -28,11 +32,12 @@ public:
 
     virtual ~FluidParticleInitializer();
 
-    Function density;
-    Function bulkVelocity;
-    Function temperature;
+    ScalarFunction density;
+    VectorFunction bulkVelocity;
+    ScalarFunction temperature;
 
 };
+
 
 
 

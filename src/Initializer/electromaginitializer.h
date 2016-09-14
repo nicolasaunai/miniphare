@@ -2,17 +2,21 @@
 #define ELECTROMAGINITIALIZER_H
 
 
+#include<array>
+
+
 class ElectromagInitializer
 {
+protected:
 
-    using Function = double (*) (double x, double y, double z);
+    using VectorFunction = void   (*) (double x, double y, double z, std::array<double,3> vec);
 
 public:
 
     ElectromagInitializer();
 
-    Function electricField;
-    Function magneticField;
+    VectorFunction electricField;
+    VectorFunction magneticField;
 
 };
 

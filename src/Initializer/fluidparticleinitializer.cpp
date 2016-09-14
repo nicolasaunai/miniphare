@@ -2,14 +2,7 @@
 
 
 
-FluidParticleInitializer::FluidParticleInitializer()
-{
 
-}
-
-/**
- * @brief clone a FluidParticleInitializer
- */
  std::unique_ptr<ParticleInitializer> FluidParticleInitializer::clone() const
  {
      return nullptr;

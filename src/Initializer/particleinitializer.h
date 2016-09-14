@@ -2,6 +2,8 @@
 #define PARTICLEINITIALIZER_H
 
 
+#include <array>
+
 #include "Plasmas/particles.h"
 
 
@@ -14,6 +16,10 @@
  */
 class ParticleInitializer
 {
+protected:
+
+    using ScalarFunction = double (*) (double x, double y, double z);
+    using VectorFunction = void   (*) (double x, double y, double z, std::array<double,3> vec);
 
 public:
 
@@ -27,5 +33,36 @@ public:
 
 
 
+/* ----------------------------------------------------------------------------
+ *
+ *                                DOCUMENTATION
+ *
+   --------------------------------------------------------------------------- */
+
+
+/**
+  \fn virtual void ParticleInitializer::loadParticles(std::vector<Particle>& particles) const = 0
+  \brief load particles into a Particle array following a method implemented in concrete classes
+  \param particles is the vector to be filled. Assumed of size 0
+  */
+
+
+
+/**
+
+  \fn virtual std::unique_ptr<ParticleInitializer> ParticleInitializer::clone() const = 0;
+  \brief clone a ParticleInitializer object. Needs to be defined by concrete classes
+
+  What is a clone method?
+  http://www.cplusplus.com/forum/articles/18757/
+  */
+
+
 
 #endif // PARTICLEINITIALIZER_H
+
+
+
+
+
+
