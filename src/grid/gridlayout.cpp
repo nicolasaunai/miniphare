@@ -85,15 +85,21 @@ GridLayout::fieldNodeCoordinates1D( const Field & field, const Point & patchOrig
 }
 
 
-std::array<AllocSizeT, NBR_COMPO> GridLayout::allocSize( EMFieldType fieldType ) const
+AllocSizeT GridLayout::allocSize(HybridQuantity qtyType) const
 {
-    return implPtr_->allocSize( fieldType ) ;
+    return implPtr_->allocSize( qtyType ) ;
 }
 
+
+
+#if 0
 std::array<AllocSizeT, NBR_COMPO> GridLayout::allocSize( OhmTerm term ) const
 {
     return implPtr_->allocSize( term ) ;
 }
+#endif
+
+
 
 AllocSizeT  GridLayout::allocSizeDerived( HybridQuantity qty, Direction dir ) const
 {

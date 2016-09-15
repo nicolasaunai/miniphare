@@ -6,11 +6,20 @@
 
 
 
+
 OhmImplInternals::OhmImplInternals(GridLayout const& layout)
-    : idealTerm_{ layout.allocSize(OhmTerm::Ideal),
-      {{HybridQuantity::Ohm, HybridQuantity::Ohm, HybridQuantity::Ohm}}, "_ideal" },
-      pressureTerm_{ layout.allocSize(OhmTerm::Pressure),
-      {{HybridQuantity::Ohm, HybridQuantity::Ohm, HybridQuantity::Ohm}}, "_pressure" },
+    : idealTerm_{   layout.allocSize(HybridQuantity::Ex),
+                    layout.allocSize(HybridQuantity::Ey),
+                    layout.allocSize(HybridQuantity::Ez),
+                    { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+                    "_ideal"},
+
+      pressureTerm_{layout.allocSize(HybridQuantity::Ex),
+                    layout.allocSize(HybridQuantity::Ey),
+                    layout.allocSize(HybridQuantity::Ez),
+                    { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+                    "_pressure" },
+
       layout_{ layout }
 {
 }

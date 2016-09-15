@@ -67,23 +67,30 @@ public:
     double dy() const {return dy_;}
     double dz() const {return dz_;}
 
+
+
     double odx()const { return dx_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
     double ody()const { return dy_ == 0. ? throw error(errorInverseMesh +" dy() (dy==0)"): ody_;}
     double odz()const { return dz_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
+
+
 
     double nbrCellx() const {return nbrCellx_;}
     double nbrCelly() const {return nbrCelly_;}
     double nbrCellz() const {return nbrCellz_;}
 
+
+
     std::vector < std::tuple < uint32, Point> >
     fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const;
+
 
     // return the (total) number of mesh points
     // for the 3 components of Ex, Ey, Ez      ( if EMFieldType==EVecField )
     // or for the 3 components of Bx, By, Bz   ( if EMFieldType==BVecField )
-    std::array<AllocSizeT, NBR_COMPO> allocSize( EMFieldType fieldType ) const ;
-
-    std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const ;
+    //std::array<AllocSizeT, NBR_COMPO> allocSize( EMFieldType fieldType ) const ;
+    //std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const ;
+    AllocSizeT allocSize(HybridQuantity qtyType) const;
 
     AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const ;
 

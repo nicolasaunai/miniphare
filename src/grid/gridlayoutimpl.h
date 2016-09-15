@@ -17,7 +17,10 @@ enum class LayoutType{ primal, dual } ;
 
 enum class EMFieldType{ EVecField, BVecField } ;
 
-struct gridData {
+
+
+
+struct gridDataT {
 Direction dirX = Direction::directionX ;
 Direction dirY = Direction::directionY ;
 Direction dirZ = Direction::directionZ ;
@@ -42,7 +45,13 @@ uint32 iV = static_cast<uint32>(HybridQuantity::V) ;
 uint32 iP = static_cast<uint32>(HybridQuantity::P) ;
 };
 
-using gridDataT = struct gridData ;
+
+
+
+
+
+
+
 
 
 class GridLayoutImpl
@@ -53,11 +62,11 @@ public:
     virtual std::vector < std::tuple < uint32, Point> >
     fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const = 0;
 
-    virtual std::array<AllocSizeT, NBR_COMPO> allocSize( EMFieldType vecField ) const = 0 ;
+    virtual AllocSizeT allocSize( HybridQuantity qtyType ) const = 0 ;
 
     virtual AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const = 0 ;
 
-    virtual std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const = 0;
+    //virtual std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const = 0;
 
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, Direction direction) const = 0;
@@ -73,6 +82,9 @@ public:
     virtual ~GridLayoutImpl() = default;
 
 };
+
+
+
 
 
 

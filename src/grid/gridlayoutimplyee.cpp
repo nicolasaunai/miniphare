@@ -61,10 +61,28 @@ void GridLayoutImplYee::initLayoutCentering( const gridDataT & data )
 }
 
 
+/* TODO change this so that all arrays (including ions and species moments) can
+   be allocated.
 
-std::array<AllocSizeT, NBR_COMPO> GridLayoutImplYee::allocSize( EMFieldType fieldType ) const
-{    
-    using Alloc = AllocSizeT ;
+
+Species::Species(GridLayout const& layout, double mass,
+                 ParticleInitializer const& particleInitializer,
+                 std::string const& name)
+    : layout_{ layout },
+      rho_    { layout_.nx(), layout_.ny(), layout_.nz(), "rho_"   + name },
+      bulkVel_{ layout_.nx(), layout_.ny(), layout_.nz(),"bulkVel_"+ name },
+      particleArray_{},
+      particleInitializer_{ particleInitializer.clone() }
+{
+
+}
+
+
+   hint : use HybridQtyCentering.
+
+*/
+AllocSizeT GridLayoutImplYee::allocSize( HybridQuantity qtyType ) const
+{
 
     Direction dirX = Direction::directionX ;
     Direction dirY = Direction::directionY ;
@@ -80,15 +98,15 @@ std::array<AllocSizeT, NBR_COMPO> GridLayoutImplYee::allocSize( EMFieldType fiel
     uint32 VFy_nx, VFy_ny, VFy_nz ;
     uint32 VFz_nx, VFz_ny, VFz_nz ;
 
-    switch( fieldType )
+    switch( qtyType )
     {
-    case EMFieldType::EVecField:
+    case HybridQuantity::Ex :
         iFx = static_cast<uint32>(HybridQuantity::Ex) ;
         iFy = static_cast<uint32>(HybridQuantity::Ey) ;
         iFz = static_cast<uint32>(HybridQuantity::Ez) ;
         break ;
 
-    case EMFieldType::BVecField:
+    case  HybridQuantity::Bx:
         iFx = static_cast<uint32>(HybridQuantity::Bx) ;
         iFy = static_cast<uint32>(HybridQuantity::By) ;
         iFz = static_cast<uint32>(HybridQuantity::Bz) ;
@@ -115,12 +133,8 @@ std::array<AllocSizeT, NBR_COMPO> GridLayoutImplYee::allocSize( EMFieldType fiel
             + 2*nbrPaddingCells(dirZ) ;
 
 
-    std::array<Alloc, NBR_COMPO> VecFieldSizes{
-                   {Alloc(VFx_nx, VFx_ny, VFx_nz),
-                    Alloc(VFy_nx, VFy_ny, VFy_nz),
-                    Alloc(VFz_nx, VFz_ny, VFz_nz)} } ;
+    return AllocSizeT(VFx_nx, VFx_ny, VFx_nz);
 
-    return VecFieldSizes ;
 }
 
 
@@ -162,9 +176,13 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
 }
 
 
+
+#if 0
 std::array<AllocSizeT, NBR_COMPO> GridLayoutImplYee::allocSize( OhmTerm term ) const
 {
 }
+#endif
+
 
 
 std::vector< std::tuple <uint32, Point> >
@@ -199,7 +217,7 @@ GridLayoutImplYee::fieldNodeCoordinates1D(
     {
         double x = ( (ix-ixStart) + half_cell)*dx_ + patchOrigin.x_ ;
 
-        PointT point( x, y, z ) ;
+        Point point( x, y, z ) ;
 
         auto nodeCoordinates = std::make_tuple(ix, point) ;
 

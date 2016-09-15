@@ -10,13 +10,13 @@ using int32  = std::int32_t;
 using int64  = std::int64_t;
 
 
-struct AllocSize{
+struct AllocSizeT{
 
     uint32 nx_ ;
     uint32 ny_ ;
     uint32 nz_ ;
 
-    AllocSize( uint32 nx , uint32 ny,
+    AllocSizeT( uint32 nx , uint32 ny,
                uint32 nz )
         : nx_(nx), ny_(ny), nz_(nz)
     {
@@ -24,7 +24,6 @@ struct AllocSize{
 
 };
 
-using AllocSizeT = struct AllocSize ;
 
 struct Point
 {
@@ -35,6 +34,6 @@ struct Point
 
 } ;
 
-using PointT = struct Point ;
+
 
 #endif // TYPES_H

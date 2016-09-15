@@ -10,10 +10,26 @@
 
 
 Solver::Solver(GridLayout const& layout, double dt)
-    :EMFieldsPred_{layout.allocSize( EMFieldType::EVecField ),
-                   layout.allocSize( EMFieldType::BVecField ), "_pred"},
-     EMFieldsAvg_ {layout.allocSize( EMFieldType::EVecField ),
-                   layout.allocSize( EMFieldType::BVecField ), "_avg"},
+    : EMFieldsPred_{{ {layout.allocSize(HybridQuantity::Ex ),
+                    layout.allocSize(HybridQuantity::Ey ),
+                    layout.allocSize(HybridQuantity::Ez )  }},
+
+                    { {layout.allocSize(HybridQuantity::Bx ),
+                    layout.allocSize(HybridQuantity::By ),
+                    layout.allocSize(HybridQuantity::Bz )  }},
+
+                   "_pred"},
+
+      EMFieldsAvg_{{ {layout.allocSize(HybridQuantity::Ex ),
+                   layout.allocSize(HybridQuantity::Ey ),
+                   layout.allocSize(HybridQuantity::Ez )  }},
+
+                   { {layout.allocSize(HybridQuantity::Bx ),
+                   layout.allocSize(HybridQuantity::By ),
+                   layout.allocSize(HybridQuantity::Bz )  }},
+
+                  "_avg" },
+
      faraday_{dt, layout}
 {
 

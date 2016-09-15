@@ -37,15 +37,11 @@ public:
     static const uint32 VecZ = 2;
 
 
-    VecField(std::array<AllocSizeT, NBR_COMPO> allComponentSizes,
-             std::array<HybridQuantity, NBR_COMPO> qtyType, std::string name)
-        : name_(name),
-          xComponent_( allComponentSizes[0].nx_, allComponentSizes[0].ny_,
-          allComponentSizes[0].nz_, qtyType[0], name.insert(1,"_x") ),
-          yComponent_( allComponentSizes[1].nx_, allComponentSizes[1].ny_,
-          allComponentSizes[1].nz_, qtyType[1], name.insert(1,"_y") ),
-          zComponent_( allComponentSizes[2].nx_, allComponentSizes[2].ny_,
-          allComponentSizes[2].nz_, qtyType[2], name.insert(1,"_z") ) {}
+    VecField(AllocSizeT xComponent,
+             AllocSizeT yComponent,
+             AllocSizeT zComponent,
+             std::array<HybridQuantity, NBR_COMPO> componentTypes,
+             std::string name);
 
 
     // Deprecated Constructor
