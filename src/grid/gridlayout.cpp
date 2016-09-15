@@ -79,9 +79,9 @@ GridLayout::GridLayout(GridLayout&& source)
 
 
 std::vector< std::tuple <uint32, Point> >
-GridLayout::fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const
+GridLayout::fieldNodeCoordinates1D( const Field & field, const Point & origin ) const
 {
-    return implPtr_->fieldNodeCoordinates1D( field, patchOrigin ) ;
+    return implPtr_->fieldNodeCoordinates1D( field, origin ) ;
 }
 
 
@@ -140,7 +140,7 @@ void GridLayout::deriv(Field const& operand, Direction direction, Field& derivat
     switch(nbDims_)
     {
     case 1:
-        implPtr_->deriv1D(operand, direction, derivative);
+        implPtr_->deriv1D(operand, derivative);
         break ;
 
     default:

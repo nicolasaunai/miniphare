@@ -13,16 +13,18 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
                               nbrCellsXYZ, dxdydz)
 {
 
-    gridDataT staticData{} ;
+    gridDataT gridData{} ;
 
-    initGridUtils( staticData ) ;
+    initGridUtils( gridData ) ;
 
-    initLayoutCentering( staticData ) ;
+    initLayoutCentering( gridData ) ;
 
-    initPhysicalStart( staticData ) ;
-    initPhysicalEnd  ( staticData ) ;
-    initGhostStart( staticData ) ;
-    initGhostEnd  ( staticData ) ;
+    // all methods MUST BE CALLED AFTER initLayoutCentering()
+    // because they USE data in hybridQtycentering_
+    initPhysicalStart( gridData ) ;
+    initPhysicalEnd  ( gridData ) ;
+    initGhostStart( gridData ) ;
+    initGhostEnd  ( gridData ) ;
 
 }
 
@@ -65,6 +67,10 @@ void GridLayoutImplYee::initLayoutCentering( const gridDataT & data )
    be allocated.
 
 
+   think whether the method (which only depends on hybridQtyCentering)
+   can be moved into GridLayoutImplInternals
+
+
 Species::Species(GridLayout const& layout, double mass,
                  ParticleInitializer const& particleInitializer,
                  std::string const& name)
@@ -84,6 +90,8 @@ Species::Species(GridLayout const& layout, double mass,
 AllocSizeT GridLayoutImplYee::allocSize( HybridQuantity qtyType ) const
 {
 
+
+#if 0
     Direction dirX = Direction::directionX ;
     Direction dirY = Direction::directionY ;
     Direction dirZ = Direction::directionZ ;
@@ -131,18 +139,18 @@ AllocSizeT GridLayoutImplYee::allocSize( HybridQuantity qtyType ) const
             + 2*nbrPaddingCells(dirY) ;
     VFz_nz = ghostEndIndex_[iFz][idirZ] - ghostStartIndex_[iFz][idirZ] + 1
             + 2*nbrPaddingCells(dirZ) ;
-
-
-    return AllocSizeT(VFx_nx, VFx_ny, VFx_nz);
+return AllocSizeT(VFx_nx, VFx_ny, VFx_nz);
+#endif
+    return AllocSizeT(0,0,0);
 
 }
 
-
+// TODO attention 1st order only. and can it be moved to ImplInternals?
 AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction dir ) const
 {
-    Direction dirX = Direction::directionX ;
-    Direction dirY = Direction::directionY ;
-    Direction dirZ = Direction::directionZ ;
+    Direction dirX = Direction::X ;
+    Direction dirY = Direction::Y ;
+    Direction dirZ = Direction::Z ;
 
     uint32 idirX = static_cast<uint32>( dirX ) ;
     uint32 idirY = static_cast<uint32>( dirY ) ;
@@ -152,12 +160,12 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
 
     uint32 iQty = static_cast<uint32>(qty) ;
 
-    std::array<LayoutType, NBR_COMPO>
+    std::array<QtyCentering, NBR_COMPO>
             qtyLayouts{ {hybridQtyCentering_[iQty][idirX],
                          hybridQtyCentering_[iQty][idirY],
                          hybridQtyCentering_[iQty][idirZ]} } ;
 
-    LayoutType layout = derivedLayout( qty, dir ) ;
+    QtyCentering layout = derivedLayout( qty, dir ) ;
 
     qtyLayouts[iDerivedDir] = layout ;
 
@@ -177,49 +185,46 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
 
 
 
-#if 0
-std::array<AllocSizeT, NBR_COMPO> GridLayoutImplYee::allocSize( OhmTerm term ) const
-{
-}
-#endif
 
 
 
-std::vector< std::tuple <uint32, Point> >
+
+// TODO : this method should return a POINT, the idea is to make in every initializer
+// method, 3 nested loops over PhysicalStart/End indices and call
+// pseudo-code : fieldNodeCoordinate(field, origin).
+gridCoordinate
 GridLayoutImplYee::fieldNodeCoordinates1D(
-        const Field & field, const Point & patchOrigin ) const
+        const Field & field, const Point & origin ) const
 {
-    Direction dirX = Direction::directionX ;
+    Direction dirX = Direction::X ;
 
     uint32 idirX = static_cast<uint32>(dirX) ;
 
-    std::vector< std::tuple<uint32, Point> > nodeList ;
+    std::vector< std::tuple<uint32, Point> > nodeList;
+    nodeList.reserve( nbrPhysicalCells(dirX) ); // warning
 
-    double half_cell = 0. ;
+    double halfCell = 0. ;
 
     uint32 iFx = static_cast<uint32>(field.hybridQty()) ;
 
-    LayoutType centering = hybridQtyCentering_[iFx][idirX] ;
+    QtyCentering centering = hybridQtyCentering_[iFx][idirX] ;
 
-    if( centering == LayoutType::dual )
+    if( centering == QtyCentering::dual )
     {
-        half_cell = 0.5 ;
+        halfCell = 0.5 ;
     }
 
-
-    double y = patchOrigin.y_ ;
-    double z = patchOrigin.z_ ;
+    double y = origin.y_ ;
+    double z = origin.z_ ;
 
     uint32 ixStart = physicalStartIndex(field, dirX) ;
     uint32 ixEnd   = physicalEndIndex  (field, dirX) ;
 
     for( uint32 ix= ixStart; ix< ixEnd ; ++ix )
     {
-        double x = ( (ix-ixStart) + half_cell)*dx_ + patchOrigin.x_ ;
+        double x = ( (ix-ixStart) + halfCell)*dx_ + origin.x_ ;
 
-        Point point( x, y, z ) ;
-
-        auto nodeCoordinates = std::make_tuple(ix, point) ;
+        auto nodeCoordinates = std::make_tuple(ix, Point( x, y, z ) ) ;
 
         nodeList.push_back( nodeCoordinates ) ;
     }
@@ -228,25 +233,29 @@ GridLayoutImplYee::fieldNodeCoordinates1D(
 }
 
 
-void GridLayoutImplYee::deriv1D(Field const& operand, Direction direction, Field& derivative) const
+
+
+
+
+
+
+void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const
 {
 
-    uint32 iOpStart = physicalStartIndex( operand, direction ) ;
-    uint32 iOpEnd   = physicalEndIndex  ( operand, direction ) ;
+    uint32 iOpStart = physicalStartIndex( operand, Direction::X ) ;
+    uint32 iOpEnd   = physicalEndIndex  ( operand, Direction::X ) ;
 
-    uint32 iDerStart = physicalStartIndex( derivative, direction ) ;
-//    uint32 iDerEnd   = physicalEndIndex  ( derivative, direction ) ;
+    uint32 iDerStart = physicalStartIndex( derivative, Direction::X) ;
 
-    uint32 iDirX = static_cast<uint32>( Direction::directionX ) ;
+    uint32 iDirX = static_cast<uint32>( Direction::X ) ;
 
     uint32 iHybridQty = static_cast<uint32>( operand.hybridQty() ) ;
 
-    LayoutType opLayout = hybridQtyCentering_[iHybridQty][iDirX] ;
+    QtyCentering opLayout = hybridQtyCentering_[iHybridQty][iDirX] ;
 
-    double ods = inverseSpatialStep( direction ) ;
 
     uint32 iDer = 0 ;
-    if( opLayout == LayoutType::primal )
+    if( opLayout == QtyCentering::primal )
     {
         iDer = iDerStart + 1 ;
     } else  // opLayout on the dual
@@ -256,7 +265,7 @@ void GridLayoutImplYee::deriv1D(Field const& operand, Direction direction, Field
 
     for( uint32 iOp=iOpStart ; iOp<iOpEnd ; ++iOp )
     {
-        derivative(iDer) = ods * ( operand(iOp+1) - operand(iOp) ) ;
+        derivative(iDer) = odxdydz_[0] * ( operand(iOp+1) - operand(iOp) ) ;
         ++iDer ;
     }
 
@@ -266,30 +275,34 @@ void GridLayoutImplYee::deriv1D(Field const& operand, Direction direction, Field
 // start and end index used in computing loops
 uint32 GridLayoutImplYee::physicalStartIndex(Field const& field, Direction direction) const
 {
-
-    return physicalStartIndex_[static_cast<uint32>(field.hybridQty())][static_cast<uint32>(direction)];
+    uint32 iQty = static_cast<uint32>(field.hybridQty());
+    uint32 iDir = static_cast<uint32>(direction);
+    return physicalStartIndex_[iQty][iDir];
 }
 
 
 uint32 GridLayoutImplYee::physicalEndIndex(Field const& field, Direction direction) const
 {
-
-    return physicalEndIndex_[static_cast<uint32>(field.hybridQty())][static_cast<uint32>(direction)];
+    uint32 iQty = static_cast<uint32>(field.hybridQty());
+    uint32 iDir = static_cast<uint32>(direction);
+    return physicalEndIndex_[iQty][iDir];
 }
 
 
 
 uint32 GridLayoutImplYee::ghostStartIndex(Field const& field, Direction direction) const
 {
-
-    return ghostStartIndex_[static_cast<uint32>(field.hybridQty())][static_cast<uint32>(direction)];
+    uint32 iQty = static_cast<uint32>(field.hybridQty());
+    uint32 iDir = static_cast<uint32>(direction);
+    return ghostStartIndex_[iQty][iDir];
 }
 
 
 uint32 GridLayoutImplYee::ghostEndIndex(Field const& field, Direction direction) const
 {
-
-    return ghostEndIndex_[static_cast<uint32>(field.hybridQty())][static_cast<uint32>(direction)];
+    uint32 iQty = static_cast<uint32>(field.hybridQty());
+    uint32 iDir = static_cast<uint32>(direction);
+    return ghostEndIndex_[iQty][iDir];
 }
 
 

@@ -53,7 +53,7 @@ public:
 
     GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
                uint32 nbDims      , std::string layoutName,
-               uint32 ghostParameter );
+               uint32 ghostParameter ); // TODO see if better name
 
     GridLayout(GridLayout const& source);
     GridLayout(GridLayout&& source);

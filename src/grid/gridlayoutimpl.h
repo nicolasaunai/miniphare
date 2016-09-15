@@ -11,43 +11,44 @@
 
 
 
-enum class Direction{ directionX, directionY, directionZ } ;
+enum class Direction{ X, Y, Z } ;
 
-enum class LayoutType{ primal, dual } ;
+enum class QtyCentering{ primal, dual } ;
 
 enum class EMFieldType{ EVecField, BVecField } ;
 
 
 
 
-struct gridDataT {
-Direction dirX = Direction::directionX ;
-Direction dirY = Direction::directionY ;
-Direction dirZ = Direction::directionZ ;
+struct gridDataT
+{
+    Direction dirX = Direction::X ;
+    Direction dirY = Direction::Y ;
+    Direction dirZ = Direction::Z ;
 
-LayoutType primal = LayoutType::primal ;
-LayoutType dual   = LayoutType::dual   ;
+    QtyCentering primal = QtyCentering::primal ;
+    QtyCentering dual   = QtyCentering::dual   ;
 
-uint32 idirX = static_cast<uint32>(Direction::directionX) ;
-uint32 idirY = static_cast<uint32>(Direction::directionY) ;
-uint32 idirZ = static_cast<uint32>(Direction::directionZ) ;
+    uint32 idirX = static_cast<uint32>(Direction::X) ;
+    uint32 idirY = static_cast<uint32>(Direction::Y) ;
+    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
 
-uint32 iBx = static_cast<uint32>(HybridQuantity::Bx) ;
-uint32 iBy = static_cast<uint32>(HybridQuantity::By) ;
-uint32 iBz = static_cast<uint32>(HybridQuantity::Bz) ;
+    uint32 iBx = static_cast<uint32>(HybridQuantity::Bx) ;
+    uint32 iBy = static_cast<uint32>(HybridQuantity::By) ;
+    uint32 iBz = static_cast<uint32>(HybridQuantity::Bz) ;
 
-uint32 iEx = static_cast<uint32>(HybridQuantity::Ex) ;
-uint32 iEy = static_cast<uint32>(HybridQuantity::Ey) ;
-uint32 iEz = static_cast<uint32>(HybridQuantity::Ez) ;
+    uint32 iEx = static_cast<uint32>(HybridQuantity::Ex) ;
+    uint32 iEy = static_cast<uint32>(HybridQuantity::Ey) ;
+    uint32 iEz = static_cast<uint32>(HybridQuantity::Ez) ;
 
-uint32 irho = static_cast<uint32>(HybridQuantity::rho) ;
-uint32 iV = static_cast<uint32>(HybridQuantity::V) ;
-uint32 iP = static_cast<uint32>(HybridQuantity::P) ;
+    uint32 irho = static_cast<uint32>(HybridQuantity::rho) ;
+    uint32 iV = static_cast<uint32>(HybridQuantity::V) ;
+    uint32 iP = static_cast<uint32>(HybridQuantity::P) ;
 };
 
 
 
-
+using gridCoordinate = std::vector< std::tuple <uint32, Point> >;
 
 
 
@@ -59,8 +60,10 @@ class GridLayoutImpl
 
 public:
 
-    virtual std::vector < std::tuple < uint32, Point> >
-    fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const = 0;
+// TODO : this method should return a POINT, the idea is to make in every initializer
+    // method, 3 nested loops over PhysicalStart/End indices and call
+    // pseudo-code : fieldNodeCoordinate(field, origin).
+    virtual gridCoordinate fieldNodeCoordinates1D( const Field & field, const Point & origin ) const = 0;
 
     virtual AllocSizeT allocSize( HybridQuantity qtyType ) const = 0 ;
 
@@ -75,7 +78,9 @@ public:
     virtual uint32 ghostStartIndex(Field const& field, Direction direction) const = 0;
     virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const = 0;
 
-    virtual void deriv1D(Field const& operand, Direction direction, Field& derivative)const = 0;
+    virtual void deriv1D(Field const& operand, Field& derivative)const = 0;
+    //virtual void deriv2D(Field const& operand, Direction direction, Field& derivative)const = 0;
+    //virtual void deriv3D(Field const& operand, Direction direction, Field& derivative)const = 0;
 
     virtual uint32 nbDimensions() const = 0;
 
@@ -97,9 +102,9 @@ protected:
     uint32 nbrCelly_  ;
     uint32 nbrCellz_  ;
 
-    uint32 centeredOffset_ ;
-    uint32 leftOffset_ ;
-    uint32 rightOffset_ ;
+    uint32 nbrPrimalGhosts_ ;
+    uint32 nbrDualGhostsLeft_ ;
+    uint32 nbrDualGhostsRight_ ;
 
     uint32 nbrPaddingCellsX_ ;
     uint32 nbrPaddingCellsY_ ;
@@ -109,30 +114,27 @@ protected:
     double dy_ ;
     double dz_ ;
 
-    double odx_ ;
-    double ody_ ;
-    double odz_ ;
 
     std::array<double, NBR_COMPO> odxdydz_ ;
 
     std::array<uint32, NBR_COMPO> nbrPaddingCells_  ;
     std::array<uint32, NBR_COMPO> nbrPhysicalCells_ ;
 
-    std::array< std::array<LayoutType,NBR_COMPO>, NBR_HYBRID_QTY > hybridQtyCentering_ ;
+    std::array< std::array<QtyCentering,NBR_COMPO>, NBR_HYBRID_QTY > hybridQtyCentering_ ;
 
     std::array< std::array<uint32,NBR_COMPO>, NBR_HYBRID_QTY > physicalStartIndex_;
     std::array< std::array<uint32,NBR_COMPO>, NBR_HYBRID_QTY > physicalEndIndex_;
     std::array< std::array<uint32,NBR_COMPO>, NBR_HYBRID_QTY > ghostStartIndex_;
     std::array< std::array<uint32,NBR_COMPO>, NBR_HYBRID_QTY > ghostEndIndex_;
 
-    void computeOffsets(uint32 ghostParameter ) ;
+    void computeNbrGhosts(uint32 ghostParameter ) ;
 
     double inverseSpatialStep( Direction direction ) const noexcept ;
 
 public:
 
     // minimum nbr of cells in a non-invariant direction
-//    static const uint32 minNbrCells = 10;
+    //    static const uint32 minNbrCells = 10;
 
     static const uint32 defaultNbrPaddingCells = 10;
 
@@ -147,20 +149,20 @@ public:
     void initGhostStart( const gridDataT & staticData ) ;
     void initGhostEnd  ( const gridDataT & staticData ) ;
 
-    LayoutType changeLayout( LayoutType layout ) const ;
+    QtyCentering changeLayout( QtyCentering layout ) const ;
 
-    LayoutType derivedLayout( HybridQuantity qty, Direction dir) const ;
+    QtyCentering derivedLayout( HybridQuantity qty, Direction dir) const ;
 
     uint32 nbrPaddingCells( Direction direction ) const noexcept;
     uint32 nbrPhysicalCells( Direction direction ) const noexcept;
 
-    uint32 nbrGhostAtMin( LayoutType centering ) const noexcept;
-    uint32 nbrGhostAtMax( LayoutType centering ) const noexcept;
+    uint32 nbrGhostAtMin( QtyCentering centering ) const noexcept;
+    uint32 nbrGhostAtMax( QtyCentering centering ) const noexcept;
 
-    uint32 cellIndexAtMin( LayoutType centering, Direction direction ) const ;
-    uint32 cellIndexAtMax( LayoutType centering, Direction direction ) const ;
+    uint32 cellIndexAtMin( QtyCentering centering, Direction direction ) const ;
+    uint32 cellIndexAtMax( QtyCentering centering, Direction direction ) const ;
 
-    uint32 ghostCellIndexAtMax( LayoutType centering, Direction direction ) const ;
+    uint32 ghostCellIndexAtMax( QtyCentering centering, Direction direction ) const ;
 };
 
 

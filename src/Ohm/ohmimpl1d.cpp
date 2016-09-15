@@ -32,8 +32,8 @@ void OhmImpl1D::operator()(VecField const& B, Field const& Ne,
     // "" resist.
 
 
-    uint32 iStart    = layout_.physicalStartIndex(Ex, Direction::directionX);
-    uint32 iEnd      = layout_.physicalEndIndex  (Ex, Direction::directionX);
+    uint32 iStart    = layout_.physicalStartIndex(Ex, Direction::X);
+    uint32 iEnd      = layout_.physicalEndIndex  (Ex, Direction::X);
     Field& ideal     = idealTerm_.component(VecField::VecX);
     Field& pressure  = pressureTerm_.component(VecField::VecX);
 
@@ -42,8 +42,8 @@ void OhmImpl1D::operator()(VecField const& B, Field const& Ne,
      Ex(ix) = ideal(ix) + pressure(ix);// + resist_(ix) + hyperresist_(ix)
     }
 
-    iStart    = layout_.physicalStartIndex(Ey, Direction::directionX);
-    iEnd      = layout_.physicalEndIndex  (Ey, Direction::directionX);
+    iStart    = layout_.physicalStartIndex(Ey, Direction::X);
+    iEnd      = layout_.physicalEndIndex  (Ey, Direction::X);
     ideal     = idealTerm_.component(VecField::VecY);
     pressure  = pressureTerm_.component(VecField::VecY);
 
@@ -52,8 +52,8 @@ void OhmImpl1D::operator()(VecField const& B, Field const& Ne,
         Ey(ix) = ideal(ix) + pressure(ix);// + resist_(ix) + hyperresist_(ix)
     }
 
-    iStart    = layout_.physicalStartIndex(Ez, Direction::directionX);
-    iEnd      = layout_.physicalEndIndex  (Ez, Direction::directionX);
+    iStart    = layout_.physicalStartIndex(Ez, Direction::X);
+    iEnd      = layout_.physicalEndIndex  (Ez, Direction::X);
     ideal     = idealTerm_.component(VecField::VecZ);
     pressure  = pressureTerm_.component(VecField::VecZ);
 

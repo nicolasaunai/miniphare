@@ -32,7 +32,7 @@ public:
     virtual uint32 nbDimensions() const override {return nbdims_;}
 
     virtual std::vector < std::tuple < uint32, Point> >
-    fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const override ;
+    fieldNodeCoordinates1D( const Field & field, const Point & origin ) const override ;
 
     virtual AllocSizeT allocSize( HybridQuantity qtyType ) const override ;
 
@@ -47,7 +47,7 @@ public:
     virtual uint32 ghostStartIndex(Field const& field, Direction direction) const override;
     virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const override;
 
-    virtual void deriv1D(Field const& operand, Direction direction, Field& derivative) const override;
+    virtual void deriv1D(Field const& operand, Field& derivative) const override;
 
 
 };

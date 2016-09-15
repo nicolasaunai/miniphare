@@ -16,18 +16,14 @@ GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims, uint32 ghostPara
       nbrPaddingCellsY_{defaultNbrPaddingCells},
       nbrPaddingCellsZ_{defaultNbrPaddingCells},
       dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]},
-      odx_{1./dx_}, ody_{1./dy_}, odz_{1./dz_}
+      odxdydz_{ {1./dx_, 1./dy_, 1./dz_} }
 {
-    computeOffsets( ghostParameter );
+    computeNbrGhosts( ghostParameter );
 }
 
 
 void GridLayoutImplInternals::initGridUtils( const gridDataT & data )
 {
-    odxdydz_[data.idirX] = odx_ ;
-    odxdydz_[data.idirY] = ody_ ;
-    odxdydz_[data.idirZ] = odz_ ;
-
     nbrPaddingCells_[data.idirX] = nbrPaddingCellsX_ ;
     nbrPaddingCells_[data.idirY] = nbrPaddingCellsY_ ;
     nbrPaddingCells_[data.idirZ] = nbrPaddingCellsZ_ ;
@@ -204,25 +200,25 @@ void GridLayoutImplInternals::initGhostEnd( const gridDataT & data )
 }
 
 
-LayoutType GridLayoutImplInternals::derivedLayout(HybridQuantity qty, Direction dir) const
+QtyCentering GridLayoutImplInternals::derivedLayout(HybridQuantity qty, Direction dir) const
 {
 
     uint32 iField = static_cast<uint32>( qty ) ;
     uint32 idir   = static_cast<uint32>( dir ) ;
 
-    LayoutType newLayout = changeLayout( hybridQtyCentering_[iField][idir] ) ;
+    QtyCentering newLayout = changeLayout( hybridQtyCentering_[iField][idir] ) ;
 
     return newLayout ;
 }
 
 
-LayoutType GridLayoutImplInternals::changeLayout(LayoutType layout ) const
+QtyCentering GridLayoutImplInternals::changeLayout(QtyCentering layout ) const
 {
-    LayoutType newLayout = LayoutType::primal ;
+    QtyCentering newLayout = QtyCentering::primal ;
 
-    if( layout == LayoutType::primal )
+    if( layout == QtyCentering::primal )
     {
-        newLayout = LayoutType::dual ;
+        newLayout = QtyCentering::dual ;
     }
 
     return newLayout ;
@@ -240,11 +236,11 @@ LayoutType GridLayoutImplInternals::changeLayout(LayoutType layout ) const
  *
  * @param ghostParameter, corresponds to the interpolation order
  */
-void GridLayoutImplInternals::computeOffsets(uint32 ghostParameter)
+void GridLayoutImplInternals::computeNbrGhosts(uint32 ghostParameter)
 {
-    centeredOffset_ = static_cast<uint32> ( std::floor(ghostParameter/2.) )      ;
-    leftOffset_     = static_cast<uint32> ( std::floor((ghostParameter -1)/2.) ) ;
-    rightOffset_    = static_cast<uint32> ( std::floor((ghostParameter +1)/2.) ) ;
+    nbrPrimalGhosts_ = static_cast<uint32> ( std::floor(ghostParameter/2.) )      ;
+    nbrDualGhostsLeft_     = static_cast<uint32> ( std::floor((ghostParameter -1)/2.) ) ;
+    nbrDualGhostsRight_    = static_cast<uint32> ( std::floor((ghostParameter +1)/2.) ) ;
 }
 
 
@@ -272,7 +268,7 @@ uint32 GridLayoutImplInternals::nbrPhysicalCells( Direction direction ) const no
 }
 
 
-uint32 GridLayoutImplInternals::cellIndexAtMin( LayoutType centering,
+uint32 GridLayoutImplInternals::cellIndexAtMin( QtyCentering centering,
                                                 Direction direction ) const
 {
 
@@ -282,7 +278,7 @@ uint32 GridLayoutImplInternals::cellIndexAtMin( LayoutType centering,
 }
 
 
-uint32 GridLayoutImplInternals::cellIndexAtMax( LayoutType centering,
+uint32 GridLayoutImplInternals::cellIndexAtMax( QtyCentering centering,
                                                 Direction direction ) const
 {
     uint32 cellIndex = cellIndexAtMin(centering, direction) + nbrPhysicalCells( direction ) ;
@@ -291,7 +287,7 @@ uint32 GridLayoutImplInternals::cellIndexAtMax( LayoutType centering,
 }
 
 
-uint32 GridLayoutImplInternals::ghostCellIndexAtMax( LayoutType centering,
+uint32 GridLayoutImplInternals::ghostCellIndexAtMax( QtyCentering centering,
                                                      Direction direction ) const
 {
     uint32 cellIndex = cellIndexAtMax( centering, direction ) + nbrGhostAtMax( centering );
@@ -299,25 +295,25 @@ uint32 GridLayoutImplInternals::ghostCellIndexAtMax( LayoutType centering,
     return cellIndex ;
 }
 
-uint32 GridLayoutImplInternals::nbrGhostAtMin( LayoutType centering ) const noexcept
+uint32 GridLayoutImplInternals::nbrGhostAtMin( QtyCentering centering ) const noexcept
 {
-    uint32 nbrGhosts = centeredOffset_ ;
+    uint32 nbrGhosts = nbrPrimalGhosts_ ;
 
-    if( centering == LayoutType::dual )
+    if( centering == QtyCentering::dual )
     {
-        nbrGhosts = leftOffset_;
+        nbrGhosts = nbrDualGhostsLeft_;
     }
 
     return nbrGhosts ;
 }
 
-uint32 GridLayoutImplInternals::nbrGhostAtMax( LayoutType centering ) const noexcept
+uint32 GridLayoutImplInternals::nbrGhostAtMax( QtyCentering centering ) const noexcept
 {
-    uint32 nbrGhosts = centeredOffset_ ;
+    uint32 nbrGhosts = nbrPrimalGhosts_ ;
 
-    if( centering == LayoutType::dual )
+    if( centering == QtyCentering::dual )
     {
-        nbrGhosts = rightOffset_ ;
+        nbrGhosts = nbrDualGhostsRight_ ;
     }
 
     return nbrGhosts ;
