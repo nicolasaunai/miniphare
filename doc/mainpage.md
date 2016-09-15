@@ -16,7 +16,7 @@ This document is a **developer** documentation. Its aim is to explain the projec
 
 ## Contribution policy
 
-Contribution to the MiniPHARE code is possible under the following rules.
+Contribution to the MiniPHARE code is possible under the following rules:
 
 * Each contributor works on personal clones of the official repository
 * The official repository is subject to rebasing from official maintainers.
