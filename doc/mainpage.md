@@ -45,7 +45,9 @@ MiniPHARE is developed by:
 
 * Qt Creator IDE
 * Git GUI client
-* Doxygen
+* Documentation system
+    * Doxygen
+    * Graphviz
 * clang, gcc
 * 
 
