@@ -185,56 +185,51 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
 
 
 
-
-
-
-
-// TODO : this method should return a POINT, the idea is to make in every initializer
-// method, 3 nested loops over PhysicalStart/End indices and call
-// pseudo-code : fieldNodeCoordinate(field, origin).
-gridCoordinate
-GridLayoutImplYee::fieldNodeCoordinates1D(
-        const Field & field, const Point & origin ) const
+/**
+ * @brief GridLayoutImplYee::fieldNodeCoordinates
+ * this method should return a POINT, the idea is to make in every initializer
+ * method, 3 nested loops over PhysicalStart/End indices
+ * @param field
+ * the returned point depends on the field's centering
+ * @param origin
+ * @param ix
+ * @param iy
+ * @param iz
+ * @return Point
+ * the desired physical coordinate
+ */
+Point GridLayoutImplYee::fieldNodeCoordinates(
+        const Field & field, const Point & origin,
+        uint32 ix, uint32 iy, uint32 iz ) const
 {
-    Direction dirX = Direction::X ;
+    uint32 idirX = static_cast<uint32>(Direction::X) ;
+    uint32 idirY = static_cast<uint32>(Direction::Y) ;
+    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
 
-    uint32 idirX = static_cast<uint32>(dirX) ;
+    uint32 ixStart = physicalStartIndex(field, Direction::X) ;
+    uint32 iyStart = physicalStartIndex(field, Direction::Y) ;
+    uint32 izStart = physicalStartIndex(field, Direction::Z) ;
 
-    std::vector< std::tuple<uint32, Point> > nodeList;
-    nodeList.reserve( nbrPhysicalCells(dirX) ); // warning
+    std::array<double, 3> halfCell{ {0, 0, 0} } ;
 
-    double halfCell = 0. ;
+    uint32 iQty = static_cast<uint32>(field.hybridQty()) ;
 
-    uint32 iFx = static_cast<uint32>(field.hybridQty()) ;
+    std::array<QtyCentering, 3> centering =
+    { {hybridQtyCentering_[iQty][idirX],
+       hybridQtyCentering_[iQty][idirY],
+       hybridQtyCentering_[iQty][idirZ]} } ;
 
-    QtyCentering centering = hybridQtyCentering_[iFx][idirX] ;
-
-    if( centering == QtyCentering::dual )
+    for( uint32 idir=idirX ; idir<=idirZ ; ++idir)
     {
-        halfCell = 0.5 ;
+        if(centering[idir] == QtyCentering::dual) halfCell[idir] = 0.5 ;
     }
 
-    double y = origin.y_ ;
-    double z = origin.z_ ;
+    double x = ( (ix-ixStart) - halfCell[0])*dx_ + origin.x_ ;
+    double y = ( (iy-iyStart) - halfCell[1])*dy_ + origin.y_ ;
+    double z = ( (iz-izStart) - halfCell[2])*dz_ + origin.z_ ;
 
-    uint32 ixStart = physicalStartIndex(field, dirX) ;
-    uint32 ixEnd   = physicalEndIndex  (field, dirX) ;
-
-    for( uint32 ix= ixStart; ix< ixEnd ; ++ix )
-    {
-        double x = ( (ix-ixStart) + halfCell)*dx_ + origin.x_ ;
-
-        auto nodeCoordinates = std::make_tuple(ix, Point( x, y, z ) ) ;
-
-        nodeList.push_back( nodeCoordinates ) ;
-    }
-
-    return nodeList ;
+    return Point(x, y, z) ;
 }
-
-
-
-
 
 
 

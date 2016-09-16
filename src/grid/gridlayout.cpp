@@ -78,10 +78,10 @@ GridLayout::GridLayout(GridLayout&& source)
 }
 
 
-std::vector< std::tuple <uint32, Point> >
-GridLayout::fieldNodeCoordinates1D( const Field & field, const Point & origin ) const
+Point GridLayout::fieldNodeCoordinates( const Field & field, const Point & origin,
+                                  uint32 ix, uint32 iy, uint32 iz  ) const
 {
-    return implPtr_->fieldNodeCoordinates1D( field, origin ) ;
+    return implPtr_->fieldNodeCoordinates( field, origin, ix, iy, iz ) ;
 }
 
 

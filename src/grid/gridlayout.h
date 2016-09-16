@@ -81,8 +81,8 @@ public:
 
 
 
-    std::vector < std::tuple < uint32, Point> >
-    fieldNodeCoordinates1D( const Field & field, const Point & patchOrigin ) const;
+    Point fieldNodeCoordinates( const Field & field, const Point & origin,
+                                uint32 ix, uint32 iy, uint32 iz ) const;
 
 
     // return the (total) number of mesh points

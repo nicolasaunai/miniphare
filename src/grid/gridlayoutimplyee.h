@@ -31,8 +31,9 @@ public:
 
     virtual uint32 nbDimensions() const override {return nbdims_;}
 
-    virtual std::vector < std::tuple < uint32, Point> >
-    fieldNodeCoordinates1D( const Field & field, const Point & origin ) const override ;
+    virtual Point fieldNodeCoordinates(
+            const Field & field, const Point & origin,
+            uint32 ix, uint32 iy, uint32 iz ) const override ;
 
     virtual AllocSizeT allocSize( HybridQuantity qtyType ) const override ;
 
