@@ -9,6 +9,8 @@
 #include "AMR/mlmd.h"
 #include "types.h"
 
+#include "Initializer/initializerfactory.h"
+
 // hierarchy contains linked list of patchs which are tokens
 //
 
@@ -25,7 +27,7 @@ int main(int argc, char *argv[])
     // the following input parameters should be given by some module
     double dt = 0.001;
     std::array<double,3> dxdydz  = {0.05, 0, 0};
-    std::array<uint32,3> fieldSizes =  {100, 1, 1};
+    std::array<uint32,3> fieldSizes =  {100, 0, 0};
     std::string layoutName = "yee";
     uint32 nbDims = 1;
 
@@ -37,6 +39,9 @@ int main(int argc, char *argv[])
     Hierarchy simulationHierarchy{ std::move(root) };
 
     MLMD mlmdManager;
+
+    std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv);
+
 
 
     //Hierarchy simulaationHierarchy( myInitialCondition() );
