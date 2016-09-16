@@ -5,6 +5,7 @@
 #include <array>
 
 #include "Plasmas/particles.h"
+#include "particleinitializerimpl.h"
 
 
 /**
@@ -16,18 +17,19 @@
  */
 class ParticleInitializer
 {
-protected:
 
-    using ScalarFunction = double (*) (double x, double y, double z);
-    using VectorFunction = void   (*) (double x, double y, double z, std::array<double,3> vec);
+private:
+    std::unique_ptr< ParticleInitializerImpl > implPtr_;
+
 
 public:
 
-    virtual std::unique_ptr<ParticleInitializer> clone() const = 0;
+    // TODO deal with copy/move Ctors
+    ParticleInitializer() = default;
+    ParticleInitializer(ParticleInitializer const& source);
 
-    virtual void loadParticles(std::vector<Particle>& particles) const = 0;
+    void loadParticles(std::vector<Particle>& particles) const {return implPtr_->loadParticles(particles); }
 
-    virtual ~ParticleInitializer();
 
 };
 

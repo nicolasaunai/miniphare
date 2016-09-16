@@ -17,7 +17,7 @@ private:
     Field rho_;
     Field bulkVel_;
     std::vector<Particle> particleArray_;
-    std::unique_ptr<ParticleInitializer> particleInitializer_;
+    ParticleInitializer particleInitializer_;
 
 
 public:

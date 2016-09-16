@@ -34,15 +34,17 @@ class IonsInitializer
 
 private:
 
-    std::vector<ParticleInitializer> particleInitializers_;
-    uint32 nbrSpecies_;
+    std::vector< ParticleInitializer > particleInitializers_;
     std::vector<double> masses_;
     std::vector<std::string> names_;
 
 
 public:
 
-    uint32 nbrSpecies() const {return nbrSpecies_;}
+    explicit IonsInitializer(uint32 nbrSpecies);
+
+
+    uint32 nbrSpecies() const {return static_cast<uint32>(names_.size()); }
 
 
     double speciesMass(uint32 speciesIndex) const {return masses_[speciesIndex];}

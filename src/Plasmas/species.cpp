@@ -19,7 +19,7 @@ Species::Species(GridLayout const& layout, double mass,
       rho_    { layout_.nx(), layout_.ny(), layout_.nz(), "rho_"   + name },
       bulkVel_{ layout_.nx(), layout_.ny(), layout_.nz(),"bulkVel_"+ name },
       particleArray_{},
-      particleInitializer_{ particleInitializer.clone() }
+      particleInitializer_{ particleInitializer} //TODO broken copy
 {
 
 }
@@ -28,5 +28,5 @@ Species::Species(GridLayout const& layout, double mass,
 
 void Species::loadParticles()
 {
-    particleInitializer_->loadParticles(particleArray_);
+    particleInitializer_.loadParticles(particleArray_);
 }

@@ -1,6 +1,10 @@
 #include "particleinitializer.h"
 
-ParticleInitializer::~ParticleInitializer()
+
+
+ParticleInitializer::ParticleInitializer(ParticleInitializer const& source)
+    : implPtr_ { source.implPtr_->clone()}
 {
 
 }
+

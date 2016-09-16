@@ -72,7 +72,7 @@
                          <object>{c2037368-8f34-4ff8-b01c-d6709c7dd41b}</object>
                          <name>FluidParticleInitializer</name>
                          <pos>x:570;y:405</pos>
-                         <rect>x:-90;y:-50;w:180;h:100</rect>
+                         <rect>x:-90;y:-60;w:180;h:120</rect>
                          <auto-sized>false</auto-sized>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -698,7 +698,7 @@
                          </base-DElement>
                          <object>{3407a607-441b-4be4-84c0-0194eab821be}</object>
                          <name>PythonInitializerFactory</name>
-                         <pos>x:-150;y:285</pos>
+                         <pos>x:95;y:330</pos>
                          <rect>x:-100;y:-50;w:200;h:100</rect>
                          <visual-role>6</visual-role>
                         </DObject>
@@ -719,7 +719,7 @@
                          </base-DElement>
                          <object>{fd75b7fa-1e4e-4020-a5c9-0343d4821f81}</object>
                          <name>InitializerFactory</name>
-                         <pos>x:-150;y:115</pos>
+                         <pos>x:95;y:160</pos>
                          <rect>x:-100;y:-50;w:200;h:100</rect>
                          <auto-sized>false</auto-sized>
                          <visual-role>5</visual-role>
@@ -759,7 +759,7 @@
                          </base-DElement>
                          <object>{d20abd54-2e40-4f6f-8fa7-030d5110bca0}</object>
                          <name>SpeciesInitializer</name>
-                         <pos>x:340;y:150</pos>
+                         <pos>x:585;y:195</pos>
                          <rect>x:-125;y:-55;w:250;h:110</rect>
                          <visual-role>6</visual-role>
                         </DObject>
@@ -780,7 +780,7 @@
                          </base-DElement>
                          <object>{e1219957-a1f6-402c-b0e2-9902e34999a1}</object>
                          <name>ParticleInitializer</name>
-                         <pos>x:340;y:280</pos>
+                         <pos>x:585;y:325</pos>
                          <rect>x:-65;y:-35;w:130;h:70</rect>
                          <visual-role>5</visual-role>
                         </DObject>
@@ -824,7 +824,7 @@
                          </base-DElement>
                          <object>{fc25537c-5001-4d81-8255-c7213ce427f2}</object>
                          <name>ElectromagInitializer</name>
-                         <pos>x:-90;y:455</pos>
+                         <pos>x:155;y:500</pos>
                          <rect>x:-65;y:-30;w:130;h:60</rect>
                          <visual-role>5</visual-role>
                         </DObject>
@@ -844,7 +844,7 @@
                          </base-DElement>
                          <object>{c2037368-8f34-4ff8-b01c-d6709c7dd41b}</object>
                          <name>FluidParticleInitializer</name>
-                         <pos>x:275;y:440</pos>
+                         <pos>x:520;y:485</pos>
                          <rect>x:-80;y:-60;w:160;h:120</rect>
                          <visual-role>6</visual-role>
                         </DObject>
@@ -883,7 +883,7 @@
                          </base-DElement>
                          <object>{bac97593-408d-4f2c-ada2-30b24d860417}</object>
                          <name>KineticParticleInitializer</name>
-                         <pos>x:450;y:415</pos>
+                         <pos>x:695;y:460</pos>
                          <rect>x:-70;y:-35;w:140;h:70</rect>
                          <visual-role>6</visual-role>
                         </DObject>
@@ -923,7 +923,7 @@
                          <object>{737837ac-3129-41fb-90b8-3683fa9a606f}</object>
                          <name>ModelElectromagInitializer
 </name>
-                         <pos>x:-180;y:560</pos>
+                         <pos>x:65;y:605</pos>
                          <rect>x:-80;y:-30;w:160;h:60</rect>
                          <visual-role>6</visual-role>
                         </DObject>
@@ -944,7 +944,7 @@
                          </base-DElement>
                          <object>{1ec65ebd-9812-4b5c-91f3-2e26baed1f4a}</object>
                          <name>DataElectromagInitializer</name>
-                         <pos>x:15;y:560</pos>
+                         <pos>x:260;y:605</pos>
                          <rect>x:-75;y:-30;w:150;h:60</rect>
                          <visual-role>6</visual-role>
                         </DObject>
@@ -1000,7 +1000,7 @@
                          </base-DElement>
                          <object>{3592f11e-9c44-4c90-b765-801ddc1b1fe0}</object>
                          <name>Profile</name>
-                         <pos>x:270;y:595</pos>
+                         <pos>x:515;y:640</pos>
                          <rect>x:-95;y:-35;w:190;h:70</rect>
                          <visual-role>5</visual-role>
                         </DObject>
@@ -1021,7 +1021,7 @@
                          </base-DElement>
                          <object>{91a2718c-4982-4137-b41e-da6182c6381d}</object>
                          <name>SpatialProfile</name>
-                         <pos>x:195;y:695</pos>
+                         <pos>x:440;y:740</pos>
                          <rect>x:-90;y:-40;w:180;h:80</rect>
                          <visual-role>6</visual-role>
                         </DObject>
@@ -1050,7 +1050,7 @@
                     </item>
                    </qlist>
                   </elements>
-                  <last-modified>1473603949101</last-modified>
+                  <last-modified>1473942823377</last-modified>
                   <toolbarid>General</toolbarid>
                  </MDiagram>
                 </base-MDiagram>

@@ -30,7 +30,10 @@ SOURCES += main.cpp \
     Initializer/ohminitializer.cpp \
     Initializer/pythoninitializerfactory.cpp \
     Initializer/particleinitializer.cpp \
-    Initializer/fluidparticleinitializer.cpp
+    Initializer/simpleinitializerfactory.cpp \
+    Initializer/particleinitializerimpl.cpp \
+    Initializer/particleinitializerimplfluid.cpp \
+    Initializer/initializerfactory.cpp
 
 
 HEADERS += \
@@ -66,7 +69,9 @@ HEADERS += \
     Initializer/ohminitializer.h \
     Initializer/pythoninitializerfactory.h \
     Initializer/particleinitializer.h \
-    Initializer/fluidparticleinitializer.h
+    Initializer/simpleinitializerfactory.h \
+    Initializer/particleinitializerimpl.h \
+    Initializer/particleinitializerimpfluid.h
 
 
 

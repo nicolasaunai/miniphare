@@ -32,9 +32,11 @@ public:
     // virtual std::unique_ptr<GridLayoutInitializer> createGridLayoutInitializer() = 0;
 
 
-    virtual ~InitializerFactory() = default;
+    virtual ~InitializerFactory() = 0;
 
 };
+
+
 
 
 
