@@ -169,7 +169,7 @@ void GridLayout::throwNotValid1D()const
 
     // 1D but non-zero dimensions 2 and 3.
     if ( (nbrCelly_ != 0) || (nbrCellz_ != 0) )
-        throw  std::runtime_error("Error - 1D requires ny=nz=1");
+        throw  std::runtime_error("Error - 1D requires ny=nz=0");
 
 }
 
