@@ -4,18 +4,30 @@
 #include "faradayimpl1d.h"
 
 
-
-
+/**
+ * @brief FaradayImpl1D::FaradayImpl1D
+ * The partial derivative fields now receive the adequate HybridQuantity in order
+ * to get the appropriate QtyCentering.
+ * For example:  dxEz_ must be centered like By
+ *
+ * Conceptually, it might sound weird because dxEz_ and By do not have the same
+ * physical dimension.
+ * However, we must keep in mind that we have created HybridQuantity mainly
+ * because of centering and layout issues.
+ *
+ * @param dt
+ * @param layout
+ */
 FaradayImpl1D::FaradayImpl1D(double dt, GridLayout const& layout)
     :FaradayImplInternals(dt, layout),
       dxEz_( layout.allocSizeDerived(HybridQuantity::Ez, Direction::X).nx_ ,
              layout.allocSizeDerived(HybridQuantity::Ez, Direction::X).ny_ ,
              layout.allocSizeDerived(HybridQuantity::Ez, Direction::X).nz_ ,
-             HybridQuantity::temporary, "_dxEz"),
+             HybridQuantity::By, "_dxEz"),
       dxEy_( layout.allocSizeDerived(HybridQuantity::Ey, Direction::X).nx_ ,
              layout.allocSizeDerived(HybridQuantity::Ey, Direction::X).ny_ ,
              layout.allocSizeDerived(HybridQuantity::Ey, Direction::X).nz_ ,
-             HybridQuantity::temporary, "_dxEy")
+             HybridQuantity::Bz, "_dxEy")
 {
 }
 
