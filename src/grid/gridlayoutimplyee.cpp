@@ -137,11 +137,11 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
  * @param field
  * the returned point depends on the field's centering
  * @param origin
- * @param ix
- * @param iy
- * @param iz
+ * @param ix is a primal index
+ * @param iy is a primal index
+ * @param iz is a primal index
  * @return Point
- * the desired physical coordinate
+ * the desired field-centered coordinate
  */
 Point GridLayoutImplYee::fieldNodeCoordinates(
         const Field & field, const Point & origin,
@@ -151,9 +151,9 @@ Point GridLayoutImplYee::fieldNodeCoordinates(
     uint32 idirY = static_cast<uint32>(Direction::Y) ;
     uint32 idirZ = static_cast<uint32>(Direction::Z) ;
 
-    uint32 ixStart = physicalStartIndex(field, Direction::X) ;
-    uint32 iyStart = physicalStartIndex(field, Direction::Y) ;
-    uint32 izStart = physicalStartIndex(field, Direction::Z) ;
+    uint32 ixStart = cellIndexAtMin( QtyCentering::primal, Direction::X ) ;
+    uint32 iyStart = cellIndexAtMin( QtyCentering::primal, Direction::Y ) ;
+    uint32 izStart = cellIndexAtMin( QtyCentering::primal, Direction::Z ) ;
 
     std::array<double, 3> halfCell{ {0, 0, 0} } ;
 
@@ -187,9 +187,9 @@ Point GridLayoutImplYee::fieldNodeCoordinates(
  * The idea is to call this method in every initializer method
  * using 3 nested loops over primal PhysicalStart/End indices.
  * @param origin
- * @param ix
- * @param iy
- * @param iz
+ * @param ix is a primal index
+ * @param iy is a primal index
+ * @param iz is a primal index
  * @return Point
  * the desired cell-centered (dual/dual/dual) coordinate
  */
