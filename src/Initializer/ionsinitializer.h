@@ -32,28 +32,17 @@
 class IonsInitializer
 {
 
-private:
-
-    std::vector< ParticleInitializer > particleInitializers_;
-    std::vector<double> masses_;
-    std::vector<std::string> names_;
-
-
 public:
 
-    explicit IonsInitializer(uint32 nbrSpecies);
 
+    IonsInitializer() = default;
 
-    uint32 nbrSpecies() const {return static_cast<uint32>(names_.size()); }
-
-
-    double speciesMass(uint32 speciesIndex) const {return masses_[speciesIndex];}
-
-    std::string speciesName(uint32 speciesIndex) const {return names_[speciesIndex];}
-
-    ParticleInitializer const& particleInitializer(uint32 speciesIndex) const
-    {return particleInitializers_[speciesIndex];}
-
+    // TODO ParticleInitializer should have a noexcept move Ctor
+    // so that this vector can move push_back() them in
+    std::vector< ParticleInitializer > particleInitializers;
+    std::vector<double> masses;
+    std::vector<std::string> names;
+    uint32 nbrSpecies;
 
 
 };

@@ -15,15 +15,15 @@
      bulkVel_{layout.nx(), layout.ny(), layout.nz(), "_BulkVelTot"}
  {
 
-     uint32 nbrSpecies = ionsInitializer.nbrSpecies();
+     uint32 nbrSpecies = ionsInitializer.nbrSpecies;
      speciesArray_.reserve( nbrSpecies );
 
      for (uint32 speciesIndex = 0; speciesIndex < nbrSpecies; ++speciesIndex)
      {
          speciesArray_.push_back( Species { layout,
-                                            ionsInitializer.speciesMass(speciesIndex),
-                                            ionsInitializer.particleInitializer(speciesIndex),
-                                            ionsInitializer.speciesName(speciesIndex)
+                                            ionsInitializer.masses[speciesIndex],
+                                            ionsInitializer.particleInitializers[speciesIndex],
+                                            ionsInitializer.names[speciesIndex]
                                           }
                                  );
      }
@@ -53,7 +53,7 @@
 
  Species& Ions::species(uint32 index)
  {
-    return const_cast<Species&>(const_cast<const Ions*>(this)->species(index)) ;
+    return speciesArray_[index];
  }
 
 

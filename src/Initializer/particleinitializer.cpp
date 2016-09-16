@@ -1,4 +1,21 @@
 #include "particleinitializer.h"
+#include "particleinitializerimpfluid.h"
+
+
+
+
+ParticleInitializer::ParticleInitializer(GridLayout const& layout, ParticleInitializerType initType)
+    :implPtr_ {nullptr}
+{
+    switch ( initType )
+    {
+        case ParticleInitializerType::Fluid:
+            implPtr_.reset( new ParticleInitializerImplFluid(layout) );
+
+        break;
+    }
+
+}
 
 
 

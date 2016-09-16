@@ -6,6 +6,14 @@
 
 #include "Plasmas/particles.h"
 #include "particleinitializerimpl.h"
+#include "grid/gridlayout.h"
+
+
+
+
+enum class ParticleInitializerType {Fluid, Kinetic, count};
+
+
 
 
 /**
@@ -25,7 +33,7 @@ private:
 public:
 
     // TODO deal with copy/move Ctors
-    ParticleInitializer() = default;
+    ParticleInitializer(GridLayout const& layout, ParticleInitializerType type);
     ParticleInitializer(ParticleInitializer const& source);
 
     void loadParticles(std::vector<Particle>& particles) const {return implPtr_->loadParticles(particles); }
