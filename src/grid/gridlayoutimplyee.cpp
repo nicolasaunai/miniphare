@@ -63,98 +63,43 @@ void GridLayoutImplYee::initLayoutCentering( const gridDataT & data )
 }
 
 
-/* TODO change this so that all arrays (including ions and species moments) can
-   be allocated.
 
-
-   think whether the method (which only depends on hybridQtyCentering)
-   can be moved into GridLayoutImplInternals
-
-
-Species::Species(GridLayout const& layout, double mass,
-                 ParticleInitializer const& particleInitializer,
-                 std::string const& name)
-    : layout_{ layout },
-      rho_    { layout_.nx(), layout_.ny(), layout_.nz(), "rho_"   + name },
-      bulkVel_{ layout_.nx(), layout_.ny(), layout_.nz(),"bulkVel_"+ name },
-      particleArray_{},
-      particleInitializer_{ particleInitializer.clone() }
+AllocSizeT GridLayoutImplYee::allocSize( HybridQuantity qty ) const
 {
 
+    uint32 idirX = static_cast<uint32>( Direction::X ) ;
+    uint32 idirY = static_cast<uint32>( Direction::Y ) ;
+    uint32 idirZ = static_cast<uint32>( Direction::Z ) ;
+
+    uint32 iQty = static_cast<uint32>(qty) ;
+
+    std::array<QtyCentering, NBR_COMPO>
+            qtyCenterings{ {hybridQtyCentering_[iQty][idirX],
+                            hybridQtyCentering_[iQty][idirY],
+                            hybridQtyCentering_[iQty][idirZ]} } ;
+
+    uint32 nx =  2*nbrPaddingCells( Direction::X ) + nbrPhysicalCells( Direction::X ) + 1
+               + nbrGhostAtMin( qtyCenterings[idirX] ) + nbrGhostAtMax( qtyCenterings[idirX] ) ;
+
+    uint32 ny =  2*nbrPaddingCells( Direction::Y ) + nbrPhysicalCells( Direction::Y ) + 1
+               + nbrGhostAtMin( qtyCenterings[idirY] ) + nbrGhostAtMax( qtyCenterings[idirY] ) ;
+
+    uint32 nz =  2*nbrPaddingCells( Direction::Z ) + nbrPhysicalCells( Direction::Z ) + 1
+               + nbrGhostAtMin( qtyCenterings[idirZ] ) + nbrGhostAtMax( qtyCenterings[idirZ] ) ;
+
+
+    return AllocSizeT( nx, ny, nz );
 }
 
 
-   hint : use HybridQtyCentering.
-
-*/
-AllocSizeT GridLayoutImplYee::allocSize( HybridQuantity qtyType ) const
-{
-
-
-#if 0
-    Direction dirX = Direction::directionX ;
-    Direction dirY = Direction::directionY ;
-    Direction dirZ = Direction::directionZ ;
-
-    uint32 idirX = static_cast<uint32>(Direction::directionX) ;
-    uint32 idirY = static_cast<uint32>(Direction::directionY) ;
-    uint32 idirZ = static_cast<uint32>(Direction::directionZ) ;
-
-    uint32 iFx, iFy, iFz ;
-
-    uint32 VFx_nx, VFx_ny, VFx_nz ;
-    uint32 VFy_nx, VFy_ny, VFy_nz ;
-    uint32 VFz_nx, VFz_ny, VFz_nz ;
-
-    switch( qtyType )
-    {
-    case HybridQuantity::Ex :
-        iFx = static_cast<uint32>(HybridQuantity::Ex) ;
-        iFy = static_cast<uint32>(HybridQuantity::Ey) ;
-        iFz = static_cast<uint32>(HybridQuantity::Ez) ;
-        break ;
-
-    case  HybridQuantity::Bx:
-        iFx = static_cast<uint32>(HybridQuantity::Bx) ;
-        iFy = static_cast<uint32>(HybridQuantity::By) ;
-        iFz = static_cast<uint32>(HybridQuantity::Bz) ;
-        break ;
-    }
-
-    VFx_nx = ghostEndIndex_[iFx][idirX] - ghostStartIndex_[iFx][idirX] + 1
-            + 2*nbrPaddingCells(dirX) ;
-    VFx_ny = ghostEndIndex_[iFx][idirY] - ghostStartIndex_[iFx][idirY] + 1
-            + 2*nbrPaddingCells(dirY) ;
-    VFx_nz = ghostEndIndex_[iFx][idirZ] - ghostStartIndex_[iFx][idirZ] + 1
-            + 2*nbrPaddingCells(dirZ) ;
-    VFy_nx = ghostEndIndex_[iFy][idirX] - ghostStartIndex_[iFy][idirX] + 1
-            + 2*nbrPaddingCells(dirX) ;
-    VFy_ny = ghostEndIndex_[iFy][idirY] - ghostStartIndex_[iFy][idirY] + 1
-            + 2*nbrPaddingCells(dirY) ;
-    VFy_nz = ghostEndIndex_[iFy][idirZ] - ghostStartIndex_[iFy][idirZ] + 1
-            + 2*nbrPaddingCells(dirZ) ;
-    VFz_nx = ghostEndIndex_[iFz][idirX] - ghostStartIndex_[iFz][idirX] + 1
-            + 2*nbrPaddingCells(dirX) ;
-    VFz_ny = ghostEndIndex_[iFz][idirY] - ghostStartIndex_[iFz][idirY] + 1
-            + 2*nbrPaddingCells(dirY) ;
-    VFz_nz = ghostEndIndex_[iFz][idirZ] - ghostStartIndex_[iFz][idirZ] + 1
-            + 2*nbrPaddingCells(dirZ) ;
-return AllocSizeT(VFx_nx, VFx_ny, VFx_nz);
-#endif
-    return AllocSizeT(0,0,0);
-
-}
-
-// TODO attention 1st order only. and can it be moved to ImplInternals?
+// TODO : WARNING 1st order only
+// Can it be moved to ImplInternals?
 AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction dir ) const
 {
-    Direction dirX = Direction::X ;
-    Direction dirY = Direction::Y ;
-    Direction dirZ = Direction::Z ;
 
-    uint32 idirX = static_cast<uint32>( dirX ) ;
-    uint32 idirY = static_cast<uint32>( dirY ) ;
-    uint32 idirZ = static_cast<uint32>( dirZ ) ;
+    uint32 idirX = static_cast<uint32>( Direction::X ) ;
+    uint32 idirY = static_cast<uint32>( Direction::Y ) ;
+    uint32 idirZ = static_cast<uint32>( Direction::Z ) ;
 
     uint32 iDerivedDir = static_cast<uint32>( dir ) ;
 
@@ -169,13 +114,13 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
 
     qtyCenterings[iDerivedDir] = newCentering ;
 
-    uint32 nx =  2*nbrPaddingCells( dirX ) + nbrPhysicalCells( dirX ) + 1
+    uint32 nx =  2*nbrPaddingCells( Direction::X ) + nbrPhysicalCells( Direction::X ) + 1
                + nbrGhostAtMin( qtyCenterings[idirX] ) + nbrGhostAtMax( qtyCenterings[idirX] ) ;
 
-    uint32 ny =  2*nbrPaddingCells( dirY ) + nbrPhysicalCells( dirY ) + 1
+    uint32 ny =  2*nbrPaddingCells( Direction::Y ) + nbrPhysicalCells( Direction::Y ) + 1
                + nbrGhostAtMin( qtyCenterings[idirY] ) + nbrGhostAtMax( qtyCenterings[idirY] ) ;
 
-    uint32 nz =  2*nbrPaddingCells( dirZ ) + nbrPhysicalCells( dirZ ) + 1
+    uint32 nz =  2*nbrPaddingCells( Direction::Z ) + nbrPhysicalCells( Direction::Z ) + 1
                + nbrGhostAtMin( qtyCenterings[idirZ] ) + nbrGhostAtMax( qtyCenterings[idirZ] ) ;
 
     AllocSizeT allocSizes( nx, ny, nz ) ;
