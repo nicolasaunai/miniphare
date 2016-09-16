@@ -188,7 +188,7 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
 /**
  * @brief GridLayoutImplYee::fieldNodeCoordinates
  * this method should return a POINT, the idea is to make in every initializer
- * method, 3 nested loops over PhysicalStart/End indices
+ * method, 3 nested loops over primal PhysicalStart/End indices
  * @param field
  * the returned point depends on the field's centering
  * @param origin
@@ -224,6 +224,10 @@ Point GridLayoutImplYee::fieldNodeCoordinates(
         if(centering[idir] == QtyCentering::dual) halfCell[idir] = 0.5 ;
     }
 
+    // A shift of -dx/2, -dy/2, -dz/2 is necessary to get the physical
+    // coordinate on the dual mesh
+    // No shift for coordinate on the primal mesh
+
     double x = ( (ix-ixStart) - halfCell[0])*dx_ + origin.x_ ;
     double y = ( (iy-iyStart) - halfCell[1])*dy_ + origin.y_ ;
     double z = ( (iz-izStart) - halfCell[2])*dz_ + origin.z_ ;
@@ -232,6 +236,38 @@ Point GridLayoutImplYee::fieldNodeCoordinates(
 }
 
 
+/**
+ * @brief GridLayoutImplYee::fieldNodeCoordinates
+ * This method should return a cell-centered Point.
+ * The idea is to call this method in every initializer method
+ * using 3 nested loops over primal PhysicalStart/End indices.
+ * @param origin
+ * @param ix
+ * @param iy
+ * @param iz
+ * @return Point
+ * the desired cell-centered (dual/dual/dual) coordinate
+ */
+Point GridLayoutImplYee::cellCenteredCoordinates(
+        const Point & origin,
+        uint32 ix, uint32 iy, uint32 iz ) const
+{
+
+    uint32 ixStart = cellIndexAtMin( QtyCentering::primal, Direction::X ) ;
+    uint32 iyStart = cellIndexAtMin( QtyCentering::primal, Direction::Y ) ;
+    uint32 izStart = cellIndexAtMin( QtyCentering::primal, Direction::Z ) ;
+
+    double halfCell = 0.5 ;
+    // A shift of -dx/2, -dy/2, -dz/2 is necessary to get the
+    // cell center physical coordinates,
+    // because this point is located on the dual mesh
+
+    double x = ( (ix-ixStart) - halfCell)*dx_ + origin.x_ ;
+    double y = ( (iy-iyStart) - halfCell)*dy_ + origin.y_ ;
+    double z = ( (iz-izStart) - halfCell)*dz_ + origin.z_ ;
+
+    return Point(x, y, z) ;
+}
 
 
 void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const
@@ -240,6 +276,9 @@ void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const
     uint32 iOpStart = physicalStartIndex( operand, Direction::X ) ;
     uint32 iOpEnd   = physicalEndIndex  ( operand, Direction::X ) ;
 
+    // The QtyCentering of derivative is given by
+    // iQty = static_cast<uint32>( derivative.hybridQty() )
+    // hybridQtyCentering_[iQty][idir]
     uint32 iDerStart = physicalStartIndex( derivative, Direction::X) ;
 
     uint32 iDirX = static_cast<uint32>( Direction::X ) ;

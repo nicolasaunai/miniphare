@@ -60,12 +60,12 @@ class GridLayoutImpl
 
 public:
 
-// TODO : this method should return a POINT, the idea is to make in every initializer
-    // method, 3 nested loops over PhysicalStart/End indices and call
-    // pseudo-code : fieldNodeCoordinate(field, origin).
     virtual Point fieldNodeCoordinates(
             const Field & field, const Point & origin,
             uint32 ix, uint32 iy, uint32 iz ) const = 0;
+
+    virtual Point cellCenteredCoordinates(
+            const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const = 0 ;
 
     virtual AllocSizeT allocSize( HybridQuantity qtyType ) const = 0 ;
 

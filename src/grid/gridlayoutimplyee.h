@@ -35,6 +35,9 @@ public:
             const Field & field, const Point & origin,
             uint32 ix, uint32 iy, uint32 iz ) const override ;
 
+    virtual Point cellCenteredCoordinates(
+            const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const override ;
+
     virtual AllocSizeT allocSize( HybridQuantity qtyType ) const override ;
 
     virtual AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const override ;
