@@ -200,19 +200,19 @@ void GridLayoutImplInternals::initGhostEnd( const gridDataT & data )
 }
 
 
-QtyCentering GridLayoutImplInternals::derivedLayout(HybridQuantity qty, Direction dir) const
+QtyCentering GridLayoutImplInternals::derivedCentering(HybridQuantity qty, Direction dir) const
 {
 
     uint32 iField = static_cast<uint32>( qty ) ;
     uint32 idir   = static_cast<uint32>( dir ) ;
 
-    QtyCentering newLayout = changeLayout( hybridQtyCentering_[iField][idir] ) ;
+    QtyCentering newLayout = changeCentering( hybridQtyCentering_[iField][idir] ) ;
 
     return newLayout ;
 }
 
 
-QtyCentering GridLayoutImplInternals::changeLayout(QtyCentering layout ) const
+QtyCentering GridLayoutImplInternals::changeCentering(QtyCentering layout ) const
 {
     QtyCentering newLayout = QtyCentering::primal ;
 

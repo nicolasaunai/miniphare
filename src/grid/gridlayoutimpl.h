@@ -151,9 +151,9 @@ public:
     void initGhostStart( const gridDataT & staticData ) ;
     void initGhostEnd  ( const gridDataT & staticData ) ;
 
-    QtyCentering changeLayout( QtyCentering layout ) const ;
+    QtyCentering changeCentering( QtyCentering layout ) const ;
 
-    QtyCentering derivedLayout( HybridQuantity qty, Direction dir) const ;
+    QtyCentering derivedCentering( HybridQuantity qty, Direction dir) const ;
 
     uint32 nbrPaddingCells( Direction direction ) const noexcept;
     uint32 nbrPhysicalCells( Direction direction ) const noexcept;

@@ -161,22 +161,22 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
     uint32 iQty = static_cast<uint32>(qty) ;
 
     std::array<QtyCentering, NBR_COMPO>
-            qtyLayouts{ {hybridQtyCentering_[iQty][idirX],
+            qtyCenterings{ {hybridQtyCentering_[iQty][idirX],
                          hybridQtyCentering_[iQty][idirY],
                          hybridQtyCentering_[iQty][idirZ]} } ;
 
-    QtyCentering layout = derivedLayout( qty, dir ) ;
+    QtyCentering newCentering = derivedCentering( qty, dir ) ;
 
-    qtyLayouts[iDerivedDir] = layout ;
+    qtyCenterings[iDerivedDir] = newCentering ;
 
     uint32 nx =  2*nbrPaddingCells( dirX ) + nbrPhysicalCells( dirX ) + 1
-               + nbrGhostAtMin( qtyLayouts[idirX] ) + nbrGhostAtMax( qtyLayouts[idirX] ) ;
+               + nbrGhostAtMin( qtyCenterings[idirX] ) + nbrGhostAtMax( qtyCenterings[idirX] ) ;
 
     uint32 ny =  2*nbrPaddingCells( dirY ) + nbrPhysicalCells( dirY ) + 1
-               + nbrGhostAtMin( qtyLayouts[idirY] ) + nbrGhostAtMax( qtyLayouts[idirY] ) ;
+               + nbrGhostAtMin( qtyCenterings[idirY] ) + nbrGhostAtMax( qtyCenterings[idirY] ) ;
 
     uint32 nz =  2*nbrPaddingCells( dirZ ) + nbrPhysicalCells( dirZ ) + 1
-               + nbrGhostAtMin( qtyLayouts[idirZ] ) + nbrGhostAtMax( qtyLayouts[idirZ] ) ;
+               + nbrGhostAtMin( qtyCenterings[idirZ] ) + nbrGhostAtMax( qtyCenterings[idirZ] ) ;
 
     AllocSizeT allocSizes( nx, ny, nz ) ;
 
@@ -238,7 +238,7 @@ Point GridLayoutImplYee::fieldNodeCoordinates(
 
 /**
  * @brief GridLayoutImplYee::fieldNodeCoordinates
- * This method should return a cell-centered Point.
+ * This method returns a cell-centered Point.
  * The idea is to call this method in every initializer method
  * using 3 nested loops over primal PhysicalStart/End indices.
  * @param origin
