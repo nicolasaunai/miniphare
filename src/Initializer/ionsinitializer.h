@@ -35,11 +35,12 @@ class IonsInitializer
 public:
 
 
-    IonsInitializer() = default;
+    //IonsInitializer() = default;
 
     // TODO ParticleInitializer should have a noexcept move Ctor
     // so that this vector can move push_back() them in
-    std::vector< ParticleInitializer > particleInitializers;
+
+    std::vector< std::unique_ptr<ParticleInitializer> > particleInitializers;
     std::vector<double> masses;
     std::vector<std::string> names;
     uint32 nbrSpecies;

@@ -13,13 +13,13 @@ Species::Species(GridLayout&& layout, std::string const& name)
 
 
 Species::Species(GridLayout const& layout, double mass,
-                 ParticleInitializer const& particleInitializer,
+                 std::unique_ptr<ParticleInitializer> particleInitializer,
                  std::string const& name)
     : layout_{ layout },
       rho_    { layout_.nx(), layout_.ny(), layout_.nz(), "rho_"   + name },
       bulkVel_{ layout_.nx(), layout_.ny(), layout_.nz(),"bulkVel_"+ name },
       particleArray_{},
-      particleInitializer_{ particleInitializer} //TODO broken copy
+      particleInitializer_{ std::move(particleInitializer) } //TODO broken copy
 {
 
 }
@@ -28,5 +28,5 @@ Species::Species(GridLayout const& layout, double mass,
 
 void Species::loadParticles()
 {
-    particleInitializer_.loadParticles(particleArray_);
+    particleInitializer_->loadParticles(particleArray_);
 }

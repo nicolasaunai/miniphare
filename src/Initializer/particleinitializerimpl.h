@@ -15,17 +15,11 @@ public:
 
     std::unique_ptr<ParticleInitializerImpl> clone() const;
 
-
-    virtual void loadParticles(std::vector<Particle>& particles) const = 0;
-
-
-    using ScalarFunction = double (*) (double x, double y, double z);
-    using VectorFunction = void   (*) (double x, double y, double z, std::array<double,3> vec);
-
+    // virtual void loadParticles(std::vector<Particle>& particles) const = 0;
 
 private:
 
-    virtual ParticleInitializerImpl* cloneImpl() const = 0;
+   //;
 
 
 };

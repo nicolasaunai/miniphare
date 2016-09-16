@@ -3,7 +3,7 @@
 
 
 #include "grid/gridlayout.h"
-#include "particleinitializerimpl.h"
+#include "particleinitializer.h"
 
 
 
@@ -14,17 +14,17 @@
  *        profiles and are distributed according to a locally Mawwellian
  *        distribution function.
  */
-class ParticleInitializerImplFluid : public ParticleInitializerImpl
+class FluidParticleInitializer : public ParticleInitializer
 {
 
 private:
 
     GridLayout layout_;
-    virtual ParticleInitializerImplFluid* cloneImpl() const override;
+    //virtual FluidParticleInitializer* cloneImpl() const override;
 
 public:
 
-    ParticleInitializerImplFluid(GridLayout const& layout):layout_{layout} {}
+    FluidParticleInitializer(GridLayout const& layout);
 
     // ParticleInitializerImplFluid is always manipulated through the
     // particleInitializerImpl interface. Therefore it does not
@@ -33,7 +33,7 @@ public:
 
     virtual void loadParticles(std::vector<Particle>& particles) const override;
 
-    virtual ~ParticleInitializerImplFluid();
+    virtual ~FluidParticleInitializer();
 
     ScalarFunction density;
     VectorFunction bulkVelocity;

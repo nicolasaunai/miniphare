@@ -1,11 +1,12 @@
 #include "simpleinitializerfactory.h"
-
+#include "Initializer/fluidparticleinitializer.h"
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
 {
 
 }
+
 
 
 
@@ -26,12 +27,18 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
 
     // those rvalues should be moved so ParticleInitializer
     // should have noexcept move Ctor.
-    ionInitPtr->particleInitializers.push_back(ParticleInitializer{gl,ParticleInitializerType::Fluid } );
-    ionInitPtr->particleInitializers.push_back(ParticleInitializer{gl,ParticleInitializerType::Fluid } );
+    ionInitPtr->particleInitializers.push_back( std::unique_ptr<ParticleInitializer>
+                                                    {new FluidParticleInitializer{gl} } );
+
+    ionInitPtr->particleInitializers.push_back( std::unique_ptr<ParticleInitializer>
+                                                    {new FluidParticleInitializer{gl} } );
 
     return ionInitPtr;
 
 }
+
+
+
 
 
 std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectromagInitializer() const

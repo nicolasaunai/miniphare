@@ -17,7 +17,7 @@ private:
     Field rho_;
     Field bulkVel_;
     std::vector<Particle> particleArray_;
-    ParticleInitializer particleInitializer_;
+    std::unique_ptr<ParticleInitializer> particleInitializer_;
 
 
 public:
@@ -25,7 +25,7 @@ public:
 
 
     Species(GridLayout const& layout, double mass,
-            ParticleInitializer const& particleInitializer,
+            std::unique_ptr<ParticleInitializer> particleInitializer,
             std::string const& name);
 
     //Species(GridLayout&& layout, std::string const& name);

@@ -5,7 +5,7 @@
 #include <array>
 
 #include "Plasmas/particles.h"
-#include "particleinitializerimpl.h"
+//#include "particleinitializerimpl.h"
 #include "grid/gridlayout.h"
 
 
@@ -27,16 +27,27 @@ class ParticleInitializer
 {
 
 private:
-    std::unique_ptr< ParticleInitializerImpl > implPtr_;
+    //std::unique_ptr< ParticleInitializerImpl > implPtr_;
 
+    //virtual ParticleInitializer* cloneImpl() const = 0;
 
 public:
 
-    // TODO deal with copy/move Ctors
-    ParticleInitializer(GridLayout const& layout, ParticleInitializerType type);
-    ParticleInitializer(ParticleInitializer const& source);
+    using ScalarFunction = double (*) (double x, double y, double z);
+    using VectorFunction = void   (*) (double x, double y, double z, std::array<double,3> vec);
 
-    void loadParticles(std::vector<Particle>& particles) const {return implPtr_->loadParticles(particles); }
+
+    // TODO deal with copy/move Ctors
+    //ParticleInitializer() = default;
+
+    //ParticleInitializer(GridLayout const& layout/*, ParticleInitializerType type*/);
+    //ParticleInitializer(ParticleInitializer const& source);
+
+    //std::unique_ptr<ParticleInitializer> clone() const ;
+
+    virtual void loadParticles(std::vector<Particle>& particles) const = 0;
+
+    //virtual ~ParticleInitializer() = 0;
 
 
 };

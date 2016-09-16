@@ -3,13 +3,14 @@
 #include <functional>
 
 #include "ions.h"
+#include <memory>
 
 
 /**
   * @brief Ions::Ions Build an Ions object from a grid layout
   * @param layout: GridLayout required for Ions to allocated
   */
- Ions::Ions(GridLayout const& layout, const IonsInitializer &ionsInitializer):
+ Ions::Ions(GridLayout const& layout, IonsInitializer &ionsInitializer):
      layout_{layout},
      rho_    {layout.nx(), layout.ny(), layout.nz(), "_rhoTot"},
      bulkVel_{layout.nx(), layout.ny(), layout.nz(), "_BulkVelTot"}
@@ -18,14 +19,13 @@
      uint32 nbrSpecies = ionsInitializer.nbrSpecies;
      speciesArray_.reserve( nbrSpecies );
 
+
      for (uint32 speciesIndex = 0; speciesIndex < nbrSpecies; ++speciesIndex)
      {
-         speciesArray_.push_back( Species { layout,
-                                            ionsInitializer.masses[speciesIndex],
-                                            ionsInitializer.particleInitializers[speciesIndex],
-                                            ionsInitializer.names[speciesIndex]
-                                          }
-                                 );
+         speciesArray_.push_back(Species{layout, ionsInitializer.masses[speciesIndex],
+                                             std::move(ionsInitializer.particleInitializers[speciesIndex]),
+                                             ionsInitializer.names[speciesIndex]} );
+
      }
  }
 

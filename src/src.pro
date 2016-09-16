@@ -32,8 +32,8 @@ SOURCES += main.cpp \
     Initializer/particleinitializer.cpp \
     Initializer/simpleinitializerfactory.cpp \
     Initializer/particleinitializerimpl.cpp \
-    Initializer/particleinitializerimplfluid.cpp \
-    Initializer/initializerfactory.cpp
+    Initializer/initializerfactory.cpp \
+    Initializer/fluidparticleinitializer.cpp
 
 
 HEADERS += \
@@ -71,7 +71,7 @@ HEADERS += \
     Initializer/particleinitializer.h \
     Initializer/simpleinitializerfactory.h \
     Initializer/particleinitializerimpl.h \
-    Initializer/particleinitializerimpfluid.h
+    Initializer/fluidparticleinitializer.h
 
 
 

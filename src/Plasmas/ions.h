@@ -36,7 +36,7 @@ private:
 
 public:
 
-    Ions(GridLayout const& layout, IonsInitializer const& ionInitializer);
+    Ions(GridLayout const& layout, IonsInitializer& ionInitializer);
     //Ions(GridLayout&& layout);
 
     Ions(Ions&& source) = default;
