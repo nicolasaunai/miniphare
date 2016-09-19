@@ -212,6 +212,77 @@ QtyCentering GridLayoutImplInternals::derivedCentering(HybridQuantity qty, Direc
 }
 
 
+
+
+
+
+AllocSizeT GridLayoutImplInternals::allocSize_( HybridQuantity qty ) const
+{
+    uint32 idirX = static_cast<uint32>( Direction::X ) ;
+    uint32 idirY = static_cast<uint32>( Direction::Y ) ;
+    uint32 idirZ = static_cast<uint32>( Direction::Z ) ;
+
+    uint32 iQty = static_cast<uint32>(qty) ;
+
+    std::array<QtyCentering, NBR_COMPO>
+            qtyCenterings{ {hybridQtyCentering_[iQty][idirX],
+                            hybridQtyCentering_[iQty][idirY],
+                            hybridQtyCentering_[iQty][idirZ]} } ;
+
+    uint32 nx =  2*nbrPaddingCells( Direction::X ) + nbrPhysicalCells( Direction::X ) + 1
+               + nbrGhostAtMin( qtyCenterings[idirX] ) + nbrGhostAtMax( qtyCenterings[idirX] ) ;
+
+    uint32 ny =  2*nbrPaddingCells( Direction::Y ) + nbrPhysicalCells( Direction::Y ) + 1
+               + nbrGhostAtMin( qtyCenterings[idirY] ) + nbrGhostAtMax( qtyCenterings[idirY] ) ;
+
+    uint32 nz =  2*nbrPaddingCells( Direction::Z ) + nbrPhysicalCells( Direction::Z ) + 1
+               + nbrGhostAtMin( qtyCenterings[idirZ] ) + nbrGhostAtMax( qtyCenterings[idirZ] ) ;
+
+
+    return AllocSizeT( nx, ny, nz );
+}
+
+
+
+
+
+
+AllocSizeT  GridLayoutImplInternals::allocSizeDerived_( HybridQuantity qty, Direction dir ) const
+{
+    uint32 idirX = static_cast<uint32>( Direction::X ) ;
+    uint32 idirY = static_cast<uint32>( Direction::Y ) ;
+    uint32 idirZ = static_cast<uint32>( Direction::Z ) ;
+
+    uint32 iDerivedDir = static_cast<uint32>( dir ) ;
+
+    uint32 iQty = static_cast<uint32>(qty) ;
+
+    std::array<QtyCentering, NBR_COMPO>
+            qtyCenterings{ {hybridQtyCentering_[iQty][idirX],
+                         hybridQtyCentering_[iQty][idirY],
+                         hybridQtyCentering_[iQty][idirZ]} } ;
+
+    QtyCentering newCentering = derivedCentering( qty, dir ) ;
+
+    qtyCenterings[iDerivedDir] = newCentering ;
+
+    uint32 nx =  2*nbrPaddingCells( Direction::X ) + nbrPhysicalCells( Direction::X ) + 1
+               + nbrGhostAtMin( qtyCenterings[idirX] ) + nbrGhostAtMax( qtyCenterings[idirX] ) ;
+
+    uint32 ny =  2*nbrPaddingCells( Direction::Y ) + nbrPhysicalCells( Direction::Y ) + 1
+               + nbrGhostAtMin( qtyCenterings[idirY] ) + nbrGhostAtMax( qtyCenterings[idirY] ) ;
+
+    uint32 nz =  2*nbrPaddingCells( Direction::Z ) + nbrPhysicalCells( Direction::Z ) + 1
+               + nbrGhostAtMin( qtyCenterings[idirZ] ) + nbrGhostAtMax( qtyCenterings[idirZ] ) ;
+
+    AllocSizeT allocSizes( nx, ny, nz ) ;
+
+    return allocSizes ;
+}
+
+
+
+
 QtyCentering GridLayoutImplInternals::changeCentering(QtyCentering layout ) const
 {
     QtyCentering newLayout = QtyCentering::primal ;

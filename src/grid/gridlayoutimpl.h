@@ -151,8 +151,11 @@ public:
     void initGhostStart( const gridDataT & staticData ) ;
     void initGhostEnd  ( const gridDataT & staticData ) ;
 
-    QtyCentering changeCentering( QtyCentering layout ) const ;
 
+    AllocSizeT allocSize_( HybridQuantity qty ) const;
+    AllocSizeT  allocSizeDerived_( HybridQuantity qty, Direction dir ) const;
+
+    QtyCentering changeCentering( QtyCentering layout ) const ;
     QtyCentering derivedCentering( HybridQuantity qty, Direction dir) const ;
 
     uint32 nbrPaddingCells( Direction direction ) const noexcept;
