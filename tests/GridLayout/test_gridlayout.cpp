@@ -391,7 +391,7 @@ INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutConstructorTest,
 
 /* ---------------------------------------------------------------------------- */
 
-#endif
+
 
 
 
@@ -499,7 +499,7 @@ int main(int argc, char **argv) {
   return RUN_ALL_TESTS();
 }
 
-
+#endif
 
 
 

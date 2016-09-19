@@ -222,7 +222,7 @@ for iord in iord_l:
         
         	f.write("%03d %03d %s %03d %03d %03d %4.1f %4.1f %4.1f %d %d %d %d %d %d %d %d %d %d %d %d\n" % (interpOrder_l[iord],
 																								nbDims_l[idim],
-																								Qty_l[iqty][1],
+																								Qty_l[iqty][0],
 																								nbrCellX_l[idim],
 																								nbrCellY_l[idim],
 																								nbrCellZ_l[idim],
