@@ -3,9 +3,11 @@
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
+    : layout_{ {0.1,0.,0.}, {42, 0, 0}, 1, "yee" }
 {
 
 }
+
 
 
 
@@ -16,7 +18,6 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
 
     // should be obtained from
     // the factory somehow...
-    GridLayout gl{ {0.1,0.,0.}, {42, 0, 0}, 1, "yee" };
 
     std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
 
@@ -28,10 +29,10 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
     // those rvalues should be moved so ParticleInitializer
     // should have noexcept move Ctor.
     ionInitPtr->particleInitializers.push_back( std::unique_ptr<ParticleInitializer>
-                                                    {new FluidParticleInitializer{gl} } );
+                                                    {new FluidParticleInitializer{layout_} } );
 
     ionInitPtr->particleInitializers.push_back( std::unique_ptr<ParticleInitializer>
-                                                    {new FluidParticleInitializer{gl} } );
+                                                    {new FluidParticleInitializer{layout_} } );
 
     return ionInitPtr;
 
@@ -56,3 +57,8 @@ std::unique_ptr<OhmInitializer> SimpleInitializerFactory::createOhmInitializer()
 }
 
 
+
+GridLayout const& SimpleInitializerFactory::gridLayout() const
+{
+    return layout_;
+}

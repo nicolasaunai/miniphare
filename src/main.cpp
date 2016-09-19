@@ -12,7 +12,7 @@
 #include "Initializer/initializerfactory.h"
 
 // hierarchy contains linked list of patchs which are tokens
-//
+
 
 
 
@@ -31,37 +31,12 @@ int main(int argc, char *argv[])
     std::string layoutName = "yee";
     uint32 nbDims = 1;
 
-    GridLayout gridlayout {dxdydz, fieldSizes, nbDims, layoutName };
-
-    PatchData myPatchdata{dt, gridlayout};
-
-    Patch     root{ std::move(myPatchdata) }; // root = myInitialCondition();
-    Hierarchy simulationHierarchy{ std::move(root) };
-
-    MLMD mlmdManager;
-
     std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv);
 
+    MLMD mlmdManager{ std::move(initFactory) }; // no need for initFactory now
 
-
-    //Hierarchy simulaationHierarchy( myInitialCondition() );
 
 }
-
-    // module de lecture des params d'input.
-
-    //try    {
-
-    // construction du patch/domain
-
-      //}
-
-    // catch (patchError)
-    //{
-            // some stuff
-        //return 1;
-     //   }
-
 
 
 

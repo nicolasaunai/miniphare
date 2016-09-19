@@ -14,6 +14,7 @@ class Field
 
 public:
 
+
     Field(uint32 nx, uint32 ny, uint32 nz, std::string name):name_(name),
         shape_{nx,ny,nz},ndims_{2},data_{}{data_.resize(nx*ny*nz);}
 
