@@ -11,30 +11,16 @@
 
 #include "Initializer/initializerfactory.h"
 
-// hierarchy contains linked list of patchs which are tokens
-
-
-
-
 
 
 int main(int argc, char *argv[])
 {
 
-    std::cout << "Hello World!" << std::endl;
-
-
-    // the following input parameters should be given by some module
-    double dt = 0.001;
-    std::array<double,3> dxdydz  = {0.05, 0, 0};
-    std::array<uint32,3> fieldSizes =  {100, 0, 0};
-    std::string layoutName = "yee";
-    uint32 nbDims = 1;
+    std::cout << "Welcome to MINIPHARE" << std::endl;
 
     std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv);
 
     MLMD mlmdManager{ std::move(initFactory) }; // no need for initFactory now
-
 
 }
 

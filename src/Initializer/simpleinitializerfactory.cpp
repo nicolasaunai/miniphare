@@ -3,7 +3,8 @@
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : layout_{ {0.1,0.,0.}, {42, 0, 0}, 1, "yee" }
+    : layout_{ {0.1,0.,0.}, {42, 0, 0}, 1, "yee" }, // hard-coded... will come from input somehow
+      dt_{0.1}
 {
 
 }
@@ -61,4 +62,10 @@ std::unique_ptr<OhmInitializer> SimpleInitializerFactory::createOhmInitializer()
 GridLayout const& SimpleInitializerFactory::gridLayout() const
 {
     return layout_;
+}
+
+
+double SimpleInitializerFactory::timeStep() const
+{
+    return dt_;
 }

@@ -3,6 +3,7 @@
 
 
 #include "initializerfactory.h"
+#include "grid/gridlayout.h"
 
 
 
@@ -10,7 +11,7 @@ class PythonInitializerFactory : public InitializerFactory
 {
 public:
 
-    PythonInitializerFactory()                                                 = default;
+    PythonInitializerFactory();
     PythonInitializerFactory(PythonInitializerFactory const&source)            = default;
     PythonInitializerFactory(PythonInitializerFactory&& source)                = default;
     PythonInitializerFactory& operator=(PythonInitializerFactory const&source) = default;
@@ -22,6 +23,14 @@ public:
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer()               const override;
 
 
+    virtual GridLayout const& gridLayout() const override;
+    virtual double timeStep() const override;
+
+
+
+private:
+    GridLayout layout_;
+    double dt_;
 };
 
 #endif // PYTHONINITIALIZERFACTORY_H

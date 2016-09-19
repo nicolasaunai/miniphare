@@ -14,6 +14,7 @@ public:
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const override;
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
     virtual GridLayout const& gridLayout() const override;
+    virtual double timeStep() const override;
 
     // virtual std::unique_ptr<SolverInitializer> createSolverInitializer() = 0;
     // virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() = 0;
@@ -23,6 +24,7 @@ public:
 private:
 
     GridLayout layout_;
+    double dt_;
     void readInputFile();
 
 

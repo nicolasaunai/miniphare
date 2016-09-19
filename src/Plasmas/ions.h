@@ -53,9 +53,6 @@ public:
 
     uint32 nbrSpecies() const {return static_cast<uint32>(speciesArray_.size()) ;}
 
-
-
-
     Species& species(uint32 index);
 
     Species const& species(uint32 index) const;
@@ -76,4 +73,11 @@ public:
 
 };
 
+
+
+
 #endif // IONS_H
+
+
+
+
