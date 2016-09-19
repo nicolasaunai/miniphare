@@ -1,9 +1,10 @@
 
 #include <algorithm>
 #include <functional>
+#include <memory>
+#include <iostream>
 
 #include "ions.h"
-#include <memory>
 
 
 /**
@@ -15,8 +16,8 @@
      rho_    {layout.nx(), layout.ny(), layout.nz(), "_rhoTot"},
      bulkVel_{layout.nx(), layout.ny(), layout.nz(), "_BulkVelTot"}
  {
-
      uint32 nbrSpecies = ionsInitializer.nbrSpecies;
+     std::cout << "Ion Constructor : " << nbrSpecies << std::endl;
      speciesArray_.reserve( nbrSpecies );
 
 
@@ -60,8 +61,10 @@
 
  void Ions::loadParticles()
  {
+     std::cout << "ion load particles" << std::endl;
      for (Species& species : speciesArray_)
      {
+        std::cout << "init a species" << std::endl;
         species.loadParticles();
      }
  }

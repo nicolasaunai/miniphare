@@ -35,6 +35,8 @@ public:
     PatchData(PatchData&& source) = default;
     PatchData& operator=(PatchData&& source) = default;
 
+    void init();
+
     //void advance(){solver_.solveStep(EMfields_, ions_, electrons_);}
 
 };

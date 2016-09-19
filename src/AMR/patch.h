@@ -42,6 +42,8 @@ public:
     Patch(Patch const& source) = delete;
     Patch& operator=(Patch& source) = delete;
 
+    void init() {     std::cout << "init Patch" << std::endl; data_.init(); }
+
 
 };
 

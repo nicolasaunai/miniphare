@@ -22,6 +22,7 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
 
     std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
 
+    ionInitPtr->nbrSpecies = nbrSpecies;
     ionInitPtr->masses.push_back(1.);
     ionInitPtr->masses.push_back(1.);
     ionInitPtr->names.push_back("proton1");

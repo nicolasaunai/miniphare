@@ -19,7 +19,10 @@ class MLMD // TODO should be a singleton pattern
 {
 
 public:
+
     MLMD(std::unique_ptr<InitializerFactory> initFactory);
+
+    void initializeRootLevel();
 
 
 private:

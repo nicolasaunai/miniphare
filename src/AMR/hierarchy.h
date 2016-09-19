@@ -18,6 +18,10 @@ public:
     //Hierarchy(Patch&& root):root_{}{}
 
 
+    Patch& root() { return root_; }
+
+
+
 
 };
 

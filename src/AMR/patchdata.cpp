@@ -12,9 +12,17 @@ PatchData::PatchData(std::unique_ptr<InitializerFactory> initFactory)
                  initFactory->gridLayout().ny(),
                  initFactory->gridLayout().nz(), "_currentEMfield"},
       solver_{initFactory->gridLayout(), initFactory->timeStep() },
-      ions_{initFactory->gridLayout(), *initFactory->createIonsInitializer() }
+      ions_{initFactory->gridLayout(), *initFactory->createIonsInitializer() } // do we need pointer to ionInitializer??
 
 {
 
 }
 
+
+
+void PatchData::init()
+{
+        std::cout << "init patch data" << std::endl;
+    ions_.loadParticles();
+    //EMfields_.init();
+}

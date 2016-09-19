@@ -1,5 +1,5 @@
 #include "fluidparticleinitializer.h"
-
+#include <iostream>
 /*
 
 FluidParticleInitializer* FluidParticleInitializer::cloneImpl() const
@@ -27,7 +27,7 @@ FluidParticleInitializer::FluidParticleInitializer(GridLayout const& layout)
   */
  void FluidParticleInitializer::loadParticles(std::vector<Particle>& particles) const
  {
-
+    std::cout << "I'm loading particles with Fluid profiles" << std::endl;
  }
 
 
