@@ -13,7 +13,7 @@
  * @brief IonInitializer is need for Ions construction so that Ions
  *       may be initialized (species built and particles loaded)
  *
- *  IonInitializer objects are typically created by InitializerFactory objects
+ *  IonInitializer objects are created by InitializerFactory objects
  *  which build and initialize them either from input user parameters, when
  *  the simulation is being initialized, or from the MLMD manager, when a
  *  new Ion needs to be instanciated in the PatchData of a new Patch.

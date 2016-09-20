@@ -70,8 +70,7 @@ public:
 
 
 /**
-
-  \fn virtual std::unique_ptr<ParticleInitializer> ParticleInitializer::clone() const = 0;
+  \fn virtual std::unique_ptr<ParticleInitializer> ParticleInitializer::clone() const = 0
   \brief clone a ParticleInitializer object. Needs to be defined by concrete classes
 
   What is a clone method?

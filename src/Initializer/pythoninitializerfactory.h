@@ -6,7 +6,11 @@
 #include "grid/gridlayout.h"
 
 
-
+/**
+ * @brief The PythonInitializerFactory class is a concrete InitializerFactory
+ * used to create objects from a user supplied python script. See InitializerFactory
+ * for documentation of its methods.
+ */
 class PythonInitializerFactory : public InitializerFactory
 {
 public:

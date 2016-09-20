@@ -22,7 +22,6 @@ int main(int argc, char *argv[])
 
     MLMD mlmdManager{ std::move(initFactory) }; // no need for initFactory now
 
-
     mlmdManager.initializeRootLevel();
 
 }
