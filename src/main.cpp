@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
     std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv);
 
-    MLMD mlmdManager{ std::move(initFactory) }; // no need for initFactory now
+    MLMD mlmdManager{ std::move(initFactory) };
 
     mlmdManager.initializeRootLevel();
 

@@ -21,7 +21,8 @@ Species::Species(GridLayout const& layout, double mass,
       particleArray_{},
       particleInitializer_{ std::move(particleInitializer) } //TODO broken copy
 {
-
+    // TODO should check stuff here.
+    // like : is particleInitializer OK?
 }
 
 

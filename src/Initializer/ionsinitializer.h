@@ -34,9 +34,6 @@ class IonsInitializer
 
 public:
 
-
-    //IonsInitializer() = default;
-
     // TODO ParticleInitializer should have a noexcept move Ctor
     // so that this vector can move push_back() them in
 

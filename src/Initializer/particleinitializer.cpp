@@ -31,7 +31,7 @@ std::unique_ptr<ParticleInitializer> ParticleInitializer::clone() const
 {
      return std::unique_ptr<ParticleInitializer> {cloneImpl()};
 }
-
+#endif
 
 
 ParticleInitializer::~ParticleInitializer()
@@ -39,7 +39,7 @@ ParticleInitializer::~ParticleInitializer()
 
 }
 
-#endif
+
 
 
 

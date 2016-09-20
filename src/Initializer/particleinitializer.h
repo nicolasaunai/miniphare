@@ -47,7 +47,7 @@ public:
 
     virtual void loadParticles(std::vector<Particle>& particles) const = 0;
 
-    //virtual ~ParticleInitializer() = 0;
+    virtual ~ParticleInitializer() = 0;
 
 
 };

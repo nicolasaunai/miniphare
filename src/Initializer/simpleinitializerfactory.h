@@ -4,7 +4,11 @@
 
 #include "initializerfactory.h"
 
-
+/**
+ * @brief The SimpleInitializerFactory class is a concrete InitializerFactory
+ * used to simply initialize miniphare with hard-coded parameters. It is mainly
+ * used for development purposes while the code ar
+ */
 class SimpleInitializerFactory : public InitializerFactory
 {
 public:
