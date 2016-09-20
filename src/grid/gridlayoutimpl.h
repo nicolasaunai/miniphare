@@ -71,8 +71,6 @@ public:
 
     virtual AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const = 0 ;
 
-    //virtual std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const = 0;
-
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, Direction direction) const = 0;
     virtual uint32 physicalEndIndex  (Field const& field, Direction direction) const = 0;
@@ -105,8 +103,7 @@ protected:
     uint32 nbrCellz_  ;
 
     uint32 nbrPrimalGhosts_ ;
-    uint32 nbrDualGhostsLeft_ ;
-    uint32 nbrDualGhostsRight_ ;
+    uint32 nbrDualGhosts_ ;
 
     uint32 nbrPaddingCellsX_ ;
     uint32 nbrPaddingCellsY_ ;
@@ -155,14 +152,20 @@ public:
     AllocSizeT allocSize_( HybridQuantity qty ) const;
     AllocSizeT  allocSizeDerived_( HybridQuantity qty, Direction dir ) const;
 
+    // start and end index used in computing loops
+    uint32 physicalStartIndexV(Field const& field, Direction direction) const;
+    uint32 physicalEndIndexV  (Field const& field, Direction direction) const;
+    uint32 ghostStartIndexV   (Field const& field, Direction direction) const;
+    uint32 ghostEndIndexV     (Field const& field, Direction direction) const;
+
     QtyCentering changeCentering( QtyCentering layout ) const ;
     QtyCentering derivedCentering( HybridQuantity qty, Direction dir) const ;
 
     uint32 nbrPaddingCells( Direction direction ) const noexcept;
     uint32 nbrPhysicalCells( Direction direction ) const noexcept;
 
-    uint32 nbrGhostAtMin( QtyCentering centering ) const noexcept;
-    uint32 nbrGhostAtMax( QtyCentering centering ) const noexcept;
+    uint32 nbrGhosts( QtyCentering centering ) const noexcept;
+    uint32 isDual( QtyCentering centering ) const noexcept;
 
     uint32 cellIndexAtMin( QtyCentering centering, Direction direction ) const ;
     uint32 cellIndexAtMax( QtyCentering centering, Direction direction ) const ;

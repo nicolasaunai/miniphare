@@ -230,14 +230,13 @@ AllocSizeT GridLayoutImplInternals::allocSize_( HybridQuantity qty ) const
                             hybridQtyCentering_[iQty][idirZ]} } ;
 
     uint32 nx =  2*nbrPaddingCells( Direction::X ) + nbrPhysicalCells( Direction::X ) + 1
-               + nbrGhostAtMin( qtyCenterings[idirX] ) + nbrGhostAtMax( qtyCenterings[idirX] ) ;
+               + 2*nbrGhosts( qtyCenterings[idirX] ) ;
 
     uint32 ny =  2*nbrPaddingCells( Direction::Y ) + nbrPhysicalCells( Direction::Y ) + 1
-               + nbrGhostAtMin( qtyCenterings[idirY] ) + nbrGhostAtMax( qtyCenterings[idirY] ) ;
+               + 2*nbrGhosts( qtyCenterings[idirY] ) ;
 
     uint32 nz =  2*nbrPaddingCells( Direction::Z ) + nbrPhysicalCells( Direction::Z ) + 1
-               + nbrGhostAtMin( qtyCenterings[idirZ] ) + nbrGhostAtMax( qtyCenterings[idirZ] ) ;
-
+               + 2*nbrGhosts( qtyCenterings[idirZ] ) ;
 
     return AllocSizeT( nx, ny, nz );
 }
@@ -267,19 +266,52 @@ AllocSizeT  GridLayoutImplInternals::allocSizeDerived_( HybridQuantity qty, Dire
     qtyCenterings[iDerivedDir] = newCentering ;
 
     uint32 nx =  2*nbrPaddingCells( Direction::X ) + nbrPhysicalCells( Direction::X ) + 1
-               + nbrGhostAtMin( qtyCenterings[idirX] ) + nbrGhostAtMax( qtyCenterings[idirX] ) ;
+               + 2*nbrGhosts( qtyCenterings[idirX] ) ;
 
     uint32 ny =  2*nbrPaddingCells( Direction::Y ) + nbrPhysicalCells( Direction::Y ) + 1
-               + nbrGhostAtMin( qtyCenterings[idirY] ) + nbrGhostAtMax( qtyCenterings[idirY] ) ;
+               + 2*nbrGhosts( qtyCenterings[idirY] ) ;
 
     uint32 nz =  2*nbrPaddingCells( Direction::Z ) + nbrPhysicalCells( Direction::Z ) + 1
-               + nbrGhostAtMin( qtyCenterings[idirZ] ) + nbrGhostAtMax( qtyCenterings[idirZ] ) ;
+               + 2*nbrGhosts( qtyCenterings[idirZ] ) ;
 
     AllocSizeT allocSizes( nx, ny, nz ) ;
 
     return allocSizes ;
 }
 
+
+// start and end index used in computing loops
+uint32 GridLayoutImplInternals::physicalStartIndexV(Field const& field, Direction direction) const
+{
+    uint32 iQty = static_cast<uint32>(field.hybridQty());
+    uint32 iDir = static_cast<uint32>(direction);
+    return physicalStartIndex_[iQty][iDir];
+}
+
+
+uint32 GridLayoutImplInternals::physicalEndIndexV(Field const& field, Direction direction) const
+{
+    uint32 iQty = static_cast<uint32>(field.hybridQty());
+    uint32 iDir = static_cast<uint32>(direction);
+    return physicalEndIndex_[iQty][iDir];
+}
+
+
+
+uint32 GridLayoutImplInternals::ghostStartIndexV(Field const& field, Direction direction) const
+{
+    uint32 iQty = static_cast<uint32>(field.hybridQty());
+    uint32 iDir = static_cast<uint32>(direction);
+    return ghostStartIndex_[iQty][iDir];
+}
+
+
+uint32 GridLayoutImplInternals::ghostEndIndexV(Field const& field, Direction direction) const
+{
+    uint32 iQty = static_cast<uint32>(field.hybridQty());
+    uint32 iDir = static_cast<uint32>(direction);
+    return ghostEndIndex_[iQty][iDir];
+}
 
 
 
@@ -295,6 +327,7 @@ QtyCentering GridLayoutImplInternals::changeCentering(QtyCentering layout ) cons
     return newLayout ;
 }
 
+
 /**
  * @brief GridLayoutImplInternals::computeOffsets
  * This method computes the number of ghost cells for fields.
@@ -309,9 +342,8 @@ QtyCentering GridLayoutImplInternals::changeCentering(QtyCentering layout ) cons
  */
 void GridLayoutImplInternals::computeNbrGhosts(uint32 ghostParameter)
 {
-    nbrPrimalGhosts_ = static_cast<uint32> ( std::floor(ghostParameter/2.) )      ;
-    nbrDualGhostsLeft_     = static_cast<uint32> ( std::floor((ghostParameter -1)/2.) ) ;
-    nbrDualGhostsRight_    = static_cast<uint32> ( std::floor((ghostParameter +1)/2.) ) ;
+    nbrPrimalGhosts_ = static_cast<uint32> ( std::floor( ghostParameter/2.    ) ) ;
+    nbrDualGhosts_   = static_cast<uint32> ( std::floor((ghostParameter +1)/2.) ) ;
 }
 
 
@@ -343,7 +375,7 @@ uint32 GridLayoutImplInternals::cellIndexAtMin( QtyCentering centering,
                                                 Direction direction ) const
 {
 
-    uint32 cellIndex = nbrPaddingCells( direction ) + nbrGhostAtMin( centering );
+    uint32 cellIndex = nbrPaddingCells( direction ) + nbrGhosts( centering );
 
     return cellIndex ;
 }
@@ -352,7 +384,9 @@ uint32 GridLayoutImplInternals::cellIndexAtMin( QtyCentering centering,
 uint32 GridLayoutImplInternals::cellIndexAtMax( QtyCentering centering,
                                                 Direction direction ) const
 {
-    uint32 cellIndex = cellIndexAtMin(centering, direction) + nbrPhysicalCells( direction ) ;
+    uint32 cellIndex = cellIndexAtMin(centering, direction)
+                     + nbrPhysicalCells( direction )
+                     - isDual(centering) ;
 
     return cellIndex ;
 }
@@ -361,34 +395,36 @@ uint32 GridLayoutImplInternals::cellIndexAtMax( QtyCentering centering,
 uint32 GridLayoutImplInternals::ghostCellIndexAtMax( QtyCentering centering,
                                                      Direction direction ) const
 {
-    uint32 cellIndex = cellIndexAtMax( centering, direction ) + nbrGhostAtMax( centering );
+    uint32 cellIndex = cellIndexAtMax( centering, direction ) + nbrGhosts( centering );
 
     return cellIndex ;
 }
 
-uint32 GridLayoutImplInternals::nbrGhostAtMin( QtyCentering centering ) const noexcept
+uint32 GridLayoutImplInternals::nbrGhosts( QtyCentering centering ) const noexcept
 {
     uint32 nbrGhosts = nbrPrimalGhosts_ ;
 
     if( centering == QtyCentering::dual )
     {
-        nbrGhosts = nbrDualGhostsLeft_;
+        nbrGhosts = nbrDualGhosts_;
     }
 
     return nbrGhosts ;
 }
 
-uint32 GridLayoutImplInternals::nbrGhostAtMax( QtyCentering centering ) const noexcept
+
+uint32 GridLayoutImplInternals::isDual( QtyCentering centering ) const noexcept
 {
-    uint32 nbrGhosts = nbrPrimalGhosts_ ;
+    uint32 offset = 0 ;
 
     if( centering == QtyCentering::dual )
     {
-        nbrGhosts = nbrDualGhostsRight_ ;
+        offset = 1 ;
     }
 
-    return nbrGhosts ;
+    return offset ;
 }
+
 
 
 

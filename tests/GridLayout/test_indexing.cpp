@@ -90,9 +90,12 @@ struct GridLayoutParams
            << " qtyName  : " << static_cast<int>(inputs.qty)
            << " nbrCells : " << inputs.nbrCells[0] << ", " << inputs.nbrCells[1] << ", " << inputs.nbrCells[2]
            << " dxdydz   : " << inputs.dxdydz[0] << ", " << inputs.dxdydz[1] << ", " << inputs.dxdydz[2]
-           << " " << inputs.PSI[0] << " " << inputs.PEI[0] << " " << inputs.GSI[0] << " " << inputs.GEI[0]
-           << " " <<inputs.PSI[1] << " " << inputs.PEI[1] << " " << inputs.GSI[1] << " " << inputs.GEI[1]
-           << " " << inputs.PSI[2] << " " << inputs.PEI[2] << " " << inputs.GSI[2] << " " << inputs.GEI[2]
+           << " PSI x : " << inputs.PSI[0] << " PEI x : " << inputs.PEI[0]
+           << " GSI x : " << inputs.GSI[0] << " GEI x : " << inputs.GEI[0]
+           << " PSI y : " << inputs.PSI[1] << " PEI y : " << inputs.PEI[1]
+           << " GSI y : " << inputs.GSI[1] << " GEI y : " << inputs.GEI[1]
+           << " PSI z : " << inputs.PSI[2] << " PEI z : " << inputs.PEI[2]
+           << " GSI z : " << inputs.GSI[2] << " GEI z : " << inputs.GEI[2]
            << " " <<  inputs.iqty;
 
 

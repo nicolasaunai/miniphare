@@ -91,16 +91,6 @@ AllocSizeT GridLayout::allocSize(HybridQuantity qtyType) const
 }
 
 
-
-#if 0
-std::array<AllocSizeT, NBR_COMPO> GridLayout::allocSize( OhmTerm term ) const
-{
-    return implPtr_->allocSize( term ) ;
-}
-#endif
-
-
-
 AllocSizeT  GridLayout::allocSizeDerived( HybridQuantity qty, Direction dir ) const
 {
     return implPtr_->allocSizeDerived( qty, dir ) ;

@@ -78,6 +78,31 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
 }
 
 
+// start and end index used in computing loops
+uint32 GridLayoutImplYee::physicalStartIndex(Field const& field, Direction direction) const
+{
+    return physicalStartIndexV(field, direction);
+}
+
+
+uint32 GridLayoutImplYee::physicalEndIndex(Field const& field, Direction direction) const
+{
+    return physicalEndIndexV(field, direction);
+}
+
+
+uint32 GridLayoutImplYee::ghostStartIndex(Field const& field, Direction direction) const
+{
+    return ghostStartIndexV(field, direction);
+}
+
+
+uint32 GridLayoutImplYee::ghostEndIndex(Field const& field, Direction direction) const
+{
+    return ghostEndIndexV(field, direction);
+}
+
+
 
 /**
  * @brief GridLayoutImplYee::fieldNodeCoordinates
@@ -200,38 +225,7 @@ void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const
 }
 
 
-// start and end index used in computing loops
-uint32 GridLayoutImplYee::physicalStartIndex(Field const& field, Direction direction) const
-{
-    uint32 iQty = static_cast<uint32>(field.hybridQty());
-    uint32 iDir = static_cast<uint32>(direction);
-    return physicalStartIndex_[iQty][iDir];
-}
 
-
-uint32 GridLayoutImplYee::physicalEndIndex(Field const& field, Direction direction) const
-{
-    uint32 iQty = static_cast<uint32>(field.hybridQty());
-    uint32 iDir = static_cast<uint32>(direction);
-    return physicalEndIndex_[iQty][iDir];
-}
-
-
-
-uint32 GridLayoutImplYee::ghostStartIndex(Field const& field, Direction direction) const
-{
-    uint32 iQty = static_cast<uint32>(field.hybridQty());
-    uint32 iDir = static_cast<uint32>(direction);
-    return ghostStartIndex_[iQty][iDir];
-}
-
-
-uint32 GridLayoutImplYee::ghostEndIndex(Field const& field, Direction direction) const
-{
-    uint32 iQty = static_cast<uint32>(field.hybridQty());
-    uint32 iDir = static_cast<uint32>(direction);
-    return ghostEndIndex_[iQty][iDir];
-}
 
 
 
