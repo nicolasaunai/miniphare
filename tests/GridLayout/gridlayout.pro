@@ -33,7 +33,7 @@ SOURCES += test_gridlayout.cpp \
            ../../src/grid/gridlayout.cpp \
            ../../src/grid/gridlayoutimplyee.cpp \
            ../../src/grid/gridlayoutimpl.cpp \
-           testIndexing.cpp\
+           test_indexing.cpp
 
 HEADERS += ../../src/grid/gridlayout.h \
            ../../src/grid/gridlayoutimplfactory.h \
