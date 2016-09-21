@@ -130,6 +130,22 @@ protected:
 
     double inverseSpatialStep( Direction direction ) const noexcept ;
 
+    AllocSizeT allocSize_( HybridQuantity qty ) const;
+    AllocSizeT  allocSizeDerived_( HybridQuantity qty, Direction dir ) const;
+
+    Point fieldNodeCoordinates_(
+            const Field & field, const Point & origin,
+            uint32 ix, uint32 iy, uint32 iz ) const;
+
+    Point cellCenteredCoordinates_(
+            const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const;
+
+    // start and end index used in computing loops
+    uint32 physicalStartIndexV(Field const& field, Direction direction) const;
+    uint32 physicalEndIndexV  (Field const& field, Direction direction) const;
+    uint32 ghostStartIndexV   (Field const& field, Direction direction) const;
+    uint32 ghostEndIndexV     (Field const& field, Direction direction) const;
+
 public:
 
     // minimum nbr of cells in a non-invariant direction
@@ -147,16 +163,6 @@ public:
     void initPhysicalEnd  ( const gridDataT & staticData ) ;
     void initGhostStart( const gridDataT & staticData ) ;
     void initGhostEnd  ( const gridDataT & staticData ) ;
-
-
-    AllocSizeT allocSize_( HybridQuantity qty ) const;
-    AllocSizeT  allocSizeDerived_( HybridQuantity qty, Direction dir ) const;
-
-    // start and end index used in computing loops
-    uint32 physicalStartIndexV(Field const& field, Direction direction) const;
-    uint32 physicalEndIndexV  (Field const& field, Direction direction) const;
-    uint32 ghostStartIndexV   (Field const& field, Direction direction) const;
-    uint32 ghostEndIndexV     (Field const& field, Direction direction) const;
 
     QtyCentering changeCentering( QtyCentering layout ) const ;
     QtyCentering derivedCentering( HybridQuantity qty, Direction dir) const ;

@@ -14,7 +14,20 @@
 #include "utility.h"
 
 
-
+/**
+ * @brief Gridlayout is an interface class used by Faraday, FaradayImpl,
+ * Ohm, OhmImplInternals and Solver.
+ * It is used to handle all operations related to a specific grid layout,
+ * it provides:
+ * - physical domain start and end indexes
+ * - indexes of the first and last ghost nodes
+ * - allocation sizes for Field attributes
+ * - a spatial partial derivative operator (Faraday)
+ * -
+ *
+ *
+ *
+ */
 class GridLayout
 {
 private:
@@ -61,39 +74,24 @@ public:
     GridLayout& operator=(GridLayout const& source) = delete;
     GridLayout& operator=(GridLayout&& source) = delete;
 
-    uint32 nbDimensions() const { return nbDims_ ; }
-
     double dx() const {return dx_;}
     double dy() const {return dy_;}
     double dz() const {return dz_;}
-
-
 
     double odx()const { return dx_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
     double ody()const { return dy_ == 0. ? throw error(errorInverseMesh +" dy() (dy==0)"): ody_;}
     double odz()const { return dz_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
 
-
-
     double nbrCellx() const {return nbrCellx_;}
     double nbrCelly() const {return nbrCelly_;}
     double nbrCellz() const {return nbrCellz_;}
 
+    uint32 nbDimensions() const { return nbDims_ ; }
 
 
-    Point fieldNodeCoordinates( const Field & field, const Point & origin,
-                                uint32 ix, uint32 iy, uint32 iz ) const;
-
-
-    // return the (total) number of mesh points
-    // for the 3 components of Ex, Ey, Ez      ( if EMFieldType==EVecField )
-    // or for the 3 components of Bx, By, Bz   ( if EMFieldType==BVecField )
-    //std::array<AllocSizeT, NBR_COMPO> allocSize( EMFieldType fieldType ) const ;
-    //std::array<AllocSizeT, NBR_COMPO> allocSize( OhmTerm term ) const ;
     AllocSizeT allocSize(HybridQuantity qtyType) const;
 
     AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const ;
-
 
     uint32 physicalStartIndex(Field const& field, Direction direction) const;
     uint32 physicalEndIndex  (Field const& field, Direction direction) const;
@@ -102,6 +100,9 @@ public:
     uint32 ghostEndIndex  (Field const& field, Direction direction) const;
 
     void deriv(Field const& operand, Direction direction, Field& derivative)const;
+
+    Point fieldNodeCoordinates( const Field & field, const Point & origin,
+                                uint32 ix, uint32 iy, uint32 iz ) const;
 
 };
 

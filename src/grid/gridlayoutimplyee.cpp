@@ -103,89 +103,18 @@ uint32 GridLayoutImplYee::ghostEndIndex(Field const& field, Direction direction)
 }
 
 
-
-/**
- * @brief GridLayoutImplYee::fieldNodeCoordinates
- * this method should return a POINT, the idea is to make in every initializer
- * method, 3 nested loops over primal PhysicalStart/End indices
- * @param field
- * the returned point depends on the field's centering
- * @param origin
- * @param ix is a primal index
- * @param iy is a primal index
- * @param iz is a primal index
- * @return Point
- * the desired field-centered coordinate
- */
 Point GridLayoutImplYee::fieldNodeCoordinates(
         const Field & field, const Point & origin,
         uint32 ix, uint32 iy, uint32 iz ) const
 {
-    uint32 idirX = static_cast<uint32>(Direction::X) ;
-    uint32 idirY = static_cast<uint32>(Direction::Y) ;
-    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
-
-    uint32 ixStart = cellIndexAtMin( QtyCentering::primal, Direction::X ) ;
-    uint32 iyStart = cellIndexAtMin( QtyCentering::primal, Direction::Y ) ;
-    uint32 izStart = cellIndexAtMin( QtyCentering::primal, Direction::Z ) ;
-
-    std::array<double, 3> halfCell{ {0, 0, 0} } ;
-
-    uint32 iQty = static_cast<uint32>(field.hybridQty()) ;
-
-    std::array<QtyCentering, 3> centering =
-    { {hybridQtyCentering_[iQty][idirX],
-       hybridQtyCentering_[iQty][idirY],
-       hybridQtyCentering_[iQty][idirZ]} } ;
-
-    for( uint32 idir=idirX ; idir<=idirZ ; ++idir)
-    {
-        if(centering[idir] == QtyCentering::dual) halfCell[idir] = 0.5 ;
-    }
-
-    // A shift of -dx/2, -dy/2, -dz/2 is necessary to get the physical
-    // coordinate on the dual mesh
-    // No shift for coordinate on the primal mesh
-
-    double x = ( (ix-ixStart) - halfCell[0])*dx_ + origin.x_ ;
-    double y = ( (iy-iyStart) - halfCell[1])*dy_ + origin.y_ ;
-    double z = ( (iz-izStart) - halfCell[2])*dz_ + origin.z_ ;
-
-    return Point(x, y, z) ;
+    return fieldNodeCoordinates_( field, origin, ix, iy, iz ) ;
 }
 
 
-/**
- * @brief GridLayoutImplYee::fieldNodeCoordinates
- * This method returns a cell-centered Point.
- * The idea is to call this method in every initializer method
- * using 3 nested loops over primal PhysicalStart/End indices.
- * @param origin
- * @param ix is a primal index
- * @param iy is a primal index
- * @param iz is a primal index
- * @return Point
- * the desired cell-centered (dual/dual/dual) coordinate
- */
 Point GridLayoutImplYee::cellCenteredCoordinates(
-        const Point & origin,
-        uint32 ix, uint32 iy, uint32 iz ) const
+        const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const
 {
-
-    uint32 ixStart = cellIndexAtMin( QtyCentering::primal, Direction::X ) ;
-    uint32 iyStart = cellIndexAtMin( QtyCentering::primal, Direction::Y ) ;
-    uint32 izStart = cellIndexAtMin( QtyCentering::primal, Direction::Z ) ;
-
-    double halfCell = 0.5 ;
-    // A shift of -dx/2, -dy/2, -dz/2 is necessary to get the
-    // cell center physical coordinates,
-    // because this point is located on the dual mesh
-
-    double x = ( (ix-ixStart) - halfCell)*dx_ + origin.x_ ;
-    double y = ( (iy-iyStart) - halfCell)*dy_ + origin.y_ ;
-    double z = ( (iz-izStart) - halfCell)*dz_ + origin.z_ ;
-
-    return Point(x, y, z) ;
+    return cellCenteredCoordinates_( origin, ix, iy, iz ) ;
 }
 
 
