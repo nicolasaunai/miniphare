@@ -3,7 +3,11 @@
 
 #include "AMR/patch.h"
 
-
+/**
+ * @brief The Hierarchy class describes the hierarchy of Patches.
+ * It ignores what's in Patches, just knows how to go from one patch to its
+ * children and the other way.
+ */
 class Hierarchy
 {
 

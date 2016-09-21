@@ -10,7 +10,8 @@
 
 /**
  * @brief The Species class contains particles and moments of a specific
- * species of Particle.
+ * species of Particle. A Species is a heavy object (it contains particles)
+ * and is therefore a move only object.
  */
 class Species
 {
@@ -25,8 +26,6 @@ private:
 
 
 public:
-
-
 
     Species(GridLayout const& layout, double mass,
             std::unique_ptr<ParticleInitializer> particleInitializer,

@@ -13,6 +13,12 @@
 #include "types.h"
 
 
+/**
+ * @brief The PatchData class encapsulate data for a Patch necessary for
+ * the Solver to solve the hybrid system of equations.
+ * A PatchData is a heavy object since it contains all Ions etc. Therefore
+ * it is a move only object.
+ */
 class PatchData
 {
 private:
