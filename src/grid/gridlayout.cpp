@@ -120,7 +120,7 @@ uint32 GridLayout::ghostStartIndex(Field const& field, Direction direction) cons
 
 uint32 GridLayout::ghostEndIndex  (Field const& field, Direction direction) const
 {
-    return implPtr_->ghostStartIndex(field, direction);
+    return implPtr_->ghostEndIndex(field, direction);
 }
 
 
