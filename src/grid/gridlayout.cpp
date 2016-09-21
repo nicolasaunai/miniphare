@@ -78,25 +78,6 @@ GridLayout::GridLayout(GridLayout&& source)
 }
 
 
-Point GridLayout::fieldNodeCoordinates( const Field & field, const Point & origin,
-                                  uint32 ix, uint32 iy, uint32 iz  ) const
-{
-    return implPtr_->fieldNodeCoordinates( field, origin, ix, iy, iz ) ;
-}
-
-
-AllocSizeT GridLayout::allocSize(HybridQuantity qtyType) const
-{
-    return implPtr_->allocSize( qtyType ) ;
-}
-
-
-AllocSizeT  GridLayout::allocSizeDerived( HybridQuantity qty, Direction dir ) const
-{
-    return implPtr_->allocSizeDerived( qty, dir ) ;
-}
-
-
 uint32 GridLayout::physicalStartIndex(Field const& field, Direction direction) const
 {
     return implPtr_->physicalStartIndex(field, direction);
@@ -140,10 +121,32 @@ void GridLayout::deriv(Field const& operand, Direction direction, Field& derivat
 }
 
 
-//uint32 GridLayout::nbDimensions() const
-//{
-//    return implPtr_->nbDimensions();
-//}
+AllocSizeT GridLayout::allocSize(HybridQuantity qtyType) const
+{
+    return implPtr_->allocSize( qtyType ) ;
+}
+
+
+AllocSizeT  GridLayout::allocSizeDerived( HybridQuantity qty, Direction dir ) const
+{
+    return implPtr_->allocSizeDerived( qty, dir ) ;
+}
+
+
+Point GridLayout::fieldNodeCoordinates( const Field & field, const Point & origin,
+                                        uint32 ix, uint32 iy, uint32 iz  ) const
+{
+    return implPtr_->fieldNodeCoordinates( field, origin, ix, iy, iz ) ;
+}
+
+
+Point GridLayout:: cellCenteredCoordinates( const Point & origin,
+                                            uint32 ix, uint32 iy, uint32 iz ) const
+{
+    return implPtr_->cellCenteredCoordinates( origin, ix, iy, iz ) ;
+}
+
+
 
 
 /* ---------------------------------------------------------------------------
@@ -154,8 +157,6 @@ void GridLayout::deriv(Field const& operand, Direction direction, Field& derivat
 
 
 const std::string GridLayout::errorInverseMesh= "GridLayout error: Invalid use of";
-
-
 
 
 void GridLayout::throwNotValid1D()const

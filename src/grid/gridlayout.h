@@ -19,13 +19,12 @@
  * Ohm, OhmImplInternals and Solver.
  * It is used to handle all operations related to a specific grid layout,
  * it provides:
- * - physical domain start and end indexes
+ * - physical domain start/end indexes
  * - indexes of the first and last ghost nodes
  * - allocation sizes for Field attributes
- * - a spatial partial derivative operator (Faraday)
- * -
- *
- *
+ * - a partial derivative operator (Faraday)
+ * - a physical coordinate given a field and a primal point (ix, iy, iz)
+ * - a cell centered coordinates given a primal point (ix, iy, iz)
  *
  */
 class GridLayout
@@ -88,21 +87,22 @@ public:
 
     uint32 nbDimensions() const { return nbDims_ ; }
 
-
-    AllocSizeT allocSize(HybridQuantity qtyType) const;
-
-    AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const ;
-
     uint32 physicalStartIndex(Field const& field, Direction direction) const;
     uint32 physicalEndIndex  (Field const& field, Direction direction) const;
 
     uint32 ghostStartIndex(Field const& field, Direction direction) const;
     uint32 ghostEndIndex  (Field const& field, Direction direction) const;
 
+    AllocSizeT allocSize(HybridQuantity qtyType) const;
+    AllocSizeT allocSizeDerived( HybridQuantity qty, Direction dir ) const ;
+
     void deriv(Field const& operand, Direction direction, Field& derivative)const;
 
     Point fieldNodeCoordinates( const Field & field, const Point & origin,
                                 uint32 ix, uint32 iy, uint32 iz ) const;
+
+    Point cellCenteredCoordinates( const Point & origin,
+                                   uint32 ix, uint32 iy, uint32 iz ) const;
 
 };
 

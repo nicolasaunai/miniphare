@@ -8,6 +8,14 @@
 #include <iostream>
 
 
+/**
+ * @brief GridLayoutImplFactory is used as an interface to build and initialize
+ * GridLayoutImpl objects in the simulation.
+ *
+ * It follows the Factory pattern, thereby it will provide the adequate
+ * derived GridLayoutImpl object depending on the user needs.
+ *
+ */
 class GridLayoutImplFactory
 {
 public:
@@ -38,10 +46,7 @@ public:
         }
 
     } // end factory method
-
-
 };
-
 
 
 
