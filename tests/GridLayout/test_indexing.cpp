@@ -156,6 +156,9 @@ TEST_P(GridLayoutIndexingTest, PhysicalStartIndexX)
 
     GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
+    // Here the Field sizes for allocations are overestimated
+    // We are not testing the alloc methods but only the methods devoted
+    // to the determination of indexes
     Field field{2*inputs.nbrCells[0],2*inputs.nbrCells[1],2*inputs.nbrCells[2],
                 inputs.qty,            // this is the important parameter here
                 "testField" };
