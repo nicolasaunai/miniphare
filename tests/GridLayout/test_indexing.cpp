@@ -149,7 +149,6 @@ class GridLayoutIndexingTest: public ::testing::TestWithParam<GridLayoutParams>
 
 
 
-#if 1
 TEST_P(GridLayoutIndexingTest, PhysicalStartIndexX)
 {
     GridLayoutParams inputs = GetParam(); // GetParam is from GTEST
@@ -157,16 +156,12 @@ TEST_P(GridLayoutIndexingTest, PhysicalStartIndexX)
 
     GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
-    Field field{10,10,10,
-                inputs.qty,            /// this is the important parameter here
-                "bullshit" };
+    Field field{2*inputs.nbrCells[0],2*inputs.nbrCells[1],2*inputs.nbrCells[2],
+                inputs.qty,            // this is the important parameter here
+                "testField" };
 
     EXPECT_EQ(inputs.PSI[0], gl.physicalStartIndex(field, Direction::X)   );
 }
-#endif
-
-
-
 
 
 

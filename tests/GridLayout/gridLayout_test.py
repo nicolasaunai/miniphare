@@ -21,13 +21,13 @@ QtyDict = {'Bx':0, 'By':1, 'Bz':2, 'Ex':3, 'Ey':4, 'Ez':5, 'rho':6, 'V':7, 'P':8
 
 # ---- usefull methods ------
 def nbrGhostsX(interpOrder, qty):
-    if qty in (QtyDict['Ex'], QtyDict['By'], QtyDict['Bz']) :# dual qties
-        return math.floor((interpOrder +1)/2)
+    if qty[0] in (QtyDict['Ex'], QtyDict['By'], QtyDict['Bz']) :# dual qties
+        return math.floor( (interpOrder +1)/2 )
     else: # primal
-        return math.floor(interpOrder/2)
+        return math.floor( interpOrder/2 )
         
 def isDualX(qty):
-    if qty in (QtyDict['Ex'], QtyDict['By'], QtyDict['Bz']) :# dual qties
+    if qty[0] in (QtyDict['Ex'], QtyDict['By'], QtyDict['Bz']) :# dual qties
         return 1
     else:
         return 0
@@ -50,13 +50,13 @@ def ghostEndIndexX(interpOrder, nbrCells, qty):
     
 # ---- usefull methods ------
 def nbrGhostsY(interpOrder, qty):
-    if qty in (QtyDict['Ey'], QtyDict['Bx'], QtyDict['Bz']) :# dual qties
-        return math.floor((interpOrder +1)/2)
+    if qty[0] in (QtyDict['Ey'], QtyDict['Bx'], QtyDict['Bz']) :# dual qties
+        return math.floor( (interpOrder +1)/2 )
     else: # primal
-        return math.floor(interpOrder/2)
+        return math.floor( interpOrder/2 )
         
 def isDualY(qty):
-    if qty in (QtyDict['Ey'], QtyDict['Bx'], QtyDict['Bz']) :# dual qties
+    if qty[0] in (QtyDict['Ey'], QtyDict['Bx'], QtyDict['Bz']) :# dual qties
         return 1
     else:
         return 0
@@ -79,13 +79,13 @@ def ghostEndIndexY(interpOrder, nbrCells, qty):
 
 # ---- usefull methods ------
 def nbrGhostsZ(interpOrder, qty):
-    if qty in (QtyDict['Ez'], QtyDict['Bx'], QtyDict['By']) :# dual qties
-        return math.floor((interpOrder +1)/2)
+    if qty[0] in (QtyDict['Ez'], QtyDict['Bx'], QtyDict['By']) :# dual qties
+        return math.floor( (interpOrder +1)/2 )
     else: # primal
-        return math.floor(interpOrder/2)
+        return math.floor( interpOrder/2 )
         
 def isDualZ(qty):
-    if qty in (QtyDict['Ez'], QtyDict['Bx'], QtyDict['By']) :# dual qties
+    if qty[0] in (QtyDict['Ez'], QtyDict['Bx'], QtyDict['By']) :# dual qties
         return 1
     else:
         return 0
