@@ -5,7 +5,7 @@
 #include <Plasmas//particles.h>
 
 class Vector;
-
+#if 0
 class Pusher
 {
 public:
@@ -19,5 +19,6 @@ public:
 
    virtual void move(Particles &particles)=0;
 };
+#endif
 
 #endif // PUSHER_H

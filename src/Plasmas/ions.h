@@ -31,7 +31,7 @@ private:
     std::vector <Species> speciesArray_;
     GridLayout layout_;
     Field rho_;
-    Field bulkVel_;
+    VecField bulkVel_;
 
 
 public:
@@ -46,28 +46,33 @@ public:
     Ions& operator=(Ions const& source) = delete;
 
 
-
     void resetBulkMoments(){rho_.zero(); bulkVel_.zero();}
-
     void resetSpeciesMoments(){for (Species& spe : speciesArray_) spe.resetMoments();}
 
+
     uint32 nbrSpecies() const {return static_cast<uint32>(speciesArray_.size()) ;}
-
     Species& species(uint32 index);
-
     Species const& species(uint32 index) const;
+
+
+    Field& rho() {return rho_;}
+    Field const& rho() const {return rho_;}
+
+    Field& bulkVel(uint32 iComponent) {return bulkVel_.component(iComponent);}
+    Field const& bulkVel(uint32 iComponent) const {return bulkVel_.component(iComponent);}
 
     void loadParticles();
 
-    void computeChargeDensity();
 
+    void computeChargeDensity();
+    void computeBulkVelocity();
 
 
 #if 0
     Field* getChargeDensity();
     Field* getBulkVelocity();
 
-    void computeBulkVelocity();
+
 
 #endif
 

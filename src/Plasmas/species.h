@@ -19,7 +19,7 @@ private:
 
     GridLayout layout_;
     Field rho_;
-    VecField bulkVel_;
+    VecField flux_;
     std::vector<Particle> particleArray_;
     std::unique_ptr<ParticleInitializer> particleInitializer_;
 
@@ -40,13 +40,13 @@ public:
     Species(Species&& source) = default;
     Species& operator=(Species&& source) = default;
 
-    void resetMoments() {rho_.zero(); bulkVel_.zero();}
+    void resetMoments() {rho_.zero(); flux_.zero();}
 
     Field& rho() {return rho_;}
     Field const& rho() const {return rho_;}
 
-    //Field& bulkVel(Direction direction) {return bulkVel_.component();}
-    //Field const& bulkVel(Direction direction) const {return bulkVel_.component();}
+    Field& flux(uint32 iComponent) {return flux_.component(iComponent);}
+    Field const& flux(uint32 iComponent) const {return flux_.component(iComponent);}
 
 
     void loadParticles();
