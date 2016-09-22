@@ -140,7 +140,8 @@ public:
      virtual void SetUp() override /*std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
                uint32 nbDims, std::string layoutName)*/
     {
-        gl = new GridLayout( {0.1, 0, 0}, {15,0,0}, 1, "yee" );//dxdydz, nbrCells, nbDims, layoutName);
+        // dxdydz, nbrCells, nbDims, layoutName, interpOrder)
+        gl = new GridLayout( {{0.1, 0, 0}}, {{15,0,0}}, 1, "yee", 1 );
     }
 
     virtual void TearDown() override
@@ -168,13 +169,24 @@ public:
 
 struct GridLayoutImplFactoryParams
 {
-    uint32 nbDims;
-    std::string implTypeName;
+    uint32 nbDims_ ;
+    uint32 interpOrder_ ;
+    std::string layoutName_ ;
+    std::array<uint32,3> nbrCellsXYZ_ ;
+    std::array<double,3> dxdydz_ ;
 
-    GridLayoutImplFactoryParams(uint32 dims, std::string const& name):nbDims{dims},implTypeName{name}{}
+
+    GridLayoutImplFactoryParams(uint32 nbDims, uint32 interpOrder ,
+                                std::string const& layoutName     ,
+                                std::array<uint32,3> nbrCellsXYZ  ,
+                                std::array<double,3> dxdydz       )
+        : nbDims_{nbDims}, interpOrder_{interpOrder}, layoutName_{layoutName},
+          nbrCellsXYZ_{nbrCellsXYZ}, dxdydz_{dxdydz}  {}
+
+
     friend std::ostream& operator<<(std::ostream& os, GridLayoutImplFactoryParams const& params)
     {
-        os << "nbDims = " << params.nbDims << " ; implTypeName = " << params.implTypeName;
+        os << "nbDims = " << params.nbDims_ << " ; implTypeName = " << params.layoutName_;
         return os;
     }
 };
@@ -190,30 +202,32 @@ class GridLayoutImplFactoryTest : public ::testing::TestWithParam<GridLayoutImpl
 TEST_P(GridLayoutImplFactoryTest, factoryParamTests)
 {
     GridLayoutImplFactoryParams inputs = GetParam();
+
     std::cout << inputs  << std::endl;
-    ASSERT_ANY_THROW(GridLayoutImplFactory::createGridLayoutImpl(inputs.nbDims, inputs.implTypeName));
+
+    ASSERT_ANY_THROW( GridLayoutImplFactory::createGridLayoutImpl(
+                          inputs.nbDims_, inputs.interpOrder_,
+                          inputs.layoutName_, inputs.nbrCellsXYZ_,
+                          inputs.dxdydz_  ) );
 }
 
 
 
 GridLayoutImplFactoryParams factoryInputs[] = {
-    GridLayoutImplFactoryParams(-2,"yee"),
-    GridLayoutImplFactoryParams(4200000000,"yee"),
-    GridLayoutImplFactoryParams(4200000000,"wrong"),
-    GridLayoutImplFactoryParams(1,"yee "),
-    GridLayoutImplFactoryParams(1,"YEE"),
-    GridLayoutImplFactoryParams(1,"Yee"),
-    GridLayoutImplFactoryParams(1," yee")
+
+    GridLayoutImplFactoryParams( -2, 1,   "yee", {{20, 20, 20}}, {{0.1, 0.1, 0.1}} ),
+    GridLayoutImplFactoryParams(420, 1,   "yee", {{20, 20, 20}}, {{0.1, 0.1, 0.1}} ),
+    GridLayoutImplFactoryParams(420, 1, "wrong", {{20, 20, 20}}, {{0.1, 0.1, 0.1}} ),
+    GridLayoutImplFactoryParams(  1, 1,  "yee ", {{20, 20, 20}}, {{0.1, 0.1, 0.1}} ),
+    GridLayoutImplFactoryParams(  1, 1,   "YEE", {{20, 20, 20}}, {{0.1, 0.1, 0.1}} ),
+    GridLayoutImplFactoryParams(  1, 1,   "Yee", {{20, 20, 20}}, {{0.1, 0.1, 0.1}} ),
+    GridLayoutImplFactoryParams(  1, 1,  " yee", {{20, 20, 20}}, {{0.1, 0.1, 0.1}} )
 };
 
 
 INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutImplFactoryTest, testing::ValuesIn(factoryInputs));
 
  /* ---------------------------------------------------------------------------- */
-
-
-
-
 
 
 
@@ -224,18 +238,21 @@ INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutImplFactoryTest, testing::Valu
 
 struct GridLayoutParams
 {
-    std::array<double,3> dxdydz;
-    std::array<uint32,3> nbrCells;
-    std::string layoutName;
+    std::array<double,3> dxdydz_ ;
+    std::array<uint32,3> nbrCells_ ;
+    std::string layoutName_ ;
+
     uint32 nbDims_;
+    uint32 interpOrder_ ;
+
     std::string testComment_;
 
     GridLayoutParams(double dx, double dy, double dz,
                      uint32 nbrCellx, uint32 nbrCelly, uint32 nbrCellz,
                      std::string const& name,
                      uint32 nbDims, std::string testComment):
-                     dxdydz{ {dx,dy,dz} }, nbrCells{ {nbrCellx,nbrCelly,nbrCellz} },
-                     layoutName{name}, nbDims_{nbDims}, testComment_{testComment}
+                     dxdydz_{ {dx,dy,dz} }, nbrCells_{ {nbrCellx,nbrCelly,nbrCellz} },
+                     layoutName_{name}, nbDims_{nbDims}, testComment_{testComment}
     {
     }
 
@@ -243,12 +260,12 @@ struct GridLayoutParams
     friend std::ostream& operator<<(std::ostream& os, GridLayoutParams const& inputs)
     {
         os << "mesh size : (" ;
-        for (double const& dl: inputs.dxdydz)
+        for (double const& dl: inputs.dxdydz_)
         {
             os << dl << " ";
         }
         os << ") ; FieldSize : (";
-        for (uint32 const& n: inputs.nbrCells)
+        for (uint32 const& n: inputs.nbrCells_)
         {
             os << n << " ";
         }
@@ -270,7 +287,13 @@ TEST_P(GridLayoutConstructorTest, ConstructorTest)
 {
     GridLayoutParams inputs = GetParam();
     std::cout << inputs  << std::endl;
-    ASSERT_ANY_THROW( GridLayout(inputs.dxdydz, inputs.nbrCells, inputs.nbDims_, inputs.layoutName) );
+
+//    GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
+
+    ASSERT_ANY_THROW( GridLayout(inputs.dxdydz_ , inputs.nbrCells_  ,
+                                 inputs.nbDims_, inputs.layoutName_,
+                                 inputs.interpOrder_) );
+
 }
 
 
@@ -417,29 +440,29 @@ INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutConstructorTest,
 
 TEST(MeshSizeTest, meshSize1DNullInvariant)
 {
-    GridLayout gl( {0.1, 0., 0}, {15,0,0}, 1, "yee", 1);
-   // std::cout << gl.dy() << " " << utils::isZero(gl.dy())<< std::endl;
+    GridLayout gl( {{0.1, 0., 0}}, {{15,0,0}}, 1, "yee", 1);
+
     ASSERT_TRUE( gl.dy() == 0. && gl.dz() == 0.  );
 }
-#if 1
+
 
 TEST(MeshSizeTest, meshSize1DNonZero)
 {
-    GridLayout gl( {0.1, 0, 0}, {15,0,0}, 1, "yee", 1);
+    GridLayout gl( {{0.1, 0, 0}}, {{15,0,0}}, 1, "yee", 1);
     ASSERT_TRUE( gl.dx() > 0.  );
 }
 
 
 TEST(MeshSizeTest, meshSize2DNullInvariant)
 {
-    GridLayout gl( {0.1, 0.1, 0}, {15,12,0}, 2, "yee", 1);
+    GridLayout gl( {{0.1, 0.1, 0}}, {{15,12,0}}, 2, "yee", 1);
     ASSERT_TRUE( gl.dz() == 0.  );
 }
 
 
 TEST(MeshSizeTest, meshSize2DNonZero)
 {
-    GridLayout gl( {0.1, 0.1, 0}, {15,12,0}, 2, "yee", 1);
+    GridLayout gl( {{0.1, 0.1, 0}}, {{15,12,0}}, 2, "yee", 1);
     ASSERT_TRUE( gl.dx() > 0.  && gl.dy() > 0. );
 }
 
@@ -447,24 +470,24 @@ TEST(MeshSizeTest, meshSize2DNonZero)
 
 TEST(MeshSizeTest, inverse1DyThrows)
 {
-    GridLayout gl( {0.1, 0.0, 0}, {15,0,0}, 1, "yee", 1);
+    GridLayout gl( {{0.1, 0.0, 0}}, {{15,0,0}}, 1, "yee", 1);
     ASSERT_ANY_THROW(gl.ody());
 }
 
 
 TEST(MeshSizeTest, inverse1DzThrows)
 {
-    GridLayout gl( {0.1, 0.0, 0}, {15,0,0}, 1, "yee", 1);
+    GridLayout gl( {{0.1, 0.0, 0}}, {{15,0,0}}, 1, "yee", 1);
     ASSERT_ANY_THROW(gl.odz());
 }
 
 
 TEST(MeshSizeTest, inverse2DzThrows)
 {
-    GridLayout gl( {0.1, 0.1, 0.}, {15,11,0}, 2, "yee", 1);
+    GridLayout gl( {{0.1, 0.1, 0.}}, {{15,11,0}}, 2, "yee", 1);
     ASSERT_ANY_THROW(gl.odz());
 }
-#endif
+
 /* ---------------------------------------------------------------------------- */
 
 
@@ -491,30 +514,14 @@ TEST(GridLayoutTest, moveConstructible)
 
 /* ---------------------------------------------------------------------------- */
 
+#endif
 
-
-
+#if 0
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
-
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

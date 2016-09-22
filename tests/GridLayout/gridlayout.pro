@@ -42,3 +42,4 @@ HEADERS += ../../src/grid/gridlayout.h \
            ../../src/types.h \
            ../../src/constants.h \
            ../../src/utility.h \
+    test_gridlayout.h
