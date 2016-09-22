@@ -5,6 +5,7 @@
 
 #include <cmath>
 #include <stdexcept>
+#include <array>
 
 
 GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims, uint32 ghostParameter,
@@ -214,62 +215,61 @@ QtyCentering GridLayoutImplInternals::derivedCentering(HybridQuantity qty, Direc
 
 AllocSizeT GridLayoutImplInternals::allocSize_( HybridQuantity qty ) const
 {
-    uint32 idirX = static_cast<uint32>( Direction::X ) ;
-    uint32 idirY = static_cast<uint32>( Direction::Y ) ;
-    uint32 idirZ = static_cast<uint32>( Direction::Z ) ;
+    gridDataT data{} ;
 
     uint32 iQty = static_cast<uint32>(qty) ;
 
     std::array<QtyCentering, NBR_COMPO>
-            qtyCenterings{ {hybridQtyCentering_[iQty][idirX],
-                            hybridQtyCentering_[iQty][idirY],
-                            hybridQtyCentering_[iQty][idirZ]} } ;
+            qtyCenterings{ {hybridQtyCentering_[iQty][data.idirX],
+                            hybridQtyCentering_[iQty][data.idirY],
+                            hybridQtyCentering_[iQty][data.idirZ]} } ;
 
-    uint32 nx =  2*nbrPaddingCells( Direction::X ) + nbrPhysicalCells( Direction::X ) + 1
-               + 2*nbrGhosts( qtyCenterings[idirX] ) ;
+    auto allocSizes = computeSizes( qtyCenterings ) ;
 
-    uint32 ny =  2*nbrPaddingCells( Direction::Y ) + nbrPhysicalCells( Direction::Y ) + 1
-               + 2*nbrGhosts( qtyCenterings[idirY] ) ;
-
-    uint32 nz =  2*nbrPaddingCells( Direction::Z ) + nbrPhysicalCells( Direction::Z ) + 1
-               + 2*nbrGhosts( qtyCenterings[idirZ] ) ;
-
-    return AllocSizeT( nx, ny, nz );
+    return AllocSizeT( allocSizes[0], allocSizes[1], allocSizes[2] );
 }
 
 
 
 AllocSizeT  GridLayoutImplInternals::allocSizeDerived_( HybridQuantity qty, Direction dir ) const
 {
-    uint32 idirX = static_cast<uint32>( Direction::X ) ;
-    uint32 idirY = static_cast<uint32>( Direction::Y ) ;
-    uint32 idirZ = static_cast<uint32>( Direction::Z ) ;
+    gridDataT data{} ;
 
     uint32 iDerivedDir = static_cast<uint32>( dir ) ;
 
     uint32 iQty = static_cast<uint32>(qty) ;
 
     std::array<QtyCentering, NBR_COMPO>
-            qtyCenterings{ {hybridQtyCentering_[iQty][idirX],
-                         hybridQtyCentering_[iQty][idirY],
-                         hybridQtyCentering_[iQty][idirZ]} } ;
+            qtyCenterings{ {hybridQtyCentering_[iQty][data.idirX],
+                            hybridQtyCentering_[iQty][data.idirY],
+                            hybridQtyCentering_[iQty][data.idirZ]} } ;
 
     QtyCentering newCentering = derivedCentering( qty, dir ) ;
 
     qtyCenterings[iDerivedDir] = newCentering ;
 
+    auto allocSizes = computeSizes( qtyCenterings ) ;
+
+    return AllocSizeT( allocSizes[0], allocSizes[1], allocSizes[2] );
+}
+
+
+
+std::array<uint32, NBR_COMPO> GridLayoutImplInternals::computeSizes(
+        std::array<QtyCentering, NBR_COMPO> const & qtyCenterings ) const
+{
+    gridDataT data{} ;
+
     uint32 nx =  2*nbrPaddingCells( Direction::X ) + nbrPhysicalCells( Direction::X ) + 1
-               + 2*nbrGhosts( qtyCenterings[idirX] ) ;
+               + 2*nbrGhosts( qtyCenterings[data.idirX] ) ;
 
     uint32 ny =  2*nbrPaddingCells( Direction::Y ) + nbrPhysicalCells( Direction::Y ) + 1
-               + 2*nbrGhosts( qtyCenterings[idirY] ) ;
+               + 2*nbrGhosts( qtyCenterings[data.idirY] ) ;
 
     uint32 nz =  2*nbrPaddingCells( Direction::Z ) + nbrPhysicalCells( Direction::Z ) + 1
-               + 2*nbrGhosts( qtyCenterings[idirZ] ) ;
+               + 2*nbrGhosts( qtyCenterings[data.idirZ] ) ;
 
-    AllocSizeT allocSizes( nx, ny, nz ) ;
-
-    return allocSizes ;
+    return { {nx, ny, nz} } ;
 }
 
 

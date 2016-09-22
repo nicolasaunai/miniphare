@@ -158,7 +158,10 @@ protected:
     uint32 ghostEndIndexV     (Field const& field, Direction direction) const;
 
     AllocSizeT allocSize_( HybridQuantity qty ) const;
-    AllocSizeT  allocSizeDerived_( HybridQuantity qty, Direction dir ) const;
+    AllocSizeT allocSizeDerived_( HybridQuantity qty, Direction dir ) const;
+
+    std::array<uint32, NBR_COMPO> computeSizes(
+            std::array<QtyCentering, NBR_COMPO> const & qtyCenterings ) const;
 
     Point fieldNodeCoordinates_(
             const Field & field, const Point & origin,
