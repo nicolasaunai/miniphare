@@ -5,107 +5,57 @@
 #include <fstream>
 
 
-#include "gtest/gtest.h"
-
-
-#include "grid/gridlayout.h"
-#include "grid/gridlayoutimplfactory.h"
-#include "grid/gridlayoutimplyee.h"
-#include "types.h"
-#include "utility.h"
-#include "Field/field.h"
-
-
-
-
-
+#include "test_gridlayout.h"
 
 
 HybridQuantity GetHybridQty(uint iqty)
 {
+    HybridQuantity quantity = HybridQuantity::count ;
+
     switch( iqty)
     {
-        case 0:
-        return HybridQuantity::Bx;
+    case 0:
+        quantity = HybridQuantity::Bx;
         break;
 
-        case 1:
-        return HybridQuantity::By;
+    case 1:
+        quantity = HybridQuantity::By;
         break;
 
-        case 2:
-        return HybridQuantity::Bz;
+    case 2:
+        quantity = HybridQuantity::Bz;
         break;
 
-        case 3:
-        return HybridQuantity::Ex;
+    case 3:
+        quantity = HybridQuantity::Ex;
         break;
 
-        case 4:
-        return HybridQuantity::Ey;
+    case 4:
+        quantity = HybridQuantity::Ey;
         break;
 
-        case 5:
-        return HybridQuantity::Ez;
+    case 5:
+        quantity = HybridQuantity::Ez;
         break;
 
-        case 6:
-        return HybridQuantity::rho;
+    case 6:
+        quantity = HybridQuantity::rho;
         break;
 
-        case 7:
-        return HybridQuantity::V;
+    case 7:
+        quantity = HybridQuantity::V;
         break;
 
-        case 8:
-        return HybridQuantity::P;
+    case 8:
+        quantity = HybridQuantity::P;
         break;
 
-        default:
-        return HybridQuantity::count;
+    default:
+        quantity = HybridQuantity::count;
     }
+
+    return quantity;
 }
-
-
-
-struct GridLayoutParams
-{
-    uint32 interpOrder;
-    uint32 nbDim;
-    HybridQuantity qty;
-    std::array<uint32, 3> nbrCells;
-    std::array<double, 3> dxdydz;
-
-    std::array<uint32,3> PSI;
-    std::array<uint32,3> PEI;
-    std::array<uint32,3> GSI;
-    std::array<uint32,3> GEI;
-    uint32 iqty;
-
-
-    friend std::ostream& operator<<(std::ostream& os, GridLayoutParams const& inputs)
-    {
-        os << "interpOrder : " << inputs.interpOrder
-           << " nbDims   : " << inputs.nbDim
-           << " qtyName  : " << static_cast<int>(inputs.qty)
-           << " nbrCells : " << inputs.nbrCells[0] << ", " << inputs.nbrCells[1] << ", " << inputs.nbrCells[2]
-           << " dxdydz   : " << inputs.dxdydz[0] << ", " << inputs.dxdydz[1] << ", " << inputs.dxdydz[2]
-           << " PSI x : " << inputs.PSI[0] << " PEI x : " << inputs.PEI[0]
-           << " GSI x : " << inputs.GSI[0] << " GEI x : " << inputs.GEI[0]
-           << " PSI y : " << inputs.PSI[1] << " PEI y : " << inputs.PEI[1]
-           << " GSI y : " << inputs.GSI[1] << " GEI y : " << inputs.GEI[1]
-           << " PSI z : " << inputs.PSI[2] << " PEI z : " << inputs.PEI[2]
-           << " GSI z : " << inputs.GSI[2] << " GEI z : " << inputs.GEI[2]
-           << " " <<  inputs.iqty;
-
-
-        return os;
-    }
-
-};
-
-
-
 
 
 
@@ -117,7 +67,7 @@ std::vector<GridLayoutParams> getInputsFromFile()
     std::vector<GridLayoutParams> params(108);
     uint iqty;
 
-    for (int i =0; i < 108; ++i)
+    for (uint32 i =0; i < 108; ++i)
     {
 
         ifs >> params[i].interpOrder >> params[i].nbDim >> iqty
@@ -136,16 +86,6 @@ std::vector<GridLayoutParams> getInputsFromFile()
 
     return params;
 }
-
-
-
-
-
-class GridLayoutIndexingTest: public ::testing::TestWithParam<GridLayoutParams>
-{
-
-};
-
 
 
 

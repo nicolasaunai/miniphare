@@ -1,9 +1,3 @@
-
-
-
-
-
-
 /*
 
   GridLayout SPECIFICATION
@@ -122,98 +116,10 @@
 #include <cmath>
 #include <type_traits>
 
-#include "gtest/gtest.h"
-
-#include "grid/gridlayout.h"
-#include "grid/gridlayoutimplfactory.h"
-#include "grid/gridlayoutimplyee.h"
-#include "types.h"
-#include "utility.h"
-
-#if 0
-class GridLayoutFixture : public testing::Test
-{
-public:
-    GridLayout* gl;
-    GridLayoutFixture():gl(nullptr){}
-
-     virtual void SetUp() override /*std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
-               uint32 nbDims, std::string layoutName)*/
-    {
-        // dxdydz, nbrCells, nbDims, layoutName, interpOrder)
-        gl = new GridLayout( {{0.1, 0, 0}}, {{15,0,0}}, 1, "yee", 1 );
-    }
-
-    virtual void TearDown() override
-    {
-        delete gl;
-    }
-};
+#include "test_gridlayout.h"
 
 
-
-
-
-/* ----------------------------------------------------------------------------
- *
- *                            GridLayoutFactory TEST
- *
- * SPECIFICATION:
- * -------------
- *
- *  - Implementation Factory throws an exception if unknown layout and
- *          nbDims < 1 and > 3
- *
- * ---------------------------------------------------------------------------- */
-
-
-struct GridLayoutImplFactoryParams
-{
-    uint32 nbDims_ ;
-    uint32 interpOrder_ ;
-    std::string layoutName_ ;
-    std::array<uint32,3> nbrCellsXYZ_ ;
-    std::array<double,3> dxdydz_ ;
-
-
-    GridLayoutImplFactoryParams(uint32 nbDims, uint32 interpOrder ,
-                                std::string const& layoutName     ,
-                                std::array<uint32,3> nbrCellsXYZ  ,
-                                std::array<double,3> dxdydz       )
-        : nbDims_{nbDims}, interpOrder_{interpOrder}, layoutName_{layoutName},
-          nbrCellsXYZ_{nbrCellsXYZ}, dxdydz_{dxdydz}  {}
-
-
-    friend std::ostream& operator<<(std::ostream& os, GridLayoutImplFactoryParams const& params)
-    {
-        os << "nbDims = " << params.nbDims_ << " ; implTypeName = " << params.layoutName_;
-        return os;
-    }
-};
-
-
-
-class GridLayoutImplFactoryTest : public ::testing::TestWithParam<GridLayoutImplFactoryParams>
-{
-};
-
-
-
-TEST_P(GridLayoutImplFactoryTest, factoryParamTests)
-{
-    GridLayoutImplFactoryParams inputs = GetParam();
-
-    std::cout << inputs  << std::endl;
-
-    ASSERT_ANY_THROW( GridLayoutImplFactory::createGridLayoutImpl(
-                          inputs.nbDims_, inputs.interpOrder_,
-                          inputs.layoutName_, inputs.nbrCellsXYZ_,
-                          inputs.dxdydz_  ) );
-}
-
-
-
-GridLayoutImplFactoryParams factoryInputs[] = {
+static GridLayoutImplFactoryParams factoryInputs[] = {
 
     GridLayoutImplFactoryParams( -2, 1,   "yee", {{20, 20, 20}}, {{0.1, 0.1, 0.1}} ),
     GridLayoutImplFactoryParams(420, 1,   "yee", {{20, 20, 20}}, {{0.1, 0.1, 0.1}} ),
@@ -223,78 +129,6 @@ GridLayoutImplFactoryParams factoryInputs[] = {
     GridLayoutImplFactoryParams(  1, 1,   "Yee", {{20, 20, 20}}, {{0.1, 0.1, 0.1}} ),
     GridLayoutImplFactoryParams(  1, 1,  " yee", {{20, 20, 20}}, {{0.1, 0.1, 0.1}} )
 };
-
-
-INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutImplFactoryTest, testing::ValuesIn(factoryInputs));
-
- /* ---------------------------------------------------------------------------- */
-
-
-
-/* ----------------------------------------------------------------------------
- *
- *                            GridLayout TEST
- * ---------------------------------------------------------------------------- */
-
-struct GridLayoutParams
-{
-    std::array<double,3> dxdydz_ ;
-    std::array<uint32,3> nbrCells_ ;
-    std::string layoutName_ ;
-
-    uint32 nbDims_;
-    uint32 interpOrder_ ;
-
-    std::string testComment_;
-
-    GridLayoutParams(double dx, double dy, double dz,
-                     uint32 nbrCellx, uint32 nbrCelly, uint32 nbrCellz,
-                     std::string const& name,
-                     uint32 nbDims, std::string testComment):
-                     dxdydz_{ {dx,dy,dz} }, nbrCells_{ {nbrCellx,nbrCelly,nbrCellz} },
-                     layoutName_{name}, nbDims_{nbDims}, testComment_{testComment}
-    {
-    }
-
-
-    friend std::ostream& operator<<(std::ostream& os, GridLayoutParams const& inputs)
-    {
-        os << "mesh size : (" ;
-        for (double const& dl: inputs.dxdydz_)
-        {
-            os << dl << " ";
-        }
-        os << ") ; FieldSize : (";
-        for (uint32 const& n: inputs.nbrCells_)
-        {
-            os << n << " ";
-        }
-        os << ") " << inputs.testComment_;
-        return os;
-    }
-
-};
-
-
-class GridLayoutConstructorTest: public ::testing::TestWithParam<GridLayoutParams>
-{
-
-};
-
-
-
-TEST_P(GridLayoutConstructorTest, ConstructorTest)
-{
-    GridLayoutParams inputs = GetParam();
-    std::cout << inputs  << std::endl;
-
-//    GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
-
-    ASSERT_ANY_THROW( GridLayout(inputs.dxdydz_ , inputs.nbrCells_  ,
-                                 inputs.nbDims_, inputs.layoutName_,
-                                 inputs.interpOrder_) );
-
-}
 
 
 
@@ -406,14 +240,38 @@ GridLayoutParams gridLayoutConstructorInputs[] = {
 };
 
 
+TEST_P(GridLayoutImplFactoryTest, factoryParamTests)
+{
+    GridLayoutImplFactoryParams inputs = GetParam();
+
+    std::cout << inputs  << std::endl;
+
+    ASSERT_ANY_THROW( GridLayoutImplFactory::createGridLayoutImpl(
+                          inputs.nbDims_, inputs.interpOrder_,
+                          inputs.layoutName_, inputs.nbrCellsXYZ_,
+                          inputs.dxdydz_  ) );
+}
+
+INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutImplFactoryTest, testing::ValuesIn(factoryInputs));
+
+
+
+
+TEST_P(GridLayoutConstructorTest, ConstructorTest)
+{
+    GridLayoutParams inputs = GetParam();
+    std::cout << inputs  << std::endl;
+
+//    GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
+
+    ASSERT_ANY_THROW( GridLayout(inputs.dxdydz , inputs.nbrCells  ,
+                                 inputs.nbDim, inputs.layoutName,
+                                 inputs.interpOrder) );
+
+}
+
 INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutConstructorTest,
                         testing::ValuesIn( gridLayoutConstructorInputs ) );
-
-
-
-
-/* ---------------------------------------------------------------------------- */
-
 
 
 
@@ -435,8 +293,6 @@ INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutConstructorTest,
  *
  *
  * ---------------------------------------------------------------------------- */
-
-
 
 TEST(MeshSizeTest, meshSize1DNullInvariant)
 {
@@ -488,10 +344,6 @@ TEST(MeshSizeTest, inverse2DzThrows)
     ASSERT_ANY_THROW(gl.odz());
 }
 
-/* ---------------------------------------------------------------------------- */
-
-
-
 
 /* ----------------------------------------------------------------------------
  *
@@ -504,24 +356,13 @@ TEST(GridLayoutTest, copyConstructible)
     ASSERT_TRUE( std::is_copy_constructible<GridLayout>::value );
 }
 
-
 TEST(GridLayoutTest, moveConstructible)
 {
     ASSERT_TRUE( std::is_move_constructible<GridLayout>::value );
 }
 
-
-
 /* ---------------------------------------------------------------------------- */
 
-#endif
-
-#if 0
-int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
-#endif
 
 
 
