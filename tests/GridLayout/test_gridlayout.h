@@ -31,6 +31,7 @@ struct GridLayoutParams
     uint32 nbDim;
 
     HybridQuantity qty;
+    uint32 iqty ;        // integer equals to static_cast<uint32> (qty)
 
     std::string layoutName ;
 
@@ -41,7 +42,6 @@ struct GridLayoutParams
     std::array<uint32,3> PEI;
     std::array<uint32,3> GSI;
     std::array<uint32,3> GEI;
-    uint32 iqty;
 
     std::string testComment;
 

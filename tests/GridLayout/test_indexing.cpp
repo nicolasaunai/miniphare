@@ -8,53 +8,31 @@
 #include "test_gridlayout.h"
 
 
-HybridQuantity GetHybridQty(uint iqty)
+HybridQuantity GetHybridQty(uint32 iqty)
 {
     HybridQuantity quantity = HybridQuantity::count ;
 
-    switch( iqty)
+    std::array<HybridQuantity, static_cast<uint32>(HybridQuantity::count) >  hybridQtyTable ;
+
+    hybridQtyTable[0] = HybridQuantity::Bx  ;
+    hybridQtyTable[1] = HybridQuantity::By  ;
+    hybridQtyTable[2] = HybridQuantity::Bz  ;
+    hybridQtyTable[3] = HybridQuantity::Ex  ;
+    hybridQtyTable[4] = HybridQuantity::Ey  ;
+    hybridQtyTable[5] = HybridQuantity::Ez  ;
+    hybridQtyTable[6] = HybridQuantity::rho ;
+    hybridQtyTable[7] = HybridQuantity::V   ;
+    hybridQtyTable[8] = HybridQuantity::P   ;
+
+    if( iqty < static_cast<uint32>(HybridQuantity::count) )
     {
-    case 0:
-        quantity = HybridQuantity::Bx;
-        break;
-
-    case 1:
-        quantity = HybridQuantity::By;
-        break;
-
-    case 2:
-        quantity = HybridQuantity::Bz;
-        break;
-
-    case 3:
-        quantity = HybridQuantity::Ex;
-        break;
-
-    case 4:
-        quantity = HybridQuantity::Ey;
-        break;
-
-    case 5:
-        quantity = HybridQuantity::Ez;
-        break;
-
-    case 6:
-        quantity = HybridQuantity::rho;
-        break;
-
-    case 7:
-        quantity = HybridQuantity::V;
-        break;
-
-    case 8:
-        quantity = HybridQuantity::P;
-        break;
-
-    default:
-        quantity = HybridQuantity::count;
+        quantity = hybridQtyTable[iqty] ;
+    } else
+    {
+        quantity = HybridQuantity::count ;
     }
 
-    return quantity;
+    return quantity ;
 }
 
 
@@ -64,12 +42,16 @@ std::vector<GridLayoutParams> getInputsFromFile()
 
     std::ifstream ifs{"result.txt"};
 
-    std::vector<GridLayoutParams> params(108);
-    uint iqty;
+    uint32 orderMax = 4 ;
+    uint32 dimMax = 3 ;
 
-    for (uint32 i =0; i < 108; ++i)
+    uint32 nbrTestCases = orderMax * dimMax * static_cast<uint32>(HybridQuantity::count) ;
+
+    std::vector<GridLayoutParams> params(nbrTestCases);
+    uint32 iqty;
+
+    for (uint32 i=0 ; i < nbrTestCases ; ++i)
     {
-
         ifs >> params[i].interpOrder >> params[i].nbDim >> iqty
         >> params[i].nbrCells[0] >>  params[i].nbrCells[1]  >>  params[i].nbrCells[2]
         >> params[i].dxdydz[0] >>  params[i].dxdydz[1]  >>  params[i].dxdydz[2]
@@ -80,8 +62,6 @@ std::vector<GridLayoutParams> getInputsFromFile()
 
         params[i].qty = GetHybridQty(iqty);
         params[i].iqty = iqty;
-            //std::cout << params[i] << std::endl;
-
     }
 
     return params;
