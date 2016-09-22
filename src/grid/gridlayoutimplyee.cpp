@@ -120,30 +120,26 @@ Point GridLayoutImplYee::cellCenteredCoordinates(
 
 void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const
 {
+    uint32 iDirX = static_cast<uint32>( Direction::X ) ;
 
-    uint32 iOpStart = physicalStartIndex( operand, Direction::X ) ;
-    uint32 iOpEnd   = physicalEndIndex  ( operand, Direction::X ) ;
+    uint32 iQtyOperand = static_cast<uint32>( operand.hybridQty() ) ;
+
+    QtyCentering opLayout = hybridQtyCentering_[iQtyOperand][iDirX] ;
+
 
     // The QtyCentering of derivative is given by
     // iQty = static_cast<uint32>( derivative.hybridQty() )
     // hybridQtyCentering_[iQty][idir]
     uint32 iDerStart = physicalStartIndex( derivative, Direction::X) ;
 
-    uint32 iDirX = static_cast<uint32>( Direction::X ) ;
-
-    uint32 iHybridQty = static_cast<uint32>( operand.hybridQty() ) ;
-
-    QtyCentering opLayout = hybridQtyCentering_[iHybridQty][iDirX] ;
-
-
-    uint32 iDer = 0 ;
-    if( opLayout == QtyCentering::primal )
+    uint32 iDer = iDerStart ;
+    if( opLayout == QtyCentering::dual )
     {
-        iDer = iDerStart + 1 ;
-    } else  // opLayout on the dual
-    {
-        iDer = iDerStart ;
+        iDer++ ;
     }
+
+    uint32 iOpStart = physicalStartIndex( operand, Direction::X ) ;
+    uint32 iOpEnd   = physicalEndIndex  ( operand, Direction::X ) ;
 
     for( uint32 iOp=iOpStart ; iOp<iOpEnd ; ++iOp )
     {
