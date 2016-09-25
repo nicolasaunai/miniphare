@@ -28,8 +28,7 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
     ionInitPtr->names.push_back("proton1");
     ionInitPtr->names.push_back("proton2");
 
-    // those rvalues should be moved so ParticleInitializer
-    // should have noexcept move Ctor.
+    // TODO those rvalues should be moved so ParticleInitializer should have noexcept move Ctor.
     ionInitPtr->particleInitializers.push_back( std::unique_ptr<ParticleInitializer>
                                                     {new FluidParticleInitializer{layout_} } );
 

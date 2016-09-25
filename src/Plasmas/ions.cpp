@@ -42,16 +42,6 @@
 
 
 
-/*
- Ions::Ions(GridLayout&& layout)
-     : layout_{std::move(layout)}, // layout is DEAD, use layout_ now
-       rho_    {layout_.nx(), layout_.ny(), layout_.nz(), "_rhoTot"},
-       bulkVel_{layout_.nx(), layout_.ny(), layout_.nz(), "_BulkVelTot"}
-{
-}
-*/
-
-
 
  Species const& Ions::species(uint32 index) const
  {
@@ -125,9 +115,9 @@ void Ions::computeBulkVelocity()
         Field const& rhovY = spe.flux(compY);
         Field const& rhovZ = spe.flux(compZ);
 
-        std::transform (vxTot.begin(), vxTot.end(), rhovX.begin(), vxTot.begin(), std::plus<int>());
-        std::transform (vyTot.begin(), vyTot.end(), rhovY.begin(), vyTot.begin(), std::plus<int>());
-        std::transform (vzTot.begin(), vzTot.end(), rhovZ.begin(), vzTot.begin(), std::plus<int>());
+        std::transform (vxTot.begin(), vxTot.end(), rhovX.begin(), vxTot.begin(), std::plus<double>());
+        std::transform (vyTot.begin(), vyTot.end(), rhovY.begin(), vyTot.begin(), std::plus<double>());
+        std::transform (vzTot.begin(), vzTot.end(), rhovZ.begin(), vzTot.begin(), std::plus<double>());
     }
 
 

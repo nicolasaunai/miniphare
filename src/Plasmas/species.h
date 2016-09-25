@@ -29,9 +29,7 @@ public:
 
     Species(GridLayout const& layout, double mass,
             std::unique_ptr<ParticleInitializer> particleInitializer,
-            std::string const& name);
-
-    //Species(GridLayout&& layout, std::string const& name);
+            std::string const& name);   
 
     Species(Species const& source) = delete;
     Species& operator=(Species const& source)=delete;

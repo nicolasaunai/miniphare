@@ -9,6 +9,7 @@ class Particle
 public:
     double r[3];
     double v[3];
+    //TODO  include variable weight
 };
 
 

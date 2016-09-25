@@ -12,6 +12,7 @@
 class SimpleInitializerFactory : public InitializerFactory
 {
 public:
+    // TODO : see what Ctors will need to be defined
     SimpleInitializerFactory();
 
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;

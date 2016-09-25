@@ -1,12 +1,5 @@
 #include "fluidparticleinitializer.h"
 #include <iostream>
-/*
-
-FluidParticleInitializer* FluidParticleInitializer::cloneImpl() const
-{
-    return new FluidParticleInitializer(*this);
-}
-*/
 
 
 
@@ -21,7 +14,7 @@ FluidParticleInitializer::FluidParticleInitializer(GridLayout const& layout)
 
  /**
   * @brief FluidParticleInitializer::loadParticles loads an array of Particle
-  * following density, velocity and temperature profiels and a local
+  * following density, velocity and temperature profiles and a local
   * Maxwellian distirbution function
   * @param particles is the vector that will be filled with particles
   */

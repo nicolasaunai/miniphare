@@ -20,16 +20,10 @@ class FluidParticleInitializer : public ParticleInitializer
 private:
 
     GridLayout layout_;
-    //virtual FluidParticleInitializer* cloneImpl() const override;
 
 public:
 
-    FluidParticleInitializer(GridLayout const& layout);
-
-    // ParticleInitializerImplFluid is always manipulated through the
-    // particleInitializerImpl interface. Therefore it does not
-    // need a proper public clone() method. It just needs to implement
-    // the particleInitializerImpl::cloneImpl method.
+    explicit FluidParticleInitializer(GridLayout const& layout);
 
     virtual void loadParticles(std::vector<Particle>& particles) const override;
 

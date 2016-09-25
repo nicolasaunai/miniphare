@@ -24,7 +24,7 @@
  *
  */
 class Ions
-{
+{    
 
 private:
 
@@ -37,7 +37,6 @@ private:
 public:
 
     Ions(GridLayout const& layout, IonsInitializer& ionInitializer);
-    //Ions(GridLayout&& layout);
 
     Ions(Ions&& source) = default;
     Ions& operator=(Ions&& source) = default;
@@ -66,15 +65,6 @@ public:
 
     void computeChargeDensity();
     void computeBulkVelocity();
-
-
-#if 0
-    Field* getChargeDensity();
-    Field* getBulkVelocity();
-
-
-
-#endif
 
 };
 

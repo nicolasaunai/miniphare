@@ -29,20 +29,12 @@
  * IonsInitializer objects are default constructible.
  *
  */
-class IonsInitializer
+struct IonsInitializer
 {
-
-public:
-
-    // TODO ParticleInitializer should have a noexcept move Ctor
-    // so that this vector can move push_back() them in
-
     std::vector< std::unique_ptr<ParticleInitializer> > particleInitializers;
     std::vector<double> masses;
     std::vector<std::string> names;
     uint32 nbrSpecies;
-
-
 };
 
 

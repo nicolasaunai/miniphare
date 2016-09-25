@@ -3,29 +3,8 @@
 
 
 
-/*
-ParticleInitializer::ParticleInitializer(GridLayout const& layout, ParticleInitializerType initType)
-    :implPtr_ {nullptr}
-{
-    switch ( initType )
-    {
-        case ParticleInitializerType::Fluid:
-            implPtr_.reset( new FluidParticleInitializer(layout) );
-
-        break;
-    }
-}
-*/
-
-/*
-ParticleInitializer::ParticleInitializer(ParticleInitializer const& source)
-    : implPtr_ { source.implPtr_->clone()}
-{
-
-}
-*/
-
 #if 0
+//TODO clone method should be defined for this abstract type.
 
 std::unique_ptr<ParticleInitializer> ParticleInitializer::clone() const
 {
