@@ -7,6 +7,7 @@
 #include <cstddef>
 
 #include "types.h"
+#include "hybridenums.h"
 
 
 class Field
@@ -15,8 +16,7 @@ class Field
 public:
 
 
-    Field(uint32 nx, uint32 ny, uint32 nz, std::string name):name_(name),
-        shape_{nx,ny,nz},ndims_{2},data_{}{data_.resize(nx*ny*nz);}
+    Field(AllocSizeT const& allocSize, HybridQuantity qtyType, std::string name);
 
     Field(Field&& source) = default;
     Field& operator=(Field&& source) = default;
@@ -49,13 +49,16 @@ public:
     std::vector<double>::const_iterator end() const {return data_.end();}
 
     std::vector<uint32> shape() const {return shape_;}
-    uint32 nbDimensions()const{return ndims_;}
+
+    HybridQuantity hybridQty() const {return qtyType_;}
 
 private:
 
     std::string name_;
+    HybridQuantity qtyType_ ;
+
     std::vector<uint32> shape_;
-    uint32 ndims_;
+
     std::vector<double> data_;
 
 

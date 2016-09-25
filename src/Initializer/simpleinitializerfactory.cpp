@@ -3,7 +3,7 @@
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : layout_{ {0.1,0.,0.}, {42, 0, 0}, 1, "yee" }, // hard-coded... will come from input somehow
+    : layout_{ {0.1,0.,0.}, {42, 0, 0}, 1, "yee", 2}, // hard-coded... will come from input somehow
       dt_{0.1}
 {
 

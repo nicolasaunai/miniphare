@@ -18,6 +18,8 @@ class Species
 
 private:
 
+    double mass_;
+    std::string name_;
     GridLayout layout_;
     Field rho_;
     VecField flux_;

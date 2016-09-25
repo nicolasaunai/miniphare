@@ -1,12 +1,24 @@
 
+#include "constants.h"
+
 #include "electromag.h"
 #include "vecfield/vecfield.h"
 
 
+Electromag::Electromag( std::array<AllocSizeT, NBR_COMPO> E_AllocSizes,
+                        std::array<AllocSizeT, NBR_COMPO> B_AllocSizes,
+                        std::string name )
+    : E_(  E_AllocSizes[0], E_AllocSizes[1], E_AllocSizes[2],
+           { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+           "E" + name ),
 
 
-Electromag::Electromag(uint32 nx, uint32 ny, uint32 nz, std::string name)
-    :E_(nx, ny, nz, "E"+name), B_(nx, ny, nz, "B"+name)
+      B_(  B_AllocSizes[0], B_AllocSizes[1], B_AllocSizes[2],
+            { {HybridQuantity::Bx, HybridQuantity::By, HybridQuantity::Bz} },
+            "B" + name)
 {
 
 }
+
+
+

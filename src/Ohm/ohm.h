@@ -26,8 +26,6 @@ class OhmImpl
 
 
 
-
-
 class OhmImplInternals
 {
 public:
@@ -42,9 +40,6 @@ protected:
     // hyper-rest.
     GridLayout layout_;
 };
-
-
-
 
 
 

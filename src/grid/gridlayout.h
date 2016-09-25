@@ -6,16 +6,32 @@
 #include <memory>
 
 #include "types.h"
+#include "hybridenums.h"
+
+#include "Electromag/electromag.h"
 #include "Field/field.h"
 #include "gridlayoutimpl.h"
 #include "utility.h"
 
 
-
-
+/**
+ * @brief Gridlayout is an interface class used by Faraday, FaradayImpl,
+ * Ohm, OhmImplInternals and Solver.
+ * It is used to handle all operations related to a specific grid layout,
+ * it provides:
+ * - physical domain start/end indexes
+ * - indexes of the first and last ghost nodes
+ * - allocation sizes for Field attributes
+ * - a partial derivative operator (Faraday)
+ * - a physical coordinate given a field and a primal point (ix, iy, iz)
+ * - a cell centered coordinates given a primal point (ix, iy, iz)
+ *
+ */
 class GridLayout
 {
 private:
+    uint32 nbDims_ ;
+
     double dx_ ;        // mesh sizes
     double dy_ ;        // mesh sizes
     double dz_ ;        // mesh sizes
@@ -28,6 +44,7 @@ private:
     uint32 nbrCelly_  ;
     uint32 nbrCellz_  ;
 
+    uint32 ghostParameter_ ;
 
     std::unique_ptr<GridLayoutImpl> implPtr_;
 
@@ -41,20 +58,14 @@ private:
     void throwNotValid3D() const;
 
 
-
 public:
-
-    static const uint32 directionX = 0;
-    static const uint32 directionY = 1;
-    static const uint32 directionZ = 2;
-
 
     static const uint32 minNbrCells = 10; // minimum nbr of cells in a
                                           // non-invariant direction
 
-
     GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
-               uint32 nbDims, std::string layoutName);
+               uint32 nbDims      , std::string layoutName,
+               uint32 ghostParameter ); // TODO see if better name
 
     GridLayout(GridLayout const& source);
     GridLayout(GridLayout&& source);
@@ -74,26 +85,26 @@ public:
     double nbrCelly() const {return nbrCelly_;}
     double nbrCellz() const {return nbrCellz_;}
 
+    uint32 nbDimensions() const { return nbDims_ ; }
 
-    // return the (total) number of mesh points
-    // this does depend on the layout
-    uint32 nx() const; // TODO should be added to unit test
-    uint32 ny() const; // TODO should be added to unit test
-    uint32 nz() const; // TODO should be added to unit test
+    uint32 physicalStartIndex(Field const& field, Direction direction) const;
+    uint32 physicalEndIndex  (Field const& field, Direction direction) const;
 
+    uint32 ghostStartIndex(Field const& field, Direction direction) const;
+    uint32 ghostEndIndex  (Field const& field, Direction direction) const;
 
-    uint32 physicalStartIndex(Field const& field, uint32 direction) const;
-    uint32 physicalEndIndex  (Field const& field, uint32 direction) const;
+    AllocSizeT allocSize(HybridQuantity qtyType) const;
+    AllocSizeT allocSizeDerived( HybridQuantity qty, Direction dir ) const ;
 
-    uint32 ghostStartIndex(Field const& field, uint32 direction) const;
-    uint32 ghostEndIndex  (Field const& field, uint32 direction) const;
+    void deriv(Field const& operand, Direction direction, Field& derivative)const;
 
-    void deriv(Field const& operand, uint32 direction, Field& derivative)const;
+    Point fieldNodeCoordinates( const Field & field, const Point & origin,
+                                uint32 ix, uint32 iy, uint32 iz ) const;
 
-    uint32 nbDimensions() const;
+    Point cellCenteredCoordinates( const Point & origin,
+                                   uint32 ix, uint32 iy, uint32 iz ) const;
+
 };
-
-
 
 
 

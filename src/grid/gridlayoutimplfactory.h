@@ -8,12 +8,24 @@
 #include <iostream>
 
 
+/**
+ * @brief GridLayoutImplFactory is used as an interface to build and initialize
+ * GridLayoutImpl objects in the simulation.
+ *
+ * It follows the Factory pattern, thereby it will provide the adequate
+ * derived GridLayoutImpl object depending on the user needs.
+ *
+ */
 class GridLayoutImplFactory
 {
 public:
 
-    static std::unique_ptr<GridLayoutImpl> createGridLayoutImpl(uint32 nbDims,
-                                                                std::string const& layoutName)
+    static std::unique_ptr<GridLayoutImpl>
+    createGridLayoutImpl(uint32 nbDims,
+                         uint32 interpOrder,
+                         std::string const& layoutName,
+                         std::array<uint32,3> nbrCellsXYZ,
+                         std::array<double,3> dxdydz     )
     {
         if (nbDims != 1 && nbDims != 2 && nbDims != 3)
         {
@@ -22,7 +34,9 @@ public:
 
         if (layoutName == "yee")
         {
-            return std::unique_ptr<GridLayoutImpl> ( new GridLayoutImplYee(nbDims));
+            return std::unique_ptr<GridLayoutImpl> (
+                        new GridLayoutImplYee( nbDims, interpOrder,
+                                               nbrCellsXYZ, dxdydz ));
         }
         //else if{}
 
@@ -32,10 +46,7 @@ public:
         }
 
     } // end factory method
-
-
 };
-
 
 
 

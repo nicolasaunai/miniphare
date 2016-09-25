@@ -19,14 +19,17 @@
 
 
 GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
-                       uint32 nbDims, std::string layoutName)
+                       uint32 nbDims      , std::string layoutName,
+                       uint32 ghostParameter )
 
-    : dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]},
+    : nbDims_{nbDims},
+      dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]},
       odx_{1./dx_}, ody_{1./dy_}, odz_{1./dz_},
       nbrCellx_{nbrCells[0]}, nbrCelly_{nbrCells[1]}, nbrCellz_{nbrCells[2]},
-      implPtr_{ GridLayoutImplFactory::createGridLayoutImpl(nbDims, layoutName) }
+      ghostParameter_{ghostParameter},
+      implPtr_{ GridLayoutImplFactory::createGridLayoutImpl(
+                    nbDims, ghostParameter, layoutName, nbrCells, dxdydz ) }
 {
-
     switch (nbDims)
     {
     case 1:
@@ -45,8 +48,6 @@ GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCell
 
 
 
-
-
 GridLayout::GridLayout(GridLayout const& source)
     : dx_{source.dx_}, dy_{source.dy_}, dz_{source.dz_},
       odx_{source.odx_},
@@ -54,11 +55,17 @@ GridLayout::GridLayout(GridLayout const& source)
       odz_{source.odz_},
       nbrCellx_{source.nbrCellx_},
       nbrCelly_{source.nbrCelly_},
-      nbrCellz_{source.nbrCellz_}
+      nbrCellz_{source.nbrCellz_},
+      ghostParameter_{source.ghostParameter_}
 {
     uint32 nbDims = source.nbDimensions();
-    implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(nbDims, "yee") ; //TODO bad hardcoded. make a clone
+
+    //TODO : "yee" bad hardcoded. make a clone
+    implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(
+                nbDims, ghostParameter_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} },
+                { {dx_, dy_, dz_} } ) ;
 }
+
 
 
 
@@ -74,67 +81,78 @@ GridLayout::GridLayout(GridLayout&& source)
 
 
 
-uint32 GridLayout::nx() const
-{
-    return implPtr_->nx(nbrCellx_);
-}
 
-
-
-uint32 GridLayout::ny() const
-{
-    return implPtr_->ny(nbrCelly_);
-}
-
-
-
-uint32 GridLayout::nz() const
-{
-    return implPtr_->nz(nbrCellz_);
-}
-
-
-
-uint32 GridLayout::physicalStartIndex(Field const& field, uint32 direction) const
+uint32 GridLayout::physicalStartIndex(Field const& field, Direction direction) const
 {
     return implPtr_->physicalStartIndex(field, direction);
 }
 
 
 
-uint32 GridLayout::physicalEndIndex(Field const& field, uint32 direction) const
+
+uint32 GridLayout::physicalEndIndex(Field const& field, Direction direction) const
 {
     return  implPtr_->physicalEndIndex(field, direction);
 }
 
 
 
-uint32 GridLayout::ghostStartIndex(Field const& field, uint32 direction) const
+
+uint32 GridLayout::ghostStartIndex(Field const& field, Direction direction) const
 {
     return implPtr_->ghostStartIndex(field, direction);
 }
 
 
 
-uint32 GridLayout::ghostEndIndex  (Field const& field, uint32 direction) const
+uint32 GridLayout::ghostEndIndex  (Field const& field, Direction direction) const
 {
-    return implPtr_->ghostStartIndex(field, direction);
+    return implPtr_->ghostEndIndex(field, direction);
 }
 
 
 
-void GridLayout::deriv(Field const& operand, uint32 direction, Field& derivative)const
+void GridLayout::deriv(Field const& operand, Direction direction, Field& derivative)const
 {
-    implPtr_->deriv(operand, direction, derivative);
+    switch(nbDims_)
+    {
+    case 1:
+        implPtr_->deriv1D(operand, derivative);
+        break ;
+
+    default:
+        throw std::runtime_error("Error - only 1D fields are handled for the moment ");
+    }
+
 }
 
 
-
-
-uint32 GridLayout::nbDimensions() const
+AllocSizeT GridLayout::allocSize(HybridQuantity qtyType) const
 {
-    return implPtr_->nbDimensions();
+    return implPtr_->allocSize( qtyType ) ;
 }
+
+
+AllocSizeT  GridLayout::allocSizeDerived( HybridQuantity qty, Direction dir ) const
+{
+    return implPtr_->allocSizeDerived( qty, dir ) ;
+}
+
+
+Point GridLayout::fieldNodeCoordinates( const Field & field, const Point & origin,
+                                        uint32 ix, uint32 iy, uint32 iz  ) const
+{
+    return implPtr_->fieldNodeCoordinates( field, origin, ix, iy, iz ) ;
+}
+
+
+Point GridLayout:: cellCenteredCoordinates( const Point & origin,
+                                            uint32 ix, uint32 iy, uint32 iz ) const
+{
+    return implPtr_->cellCenteredCoordinates( origin, ix, iy, iz ) ;
+}
+
+
 
 
 /* ---------------------------------------------------------------------------
@@ -145,8 +163,6 @@ uint32 GridLayout::nbDimensions() const
 
 
 const std::string GridLayout::errorInverseMesh= "GridLayout error: Invalid use of";
-
-
 
 
 void GridLayout::throwNotValid1D()const
@@ -202,9 +218,9 @@ void GridLayout::throwNotValid2D() const
 
 void GridLayout::throwNotValid3D() const
 {
-    if (   dx_ != 0.
-        || dy_ != 0.
-        || dz_ != 0. )
+    if (   dx_ < EPS12
+        || dy_ < EPS12
+        || dz_ < EPS12 )
         throw std::runtime_error("Error - 3D requires dx, dy, dz to be all non-zero");
 
     // dx dy and dz should be > 0

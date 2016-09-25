@@ -5,9 +5,15 @@
 Species::Species(GridLayout const& layout, double mass,
                  std::unique_ptr<ParticleInitializer> particleInitializer,
                  std::string const& name)
-    : layout_{ layout },
-      rho_    { layout_.nx(), layout_.ny(), layout_.nz(), "rho_"   + name },
-      flux_{ layout_.nx(), layout_.ny(), layout_.nz(),"bulkVel_"+ name },
+    : mass_{mass},
+      name_{name},
+      layout_{ layout },
+      rho_     { layout.allocSize(HybridQuantity::rho), HybridQuantity::rho, "_rhoTot" },
+      flux_    { layout.allocSize(HybridQuantity::V),
+                 layout.allocSize(HybridQuantity::V),
+                 layout.allocSize(HybridQuantity::V),
+                 { {HybridQuantity::V, HybridQuantity::V, HybridQuantity::V} },
+                 "_fluxSpecies" },
       particleArray_{},
       particleInitializer_{ std::move(particleInitializer) } //TODO broken copy
 {

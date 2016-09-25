@@ -3,28 +3,29 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
+
 SOURCES += main.cpp \
+    utility.cpp \
     Plasmas/ions.cpp \
     Plasmas/particles.cpp \
     Plasmas/species.cpp \
+    Plasmas/electrons.cpp \
     pusher/pusher.cpp \
     Solver/solver.cpp \
     Electromag/electromag.cpp \
     vecfield/vecfield.cpp \
     Field/field.cpp \
-    Faraday/faraday.cpp \
-    Plasmas/electrons.cpp \
+    AMR/hierarchy.cpp \
     AMR/patch.cpp \
     AMR/patchdata.cpp \
-    AMR/hierarchy.cpp \
-    grid/gridlayout.cpp \
     AMR/mlmd.cpp \
+    Faraday/faraday.cpp \
+    Faraday/faradayimpl1d.cpp \
+    grid/gridlayout.cpp \
+    grid/gridlayoutimpl.cpp \
     grid/gridlayoutimplyee.cpp \
     Ohm/ohm.cpp \
     Ohm/ohmimpl1d.cpp \
-    Faraday/faradayimpl1d.cpp \
-    grid/gridlayoutimpl.cpp \
-    utility.cpp \
     Initializer/ionsinitializer.cpp \
     Initializer/electromaginitializer.cpp \
     Initializer/ohminitializer.cpp \
@@ -40,28 +41,31 @@ HEADERS += \
     Plasmas/particles.h \
     Plasmas/species.h \
     pusher/pusher.h \
+    Plasmas/electrons.h \
     Solver/solver.h \
     Electromag/electromag.h \
-    types.h \
     vecfield/vecfield.h \
-    Field/field.h \
-    Faraday/faraday.h \
-    Faraday/faradayfactory.h \
-    Plasmas/electrons.h \
+    constants.h \
+    types.h \
+    utility.h \
+    hybridenums.h \
     AMR/patch.h \
     AMR/patchdata.h \
     AMR/hierarchy.h \
-    grid/gridlayout.h \
     AMR/mlmd.h \
+    Electromag/electromag.h \
+    Faraday/faraday.h \
+    Faraday/faradayimpl.h \
+    Faraday/faradayimpl1d.h \
+    Faraday/faradayfactory.h \
+    Field/field.h \
+    grid/gridlayout.h \
+    grid/gridlayoutimpl.h \
     grid/gridlayoutimplyee.h \
     grid/gridlayoutimplfactory.h \
     Ohm/ohm.h \
     Ohm/ohmimplfactory.h \
     Ohm/ohmimpl1d.h \
-    Faraday/faradayimpl1d.h \
-    grid/gridlayoutimpl.h \
-    constants.h \
-    utility.h \
     Initializer/initializerfactory.h \
     Initializer/ionsinitializer.h \
     Initializer/electromaginitializer.h \

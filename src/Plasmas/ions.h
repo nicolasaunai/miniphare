@@ -36,7 +36,7 @@ private:
 
 public:
 
-    Ions(GridLayout const& layout, IonsInitializer& ionInitializer);
+    Ions(GridLayout const& layout, std::unique_ptr<IonsInitializer> ionInitializer);
 
     Ions(Ions&& source) = default;
     Ions& operator=(Ions&& source) = default;

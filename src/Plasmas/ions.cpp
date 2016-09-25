@@ -20,21 +20,27 @@
   * to be built from different contexts: either the IonInitializer is constructed from
   * a user input factory, or in the course of the simulation from the MLMD manager.
   */
- Ions::Ions(GridLayout const& layout, IonsInitializer &ionsInitializer):
-     layout_{layout},
-     rho_    {layout.nx(), layout.ny(), layout.nz(), "_rhoTot"},
-     bulkVel_{layout.nx(), layout.ny(), layout.nz(), "_BulkVelTot"}
+ Ions::Ions(GridLayout const& layout, std::unique_ptr<IonsInitializer> ionInitializer)
+
+     : speciesArray_{},
+       layout_{ layout},
+       rho_     { layout.allocSize(HybridQuantity::rho), HybridQuantity::rho, "_rhoTot" },
+       bulkVel_ { layout.allocSize(HybridQuantity::V),
+                  layout.allocSize(HybridQuantity::V),
+                  layout.allocSize(HybridQuantity::V),
+                  { {HybridQuantity::V, HybridQuantity::V, HybridQuantity::V} },
+                  "_bulkVelTot" }
  {
-     uint32 nbrSpecies = ionsInitializer.nbrSpecies;
+     uint32 nbrSpecies = ionInitializer->nbrSpecies;
      std::cout << "Ion Constructor : " << nbrSpecies << std::endl;
      speciesArray_.reserve( nbrSpecies );
 
 
      for (uint32 speciesIndex = 0; speciesIndex < nbrSpecies; ++speciesIndex)
      {
-         speciesArray_.push_back(Species{layout, ionsInitializer.masses[speciesIndex],
-                                             std::move(ionsInitializer.particleInitializers[speciesIndex]),
-                                             ionsInitializer.names[speciesIndex]} );
+         speciesArray_.push_back(Species{layout, ionInitializer->masses[speciesIndex],
+                                                 std::move(ionInitializer->particleInitializers[speciesIndex]),
+                                                 ionInitializer->names[speciesIndex]} );
 
      }
  }
@@ -87,7 +93,7 @@
          // have to account for the field dimensionality.
 
         Field const& rhoSpe = spe.rho();
-        std::transform (rho_.begin(), rho_.end(), rhoSpe.begin(), rho_.begin(), std::plus<int>());
+        std::transform (rho_.begin(), rho_.end(), rhoSpe.begin(), rho_.begin(), std::plus<double>());
      }     
  }
 

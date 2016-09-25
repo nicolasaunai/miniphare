@@ -16,6 +16,7 @@
 int main(int argc, char *argv[])
 {
 
+
     std::cout << "Welcome to MINIPHARE" << std::endl;
 
     std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv);
