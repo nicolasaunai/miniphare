@@ -175,7 +175,7 @@ public:
     // minimum nbr of cells in a non-invariant direction
     //    static const uint32 minNbrCells = 10;
 
-    static const uint32 defaultNbrPaddingCells = 0;//10;
+    static const uint32 defaultNbrPaddingCells = 0;
 
     GridLayoutImplInternals(uint32 nbDims, uint32 ghostParameter,
                             std::array<uint32,3> nbrCellsXYZ ,

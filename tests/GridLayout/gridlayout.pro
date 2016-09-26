@@ -22,12 +22,15 @@ INCLUDEPATH += ../../src
 
 
 
-SOURCES += test_gridlayout.cpp \
-           ../../src/grid/gridlayout.cpp \
+SOURCES += ../../src/grid/gridlayout.cpp \
            ../../src/grid/gridlayoutimplyee.cpp \
            ../../src/grid/gridlayoutimpl.cpp \
-          ../../src/Field/field.cpp \
-           test_indexing.cpp
+           ../../src/Field/field.cpp \
+           test_indexing.cpp \
+           test_gridlayout.cpp \
+           test_allocsizes.cpp \
+           test_utilities.cpp \
+           test_main.cpp
 
 HEADERS += ../../src/grid/gridlayout.h \
            ../../src/grid/gridlayoutimplfactory.h \

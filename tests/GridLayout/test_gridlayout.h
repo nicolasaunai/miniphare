@@ -4,19 +4,23 @@
 
 #include "gtest/gtest.h"
 
+#include "types.h"
+#include "utility.h"
 
 #include "grid/gridlayout.h"
 #include "grid/gridlayoutimplfactory.h"
 #include "grid/gridlayoutimplyee.h"
-#include "types.h"
-#include "utility.h"
+
 #include "Field/field.h"
+
 
 struct GridLayoutParams;
 
 HybridQuantity GetHybridQty(uint iqty) ;
 
 std::vector<GridLayoutParams> getInputsFromFile() ;
+
+std::vector<GridLayoutParams> getAllocInputsFromFile() ;
 
 
 /* ----------------------------------------------------------------------------
@@ -37,6 +41,9 @@ struct GridLayoutParams
 
     std::array<uint32, 3> nbrCells;
     std::array<double, 3> dxdydz;
+
+    std::array<uint32,3> allocSizes;
+    std::array<uint32,3> allocSizeDerived;
 
     std::array<uint32,3> PSI;
     std::array<uint32,3> PEI;
@@ -65,18 +72,39 @@ struct GridLayoutParams
            << " qtyName  : " << static_cast<int>(inputs.qty)
            << " nbrCells : " << inputs.nbrCells[0] << ", " << inputs.nbrCells[1] << ", " << inputs.nbrCells[2]
            << " dxdydz   : " << inputs.dxdydz[0] << ", " << inputs.dxdydz[1] << ", " << inputs.dxdydz[2]
-           << " PSI x : " << inputs.PSI[0] << " PEI x : " << inputs.PEI[0]
-           << " GSI x : " << inputs.GSI[0] << " GEI x : " << inputs.GEI[0]
-           << " PSI y : " << inputs.PSI[1] << " PEI y : " << inputs.PEI[1]
-           << " GSI y : " << inputs.GSI[1] << " GEI y : " << inputs.GEI[1]
-           << " PSI z : " << inputs.PSI[2] << " PEI z : " << inputs.PEI[2]
-           << " GSI z : " << inputs.GSI[2] << " GEI z : " << inputs.GEI[2]
+           << " AllocSize x : " << inputs.allocSizes[0]
+           << " AllocSize y : " << inputs.allocSizes[1]
+           << " AllocSize z : " << inputs.allocSizes[2]
+           << " Derived Size x : " << inputs.allocSizeDerived[0]
+           << " Derived Size y : " << inputs.allocSizeDerived[1]
+           << " Derived Size z : " << inputs.allocSizeDerived[2]
            << " " <<  inputs.iqty;
 
         os << " " << inputs.testComment;
 
         return os;
     }
+
+
+//    friend std::ostream& operator<<(std::ostream& os, GridLayoutParams const& inputs)
+//    {
+//        os << "interpOrder : " << inputs.interpOrder
+//           << " nbDims   : " << inputs.nbDim
+//           << " qtyName  : " << static_cast<int>(inputs.qty)
+//           << " nbrCells : " << inputs.nbrCells[0] << ", " << inputs.nbrCells[1] << ", " << inputs.nbrCells[2]
+//           << " dxdydz   : " << inputs.dxdydz[0] << ", " << inputs.dxdydz[1] << ", " << inputs.dxdydz[2]
+//           << " PSI x : " << inputs.PSI[0] << " PEI x : " << inputs.PEI[0]
+//           << " GSI x : " << inputs.GSI[0] << " GEI x : " << inputs.GEI[0]
+//           << " PSI y : " << inputs.PSI[1] << " PEI y : " << inputs.PEI[1]
+//           << " GSI y : " << inputs.GSI[1] << " GEI y : " << inputs.GEI[1]
+//           << " PSI z : " << inputs.PSI[2] << " PEI z : " << inputs.PEI[2]
+//           << " GSI z : " << inputs.GSI[2] << " GEI z : " << inputs.GEI[2]
+//           << " " <<  inputs.iqty;
+
+//        os << " " << inputs.testComment;
+
+//        return os;
+//    }
 
 };
 
@@ -161,6 +189,11 @@ class GridLayoutIndexingTest: public ::testing::TestWithParam<GridLayoutParams>
 
 };
 
+
+class GridLayoutAllocTest: public ::testing::TestWithParam<GridLayoutParams>
+{
+
+};
 
 
 #endif // TEST_GRIDLAYOUT_H
