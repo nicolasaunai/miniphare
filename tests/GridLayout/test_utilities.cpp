@@ -36,7 +36,7 @@ HybridQuantity GetHybridQty(uint32 iqty)
 std::vector<GridLayoutParams> getInputsFromFile()
 {
 
-    std::ifstream ifs{"result.txt"};
+    std::ifstream ifs{"../GridLayout/result.txt"};
     if (!ifs )
         exit(-1);
 
@@ -70,7 +70,7 @@ std::vector<GridLayoutParams> getInputsFromFile()
 std::vector<GridLayoutParams> getAllocInputsFromFile()
 {
 
-    std::ifstream ifs{"allocSizes.txt"};
+    std::ifstream ifs{"../GridLayout/allocSizes.txt"};
     if (!ifs )
         exit(-1);
 
