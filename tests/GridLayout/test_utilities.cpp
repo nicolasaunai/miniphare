@@ -32,6 +32,30 @@ HybridQuantity GetHybridQty(uint32 iqty)
 }
 
 
+std::string GetHybridQtyName(uint32 iqty)
+{
+    std::string qtyName{"None"} ;
+
+    std::array<std::string, static_cast<uint32>(HybridQuantity::count) >  hybridQtyNames ;
+
+    hybridQtyNames[0] = "Bx"  ;
+    hybridQtyNames[1] = "By"  ;
+    hybridQtyNames[2] = "Bz"  ;
+    hybridQtyNames[3] = "Ex"  ;
+    hybridQtyNames[4] = "Ey"  ;
+    hybridQtyNames[5] = "Ez"  ;
+    hybridQtyNames[6] = "rho" ;
+    hybridQtyNames[7] = "V"   ;
+    hybridQtyNames[8] = "P"   ;
+
+    if( iqty < static_cast<uint32>(HybridQuantity::count) )
+    {
+        qtyName = hybridQtyNames[iqty] ;
+    }
+
+    return qtyName ;
+}
+
 
 std::vector<GridLayoutParams> getInputsFromFile()
 {
@@ -100,6 +124,80 @@ std::vector<GridLayoutParams> getAllocInputsFromFile()
 
     return params;
 }
+
+
+
+std::vector<GridLayoutParams> getFieldCoordsInputsFromFile()
+{
+
+    std::ifstream ifs1{"../GridLayout/fieldCoords_summary.txt"};
+    if (!ifs1 )
+    {
+        std::cout << "Could not open file : ../GridLayout/fieldCoords_summary.txt"
+                  << std::endl ;
+        exit(-1);
+    }
+
+    uint32 orderMax = 4 ;
+
+    uint32 nbrTestCases = orderMax * static_cast<uint32>(HybridQuantity::count) ;
+
+    std::vector<GridLayoutParams> params(nbrTestCases);
+
+    for (uint32 i=0 ; i < nbrTestCases ; ++i)
+    {
+        uint32 iqty;
+
+        ifs1 >> params[i].interpOrder
+                >> params[i].icase
+                >> params[i].nbDim
+                >> iqty
+                >> params[i].nbrCells[params[i].nbDim]
+                >> params[i].dxdydz[params[i].nbDim]
+                >> params[i].field_iStart
+                >> params[i].field_iEnd  ;
+
+        params[i].qty = GetHybridQty(iqty);
+        params[i].qtyName = GetHybridQtyName(iqty);
+        params[i].iqty = iqty;
+    }
+
+    for (uint32 i=0 ; i < nbrTestCases ; ++i)
+    {
+        uint32 order = params[i].interpOrder ;
+        uint32 icase = params[i].icase ;
+        uint32 dim = params[i].nbDim ;
+
+        std::string qtyName = params[i].qtyName;
+
+        //    f = open(("fieldCoords_ord%d_dim%d_%s_case%d.txt") %
+        //    (interpOrder_l[iord], dim_l[idim]+1, Qty_l[iqty][1], icase), "w")
+
+        std::string filename{"../GridLayout/fieldCoords_ord" + std::to_string(order) +
+                    "_dim" + std::to_string(dim) + "_" + qtyName +
+                    "_case" + std::to_string(icase)};
+
+        std::cout << filename << std::endl ;
+
+
+
+        std::ifstream ifs2{filename};
+        if (!ifs2 )
+        {
+            std::cout << "Could not open file : " << filename << std::endl ;
+            exit(-1);
+        }
+    }
+
+
+
+
+
+
+
+    return params ;
+}
+
 
 
 

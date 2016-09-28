@@ -30,7 +30,8 @@ SOURCES += ../../src/grid/gridlayout.cpp \
            test_gridlayout.cpp \
            test_allocsizes.cpp \
            test_utilities.cpp \
-           test_main.cpp
+           test_main.cpp \
+    test_fieldnodecoordinates.cpp
 
 HEADERS += ../../src/grid/gridlayout.h \
            ../../src/grid/gridlayoutimplfactory.h \

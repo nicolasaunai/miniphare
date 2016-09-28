@@ -18,10 +18,16 @@ struct GridLayoutParams;
 
 HybridQuantity GetHybridQty(uint iqty) ;
 
+std::string GetHybridQtyName(uint iqty) ;
+
 std::vector<GridLayoutParams> getInputsFromFile() ;
 
 std::vector<GridLayoutParams> getAllocInputsFromFile() ;
 
+std::vector<GridLayoutParams> getFieldCoordsInputsFromFile() ;
+
+
+#define  MAX_SIZE 1000
 
 /* ----------------------------------------------------------------------------
  *
@@ -35,7 +41,10 @@ struct GridLayoutParams
     uint32 nbDim;
 
     HybridQuantity qty;
+    std::string qtyName;
     uint32 iqty ;        // integer equals to static_cast<uint32> (qty)
+
+    uint32 icase ;
 
     std::string layoutName ;
 
@@ -49,6 +58,11 @@ struct GridLayoutParams
     std::array<uint32,3> PEI;
     std::array<uint32,3> GSI;
     std::array<uint32,3> GEI;
+
+    uint32  field_iStart ;
+    uint32  field_iEnd   ;
+
+    std::vector<double>  field_NodeCoords {MAX_SIZE} ;
 
     std::string testComment;
 
@@ -194,6 +208,14 @@ class GridLayoutAllocTest: public ::testing::TestWithParam<GridLayoutParams>
 {
 
 };
+
+
+class GridLayoutFieldCoordsTest: public ::testing::TestWithParam<GridLayoutParams>
+{
+
+};
+
+
 
 
 #endif // TEST_GRIDLAYOUT_H
