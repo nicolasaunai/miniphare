@@ -199,7 +199,7 @@ for iord in iord_l:
             for iqty in iqty_l:   
                 f.write(("%03d %d %s %03d %4.1f ") % 
                    (interpOrder_l[iord],
-                    dim_l[idim],
+                    dim_l[idim]+1,
                     Qty_l[iqty][0],
                     nbrCells(Direction_l[idim][1], icase),
                     spatialStep(Direction_l[idim][1], icase) ) )                   
@@ -212,7 +212,8 @@ for iord in iord_l:
                 # f.write(("Primal start = %03d \n") % (iStart))
                 # f.write(("Primal end   = %03d \n") % (iEnd))
 
-                f.write(("%d %d\n") % (iStart, iEnd))
+                f.write(("%d %d ") % (iStart, iEnd))
+                f.write(("%6.2f %6.2f %6.2f\n") % (origin[0], origin[1], origin[2]))
 
 f.close()
 
@@ -223,6 +224,11 @@ for iord in iord_l:
             for iqty in iqty_l:
                 f = open(("fieldCoords_ord%d_dim%d_%s_case%d.txt") % 
                 (interpOrder_l[iord], dim_l[idim]+1, Qty_l[iqty][1], icase), "w")
+                    
+                iStart = physicalStartPrimal(interpOrder_l[iord])
+                iEnd   = physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)            
+                
+                iEnd = iEnd - isDual(Qty_l[iqty][1], Direction_l[idim][1])                      
                     
                 for iprimal in range(iStart, iEnd+1):
                     x = fieldCoords(iprimal, iStart, Qty_l[iqty][1], Direction_l[idim], \

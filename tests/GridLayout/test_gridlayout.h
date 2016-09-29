@@ -61,8 +61,9 @@ struct GridLayoutParams
 
     uint32  field_iStart ;
     uint32  field_iEnd   ;
+    Point origin{0., 0., 0.} ;
 
-    std::vector<double>  field_NodeCoords {MAX_SIZE} ;
+    std::vector<double>  fieldXCoords ;
 
     std::string testComment;
 
@@ -76,6 +77,7 @@ struct GridLayoutParams
         nbrCells{ {nbrCellx,nbrCelly,nbrCellz} }, dxdydz{ {dx,dy,dz} },
         testComment{comment}
     {
+
     }
 
 

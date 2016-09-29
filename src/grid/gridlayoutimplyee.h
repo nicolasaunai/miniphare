@@ -63,6 +63,12 @@ public:
     virtual Point cellCenteredCoordinates(
             const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const override ;
 
+    virtual uint32 indexAtMin( QtyCentering centering,
+                               Direction direction     ) const override ;
+
+    virtual uint32 indexAtMax( QtyCentering centering,
+                               Direction direction     ) const override ;
+
 };
 
 

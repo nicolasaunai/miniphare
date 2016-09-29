@@ -118,6 +118,20 @@ Point GridLayoutImplYee::cellCenteredCoordinates(
 }
 
 
+uint32 GridLayoutImplYee::indexAtMin( QtyCentering centering,
+                                      Direction direction     ) const
+{
+    return cellIndexAtMin(centering, direction) ;
+}
+
+
+uint32 GridLayoutImplYee::indexAtMax( QtyCentering centering,
+                                      Direction direction     ) const
+{
+    return cellIndexAtMax(centering, direction) ;
+}
+
+
 void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const
 {
     uint32 iDirX = static_cast<uint32>( Direction::X ) ;

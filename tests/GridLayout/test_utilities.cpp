@@ -149,17 +149,21 @@ std::vector<GridLayoutParams> getFieldCoordsInputsFromFile()
         uint32 iqty;
 
         ifs1 >> params[i].interpOrder
-                >> params[i].icase
                 >> params[i].nbDim
                 >> iqty
                 >> params[i].nbrCells[params[i].nbDim]
                 >> params[i].dxdydz[params[i].nbDim]
                 >> params[i].field_iStart
-                >> params[i].field_iEnd  ;
+                >> params[i].field_iEnd
+                >> params[i].origin.x_
+                >> params[i].origin.y_
+                >> params[i].origin.z_ ;
 
         params[i].qty = GetHybridQty(iqty);
         params[i].qtyName = GetHybridQtyName(iqty);
         params[i].iqty = iqty;
+
+        params[i].fieldXCoords.assign(MAX_SIZE, 0.) ;
     }
 
     for (uint32 i=0 ; i < nbrTestCases ; ++i)
@@ -170,16 +174,11 @@ std::vector<GridLayoutParams> getFieldCoordsInputsFromFile()
 
         std::string qtyName = params[i].qtyName;
 
-        //    f = open(("fieldCoords_ord%d_dim%d_%s_case%d.txt") %
-        //    (interpOrder_l[iord], dim_l[idim]+1, Qty_l[iqty][1], icase), "w")
-
         std::string filename{"../GridLayout/fieldCoords_ord" + std::to_string(order) +
                     "_dim" + std::to_string(dim) + "_" + qtyName +
-                    "_case" + std::to_string(icase)};
+                    "_case" + std::to_string(icase) + ".txt"};
 
         std::cout << filename << std::endl ;
-
-
 
         std::ifstream ifs2{filename};
         if (!ifs2 )
@@ -187,13 +186,15 @@ std::vector<GridLayoutParams> getFieldCoordsInputsFromFile()
             std::cout << "Could not open file : " << filename << std::endl ;
             exit(-1);
         }
+
+        uint32 iStart = params[i].field_iStart ;
+        uint32 iEnd   = params[i].field_iEnd   ;
+        for (uint32 ik=iStart ; ik<iEnd+1 ; ++ik)
+        {
+            ifs2 >> params[i].fieldXCoords[ik] ;
+        }
+
     }
-
-
-
-
-
-
 
     return params ;
 }

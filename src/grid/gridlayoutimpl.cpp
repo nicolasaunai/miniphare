@@ -313,16 +313,16 @@ uint32 GridLayoutImplInternals::ghostEndIndexV(Field const& field, Direction dir
 
 
 
-QtyCentering GridLayoutImplInternals::changeCentering(QtyCentering layout ) const
+QtyCentering GridLayoutImplInternals::changeCentering(QtyCentering centering ) const
 {
-    QtyCentering newLayout = QtyCentering::primal ;
+    QtyCentering newCentering = QtyCentering::primal ;
 
-    if( layout == QtyCentering::primal )
+    if( centering == QtyCentering::primal )
     {
-        newLayout = QtyCentering::dual ;
+        newCentering = QtyCentering::dual ;
     }
 
-    return newLayout ;
+    return newCentering ;
 }
 
 

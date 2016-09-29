@@ -146,13 +146,22 @@ Point GridLayout::fieldNodeCoordinates( const Field & field, const Point & origi
 }
 
 
-Point GridLayout:: cellCenteredCoordinates( const Point & origin,
+Point GridLayout::cellCenteredCoordinates( const Point & origin,
                                             uint32 ix, uint32 iy, uint32 iz ) const
 {
     return implPtr_->cellCenteredCoordinates( origin, ix, iy, iz ) ;
 }
 
 
+uint32 GridLayout::indexAtMin( QtyCentering centering, Direction direction ) const
+{
+    return implPtr_->indexAtMin( centering, direction ) ;
+}
+
+uint32 GridLayout::indexAtMax( QtyCentering centering, Direction direction ) const
+{
+    return implPtr_->indexAtMax( centering, direction ) ;
+}
 
 
 /* ---------------------------------------------------------------------------

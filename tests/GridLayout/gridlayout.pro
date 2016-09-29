@@ -28,10 +28,10 @@ SOURCES += ../../src/grid/gridlayout.cpp \
            ../../src/Field/field.cpp \
            test_indexing.cpp \
            test_gridlayout.cpp \
+           test_fieldnodecoordinates.cpp \
            test_allocsizes.cpp \
            test_utilities.cpp \
-           test_main.cpp \
-    test_fieldnodecoordinates.cpp
+           test_main.cpp
 
 HEADERS += ../../src/grid/gridlayout.h \
            ../../src/grid/gridlayoutimplfactory.h \
