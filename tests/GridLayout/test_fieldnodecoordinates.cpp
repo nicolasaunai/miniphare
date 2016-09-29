@@ -2,6 +2,8 @@
 #include <string>
 #include <array>
 #include <iostream>
+#include <fstream>
+
 
 
 
@@ -15,12 +17,9 @@
  *
  *-----------------------------------------------------*/
 
-TEST_P(GridLayoutFieldCoordsTest, XCoordsBx)
+void testFieldNodeCoordinates( GridLayoutParams & inputs,
+                               const GridLayout & gl     )
 {
-    GridLayoutParams inputs = GetParam(); // GetParam is from GTEST
-    std::cout << inputs  << std::endl;
-
-    GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
     // Here the Field sizes for allocations are overestimated
     AllocSizeT allocSize{2*inputs.nbrCells[0],2*inputs.nbrCells[1],2*inputs.nbrCells[2]};
@@ -28,24 +27,60 @@ TEST_P(GridLayoutFieldCoordsTest, XCoordsBx)
     // inputs.qty is the important parameter
     Field field{allocSize , inputs.qty, "testField" };
 
-    uint32 isDual = 1 ;
-
-    uint32 iStart = gl.indexAtMin( QtyCentering::primal, Direction::X ) ;
-    uint32 iEnd   = gl.indexAtMax( QtyCentering::primal, Direction::X ) - isDual ;
-
     uint32 iy = gl.indexAtMin( QtyCentering::primal, Direction::Y ) ;
     uint32 iz = gl.indexAtMin( QtyCentering::primal, Direction::Z ) ;
 
+    // End of input reading in the adequate file
+    uint32 order = inputs.interpOrder ;
+    uint32 icase = inputs.icase ;
+    uint32 dim = inputs.nbDim ;
+
+    std::string qtyName = inputs.qtyName;
+
+    std::string filename{"../GridLayout/fieldCoords_ord" + std::to_string(order) +
+                "_dim" + std::to_string(dim) + "_" + qtyName +
+                "_case" + std::to_string(icase) + ".txt"};
+
+    std::cout << filename << std::endl ;
+
+    std::ifstream ifs2{filename};
+    if (!ifs2 )
+    {
+        std::cout << "Could not open file : " << filename << std::endl ;
+        exit(-1);
+    }
+
+    uint32 iStart = inputs.field_iStart ;
+    uint32 iEnd   = inputs.field_iEnd   ;
+    for (uint32 ik=iStart ; ik<iEnd+1 ; ++ik)
+    {
+        ifs2 >> inputs.fieldXCoords[ik] ;
+    }
+
+
+    for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
+    {
+        Point ptest = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
+
+        ASSERT_DOUBLE_EQ( inputs.fieldXCoords[ix], ptest.x_ ) ;
+    }
+
+
+}
+
+
+
+TEST_P(GridLayoutFieldCoordsTest, XCoordsBx)
+{
+    GridLayoutParams inputs = GetParam();
+    std::cout << inputs  << std::endl;
+
+    GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
     // This test is only for Bx field
     if( inputs.qtyName == "Bx" )
     {
-        for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
-        {
-            Point ptest = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
-
-            ASSERT_DOUBLE_EQ( inputs.fieldXCoords[ix], ptest.x_ ) ;
-        }
+        testFieldNodeCoordinates( inputs, gl ) ;
     }
 
 }
@@ -54,35 +89,15 @@ TEST_P(GridLayoutFieldCoordsTest, XCoordsBx)
 
 TEST_P(GridLayoutFieldCoordsTest, XCoordsBy)
 {
-    GridLayoutParams inputs = GetParam(); // GetParam is from GTEST
+    GridLayoutParams inputs = GetParam();
     std::cout << inputs  << std::endl;
 
     GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
-    // Here the Field sizes for allocations are overestimated
-    AllocSizeT allocSize{2*inputs.nbrCells[0],2*inputs.nbrCells[1],2*inputs.nbrCells[2]};
-
-    // inputs.qty is the important parameter
-    Field field{allocSize , inputs.qty, "testField" };
-
-    uint32 isDual = 1 ;
-
-    uint32 iStart = gl.indexAtMin( QtyCentering::primal, Direction::X ) ;
-    uint32 iEnd   = gl.indexAtMax( QtyCentering::primal, Direction::X ) - isDual ;
-
-    uint32 iy = gl.indexAtMin( QtyCentering::primal, Direction::Y ) ;
-    uint32 iz = gl.indexAtMin( QtyCentering::primal, Direction::Z ) ;
-
-
     // This test is only for By field
     if( inputs.qtyName == "By" )
     {
-        for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
-        {
-            Point ptest = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
-
-            ASSERT_DOUBLE_EQ( inputs.fieldXCoords[ix], ptest.x_ ) ;
-        }
+        testFieldNodeCoordinates( inputs, gl ) ;
     }
 
 }
@@ -91,35 +106,15 @@ TEST_P(GridLayoutFieldCoordsTest, XCoordsBy)
 
 TEST_P(GridLayoutFieldCoordsTest, XCoordsBz)
 {
-    GridLayoutParams inputs = GetParam(); // GetParam is from GTEST
+    GridLayoutParams inputs = GetParam();
     std::cout << inputs  << std::endl;
 
     GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
-    // Here the Field sizes for allocations are overestimated
-    AllocSizeT allocSize{2*inputs.nbrCells[0],2*inputs.nbrCells[1],2*inputs.nbrCells[2]};
-
-    // inputs.qty is the important parameter
-    Field field{allocSize , inputs.qty, "testField" };
-
-    uint32 isDual = 1 ;
-
-    uint32 iStart = gl.indexAtMin( QtyCentering::primal, Direction::X ) ;
-    uint32 iEnd   = gl.indexAtMax( QtyCentering::primal, Direction::X ) - isDual ;
-
-    uint32 iy = gl.indexAtMin( QtyCentering::primal, Direction::Y ) ;
-    uint32 iz = gl.indexAtMin( QtyCentering::primal, Direction::Z ) ;
-
-
     // This test is only for Bz field
     if( inputs.qtyName == "Bz" )
     {
-        for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
-        {
-            Point ptest = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
-
-            ASSERT_DOUBLE_EQ( inputs.fieldXCoords[ix], ptest.x_ ) ;
-        }
+        testFieldNodeCoordinates( inputs, gl ) ;
     }
 
 }
@@ -133,35 +128,15 @@ TEST_P(GridLayoutFieldCoordsTest, XCoordsBz)
 
 TEST_P(GridLayoutFieldCoordsTest, XCoordsEx)
 {
-    GridLayoutParams inputs = GetParam(); // GetParam is from GTEST
+    GridLayoutParams inputs = GetParam();
     std::cout << inputs  << std::endl;
 
     GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
-    // Here the Field sizes for allocations are overestimated
-    AllocSizeT allocSize{2*inputs.nbrCells[0],2*inputs.nbrCells[1],2*inputs.nbrCells[2]};
-
-    // inputs.qty is the important parameter
-    Field field{allocSize , inputs.qty, "testField" };
-
-    uint32 isDual = 1 ;
-
-    uint32 iStart = gl.indexAtMin( QtyCentering::primal, Direction::X ) ;
-    uint32 iEnd   = gl.indexAtMax( QtyCentering::primal, Direction::X ) - isDual ;
-
-    uint32 iy = gl.indexAtMin( QtyCentering::primal, Direction::Y ) ;
-    uint32 iz = gl.indexAtMin( QtyCentering::primal, Direction::Z ) ;
-
-
     // This test is only for Ex field
     if( inputs.qtyName == "Ex" )
     {
-        for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
-        {
-            Point ptest = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
-
-            ASSERT_DOUBLE_EQ( inputs.fieldXCoords[ix], ptest.x_ ) ;
-        }
+        testFieldNodeCoordinates( inputs, gl ) ;
     }
 
 }
@@ -169,35 +144,15 @@ TEST_P(GridLayoutFieldCoordsTest, XCoordsEx)
 
 TEST_P(GridLayoutFieldCoordsTest, XCoordsEy)
 {
-    GridLayoutParams inputs = GetParam(); // GetParam is from GTEST
+    GridLayoutParams inputs = GetParam();
     std::cout << inputs  << std::endl;
 
     GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
-    // Here the Field sizes for allocations are overestimated
-    AllocSizeT allocSize{2*inputs.nbrCells[0],2*inputs.nbrCells[1],2*inputs.nbrCells[2]};
-
-    // inputs.qty is the important parameter
-    Field field{allocSize , inputs.qty, "testField" };
-
-    uint32 isDual = 1 ;
-
-    uint32 iStart = gl.indexAtMin( QtyCentering::primal, Direction::X ) ;
-    uint32 iEnd   = gl.indexAtMax( QtyCentering::primal, Direction::X ) - isDual ;
-
-    uint32 iy = gl.indexAtMin( QtyCentering::primal, Direction::Y ) ;
-    uint32 iz = gl.indexAtMin( QtyCentering::primal, Direction::Z ) ;
-
-
     // This test is only for Ey field
     if( inputs.qtyName == "Ey" )
     {
-        for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
-        {
-            Point ptest = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
-
-            ASSERT_DOUBLE_EQ( inputs.fieldXCoords[ix], ptest.x_ ) ;
-        }
+        testFieldNodeCoordinates( inputs, gl ) ;
     }
 
 }
@@ -205,35 +160,15 @@ TEST_P(GridLayoutFieldCoordsTest, XCoordsEy)
 
 TEST_P(GridLayoutFieldCoordsTest, XCoordsEz)
 {
-    GridLayoutParams inputs = GetParam(); // GetParam is from GTEST
+    GridLayoutParams inputs = GetParam();
     std::cout << inputs  << std::endl;
 
     GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
-    // Here the Field sizes for allocations are overestimated
-    AllocSizeT allocSize{2*inputs.nbrCells[0],2*inputs.nbrCells[1],2*inputs.nbrCells[2]};
-
-    // inputs.qty is the important parameter
-    Field field{allocSize , inputs.qty, "testField" };
-
-    uint32 isDual = 1 ;
-
-    uint32 iStart = gl.indexAtMin( QtyCentering::primal, Direction::X ) ;
-    uint32 iEnd   = gl.indexAtMax( QtyCentering::primal, Direction::X ) - isDual ;
-
-    uint32 iy = gl.indexAtMin( QtyCentering::primal, Direction::Y ) ;
-    uint32 iz = gl.indexAtMin( QtyCentering::primal, Direction::Z ) ;
-
-
     // This test is only for Ez field
     if( inputs.qtyName == "Ez" )
     {
-        for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
-        {
-            Point ptest = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
-
-            ASSERT_DOUBLE_EQ( inputs.fieldXCoords[ix], ptest.x_ ) ;
-        }
+        testFieldNodeCoordinates( inputs, gl ) ;
     }
 
 }
@@ -247,35 +182,15 @@ TEST_P(GridLayoutFieldCoordsTest, XCoordsEz)
 
 TEST_P(GridLayoutFieldCoordsTest, XCoordsrho)
 {
-    GridLayoutParams inputs = GetParam(); // GetParam is from GTEST
+    GridLayoutParams inputs = GetParam();
     std::cout << inputs  << std::endl;
 
     GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
-    // Here the Field sizes for allocations are overestimated
-    AllocSizeT allocSize{2*inputs.nbrCells[0],2*inputs.nbrCells[1],2*inputs.nbrCells[2]};
-
-    // inputs.qty is the important parameter
-    Field field{allocSize , inputs.qty, "testField" };
-
-    uint32 isDual = 1 ;
-
-    uint32 iStart = gl.indexAtMin( QtyCentering::primal, Direction::X ) ;
-    uint32 iEnd   = gl.indexAtMax( QtyCentering::primal, Direction::X ) - isDual ;
-
-    uint32 iy = gl.indexAtMin( QtyCentering::primal, Direction::Y ) ;
-    uint32 iz = gl.indexAtMin( QtyCentering::primal, Direction::Z ) ;
-
-
     // This test is only for rho field
     if( inputs.qtyName == "rho" )
     {
-        for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
-        {
-            Point ptest = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
-
-            ASSERT_DOUBLE_EQ( inputs.fieldXCoords[ix], ptest.x_ ) ;
-        }
+        testFieldNodeCoordinates( inputs, gl ) ;
     }
 
 }
@@ -283,35 +198,15 @@ TEST_P(GridLayoutFieldCoordsTest, XCoordsrho)
 
 TEST_P(GridLayoutFieldCoordsTest, XCoordsV)
 {
-    GridLayoutParams inputs = GetParam(); // GetParam is from GTEST
+    GridLayoutParams inputs = GetParam();
     std::cout << inputs  << std::endl;
 
     GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
-    // Here the Field sizes for allocations are overestimated
-    AllocSizeT allocSize{2*inputs.nbrCells[0],2*inputs.nbrCells[1],2*inputs.nbrCells[2]};
-
-    // inputs.qty is the important parameter
-    Field field{allocSize , inputs.qty, "testField" };
-
-    uint32 isDual = 1 ;
-
-    uint32 iStart = gl.indexAtMin( QtyCentering::primal, Direction::X ) ;
-    uint32 iEnd   = gl.indexAtMax( QtyCentering::primal, Direction::X ) - isDual ;
-
-    uint32 iy = gl.indexAtMin( QtyCentering::primal, Direction::Y ) ;
-    uint32 iz = gl.indexAtMin( QtyCentering::primal, Direction::Z ) ;
-
-
     // This test is only for V field
     if( inputs.qtyName == "V" )
     {
-        for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
-        {
-            Point ptest = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
-
-            ASSERT_DOUBLE_EQ( inputs.fieldXCoords[ix], ptest.x_ ) ;
-        }
+        testFieldNodeCoordinates( inputs, gl ) ;
     }
 
 }
@@ -319,35 +214,15 @@ TEST_P(GridLayoutFieldCoordsTest, XCoordsV)
 
 TEST_P(GridLayoutFieldCoordsTest, XCoordsP)
 {
-    GridLayoutParams inputs = GetParam(); // GetParam is from GTEST
+    GridLayoutParams inputs = GetParam();
     std::cout << inputs  << std::endl;
 
     GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
-    // Here the Field sizes for allocations are overestimated
-    AllocSizeT allocSize{2*inputs.nbrCells[0],2*inputs.nbrCells[1],2*inputs.nbrCells[2]};
-
-    // inputs.qty is the important parameter
-    Field field{allocSize , inputs.qty, "testField" };
-
-    uint32 isDual = 1 ;
-
-    uint32 iStart = gl.indexAtMin( QtyCentering::primal, Direction::X ) ;
-    uint32 iEnd   = gl.indexAtMax( QtyCentering::primal, Direction::X ) - isDual ;
-
-    uint32 iy = gl.indexAtMin( QtyCentering::primal, Direction::Y ) ;
-    uint32 iz = gl.indexAtMin( QtyCentering::primal, Direction::Z ) ;
-
-
     // This test is only for P field
     if( inputs.qtyName == "P" )
     {
-        for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
-        {
-            Point ptest = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
-
-            ASSERT_DOUBLE_EQ( inputs.fieldXCoords[ix], ptest.x_ ) ;
-        }
+        testFieldNodeCoordinates( inputs, gl ) ;
     }
 
 }

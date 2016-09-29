@@ -166,36 +166,6 @@ std::vector<GridLayoutParams> getFieldCoordsInputsFromFile()
         params[i].fieldXCoords.assign(MAX_SIZE, 0.) ;
     }
 
-    for (uint32 i=0 ; i < nbrTestCases ; ++i)
-    {
-        uint32 order = params[i].interpOrder ;
-        uint32 icase = params[i].icase ;
-        uint32 dim = params[i].nbDim ;
-
-        std::string qtyName = params[i].qtyName;
-
-        std::string filename{"../GridLayout/fieldCoords_ord" + std::to_string(order) +
-                    "_dim" + std::to_string(dim) + "_" + qtyName +
-                    "_case" + std::to_string(icase) + ".txt"};
-
-        std::cout << filename << std::endl ;
-
-        std::ifstream ifs2{filename};
-        if (!ifs2 )
-        {
-            std::cout << "Could not open file : " << filename << std::endl ;
-            exit(-1);
-        }
-
-        uint32 iStart = params[i].field_iStart ;
-        uint32 iEnd   = params[i].field_iEnd   ;
-        for (uint32 ik=iStart ; ik<iEnd+1 ; ++ik)
-        {
-            ifs2 >> params[i].fieldXCoords[ik] ;
-        }
-
-    }
-
     return params ;
 }
 
