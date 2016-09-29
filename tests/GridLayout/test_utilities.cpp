@@ -201,4 +201,67 @@ std::vector<GridLayoutParams> getFieldCoordsInputsFromFile()
 
 
 
+std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile()
+{
+
+    std::ifstream ifs1{"../GridLayout/centeredCoords_summary.txt"};
+    if (!ifs1 )
+    {
+        std::cout << "Could not open file : ../GridLayout/centeredCoords_summary.txt"
+                  << std::endl ;
+        exit(-1);
+    }
+
+    uint32 orderMax = 4 ;
+
+    uint32 nbrTestCases = orderMax ;
+
+    std::vector<GridLayoutParams> params(nbrTestCases);
+
+    for (uint32 i=0 ; i < nbrTestCases ; ++i)
+    {
+        ifs1 >> params[i].interpOrder
+             >> params[i].nbDim
+             >> params[i].nbrCells[params[i].nbDim]
+             >> params[i].dxdydz[params[i].nbDim]
+             >> params[i].field_iStart
+             >> params[i].field_iEnd
+             >> params[i].origin.x_
+             >> params[i].origin.y_
+             >> params[i].origin.z_ ;
+
+        params[i].cellCenteredXCoords.assign(MAX_SIZE, 0.) ;
+    }
+
+    for (uint32 i=0 ; i < nbrTestCases ; ++i)
+    {
+        uint32 order = params[i].interpOrder ;
+        uint32 icase = params[i].icase ;
+        uint32 dim = params[i].nbDim ;
+
+        std::string filename{"../GridLayout/centeredCoords_ord" + std::to_string(order) +
+                    "_dim" + std::to_string(dim) +
+                    "_case" + std::to_string(icase) + ".txt"};
+
+        std::cout << filename << std::endl ;
+
+        std::ifstream ifs2{filename};
+        if (!ifs2 )
+        {
+            std::cout << "Could not open file : " << filename << std::endl ;
+            exit(-1);
+        }
+
+        uint32 iStart = params[i].field_iStart ;
+        uint32 iEnd   = params[i].field_iEnd   ;
+        for (uint32 ik=iStart ; ik<iEnd+1 ; ++ik)
+        {
+            ifs2 >> params[i].cellCenteredXCoords[ik] ;
+        }
+
+    }
+
+    return params ;
+}
+
 

@@ -26,6 +26,8 @@ std::vector<GridLayoutParams> getAllocInputsFromFile() ;
 
 std::vector<GridLayoutParams> getFieldCoordsInputsFromFile() ;
 
+std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile() ;
+
 
 #define  MAX_SIZE 1000
 
@@ -64,6 +66,8 @@ struct GridLayoutParams
     Point origin{0., 0., 0.} ;
 
     std::vector<double>  fieldXCoords ;
+
+    std::vector<double>  cellCenteredXCoords ;
 
     std::string testComment;
 
@@ -217,6 +221,11 @@ class GridLayoutFieldCoordsTest: public ::testing::TestWithParam<GridLayoutParam
 
 };
 
+
+class GridLayoutCenteredCoordsTest: public ::testing::TestWithParam<GridLayoutParams>
+{
+
+};
 
 
 
