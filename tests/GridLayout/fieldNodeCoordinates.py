@@ -181,7 +181,7 @@ for icase in case_l:
                    
             print( "Nbr of cells = %d" % nbrCells(Direction_l[idim][1], icase) )
                    
-            print( "Nbr of ghost cells = %d" % 
+            print( "Nbr of ghost cells = %d on each side" % 
             nbrGhosts(interpOrder_l[0], Qty_l[iqty][1], Direction_l[idim][1]) )
             
             print( "Alloc size = %d" %

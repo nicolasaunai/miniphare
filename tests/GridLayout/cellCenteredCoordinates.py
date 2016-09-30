@@ -129,7 +129,7 @@ for icase in case_l:
             idim = 0
             print( "Nbr of cells = %d" % nbrCells(Direction_l[idim][1], icase) )
                    
-            print( "Nbr of ghost cells on the primal mesh = %d" % 
+            print( "Nbr of ghost cells on the primal mesh = %d on each side" % 
             nbrGhostsPrimal(interpOrder_l[iord]) )
             
 # ------------------------------
