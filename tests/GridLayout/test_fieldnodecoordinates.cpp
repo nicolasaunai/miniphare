@@ -11,11 +11,6 @@
 
 
 
-/*-----------------------------------------------------
- *        X coordinates for fields:
- *        - Bx, By, Bz
- *
- *-----------------------------------------------------*/
 
 void testFieldNodeCoordinates( GridLayoutParams & inputs,
                                const GridLayout & gl     )
@@ -69,6 +64,11 @@ void testFieldNodeCoordinates( GridLayoutParams & inputs,
 }
 
 
+/*-----------------------------------------------------
+ *        X coordinates for fields:
+ *        - Bx, By, Bz
+ *
+ *-----------------------------------------------------*/
 
 TEST_P(GridLayoutFieldCoordsTest, XCoordsBx)
 {

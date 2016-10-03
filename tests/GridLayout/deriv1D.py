@@ -275,12 +275,39 @@ print( ifunc_l )
 #                       qtyCentering( Qty_l[iqty][1], Direction_l[idim][1] ), \
 #                       Direction_l[idim][1], icase)  )
 
-# -------- Let us define a function on Ex with Yee lattice --------
+# -------- Let us define a function on Bx with Yee lattice --------
 icase = 0
 
 iqty = 0
 iord = 0
 idim = 0
+
+
+f = open("deriv1D_summary.txt", "w")
+
+
+for ifunc in ifunc_l:
+    #for iqty in iqty_l:   
+    f.write(("%03d %d %s %03d %4.1f ") % 
+       (interpOrder_l[iord],
+        dim_l[idim]+1,
+        Qty_l[iqty][0],
+        nbrCells(Direction_l[idim][1], icase),
+        spatialStep(Direction_l[idim][1], icase) ) )                   
+       
+    iStart = physicalStartPrimal(interpOrder_l[iord])
+    iEnd   = physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)                
+    iEnd = iEnd - isDual( qtyCentering(Qty_l[iqty][1], Direction_l[idim][1]) )         
+    
+    f.write(("%d %d ") % (iStart, iEnd))
+       
+    f.write(("%6.2f %6.2f %6.2f ") % (origin[0], origin[1], origin[2]))
+    
+    f.write("%s \n" % function_l[ifunc])
+
+f.close()
+
+
 
 for ifunc in ifunc_l:
     f = open( ("deriv1D_%s_%s.txt") % (Qty_l[iqty][1], function_l[ifunc]), "w")
@@ -306,27 +333,6 @@ for ifunc in ifunc_l:
 
 
 # ------------------------------
-
-#f = open("deriv1D_summary.txt", "w")
-#for icase in case_l:
-#    f.write(("%03d %d %s %03d %4.1f ") % 
-#       (case_l[icase],
-#        nbrCells(Direction_l[idim][1], icase),
-#        spatialStep(Direction_l[idim][1], icase) ) )                   
-#       
-#    iStart = physicalStartPrimal(interpOrder_l[iord])
-#    iEnd   = physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)            
-#    
-#    iEnd = iEnd - isDual(Qty_l[iqty][1], Direction_l[idim][1])                
-#
-#    # f.write(("Primal start = %03d \n") % (iStart))
-#    # f.write(("Primal end   = %03d \n") % (iEnd))
-#
-#    f.write(("%d %d ") % (iStart, iEnd))
-#    f.write(("%6.2f %6.2f %6.2f\n") % (origin[0], origin[1], origin[2]))
-#
-#f.close()
-
 
 #for iord in iord_l:
 #    for icase in case_l:

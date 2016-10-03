@@ -28,6 +28,8 @@ std::vector<GridLayoutParams> getFieldCoordsInputsFromFile() ;
 
 std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile() ;
 
+std::vector<GridLayoutParams> getDerivInputsFromFile() ;
+
 
 #define  MAX_SIZE 1000
 
@@ -35,7 +37,6 @@ std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile() ;
  *
  *                            GridLayout TEST
  * ---------------------------------------------------------------------------- */
-
 
 struct GridLayoutParams
 {
@@ -45,6 +46,8 @@ struct GridLayoutParams
     HybridQuantity qty;
     std::string qtyName;
     uint32 iqty ;        // integer equals to static_cast<uint32> (qty)
+
+    std::string functionName ;
 
     uint32 icase ;
 
@@ -66,6 +69,10 @@ struct GridLayoutParams
     Point origin{0., 0., 0.} ;
 
     std::vector<double>  fieldXCoords ;
+    std::vector<double>  fieldXValues ;
+
+    std::vector<double>  derivedFieldXCoords ;
+    std::vector<double>  derivedFieldXValues ;
 
     std::vector<double>  cellCenteredXCoords ;
 
@@ -227,6 +234,11 @@ class GridLayoutCenteredCoordsTest: public ::testing::TestWithParam<GridLayoutPa
 
 };
 
+
+class GridLayoutDeriv1D: public ::testing::TestWithParam<GridLayoutParams>
+{
+
+};
 
 
 #endif // TEST_GRIDLAYOUT_H

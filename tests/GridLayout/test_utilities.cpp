@@ -1,6 +1,7 @@
 
 #include <fstream>
 
+
 #include "test_gridlayout.h"
 
 
@@ -164,6 +165,60 @@ std::vector<GridLayoutParams> getFieldCoordsInputsFromFile()
         params[i].iqty = iqty;
 
         params[i].fieldXCoords.assign(MAX_SIZE, 0.) ;
+    }
+
+    return params ;
+}
+
+
+
+std::vector<GridLayoutParams> getDerivInputsFromFile()
+{
+
+    std::string filename{"../GridLayout/deriv1D_summary.txt"};
+
+    std::ifstream infile{filename};
+    if (!infile )
+    {
+        std::cout << "Could not open file : " << filename
+                  << std::endl ;
+        exit(-1);
+    }
+
+    uint32 orderMax = 4 ;
+
+    uint32 numberTestFunctions = 4 ;
+
+    //static_cast<uint32>(HybridQuantity::count)
+    uint32 nbrTestCases = 1 * numberTestFunctions ;
+
+    std::vector<GridLayoutParams> params(nbrTestCases);
+
+    // reading parameters relative to the test cases
+    for (uint32 i=0 ; i < nbrTestCases ; ++i)
+    {
+        uint32 iqty;
+
+        infile >> params[i].interpOrder
+               >> params[i].nbDim
+               >> iqty
+               >> params[i].nbrCells[params[i].nbDim]
+               >> params[i].dxdydz[params[i].nbDim]
+               >> params[i].field_iStart
+               >> params[i].field_iEnd
+               >> params[i].origin.x_
+               >> params[i].origin.y_
+               >> params[i].origin.z_
+               >> params[i].functionName ;
+
+        params[i].qty = GetHybridQty(iqty);
+        params[i].qtyName = GetHybridQtyName(iqty);
+        params[i].iqty = iqty;
+
+        params[i].fieldXCoords.assign(MAX_SIZE, 0.) ;
+        params[i].fieldXValues.assign(MAX_SIZE, 0.) ;
+        params[i].derivedFieldXCoords.assign(MAX_SIZE, 0.) ;
+        params[i].derivedFieldXValues.assign(MAX_SIZE, 0.) ;
     }
 
     return params ;

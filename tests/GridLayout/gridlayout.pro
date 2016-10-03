@@ -30,6 +30,7 @@ SOURCES += ../../src/grid/gridlayout.cpp \
            test_gridlayout.cpp \
            test_fieldnodecoordinates.cpp \
            test_cellcenteredcoordinates.cpp \
+           test_deriv1d.cpp \
            test_allocsizes.cpp \
            test_utilities.cpp \
            test_main.cpp
