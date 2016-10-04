@@ -18,15 +18,6 @@ void testDerivedField1D( GridLayoutParams & inputs,
     // Here the Field sizes for allocations are overestimated
     AllocSizeT allocSize{2*inputs.nbrCells[0],1,1};
 
-    // inputs.qty is the important parameter
-    Field field{allocSize , inputs.qty, "testField" };
-
-//    uint32 iy = gl.indexAtMin( QtyCentering::primal, Direction::Y ) ;
-//    uint32 iz = gl.indexAtMin( QtyCentering::primal, Direction::Z ) ;
-
-//    uint32 order = inputs.interpOrder ;
-//    uint32 dim = inputs.nbDim ;
-
     std::string qtyName = inputs.qtyName;
 
     std::string fctName = inputs.functionName;
@@ -53,37 +44,62 @@ void testDerivedField1D( GridLayoutParams & inputs,
         infile >> inputs.derivedFieldXValues[ik] ;
     }
 
+    // inputs.qty is the important parameter
+    Field operand{allocSize , inputs.qty, "operandField" };
+
     for (uint32 ik=iStart ; ik<= iEnd ; ++ik)
     {
         double x = inputs.fieldXCoords[ik] ;
 
         if(inputs.functionName == "linear")
         {
-            field(ik) = x ;
+            operand(ik) = x ;
         } else if(inputs.functionName == "square")
         {
-            field(ik) = x*x ;
+            operand(ik) = x*x ;
         } else if(inputs.functionName == "sin")
         {
-            field(ik) = sin(x) ;
+            operand(ik) = sin(x) ;
         } else if(inputs.functionName == "compo01")
         {
-            field(ik) = x*x + sin(x) ;
+            operand(ik) = x*x + sin(x) ;
         }
     }
 
-    for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
-    {
-//        Point ptest = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
+//    for( uint32 ix= iStart ; ix<= iEnd ; ++ix )
+//    {
+//        // float precision is enough for the test
+//        ASSERT_FLOAT_EQ( static_cast<float>(inputs.fieldXValues[ix]),
+//                         static_cast<float>(operand(ix)              ) ) ;
+//    }
 
-        ASSERT_DOUBLE_EQ( inputs.fieldXValues[ix], field(ix) ) ;
+    // inputs.qty is not the correct argument
+    // this should not be relevant for the test
+    Field derivative{allocSize , inputs.qty, "derivativeField" };
+
+    gl.deriv( operand, Direction::X, derivative ) ;
+
+    // this method has 2nd order precision
+    double precision = pow(gl.dx(), 2.) ;
+
+    for( uint32 ix= iStart ; ix< iEnd ; ++ix )
+    {
+        // precision must be monitored for this test
+        ASSERT_NEAR( inputs.derivedFieldXValues[ix], derivative(ix), precision ) ;
     }
 
 
 }
 
 
-
+/***********************************************************/
+/* Testing Bx is enough                                    */
+/* Our only goal here is to test the derivative operator   */
+/*                                                         */
+/* The numerically computed derivative is accurate to the  */
+/* 2nd order                                               */
+/*                                                         */
+/***********************************************************/
 TEST_P(GridLayoutDeriv1D, DerivedFieldBx)
 {
     GridLayoutParams inputs = GetParam();

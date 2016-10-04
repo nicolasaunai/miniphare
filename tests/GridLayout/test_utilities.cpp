@@ -185,7 +185,7 @@ std::vector<GridLayoutParams> getDerivInputsFromFile()
         exit(-1);
     }
 
-    uint32 orderMax = 4 ;
+//    uint32 orderMax = 4 ;
 
     uint32 numberTestFunctions = 4 ;
 

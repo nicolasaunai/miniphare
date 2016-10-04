@@ -73,13 +73,13 @@ CenterZ = {'Bx':'dual'   , 'By':'dual'  , 'Bz':'primal',
            'rho':'primal', 'V':'primal' , 'P':'primal' }
 
 
-nbrCellX_l=[40, 40, 40]
-nbrCellY_l=[ 0, 12, 12]
-nbrCellZ_l=[ 0,  0, 12]
+nbrCellX_l=[ 40, 40, 40]
+nbrCellY_l=[ 0 , 12, 12]
+nbrCellZ_l=[ 0 ,  0, 12]
 
-dx_l=[0.1, 0.1, 0.1] # 1D, 2D, 3D cases 
-dy_l=[0. , 0.1, 0.1]
-dz_l=[0. , 0. , 0.1]
+dx_l=[0.1 , 0.1, 0.1] # 1D, 2D, 3D cases 
+dy_l=[0.  , 0.1, 0.1]
+dz_l=[0.  , 0. , 0.1]
 
 origin = [0., 0., 0.]
            
@@ -288,7 +288,7 @@ f = open("deriv1D_summary.txt", "w")
 
 for ifunc in ifunc_l:
     #for iqty in iqty_l:   
-    f.write(("%03d %d %s %03d %4.1f ") % 
+    f.write(("%03d %d %s %03d %5.4f ") % 
        (interpOrder_l[iord],
         dim_l[idim]+1,
         Qty_l[iqty][0],
@@ -325,8 +325,8 @@ for ifunc in ifunc_l:
         x_der = fieldCoords(iprimal, iStart, Qty_l[iqty][1], Direction_l[idim], \
                             spatialStep(Direction_l[idim][1], icase), origin, 1)                    
                         
-        f.write(("%8.2f %8.4f   ") % (x    , funcDict[function_l[ifunc]](x)         ) )
-        f.write(("%8.2f %8.4f \n") % (x_der, der_funcDict[function_l[ifunc]](x_der) ) )
+        f.write(("%10.4f %14.10f   ") % (x    , funcDict[function_l[ifunc]](x)         ) )
+        f.write(("%10.4f %14.10f \n") % (x_der, der_funcDict[function_l[ifunc]](x_der) ) )
     																								
     f.close()
 
