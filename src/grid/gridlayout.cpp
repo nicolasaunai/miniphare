@@ -227,9 +227,9 @@ void GridLayout::throwNotValid2D() const
 
 void GridLayout::throwNotValid3D() const
 {
-    if (   dx_ < EPS12
-        || dy_ < EPS12
-        || dz_ < EPS12 )
+    if (   dx_ == 0.
+        || dy_ == 0.
+        || dz_ == 0. )
         throw std::runtime_error("Error - 3D requires dx, dy, dz to be all non-zero");
 
     // dx dy and dz should be > 0
