@@ -8,11 +8,12 @@ SUBDIRS += gridlayout
 
 # if macx else unix
 macx {
-    LIBS += -L/opt/local/lib -lgtest
+    LIBS += -L/opt/local/lib -lgtest -lgmock
     INCLUDEPATH += /opt/local/include
 } unix {
-    LIBS += -L/usr/lib -lpthread -lgtest
+    LIBS += -L/usr/lib -lpthread -lgtest -lgmock
     INCLUDEPATH += /usr/include/gtest
+    INCLUDEPATH += /usr/include/gmock
 }
 
 INCLUDEPATH += ../../src
