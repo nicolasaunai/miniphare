@@ -119,6 +119,54 @@
 #include "test_gridlayout.h"
 
 
+
+/* ----------------------------------------------------------------------------
+ *
+ *                            GridLayoutFactory TEST
+ *
+ * SPECIFICATION:
+ * -------------
+ *
+ *  - Implementation Factory throws an exception if unknown layout and
+ *          nbDims < 1 and > 3
+ *
+ * ---------------------------------------------------------------------------- */
+struct GridLayoutImplFactoryParams
+{
+    uint32 nbDims_ ;
+    uint32 interpOrder_ ;
+    std::string layoutName_ ;
+    std::array<uint32,3> nbrCellsXYZ_ ;
+    std::array<double,3> dxdydz_ ;
+
+
+    GridLayoutImplFactoryParams(uint32 nbDims, uint32 interpOrder ,
+                                std::string const& layoutName     ,
+                                std::array<uint32,3> nbrCellsXYZ  ,
+                                std::array<double,3> dxdydz       )
+        : nbDims_{nbDims}, interpOrder_{interpOrder}, layoutName_{layoutName},
+          nbrCellsXYZ_{nbrCellsXYZ}, dxdydz_{dxdydz}  {}
+
+
+    friend std::ostream& operator<<(std::ostream& os, GridLayoutImplFactoryParams const& params)
+    {
+        os << "nbDims = " << params.nbDims_ << " ; implTypeName = " << params.layoutName_;
+        return os;
+    }
+};
+
+
+class GridLayoutImplFactoryTest : public ::testing::TestWithParam<GridLayoutImplFactoryParams>
+{
+
+};
+
+class GridLayoutConstructorTest: public ::testing::TestWithParam<GridLayoutParams>
+{
+
+};
+
+
 static GridLayoutImplFactoryParams factoryInputs[] = {
 
     GridLayoutImplFactoryParams( -2, 1,   "yee", {{20, 20, 20}}, {{0.1, 0.1, 0.1}} ),
@@ -260,9 +308,7 @@ INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutImplFactoryTest, testing::Valu
 TEST_P(GridLayoutConstructorTest, ConstructorTest)
 {
     GridLayoutParams inputs = GetParam();
-    std::cout << inputs  << std::endl;
 
-//    GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
     ASSERT_ANY_THROW( GridLayout(inputs.dxdydz , inputs.nbrCells  ,
                                  inputs.nbDim, inputs.layoutName,
