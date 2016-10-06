@@ -27,7 +27,8 @@ public:
 
     void SetUp()
     {
-        GridLayoutParams inputs = GetParam(); // calls method getAllocInputsFromFile()
+        inputs = GetParam();
+
         print(inputs);
 
         GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
@@ -45,26 +46,23 @@ public:
         actual_allocSizeDerived[0] = gl.allocSizeDerived(field.hybridQty(), Direction::X).nx_ ;
         actual_allocSizeDerived[1] = gl.allocSizeDerived(field.hybridQty(), Direction::Y).ny_ ;
         actual_allocSizeDerived[2] = gl.allocSizeDerived(field.hybridQty(), Direction::Z).nz_ ;
-
     }
 
 
     void print(GridLayoutParams const& inputs)
     {
-        std::cout << "interpOrder : " << inputs.interpOrder
+        std::cout << " interpOrder : " << inputs.interpOrder
                   << " nbDims   : " << inputs.nbDim
-                  << " qtyName  : " << static_cast<int>(inputs.qty)
-                  << " nbrCells : " << inputs.nbrCells[0] << ", " << inputs.nbrCells[1] << ", " << inputs.nbrCells[2]
-                  << " dxdydz   : " << inputs.dxdydz[0] << ", " << inputs.dxdydz[1] << ", " << inputs.dxdydz[2]
+                  << " (uint32) Hybridqty  : " << inputs.iqty << "\n"
+                  << " nbrCells : " << inputs.nbrCells[0] << ", " << inputs.nbrCells[1] << ", " << inputs.nbrCells[2] << "\n"
+                  << " dxdydz   : " << inputs.dxdydz[0] << ", " << inputs.dxdydz[1] << ", " << inputs.dxdydz[2] << "\n"
                   << " AllocSize x : " << inputs.allocSizes[0]
                   << " AllocSize y : " << inputs.allocSizes[1]
-                  << " AllocSize z : " << inputs.allocSizes[2]
+                  << " AllocSize z : " << inputs.allocSizes[2] << "\n"
                   << " Derived Size x : " << inputs.allocSizeDerived[0]
                   << " Derived Size y : " << inputs.allocSizeDerived[1]
                   << " Derived Size z : " << inputs.allocSizeDerived[2]
-                  << " " <<  inputs.iqty;
-
-        std::cout << " " << inputs.testComment;
+                  << std::endl ;
     }
 
 };
@@ -86,13 +84,13 @@ TEST_P(GridLayoutAllocTest, AllocSizeX)
 
 TEST_P(GridLayoutAllocTest, AllocSizeY)
 {
-   EXPECT_EQ(inputs.allocSizes[1], actual_allocSizes[1] );
+    EXPECT_EQ(inputs.allocSizes[1], actual_allocSizes[1] );
 }
 
 
 TEST_P(GridLayoutAllocTest, AllocSizeZ)
 {
-   EXPECT_EQ(inputs.allocSizes[2], actual_allocSizes[2] );
+    EXPECT_EQ(inputs.allocSizes[2], actual_allocSizes[2] );
 }
 
 /*-----------------------------------------------------------------------------
@@ -111,13 +109,13 @@ TEST_P(GridLayoutAllocTest, AllocSizeDerivedX)
 
 TEST_P(GridLayoutAllocTest, AllocSizeDerivedY)
 {
-   EXPECT_EQ(inputs.allocSizeDerived[1], actual_allocSizeDerived[1] );
+    EXPECT_EQ(inputs.allocSizeDerived[1], actual_allocSizeDerived[1] );
 }
 
 
 TEST_P(GridLayoutAllocTest, AllocSizeDerivedZ)
 {
-   EXPECT_EQ(inputs.allocSizeDerived[2], actual_allocSizeDerived[2] );
+    EXPECT_EQ(inputs.allocSizeDerived[2], actual_allocSizeDerived[2] );
 }
 
 

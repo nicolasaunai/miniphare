@@ -58,7 +58,7 @@ std::string GetHybridQtyName(uint32 iqty)
 }
 
 
-std::vector<GridLayoutParams> getInputsFromFile()
+std::vector<GridLayoutParams> getIndexingInputsFromFile()
 {
 
     std::ifstream ifs{"../GridLayout/result.txt"};

@@ -21,7 +21,7 @@ HybridQuantity GetHybridQty(uint iqty) ;
 
 std::string GetHybridQtyName(uint iqty) ;
 
-std::vector<GridLayoutParams> getInputsFromFile() ;
+std::vector<GridLayoutParams> getIndexingInputsFromFile() ;
 
 std::vector<GridLayoutParams> getAllocInputsFromFile() ;
 

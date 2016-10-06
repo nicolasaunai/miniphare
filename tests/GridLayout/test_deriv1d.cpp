@@ -10,7 +10,7 @@
 
 
 
-MATCHER_P(FloatNearPointwise, tol, "Precision out of range")
+MATCHER_P(FloatNear, tol, "Precision out of range")
 {
     // we get the actual value
     double actualVal = std::get<0>(arg) ;
@@ -137,7 +137,8 @@ TEST_P(GridLayoutDeriv1D, DerivedFieldBx)
     // This test is only for Bx field
     if( inputs.qtyName == "Bx" )
     {
-        EXPECT_THAT( actual_array, ::testing::Pointwise(FloatNearPointwise(precision), expected_array) ) ;
+        EXPECT_THAT( actual_array, \
+                     ::testing::Pointwise(FloatNear(precision), expected_array) ) ;
     }
 
 }
