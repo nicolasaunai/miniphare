@@ -1,7 +1,8 @@
 TEMPLATE = subdirs
 
 SUBDIRS += GridLayout \
-           Plasma
+           Plasma \
+           Faraday
 
 #SUBDIRS += Plasma
 
