@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 30 11:56:02 2016
-
-@author: mdrouin
-"""
+#!/usr/bin/env python
+#!coding: utf-8
 
 # In[1]:
 
