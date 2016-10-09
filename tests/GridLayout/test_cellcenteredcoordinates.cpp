@@ -2,6 +2,7 @@
 #include <string>
 #include <array>
 #include <iostream>
+#include <limits>
 
 
 #include "test_gridlayout.h"
@@ -26,7 +27,7 @@ public:
 
     // 2.e-7 is greater than
     // std::numeric_limits<float>::epsilon()
-    const double dbl_epsilon = 2.e-7 ;
+    const double dbl_epsilon = std::numeric_limits<float>::epsilon() ;
 
     std::vector<double>  actual_cellCentersX ;
     std::vector<double>  expected_cellCentersX ;
