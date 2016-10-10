@@ -93,3 +93,5 @@ doc/html
 # UNIT TEST FILES
 # ---------------
 build*
+tests/GridLayout/*.txt
+tests/Faraday/*.txt
