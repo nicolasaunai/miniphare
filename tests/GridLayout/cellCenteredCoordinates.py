@@ -4,9 +4,11 @@
 # In[1]:
 
 import numpy as np
-import math
-#from math import factorial
-#%matplotlib inline
+
+import sys
+sys.path.insert(0, '../')
+
+import commons 
 
 nbPadding = [10,10,10]
 
@@ -23,54 +25,6 @@ dz_l=[0. , 0. , 0.1]
 
 origin = [0., 0., 0.]
            
-
-# ---------------------- ANY DIRECTION -----------------------------------------
-def nbrGhosts(interpOrder, centering, direct):
-    if centering == 'primal':
-        return math.floor( interpOrder/2 )
-    else:
-        return math.floor( (interpOrder +1)/2 )
-
-def nbrGhostsPrimal(interpOrder):
-    return math.floor( interpOrder/2 )
-
-        
-def nbrCells(direction, icas):
-    if direction == 'X':
-        return nbrCellX_l[icas]
-    elif direction == 'Y':
-        return nbrCellY_l[icas]
-    elif direction == 'Z':
-        return nbrCellZ_l[icas]
-
-def spatialStep(direction, icas):
-    if direction == 'X':
-        return dx_l[icas]
-    elif direction == 'Y':
-        return dy_l[icas]
-    elif direction == 'Z':
-        return dz_l[icas]
-
-# ---- Start / End index methods ------
-def ghostStartIndex():
-    return 0    
-    
-def physicalStartPrimal(interpOrder):
-    index = ghostStartIndex() + nbrGhostsPrimal(interpOrder)     
-    return index
-
-def physicalEndPrimal(interpOrder, direction, caseNbr):
-    index = physicalStartPrimal(interpOrder) + nbrCells(direction, caseNbr)    
-    return index
-
-# ---- Alloc methods -------------------------
-
-def allocSize(interpOrder, qty, direction, caseNbr):
-    size = nbrCells(direction, caseNbr) + 1 \
-    + 2*nbrGhosts(interpOrder, qty, direction)    
-    
-    return size
-
 
 # ---- Get coordinate methods -------------------------
 # ds stands for dx or dy or dz
@@ -120,10 +74,10 @@ for icase in case_l:
             print( "Interpolation order = %d" % interpOrder_l[iord] )        
         
             idim = 0
-            print( "Nbr of cells = %d" % nbrCells(Direction_l[idim][1], icase) )
+            print( "Nbr of cells = %d" % commons.nbrCells(Direction_l[idim][1], icase) )
                    
             print( "Nbr of ghost cells on the primal mesh = %d on each side" % 
-            nbrGhostsPrimal(interpOrder_l[iord]) )
+            commons.nbrGhostsPrimal(interpOrder_l[iord]) )
             
 # ------------------------------
 
@@ -134,11 +88,11 @@ for iord in iord_l:
             f.write(("%d %d %06d %4.1f ") % 
                (interpOrder_l[iord],
                 dim_l[idim]+1,
-                nbrCells(Direction_l[idim][1], icase),
-                spatialStep(Direction_l[idim][1], icase) ) )                   
+                commons.nbrCells(Direction_l[idim][1], icase),
+                commons.spatialStep(Direction_l[idim][1], icase) ) )                   
                
-            iStart = physicalStartPrimal(interpOrder_l[iord])
-            iEnd   = physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)            
+            iStart = commons.physicalStartPrimal(interpOrder_l[iord])
+            iEnd   = commons.physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)            
             
             # a cell-centered coordinate is always dual
             iEnd = iEnd - 1
@@ -155,15 +109,15 @@ for iord in iord_l:
             f = open(("centeredCoords_ord%d_dim%d_case%d.txt") % 
             (interpOrder_l[iord], dim_l[idim]+1, icase), "w")
                 
-            iStart = physicalStartPrimal(interpOrder_l[iord])
-            iEnd   = physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)            
+            iStart = commons.physicalStartPrimal(interpOrder_l[iord])
+            iEnd   = commons.physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)            
             
             # a cell-centered coordinate is always dual
             iEnd = iEnd - 1                       
                 
             for iprimal in range(iStart, iEnd+1):
                 x = centeredCoords(iprimal, iStart, Direction_l[idim], \
-                                   spatialStep(Direction_l[idim][1], icase), \
+                                   commons.spatialStep(Direction_l[idim][1], icase), \
                                    origin )
                 f.write(("%8.2f ") % (x))
 																								
