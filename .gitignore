@@ -95,3 +95,4 @@ doc/html
 build*
 tests/GridLayout/*.txt
 tests/Faraday/*.txt
+tests/Faraday/backup
