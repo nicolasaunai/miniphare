@@ -4,12 +4,8 @@
 # In[1]:
 
 import numpy as np
-import matplotlib.pyplot as plt
-import scipy.integrate as scint
-import mpl_toolkits.mplot3d as mplt3d
 import math
-#from math import factorial
-#%matplotlib inline
+
 
 nbPadding = [10,10,10]
 
@@ -136,99 +132,100 @@ def fieldCoords(iprimal, iStart, qty, direction, ds, origin):
 
 # ---------------------- MAIN CODE -----------------------------------------
 
-paramList = ['interpOrder', 'nbDims', 'Quantity', 'nbrCellX', 'nbrCellY', 'nbrCellZ', 'dx', 'dy', 'dz'];
-len( paramList )
-print( paramList[:] )
-print( paramList[2] )
-
-interpOrder_l=[1, 2, 3, 4]
-case_l=[0] 
-#dim_l =[0, 1, 2] 
-dim_l =[0] 
-
-
-maxNbrDim = 3
-
-nbrTestCases = len(interpOrder_l)*len(dim_l)*len(Qty_l)*len(case_l)
-print( nbrTestCases )
-
-caseParamsTable = np.zeros((nbrTestCases, len(paramList) + 2*maxNbrDim))
-
-col_l = np.arange( len(paramList) )
-print( col_l )
-
-
-iord_l=np.arange( len(interpOrder_l) ) 
-print( iord_l )
-
-iqty_l=np.arange( len(Qty_l) ) 
-print( iqty_l )
-
-# ------- Debug commands -------
-for icase in case_l:
-    for idim in dim_l:
-        for iqty in iqty_l:
-            print( "field : %s, direction : %s, centering : %s" % 
-                  (Qty_l[iqty][1], Direction_l[idim][1], 
-                   qtyCentering(Qty_l[iqty][1], Direction_l[idim][1]) ) )  
-                   
-            print( "Nbr of cells = %d" % nbrCells(Direction_l[idim][1], icase) )
-                   
-            print( "Nbr of ghost cells = %d on each side" % 
-            nbrGhosts(interpOrder_l[0], Qty_l[iqty][1], Direction_l[idim][1]) )
-            
-            print( "Alloc size = %d" %
-            allocSize(interpOrder_l[0], Qty_l[iqty][1], Direction_l[idim][1], icase) )
-            
-            print( physicalStartIndex(interpOrder_l[0], Qty_l[iqty][1], Direction_l[idim][1]),
-                   physicalEndIndex(interpOrder_l[0], Qty_l[iqty][1], Direction_l[idim][1], icase), 
-                   ghostEndIndex(interpOrder_l[0], Qty_l[iqty][1], Direction_l[idim][1], icase)  )
-# ------------------------------
-
-f = open("fieldCoords_summary.txt", "w")
-for iord in iord_l:
-    for icase in case_l:
-        for idim in dim_l:
-            for iqty in iqty_l:   
-                f.write(("%03d %d %s %03d %4.1f ") % 
-                   (interpOrder_l[iord],
-                    dim_l[idim]+1,
-                    Qty_l[iqty][0],
-                    nbrCells(Direction_l[idim][1], icase),
-                    spatialStep(Direction_l[idim][1], icase) ) )                   
-                   
-                iStart = physicalStartPrimal(interpOrder_l[iord])
-                iEnd   = physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)            
-                
-                iEnd = iEnd - isDual(Qty_l[iqty][1], Direction_l[idim][1])                
-
-                # f.write(("Primal start = %03d \n") % (iStart))
-                # f.write(("Primal end   = %03d \n") % (iEnd))
-
-                f.write(("%d %d ") % (iStart, iEnd))
-                f.write(("%6.2f %6.2f %6.2f\n") % (origin[0], origin[1], origin[2]))
-
-f.close()
-
-
-for iord in iord_l:
+if __name__ == "__main__":
+    paramList = ['interpOrder', 'nbDims', 'Quantity', 'nbrCellX', 'nbrCellY', 'nbrCellZ', 'dx', 'dy', 'dz'];
+    len( paramList )
+    print( paramList[:] )
+    print( paramList[2] )
+    
+    interpOrder_l=[1, 2, 3, 4]
+    case_l=[0] 
+    #dim_l =[0, 1, 2] 
+    dim_l =[0] 
+    
+    
+    maxNbrDim = 3
+    
+    nbrTestCases = len(interpOrder_l)*len(dim_l)*len(Qty_l)*len(case_l)
+    print( nbrTestCases )
+    
+    caseParamsTable = np.zeros((nbrTestCases, len(paramList) + 2*maxNbrDim))
+    
+    col_l = np.arange( len(paramList) )
+    print( col_l )
+    
+    
+    iord_l=np.arange( len(interpOrder_l) ) 
+    print( iord_l )
+    
+    iqty_l=np.arange( len(Qty_l) ) 
+    print( iqty_l )
+    
+    # ------- Debug commands -------
     for icase in case_l:
         for idim in dim_l:
             for iqty in iqty_l:
-                f = open(("fieldCoords_ord%d_dim%d_%s_case%d.txt") % 
-                (interpOrder_l[iord], dim_l[idim]+1, Qty_l[iqty][1], icase), "w")
-                    
-                iStart = physicalStartPrimal(interpOrder_l[iord])
-                iEnd   = physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)            
+                print( "field : %s, direction : %s, centering : %s" % 
+                      (Qty_l[iqty][1], Direction_l[idim][1], 
+                       qtyCentering(Qty_l[iqty][1], Direction_l[idim][1]) ) )  
+                       
+                print( "Nbr of cells = %d" % nbrCells(Direction_l[idim][1], icase) )
+                       
+                print( "Nbr of ghost cells = %d on each side" % 
+                nbrGhosts(interpOrder_l[0], Qty_l[iqty][1], Direction_l[idim][1]) )
                 
-                iEnd = iEnd - isDual(Qty_l[iqty][1], Direction_l[idim][1])                      
+                print( "Alloc size = %d" %
+                allocSize(interpOrder_l[0], Qty_l[iqty][1], Direction_l[idim][1], icase) )
+                
+                print( physicalStartIndex(interpOrder_l[0], Qty_l[iqty][1], Direction_l[idim][1]),
+                       physicalEndIndex(interpOrder_l[0], Qty_l[iqty][1], Direction_l[idim][1], icase), 
+                       ghostEndIndex(interpOrder_l[0], Qty_l[iqty][1], Direction_l[idim][1], icase)  )
+    # ------------------------------
+    
+    f = open("fieldCoords_summary.txt", "w")
+    for iord in iord_l:
+        for icase in case_l:
+            for idim in dim_l:
+                for iqty in iqty_l:   
+                    f.write(("%03d %d %s %03d %4.1f ") % 
+                       (interpOrder_l[iord],
+                        dim_l[idim]+1,
+                        Qty_l[iqty][0],
+                        nbrCells(Direction_l[idim][1], icase),
+                        spatialStep(Direction_l[idim][1], icase) ) )                   
+                       
+                    iStart = physicalStartPrimal(interpOrder_l[iord])
+                    iEnd   = physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)            
                     
-                for iprimal in range(iStart, iEnd+1):
-                    x = fieldCoords(iprimal, iStart, Qty_l[iqty][1], Direction_l[idim], \
-                                    spatialStep(Direction_l[idim][1], icase), origin)
-                    f.write(("%8.2f ") % (x))
-    																								
-                f.close()
+                    iEnd = iEnd - isDual(Qty_l[iqty][1], Direction_l[idim][1])                
+    
+                    # f.write(("Primal start = %03d \n") % (iStart))
+                    # f.write(("Primal end   = %03d \n") % (iEnd))
+    
+                    f.write(("%d %d ") % (iStart, iEnd))
+                    f.write(("%6.2f %6.2f %6.2f\n") % (origin[0], origin[1], origin[2]))
+    
+    f.close()
+    
+    
+    for iord in iord_l:
+        for icase in case_l:
+            for idim in dim_l:
+                for iqty in iqty_l:
+                    f = open(("fieldCoords_ord%d_dim%d_%s_case%d.txt") % 
+                    (interpOrder_l[iord], dim_l[idim]+1, Qty_l[iqty][1], icase), "w")
+                        
+                    iStart = physicalStartPrimal(interpOrder_l[iord])
+                    iEnd   = physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)            
+                    
+                    iEnd = iEnd - isDual(Qty_l[iqty][1], Direction_l[idim][1])                      
+                        
+                    for iprimal in range(iStart, iEnd+1):
+                        x = fieldCoords(iprimal, iStart, Qty_l[iqty][1], Direction_l[idim], \
+                                        spatialStep(Direction_l[idim][1], icase), origin)
+                        f.write(("%8.2f ") % (x))
+        																								
+                    f.close()
 
 
 #np.savetxt("gridlayouttest.txt", caseParamsTable, delimiter=" ", fmt="%4.1f")
