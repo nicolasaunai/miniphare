@@ -23,11 +23,13 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
     // because they USE data in hybridQtycentering_
     initPhysicalStart( gridData ) ;
     initPhysicalEnd  ( gridData ) ;
-    initGhostStart( gridData ) ;
     initGhostEnd  ( gridData ) ;
 
 
 }
+
+
+
 
 
 void GridLayoutImplYee::initLayoutCentering( const gridDataT & data )
@@ -63,10 +65,16 @@ void GridLayoutImplYee::initLayoutCentering( const gridDataT & data )
 
 
 
+
+
+
 AllocSizeT GridLayoutImplYee::allocSize( HybridQuantity qty ) const
 {
     return allocSize_(qty);
 }
+
+
+
 
 
 // TODO : WARNING 1st order only
@@ -78,29 +86,64 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
 
 
 
+
+
 // start and end index used in computing loops
 uint32 GridLayoutImplYee::physicalStartIndex(Field const& field, Direction direction) const
 {
-    return physicalStartIndexV(field, direction);
+    return physicalStartIndex_(field, direction);
 }
+
+
+
+
+
+uint32 GridLayoutImplYee::physicalStartIndex( QtyCentering centering,
+                                              Direction direction     ) const
+{
+    return physicalStartIndex_(centering , direction); //cellIndexAtMin(centering, direction) ;
+}
+
+
+
 
 
 uint32 GridLayoutImplYee::physicalEndIndex(Field const& field, Direction direction) const
 {
-    return physicalEndIndexV(field, direction);
+    return physicalEndIndex_(field, direction);
 }
+
+
+
+
+
+uint32 GridLayoutImplYee::physicalEndIndex( QtyCentering centering,
+                                            Direction direction     ) const
+{
+    return physicalEndIndex_(centering, direction);//cellIndexAtMax(centering, direction) ;
+}
+
+
+
 
 
 uint32 GridLayoutImplYee::ghostStartIndex(Field const& field, Direction direction) const
 {
-    return ghostStartIndexV(field, direction);
+    // should we directly return 0 and remove ghostStartIndex_ ?
+    return ghostStartIndex_(field, direction);
 }
+
+
+
 
 
 uint32 GridLayoutImplYee::ghostEndIndex(Field const& field, Direction direction) const
 {
-    return ghostEndIndexV(field, direction);
+    return ghostEndIndex_(field, direction);
 }
+
+
+
 
 
 Point GridLayoutImplYee::fieldNodeCoordinates(
@@ -111,6 +154,10 @@ Point GridLayoutImplYee::fieldNodeCoordinates(
 }
 
 
+
+
+
+
 Point GridLayoutImplYee::cellCenteredCoordinates(
         const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const
 {
@@ -118,18 +165,8 @@ Point GridLayoutImplYee::cellCenteredCoordinates(
 }
 
 
-uint32 GridLayoutImplYee::indexAtMin( QtyCentering centering,
-                                      Direction direction     ) const
-{
-    return cellIndexAtMin(centering, direction) ;
-}
 
 
-uint32 GridLayoutImplYee::indexAtMax( QtyCentering centering,
-                                      Direction direction     ) const
-{
-    return cellIndexAtMax(centering, direction) ;
-}
 
 
 void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const

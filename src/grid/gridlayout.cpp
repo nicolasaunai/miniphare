@@ -82,10 +82,22 @@ GridLayout::GridLayout(GridLayout&& source)
 
 
 
+
+
 uint32 GridLayout::physicalStartIndex(Field const& field, Direction direction) const
 {
     return implPtr_->physicalStartIndex(field, direction);
 }
+
+
+
+
+
+uint32 GridLayout::physicalStartIndex( QtyCentering centering, Direction direction ) const
+{
+    return implPtr_->physicalStartIndex( centering, direction ) ;
+}
+
 
 
 
@@ -98,6 +110,18 @@ uint32 GridLayout::physicalEndIndex(Field const& field, Direction direction) con
 
 
 
+
+
+uint32 GridLayout::physicalEndIndex( QtyCentering centering, Direction direction ) const
+{
+    return implPtr_->physicalEndIndex( centering, direction ) ;
+}
+
+
+
+
+
+
 uint32 GridLayout::ghostStartIndex(Field const& field, Direction direction) const
 {
     return implPtr_->ghostStartIndex(field, direction);
@@ -105,10 +129,14 @@ uint32 GridLayout::ghostStartIndex(Field const& field, Direction direction) cons
 
 
 
+
+
 uint32 GridLayout::ghostEndIndex  (Field const& field, Direction direction) const
 {
     return implPtr_->ghostEndIndex(field, direction);
 }
+
+
 
 
 
@@ -127,16 +155,24 @@ void GridLayout::deriv(Field const& operand, Direction direction, Field& derivat
 }
 
 
+
+
+
 AllocSizeT GridLayout::allocSize(HybridQuantity qtyType) const
 {
     return implPtr_->allocSize( qtyType ) ;
 }
 
 
+
+
+
 AllocSizeT  GridLayout::allocSizeDerived( HybridQuantity qty, Direction dir ) const
 {
     return implPtr_->allocSizeDerived( qty, dir ) ;
 }
+
+
 
 
 Point GridLayout::fieldNodeCoordinates( const Field & field, const Point & origin,
@@ -146,22 +182,15 @@ Point GridLayout::fieldNodeCoordinates( const Field & field, const Point & origi
 }
 
 
+
+
+
 Point GridLayout::cellCenteredCoordinates( const Point & origin,
                                             uint32 ix, uint32 iy, uint32 iz ) const
 {
     return implPtr_->cellCenteredCoordinates( origin, ix, iy, iz ) ;
 }
 
-
-uint32 GridLayout::indexAtMin( QtyCentering centering, Direction direction ) const
-{
-    return implPtr_->indexAtMin( centering, direction ) ;
-}
-
-uint32 GridLayout::indexAtMax( QtyCentering centering, Direction direction ) const
-{
-    return implPtr_->indexAtMax( centering, direction ) ;
-}
 
 
 /* ---------------------------------------------------------------------------

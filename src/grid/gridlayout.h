@@ -89,6 +89,9 @@ public:
 
     uint32 physicalStartIndex(Field const& field, Direction direction) const;
     uint32 physicalEndIndex  (Field const& field, Direction direction) const;
+    uint32 physicalStartIndex( QtyCentering centering, Direction direction ) const ;
+    uint32 physicalEndIndex  ( QtyCentering centering, Direction direction ) const ;
+
 
     uint32 ghostStartIndex(Field const& field, Direction direction) const;
     uint32 ghostEndIndex  (Field const& field, Direction direction) const;
@@ -104,8 +107,6 @@ public:
     Point cellCenteredCoordinates( const Point & origin,
                                    uint32 ix, uint32 iy, uint32 iz ) const;
 
-    uint32 indexAtMin( QtyCentering centering, Direction direction ) const ;
-    uint32 indexAtMax( QtyCentering centering, Direction direction ) const ;
 
 };
 

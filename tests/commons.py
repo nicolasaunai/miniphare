@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-#"""
-#Created on Mon Oct 10 11:24:42 2016
-#
-#@author: mdrouin
-#"""
-
 import numpy as np
 import math
+
+
+
+
 
 
 nbPadding = [10,10,10]

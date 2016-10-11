@@ -219,11 +219,11 @@ for iord in iord_l:
                 (interpOrder_l[iord], dim_l[idim]+1, Qty_l[iqty][1], icase), "w")
                     
                 iStart = physicalStartPrimal(interpOrder_l[iord])
-                iEnd   = physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)            
+                iEnd   = physicalEndPrimal  (interpOrder_l[iord], Direction_l[idim][1], icase)
                 
                 iEnd = iEnd - isDual(Qty_l[iqty][1], Direction_l[idim][1])                      
                     
-                for iprimal in range(iStart, iEnd+1):
+                for iprimal in np.arange(iStart, iEnd+1):
                     x = fieldCoords(iprimal, iStart, Qty_l[iqty][1], Direction_l[idim], \
                                     spatialStep(Direction_l[idim][1], icase), origin)
                     f.write(("%8.2f ") % (x))

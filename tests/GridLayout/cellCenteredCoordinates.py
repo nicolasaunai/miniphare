@@ -8,7 +8,7 @@ import numpy as np
 import sys
 sys.path.insert(0, '../')
 
-import commons 
+#import commons
 
 nbPadding = [10,10,10]
 

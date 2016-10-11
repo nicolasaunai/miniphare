@@ -8,8 +8,8 @@ SUBDIRS += faraday
 
 # if macx else unix
 macx {
-    LIBS += -L/opt/local/lib -lgtest -lgmock
-    INCLUDEPATH += /opt/local/include
+    LIBS += -L/usr/local/lib -lgtest -lgmock
+    INCLUDEPATH += /usr/local/include
 } unix {
     LIBS += -L/usr/lib -lpthread -lgtest -lgmock
     INCLUDEPATH += /usr/include/gtest
@@ -27,12 +27,12 @@ SOURCES += ../../src/Faraday/faraday.cpp \
            ../../src/Faraday/faradayimpl1d.cpp \
            ../../src/grid/gridlayout.cpp \
            ../../src/grid/gridlayoutimplyee.cpp \
-           ../../src/grid/gridlayoutimpl.cpp \
-           ../../src/Field/field.cpp \ 
+           ../../src/grid/gridlayoutimplinternals.cpp \
+           ../../src/Field/field.cpp \
            ../../src/vecfield/vecfield.cpp \
            test_main.cpp \
            test_utilities.cpp \
-           test_faraday1d.cpp 
+           test_faraday1d.cpp
 
 HEADERS += ../../src/Faraday/faradayfactory.h \
            ../../src/Faraday/faraday.h \
@@ -42,9 +42,10 @@ HEADERS += ../../src/Faraday/faradayfactory.h \
            ../../src/grid/gridlayoutimplfactory.h \
            ../../src/grid/gridlayoutimplyee.h \
            ../../src/grid/gridlayoutimpl.h \
+           ../../src/grid/gridlayoutimplinternals.h \
            ../../src/types.h \
            ../../src/constants.h \
            ../../src/utility.h \
-           ../../src/Field/field.h \ 
+           ../../src/Field/field.h \
            ../../src/vecfield/vecfield.h \
            test_faraday.h
