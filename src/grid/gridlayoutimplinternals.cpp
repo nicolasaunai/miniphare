@@ -455,14 +455,14 @@ uint32 GridLayoutImplInternals::nbrGhosts( QtyCentering centering ) const noexce
 
 uint32 GridLayoutImplInternals::isDual( QtyCentering centering ) const noexcept
 {
-    uint32 offset = 0 ;
+    uint32 isdual = 0 ;
 
     if( centering == QtyCentering::dual )
     {
-        offset = 1 ;
+        isdual = 1 ;
     }
 
-    return offset ;
+    return isdual ;
 }
 
 
