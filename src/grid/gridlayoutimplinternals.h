@@ -68,9 +68,12 @@ protected:
                             std::array<double,3> dxdydz      );
 
 
+    double inverseSpatialStep( Direction direction ) const noexcept
+    {return odxdydz_[static_cast<uint32>(direction)]; }
+
+
     void computeNbrGhosts(uint32 ghostParameter ) ;
 
-    double inverseSpatialStep( Direction direction ) const noexcept ;
 
     uint32 physicalStartIndex_(Field const& field, Direction direction) const;
     uint32 physicalStartIndex_(QtyCentering centering, Direction direction) const;
@@ -100,7 +103,6 @@ protected:
     QtyCentering changeCentering( QtyCentering layout ) const ;
     QtyCentering derivedCentering( HybridQuantity qty, Direction dir) const ;
 
-    uint32 nbrPhysicalCells( Direction direction ) const noexcept;
 
     uint32 nbrGhosts( QtyCentering centering ) const noexcept;
     uint32 isDual( QtyCentering centering ) const noexcept;
