@@ -108,13 +108,13 @@ void GridLayoutImplInternals::initGhostEnd( const gridDataT & data )
                                               + nbrGhosts(data.primal);
 
     ghostEndIndexTable_[idual][data.idirX]   =  physicalEndIndexTable_[idual][data.idirX]
-                                              + nbrGhosts(data.primal);
+                                              + nbrGhosts(data.dual);
 
     ghostEndIndexTable_[idual][data.idirY]   =  physicalEndIndexTable_[idual][data.idirY]
-                                              + nbrGhosts(data.primal);
+                                              + nbrGhosts(data.dual);
 
     ghostEndIndexTable_[idual][data.idirZ]   =  physicalEndIndexTable_[idual][data.idirZ]
-                                              + nbrGhosts(data.primal);
+                                              + nbrGhosts(data.dual);
 
 
 
@@ -259,7 +259,7 @@ uint32 GridLayoutImplInternals::physicalEndIndex_(Field const& field, Direction 
 
     uint32 iCentering = static_cast<uint32>(hybridQtyCentering_[iQty][iDir]);
 
-    return physicalStartIndexTable_[iCentering][iDir];
+    return physicalEndIndexTable_[iCentering][iDir];
 }
 
 
