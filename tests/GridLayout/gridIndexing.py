@@ -12,7 +12,7 @@ import sys
 sys.path.insert(0, '../')
 
 import gridlayout
-
+import os
 
 
 
@@ -64,7 +64,7 @@ def main(path='./'):
     gl = gridlayout.GridLayout()
 
 
-    f = open("gridIndexing.txt", "w")
+    f = open(os.path.join(path,"gridIndexing.txt"), "w")
 
     for iord in iord_l:
         for icase in icase_l:

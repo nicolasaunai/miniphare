@@ -12,6 +12,7 @@ import numpy as np
 
 import sys
 sys.path.insert(0, '../')
+import os
 
 import gridlayout
 
@@ -70,7 +71,7 @@ def main(path='./'):
     print( iqty_l )
 
 
-    f = open("allocSizes.txt", "w")
+    f = open(os.path.join(path,"allocSizes.txt"), "w")
 
     for iord in iord_l:
         for icase in icase_l:

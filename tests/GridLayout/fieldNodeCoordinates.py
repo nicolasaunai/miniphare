@@ -8,7 +8,7 @@ import sys
 sys.path.insert(0, '../')
 
 import gridlayout
-
+import os
 
 
 # ---- Get coordinate methods -------------------------
@@ -89,7 +89,7 @@ def main(path='./'):
 
     # ------------------------------
 
-    f = open("fieldCoords_summary.txt", "w")
+    f = open(os.path.join(path,"fieldCoords_summary.txt"), "w")
     for iord in iord_l:
         for icase in case_l:
             for idim in dim_l:
@@ -125,8 +125,8 @@ def main(path='./'):
                     nbcells   = nbrCells[Direction_l[idim][1]][icase]
                     stepSize = meshSize[Direction_l[idim][1]][icase]
 
-                    f = open(("fieldCoords_ord%d_dim%d_%s_case%d.txt") %
-                    (interpOrder_l[iord], dim_l[idim]+1, Qty_l[iqty][1], icase), "w")
+                    f = open((os.path.join(path,"fieldCoords_ord%d_dim%d_%s_case%d.txt") %
+                    (interpOrder_l[iord], dim_l[idim]+1, Qty_l[iqty][1], icase)), "w")
 
                     iStart = gl.physicalStartPrimal(interpOrder_l[iord])
                     iEnd   = gl.physicalEndPrimal  (interpOrder_l[iord], nbcells)

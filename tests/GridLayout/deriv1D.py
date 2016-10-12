@@ -8,6 +8,7 @@ import sys
 sys.path.insert(0, '../')
 
 import gridlayout
+import os
 
 
 # --------- mathematical functions ----------------------
@@ -135,7 +136,7 @@ def main(path='./'):
     nbcells = nbrCells[Direction_l[idim][1]][icase]
     stepSize = meshSize[Direction_l[idim][1]][icase]
 
-    f = open("deriv1D_summary.txt", "w")
+    f = open(os.path.join(path,"deriv1D_summary.txt"), "w")
 
     for ifunc in ifunc_l:
         f.write(("%03d %d %s %03d %5.4f ") %
@@ -157,7 +158,7 @@ def main(path='./'):
 
 
     for ifunc in ifunc_l:
-        f = open( ("deriv1D_%s_%s.txt") % (Qty_l[iqty][1], function_l[ifunc]), "w")
+        f = open( os.path.join(path,"deriv1D_%s_%s.txt" % (Qty_l[iqty][1], function_l[ifunc]) ), "w")
 
         iStart = gl.physicalStartPrimal(interpOrder_l[iord])
         iEnd   = gl.physicalEndPrimal  (interpOrder_l[iord], nbcells)
