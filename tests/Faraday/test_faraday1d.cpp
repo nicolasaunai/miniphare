@@ -39,9 +39,6 @@ public:
 
         GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
-        // Here the Field sizes for allocations are overestimated
-//        AllocSizeT allocSize{2*inputs.nbrCells[0],1,1};
-
         std::string testName = inputs.testName ;
 
 
@@ -60,15 +57,27 @@ public:
 
                 std::cout << filename << std::endl ;
 
-                std::ifstream ifs1{filename};
-                if (!ifs1 )
+                std::ifstream ifs2{filename};
+                if (!ifs2 )
                 {
                     std::cout << "Could not open file : " << filename << std::endl ;
                     exit(-1);
                 }
 
-//                uint32 iStart = gl.physicalStartIndex( qty, Direction::X ) ;
-//                uint32 iEnd   = gl.physicalEndIndex( qty, Direction::X ) ;
+                // we find out the field size
+                auto allocSize = gl.allocSize(qty) ;
+
+                Field EMfieldComponent{allocSize , qty, "fieldName" };
+
+                uint32 iStart = gl.physicalStartIndex( EMfieldComponent, Direction::X ) ;
+                uint32 iEnd   = gl.physicalEndIndex  ( EMfieldComponent, Direction::X ) ;
+                for(uint32 ik=iStart ; ik<=iEnd ; ++ik)
+                {
+                    ifs2 >> inputs.fieldInputs[iqty].x[ik] ;
+                    ifs2 >> inputs.fieldInputs[iqty].field[ik] ;
+                }
+
+                // Update B components with Maxwell Faraday's equation
 
 
 
@@ -161,13 +170,9 @@ public:
 /***********************************************************/
 TEST_P(Faraday1D, testFunction3)
 {
-    // This test is only for Bx field
-    if( inputs.qtyName == "Bx" )
-    {
-        EXPECT_THAT( actual_array, \
-                     ::testing::Pointwise(FloatNear(precision), expected_array) ) ;
-    }
 
+    EXPECT_THAT( actual_array, \
+                 ::testing::Pointwise(FloatNear(precision), expected_array) ) ;
 }
 
 
