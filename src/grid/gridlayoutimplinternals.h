@@ -16,12 +16,19 @@
  * common to all GridLayoutImpl derived classes (ex: GridLayoutImplYee).
  *
  * Most of the implementations needed to handle GridLayout operations are provided
- * by GridLayoutImplInternals' methods.
+ * by GridLayoutImplInternals' methods. A lot of operations on a quantity
+ * actually only depend on the centering of the quantity, namely whether it is
+ * a primal or dual centering. The only thing GridlayoutImplInternals
  *
  */
 class GridLayoutImplInternals
 {
 
+    // ------------------------------------------------------------------------
+    //                              PRIVATE
+    //
+    //   this is just for GridLayoutImplInternals
+    // ------------------------------------------------------------------------
 private:
 
     std::array<uint32, NBR_COMPO>
@@ -29,14 +36,14 @@ private:
 
 
 
-
+    // ------------------------------------------------------------------------
+    //                             PROTECTED
+    //
+    // this code will be shared by all concreteof GridLayoutImpl*
+    // ------------------------------------------------------------------------
 protected:
 
     uint32 nbdims_;
-
-    uint32 nbrCellx_  ;
-    uint32 nbrCelly_  ;
-    uint32 nbrCellz_  ;
 
     uint32 nbrPrimalGhosts_ ;
     uint32 nbrDualGhosts_ ;
@@ -56,14 +63,15 @@ protected:
     std::array< std::array<uint32, 3>, 2 > ghostEndIndexTable_;
 
 
-
+    GridLayoutImplInternals(uint32 nbDims, uint32 ghostParameter,
+                            std::array<uint32,3> nbrCellsXYZ ,
+                            std::array<double,3> dxdydz      );
 
 
     void computeNbrGhosts(uint32 ghostParameter ) ;
 
     double inverseSpatialStep( Direction direction ) const noexcept ;
 
-    // start and end index used in computing loops
     uint32 physicalStartIndex_(Field const& field, Direction direction) const;
     uint32 physicalStartIndex_(QtyCentering centering, Direction direction) const;
 
@@ -72,8 +80,6 @@ protected:
 
     uint32 ghostStartIndex_   (Field const& field, Direction direction) const;
     uint32 ghostEndIndex_     (Field const& field, Direction direction) const;
-
-
 
     AllocSizeT allocSize_( HybridQuantity qty ) const;
     AllocSizeT allocSizeDerived_( HybridQuantity qty, Direction dir ) const;
@@ -85,20 +91,6 @@ protected:
     Point cellCenteredCoordinates_(const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const;
 
 
-
-
-//public:
-
-    // minimum nbr of cells in a non-invariant direction
-    //    static const uint32 minNbrCells = 10;
-
-    //static const uint32 defaultNbrPaddingCells = 0;
-
-    GridLayoutImplInternals(uint32 nbDims, uint32 ghostParameter,
-                            std::array<uint32,3> nbrCellsXYZ ,
-                            std::array<double,3> dxdydz      );
-
-    void initGridUtils( const gridDataT & data ) ;
 
     void initPhysicalStart( const gridDataT & data ) ;
     void initPhysicalEnd  ( const gridDataT & data ) ;

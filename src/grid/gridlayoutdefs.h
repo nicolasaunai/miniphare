@@ -10,18 +10,15 @@ enum class Direction{ X, Y, Z } ;
 
 enum class QtyCentering{ primal, dual } ;
 
-//enum class EMFieldType{ EVecField, BVecField } ;
 
 
 
 /**
- * @brief gridDataT is used by GridLayoutImplYee constructor.
- * It provides constants used to initialize:
+ * @brief gridDataT provides constants used to initialize:
  * - hybridQuantity centerings
  * - physical start/end indexes
  * - ghost start/end indexes
  * - numbers of padding cells and physical cells
- *
  */
 struct gridDataT
 {

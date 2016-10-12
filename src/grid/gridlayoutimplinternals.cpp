@@ -10,22 +10,11 @@ GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims, uint32 ghostPara
                                                  std::array<uint32,3> nbrCellsXYZ ,
                                                  std::array<double,3> dxdydz      )
     : nbdims_{nbDims},
-      nbrCellx_{nbrCellsXYZ[0]}, nbrCelly_{nbrCellsXYZ[1]}, nbrCellz_{nbrCellsXYZ[2]},
       dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]},
-      odxdydz_{ {1./dx_, 1./dy_, 1./dz_} }
+      odxdydz_{ {1./dx_, 1./dy_, 1./dz_} },
+      nbrPhysicalCells_{ {nbrCellsXYZ[0], nbrCellsXYZ[1], nbrCellsXYZ[2] }}
 {
     computeNbrGhosts( ghostParameter );
-}
-
-
-
-
-
-void GridLayoutImplInternals::initGridUtils( const gridDataT & data )
-{
-    nbrPhysicalCells_[data.idirX] = nbrCellx_ ;
-    nbrPhysicalCells_[data.idirY] = nbrCelly_ ;
-    nbrPhysicalCells_[data.idirZ] = nbrCellz_ ;
 }
 
 
@@ -51,7 +40,13 @@ void GridLayoutImplInternals::initPhysicalStart( const gridDataT & data )
 
 
 
-
+/**
+ * @brief GridLayoutImplInternals::initPhysicalEnd intialize the table of indices
+ * corresponding to the last node for primal and dual centering.
+ * The formula is simple : the last index is obtained from the first one
+ * (which is physicalStartIndex of primal/dual in a given direction)
+ *  + the number of cells minus 1 for dual nodes only.
+ */
 void GridLayoutImplInternals::initPhysicalEnd( const gridDataT & data )
 {
     uint32 iprimal = static_cast<uint32>(data.primal);
@@ -85,14 +80,13 @@ void GridLayoutImplInternals::initPhysicalEnd( const gridDataT & data )
 }
 
 
-/*
-void GridLayoutImplInternals::initGhostStart( const gridDataT & data )
-{
-    ghostStartIndexTable_[]
-
-}*/
 
 
+/**
+ * @brief GridLayoutImplInternals::initGhostEnd calculate and stores the index
+ * of the last primal and dual nodes in each direction. The formula simply
+ * consists in starting at physicalEndIndex() and to add the number of ghost nodes.
+ */
 void GridLayoutImplInternals::initGhostEnd( const gridDataT & data )
 {
     uint32 iprimal = static_cast<uint32>(data.primal);
@@ -120,22 +114,33 @@ void GridLayoutImplInternals::initGhostEnd( const gridDataT & data )
 
 
 
+/**
+ * @brief GridLayoutImplInternals::derivedCentering this function returns the centering
+ * (primal or dual) of a quantity after a first order derivation. dual becomes primal
+ * and primal becomes dual. hybridQuantityCentering is used to know if the HybridQuantity
+ * 'qty' is primal or dual in the Direction 'dir'
+ */
 QtyCentering GridLayoutImplInternals::derivedCentering(HybridQuantity qty, Direction dir) const
 {
 
     uint32 iField = static_cast<uint32>( qty ) ;
     uint32 idir   = static_cast<uint32>( dir ) ;
 
-    QtyCentering newLayout = changeCentering( hybridQtyCentering_[iField][idir] ) ;
+    QtyCentering newCentering = changeCentering( hybridQtyCentering_[iField][idir] ) ;
 
-    return newLayout ;
+    return newCentering ;
 }
 
 
 
 
 
-
+/**
+ * @brief GridLayoutImplInternals::nodeNbrFromCentering_ returns an array containing
+ * the total number of nodes (ghosts + physical) in each direction.
+ * The calculation is easy : there are nbrPhysicalCells + 1 nodes in the domain
+ * + 2 times the number of ghost nodes.
+ */
 std::array<uint32, NBR_COMPO> GridLayoutImplInternals::nodeNbrFromCentering_(
         std::array<QtyCentering, NBR_COMPO> const & qtyCenterings ) const
 {

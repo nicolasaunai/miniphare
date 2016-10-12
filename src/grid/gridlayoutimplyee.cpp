@@ -15,7 +15,7 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
 
     gridDataT gridData{} ;
 
-    initGridUtils( gridData ) ;
+   // initGridUtils( gridData ) ;
 
     initLayoutCentering( gridData ) ;
 
