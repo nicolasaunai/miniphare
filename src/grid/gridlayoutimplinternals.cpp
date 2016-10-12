@@ -191,21 +191,27 @@ AllocSizeT  GridLayoutImplInternals::allocSizeDerived_( HybridQuantity qty, Dire
     gridDataT data{} ;
 
     uint32 iDerivedDir = static_cast<uint32>( dir ) ;
-
     uint32 iQty = static_cast<uint32>(qty) ;
 
+    // get the centering of the derivative of 'qty' in the direction of derivation
+    QtyCentering newCentering = derivedCentering( qty, dir ) ;
+
+
+    // now copy the original centering...
     std::array<QtyCentering, NBR_COMPO>
             qtyCenterings{ {hybridQtyCentering_[iQty][data.idirX],
                             hybridQtyCentering_[iQty][data.idirY],
                             hybridQtyCentering_[iQty][data.idirZ]} } ;
 
-    QtyCentering newCentering = derivedCentering( qty, dir ) ;
 
+    // ...and permute the centering in the direction of derivation
     qtyCenterings[iDerivedDir] = newCentering ;
 
-    auto allocSizes = nodeNbrFromCentering_( qtyCenterings ) ;
+    // get the total number of nodes (ghost + physical) for the new centering
+    auto sizeArray = nodeNbrFromCentering_( qtyCenterings ) ;
 
-    return AllocSizeT( allocSizes[0], allocSizes[1], allocSizes[2] );
+    // and ship it in a AllocSizeT structure.
+    return AllocSizeT( sizeArray[0], sizeArray[1], sizeArray[2] );
 }
 
 
@@ -228,7 +234,6 @@ uint32 GridLayoutImplInternals::physicalStartIndex_(Field const& field, Directio
 {
     uint32 iQty = static_cast<uint32>(field.hybridQty());
     uint32 iDir = static_cast<uint32>(direction);
-
     uint32 iCentering = static_cast<uint32>(hybridQtyCentering_[iQty][iDir]);
 
     return physicalStartIndexTable_[iCentering][iDir];
@@ -243,6 +248,7 @@ uint32 GridLayoutImplInternals::physicalEndIndex_(QtyCentering centering, Direct
 {
     uint32 icentering = static_cast<uint32>(centering);
     uint32 iDir = static_cast<uint32>(direction);
+
     return physicalEndIndexTable_[icentering][iDir];
 }
 
@@ -254,7 +260,6 @@ uint32 GridLayoutImplInternals::physicalEndIndex_(Field const& field, Direction 
 {
     uint32 iQty = static_cast<uint32>(field.hybridQty());
     uint32 iDir = static_cast<uint32>(direction);
-
     uint32 iCentering = static_cast<uint32>(hybridQtyCentering_[iQty][iDir]);
 
     return physicalEndIndexTable_[iCentering][iDir];
@@ -312,7 +317,8 @@ QtyCentering GridLayoutImplInternals::changeCentering(QtyCentering centering ) c
 /**
  * @brief fieldNodeCoordinates returns a Point,
  * the idea is to make in every initializer
- * method, 3 nested loops over primal PhysicalStart/End indices
+ * method, 3 nested loops over primal PhysicalStart/End indices and to get
+ * the physical coordinate of those mesh nodes for the considered field.
  * @param field
  * the returned point depends on the field's centering
  * @param origin
@@ -322,9 +328,8 @@ QtyCentering GridLayoutImplInternals::changeCentering(QtyCentering centering ) c
  * @return Point
  * the desired field-centered coordinate
  */
-Point GridLayoutImplInternals::fieldNodeCoordinates_(
-        const Field & field, const Point & origin,
-        uint32 ix, uint32 iy, uint32 iz ) const
+Point GridLayoutImplInternals::fieldNodeCoordinates_( const Field & field, const Point & origin,
+                                                      uint32 ix, uint32 iy, uint32 iz ) const
 {
     uint32 idirX   = static_cast<uint32>(Direction::X) ;
     uint32 idirY   = static_cast<uint32>(Direction::Y) ;
@@ -371,6 +376,8 @@ Point GridLayoutImplInternals::fieldNodeCoordinates_(
  * @brief cellCenteredCoordinates returns a cell-centered Point.
  * The idea is to call this method in every initializer method
  * using 3 nested loops over primal PhysicalStart/End indices.
+ * This function will typically used to evaluate the density at initialization
+ * phases, since it is usually defined at cell centers.
  * @param origin
  * @param ix is a primal index
  * @param iy is a primal index
@@ -433,7 +440,11 @@ void GridLayoutImplInternals::computeNbrGhosts(uint32 ghostParameter)
 
 
 
-
+/**
+ * @brief GridLayoutImplInternals::nbrGhosts
+ * @param centering QtyCentering::primal or QtyCentering::dual
+ * @return the number of ghost nodes on each side of the mesh for a given centering
+ */
 uint32 GridLayoutImplInternals::nbrGhosts( QtyCentering centering ) const noexcept
 {
     uint32 nbrGhosts = nbrPrimalGhosts_ ;
@@ -442,14 +453,18 @@ uint32 GridLayoutImplInternals::nbrGhosts( QtyCentering centering ) const noexce
     {
         nbrGhosts = nbrDualGhosts_;
     }
-
     return nbrGhosts ;
 }
 
 
 
 
-
+/**
+ * @brief GridLayoutImplInternals::isDual the method is used in index calculations
+ * when we sometimes need to substract 1 when the centering is dual
+ * @param centering QtyCentering::primal or QtyCentering::dual
+ * @return return 1 if the centering is dual or 0 otherwise.
+ */
 uint32 GridLayoutImplInternals::isDual( QtyCentering centering ) const noexcept
 {
     uint32 isdual = 0 ;

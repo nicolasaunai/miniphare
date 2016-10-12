@@ -53,11 +53,12 @@ protected:
     double dz_ ;
 
     std::array<double, NBR_COMPO> odxdydz_ ;
-
     std::array<uint32, NBR_COMPO> nbrPhysicalCells_ ;
 
+    //! says for each HybridQuantity whether it is primal or dual, in each direction
     std::array< std::array<QtyCentering,NBR_COMPO>, NBR_HYBRID_QTY > hybridQtyCentering_ ;
 
+    // stores key indices in each direction (3) for primal and dual nodes (2)
     std::array< std::array<uint32, 3>, 2 > physicalStartIndexTable_;
     std::array< std::array<uint32, 3>, 2 > physicalEndIndexTable_;
     std::array< std::array<uint32, 3>, 2 > ghostEndIndexTable_;
