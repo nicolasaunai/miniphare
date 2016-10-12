@@ -42,11 +42,11 @@ public:
 
         uint32 isDual = 1 ;
 
-        uint32 iStart = gl.indexAtMin( QtyCentering::primal, Direction::X ) ;
-        uint32 iEnd   = gl.indexAtMax( QtyCentering::primal, Direction::X ) - isDual ;
+        uint32 iStart = gl.physicalStartIndex( QtyCentering::primal, Direction::X ) ;
+        uint32 iEnd   = gl.physicalEndIndex( QtyCentering::primal, Direction::X ) - isDual ;
 
-        uint32 iy = gl.indexAtMin( QtyCentering::primal, Direction::Y ) ;
-        uint32 iz = gl.indexAtMin( QtyCentering::primal, Direction::Z ) ;
+        uint32 iy = gl.physicalStartIndex( QtyCentering::primal, Direction::Y ) ;
+        uint32 iz = gl.physicalStartIndex( QtyCentering::primal, Direction::Z ) ;
 
         for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
         {

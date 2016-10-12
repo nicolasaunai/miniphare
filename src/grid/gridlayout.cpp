@@ -17,7 +17,21 @@
 
 
 
-
+/**
+ * @brief GridLayout::GridLayout constructs a GridLayout
+ * @param dxdydz  mesh resolution in each direction. Used dimensions must
+ * have a non-zero mesh size and vice-versa otherwise a runtime_error exception
+ * is thrown.
+ * @param nbrCells number of cells in the physical domain in each direction.
+ * All used dimensions must have at least GridLayout::minNbrCells=10 cells otherwise
+ * a runtime_error exception is thrown. Each non-zero nbr Cell must be associated
+ * with a non-zero mesh size (dxdydz) and vice-versa.
+ * @param nbDims number of dimenions in the problem, can be 1, 2 or 3
+ * @param layoutName is the name of the specific Grid Layout desired. For now only
+ * 'yee' is available.
+ * @param ghostParameter is an integer GridLayout uses to determine the number
+ * of ghost nodes required for each quantity in each direction.
+ */
 GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
                        uint32 nbDims      , std::string layoutName,
                        uint32 ghostParameter )
@@ -48,6 +62,8 @@ GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCell
 
 
 
+
+
 GridLayout::GridLayout(GridLayout const& source)
     : dx_{source.dx_}, dy_{source.dy_}, dz_{source.dz_},
       odx_{source.odx_},
@@ -68,7 +84,6 @@ GridLayout::GridLayout(GridLayout const& source)
 
 
 
-
 GridLayout::GridLayout(GridLayout&& source)
     :  dx_{ std::move(source.dx_) },  dy_{std::move(source.dy_) }, dz_{std::move(source.dz_) },
       odx_{ std::move(source.odx_)}, ody_{std::move(source.ody_)}, odz_{std::move(source.odz_)},
@@ -82,6 +97,12 @@ GridLayout::GridLayout(GridLayout&& source)
 
 
 
+
+/**
+ * @brief GridLayout::physicalStartIndex return the index of the first node
+ * of a 'field' in a given 'direction' that belong to the physical domain.
+ * The function just calls its private implementation
+ */
 uint32 GridLayout::physicalStartIndex(Field const& field, Direction direction) const
 {
     return implPtr_->physicalStartIndex(field, direction);
@@ -90,6 +111,23 @@ uint32 GridLayout::physicalStartIndex(Field const& field, Direction direction) c
 
 
 
+/**
+ * @brief GridLayout::physicalStartIndex return the index of the first primal or
+ * dual node (centering= QtyCentering::dual or QtyCentering::primal).
+ * The function just calls its private implementation.
+ */
+uint32 GridLayout::physicalStartIndex( QtyCentering centering, Direction direction ) const
+{
+    return implPtr_->physicalStartIndex( centering, direction ) ;
+}
+
+
+
+
+/**
+ * @brief GridLayout::physicalEndIndex return the index of the last node of a
+ * 'field' in a given 'direction'. The function just calls its private implementation
+ */
 uint32 GridLayout::physicalEndIndex(Field const& field, Direction direction) const
 {
     return  implPtr_->physicalEndIndex(field, direction);
@@ -98,13 +136,39 @@ uint32 GridLayout::physicalEndIndex(Field const& field, Direction direction) con
 
 
 
+
+/**
+ * @brief GridLayout::physicalEndIndex return the index of the last primal or
+ * dual node in a given direction.
+ * @param centering is either QtyCentering::dual or QtyCentering::primal
+ */
+uint32 GridLayout::physicalEndIndex( QtyCentering centering, Direction direction ) const
+{
+    return implPtr_->physicalEndIndex( centering, direction ) ;
+}
+
+
+
+
+
+/**
+ * @brief GridLayout::ghostStartIndex returns the index of the first ghost node
+ * of a 'field' in a given 'direction'. The function just calls its private
+ * implementation.
+ */
 uint32 GridLayout::ghostStartIndex(Field const& field, Direction direction) const
 {
+    // TODO should this not always be 0?
     return implPtr_->ghostStartIndex(field, direction);
 }
 
 
 
+
+/**
+ * @brief GridLayout::ghostEndIndex returns the index of the last primal or dual
+ * node in a given 'direction'.
+ */
 uint32 GridLayout::ghostEndIndex  (Field const& field, Direction direction) const
 {
     return implPtr_->ghostEndIndex(field, direction);
@@ -112,6 +176,11 @@ uint32 GridLayout::ghostEndIndex  (Field const& field, Direction direction) cons
 
 
 
+
+/**
+ * @brief GridLayout::deriv calculate and return the derivative of a Field
+ * in a given direction. In practice the function just calls its private implementation
+ */
 void GridLayout::deriv(Field const& operand, Direction direction, Field& derivative)const
 {
     switch(nbDims_)
@@ -127,18 +196,41 @@ void GridLayout::deriv(Field const& operand, Direction direction, Field& derivat
 }
 
 
+
+
+/**
+ * @brief GridLayout::allocSize
+ * @return An AllocSizeT object, containing the allocation size of arrays in all
+ * directions
+ */
 AllocSizeT GridLayout::allocSize(HybridQuantity qtyType) const
 {
     return implPtr_->allocSize( qtyType ) ;
 }
 
 
+
+
+/**
+ * @brief GridLayout::allocSizeDerived calculate the allocation size in each
+ * direction for a field that is the first derivative of an HybridQuantity in
+ * a given direction.
+ * @param qty the quantity to be derivated
+ * @param dir direciton of derivation
+ * @return an AllocSizeT containing the size of the derivative array in each direction
+ */
 AllocSizeT  GridLayout::allocSizeDerived( HybridQuantity qty, Direction dir ) const
 {
     return implPtr_->allocSizeDerived( qty, dir ) ;
 }
 
 
+
+/**
+ * @brief GridLayout::fieldNodeCoordinates calculate the physical coordinate
+ * of a certain mesh point (ix,iy,iz) for a given quantity.
+ * @return a Point centered at the field node coordinate.
+ */
 Point GridLayout::fieldNodeCoordinates( const Field & field, const Point & origin,
                                         uint32 ix, uint32 iy, uint32 iz  ) const
 {
@@ -146,6 +238,13 @@ Point GridLayout::fieldNodeCoordinates( const Field & field, const Point & origi
 }
 
 
+
+
+/**
+ * @brief GridLayout::cellCenteredCoordinates calculates the physical coordinate
+ * of a cell center indexed (ix,iy,iz).
+ * @return a Point coordinate centered at the cell center.
+ */
 Point GridLayout::cellCenteredCoordinates( const Point & origin,
                                             uint32 ix, uint32 iy, uint32 iz ) const
 {
@@ -153,15 +252,6 @@ Point GridLayout::cellCenteredCoordinates( const Point & origin,
 }
 
 
-uint32 GridLayout::indexAtMin( QtyCentering centering, Direction direction ) const
-{
-    return implPtr_->indexAtMin( centering, direction ) ;
-}
-
-uint32 GridLayout::indexAtMax( QtyCentering centering, Direction direction ) const
-{
-    return implPtr_->indexAtMax( centering, direction ) ;
-}
 
 
 /* ---------------------------------------------------------------------------

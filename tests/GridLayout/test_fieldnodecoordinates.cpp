@@ -46,8 +46,8 @@ public:
         // inputs.qty is the important parameter
         Field field{allocSize , inputs.qty, "testField" };
 
-        uint32 iy = gl.indexAtMin( QtyCentering::primal, Direction::Y ) ;
-        uint32 iz = gl.indexAtMin( QtyCentering::primal, Direction::Z ) ;
+        uint32 iy = gl.physicalStartIndex( QtyCentering::primal, Direction::Y ) ;
+        uint32 iz = gl.physicalEndIndex( QtyCentering::primal, Direction::Z ) ;
 
         // End of input reading in the adequate file
         uint32 order = inputs.interpOrder ;

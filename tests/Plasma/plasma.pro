@@ -3,7 +3,7 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SUBDIRS += plasma
+SUBDIRS += Plasma
 
 
 INCLUDEPATH += /opt/local/include \
@@ -27,7 +27,7 @@ SOURCES += test_ions.cpp \
            test_species.cpp \
            ../../src/Plasmas/ions.cpp \
            ../../src/grid/gridLayout.cpp \
-           ../../src/grid/gridLayoutimpl.cpp \
+           ../../src/grid/gridLayoutimplinternals.cpp \
            ../../src/grid/gridLayoutimplyee.cpp \
            ../../src/Plasmas/species.cpp \
             ../../src/vecfield/vecfield.cpp \
@@ -39,6 +39,7 @@ SOURCES += test_ions.cpp \
 HEADERS += ../../src/Plasmas/ions.h \
            ../../src/grid/gridLayout.h \
            ../../src/grid/gridLayoutimpl.h \
+           ../../src/grid/gridLayoutimplinternals.h \
            ../../src/grid/gridLayoutimplyee.h \
            #../../src/Plasmas/species.h \
            ../../src/vecfield/vecfield.h \

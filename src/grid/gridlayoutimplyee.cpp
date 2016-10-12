@@ -15,22 +15,31 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
 
     gridDataT gridData{} ;
 
-    initGridUtils( gridData ) ;
-
-    initLayoutCentering( gridData ) ;
+    initLayoutCentering_( gridData ) ;
 
     // all methods MUST BE CALLED AFTER initLayoutCentering()
     // because they USE data in hybridQtycentering_
     initPhysicalStart( gridData ) ;
     initPhysicalEnd  ( gridData ) ;
-    initGhostStart( gridData ) ;
     initGhostEnd  ( gridData ) ;
 
 
 }
 
 
-void GridLayoutImplYee::initLayoutCentering( const gridDataT & data )
+
+
+/**
+ * @brief GridLayoutImplYee::initLayoutCentering_ initialize the table
+ * hybridQuantityCentering_. This is THE important array in the GridLayout
+ * module. This table knows which quantity is primal/dual along each direction.
+ * It is **this** array that **defines** what a Yee Layout is.
+ * Once this array is defined, the rest of the GridLayout
+ * needs this array OK and can go on from here... hence all other functions
+ * in the Yee interface are just calling private implementation common
+ * to all layouts
+ */
+void GridLayoutImplYee::initLayoutCentering_( const gridDataT & data )
 {
     hybridQtyCentering_[data.iBx ][data.idirX] = data.primal ;
     hybridQtyCentering_[data.iBx ][data.idirY] = data.dual   ;
@@ -63,10 +72,16 @@ void GridLayoutImplYee::initLayoutCentering( const gridDataT & data )
 
 
 
+
+
+
 AllocSizeT GridLayoutImplYee::allocSize( HybridQuantity qty ) const
 {
     return allocSize_(qty);
 }
+
+
+
 
 
 // TODO : WARNING 1st order only
@@ -78,29 +93,64 @@ AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction d
 
 
 
+
+
 // start and end index used in computing loops
 uint32 GridLayoutImplYee::physicalStartIndex(Field const& field, Direction direction) const
 {
-    return physicalStartIndexV(field, direction);
+    return physicalStartIndex_(field, direction);
 }
+
+
+
+
+
+uint32 GridLayoutImplYee::physicalStartIndex( QtyCentering centering,
+                                              Direction direction     ) const
+{
+    return physicalStartIndex_(centering , direction); //cellIndexAtMin(centering, direction) ;
+}
+
+
+
 
 
 uint32 GridLayoutImplYee::physicalEndIndex(Field const& field, Direction direction) const
 {
-    return physicalEndIndexV(field, direction);
+    return physicalEndIndex_(field, direction);
 }
+
+
+
+
+
+uint32 GridLayoutImplYee::physicalEndIndex( QtyCentering centering,
+                                            Direction direction     ) const
+{
+    return physicalEndIndex_(centering, direction);//cellIndexAtMax(centering, direction) ;
+}
+
+
+
 
 
 uint32 GridLayoutImplYee::ghostStartIndex(Field const& field, Direction direction) const
 {
-    return ghostStartIndexV(field, direction);
+    // should we directly return 0 and remove ghostStartIndex_ ?
+    return ghostStartIndex_(field, direction);
 }
+
+
+
 
 
 uint32 GridLayoutImplYee::ghostEndIndex(Field const& field, Direction direction) const
 {
-    return ghostEndIndexV(field, direction);
+    return ghostEndIndex_(field, direction);
 }
+
+
+
 
 
 Point GridLayoutImplYee::fieldNodeCoordinates(
@@ -111,6 +161,10 @@ Point GridLayoutImplYee::fieldNodeCoordinates(
 }
 
 
+
+
+
+
 Point GridLayoutImplYee::cellCenteredCoordinates(
         const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const
 {
@@ -118,18 +172,8 @@ Point GridLayoutImplYee::cellCenteredCoordinates(
 }
 
 
-uint32 GridLayoutImplYee::indexAtMin( QtyCentering centering,
-                                      Direction direction     ) const
-{
-    return cellIndexAtMin(centering, direction) ;
-}
 
 
-uint32 GridLayoutImplYee::indexAtMax( QtyCentering centering,
-                                      Direction direction     ) const
-{
-    return cellIndexAtMax(centering, direction) ;
-}
 
 
 void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const

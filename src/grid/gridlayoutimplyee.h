@@ -9,6 +9,7 @@
 #include "hybridenums.h"
 
 #include "gridlayoutimpl.h"
+#include "gridlayoutimplinternals.h"
 
 
 
@@ -23,15 +24,22 @@
  * - partial derivative operator (Faraday)
  * - physical coordinate given a field and a primal point (ix, iy, iz)
  * - cell centered coordinate given a primal point (ix, iy, iz)
- *
  */
 class GridLayoutImplYee : public GridLayoutImpl, private GridLayoutImplInternals
 {
+
+    // ------------------------------------------------------------------------
+    //                              PRIVATE
+    // ------------------------------------------------------------------------
 private:
 
-    void initLayoutCentering( const gridDataT & staticData ) ;
+    void initLayoutCentering_( const gridDataT & staticData ) ;
 
 
+
+    // ------------------------------------------------------------------------
+    //                          PUBLIC INTERFACE
+    // ------------------------------------------------------------------------
 public:
 
     explicit GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
@@ -46,6 +54,9 @@ public:
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, Direction direction) const override;
     virtual uint32 physicalEndIndex  (Field const& field, Direction direction) const override;
+
+    virtual uint32 physicalStartIndex( QtyCentering centering, Direction direction ) const override ;
+    virtual uint32 physicalEndIndex ( QtyCentering centering, Direction direction  ) const override ;
 
     virtual uint32 ghostStartIndex(Field const& field, Direction direction) const override;
     virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const override;
@@ -62,12 +73,6 @@ public:
 
     virtual Point cellCenteredCoordinates(
             const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const override ;
-
-    virtual uint32 indexAtMin( QtyCentering centering,
-                               Direction direction     ) const override ;
-
-    virtual uint32 indexAtMax( QtyCentering centering,
-                               Direction direction     ) const override ;
 
 };
 

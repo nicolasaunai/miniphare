@@ -3,13 +3,13 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SUBDIRS += gridlayout
+SUBDIRS += GridLayout
 
 
 # if macx else unix
 macx {
-    LIBS += -L/opt/local/lib -lgtest -lgmock
-    INCLUDEPATH += /opt/local/include
+    LIBS += -L/usr/local/lib -lgtest -lgmock  #-L/opt/local/lib -lgtest -lgmock
+    INCLUDEPATH += /usr/local/include #/opt/local/include
 } unix {
     LIBS += -L/usr/lib -lpthread -lgtest -lgmock
     INCLUDEPATH += /usr/include/gtest
@@ -25,7 +25,7 @@ INCLUDEPATH += ../../src
 
 SOURCES += ../../src/grid/gridlayout.cpp \
            ../../src/grid/gridlayoutimplyee.cpp \
-           ../../src/grid/gridlayoutimpl.cpp \
+           ../../src/grid/gridlayoutimplinternals.cpp \
            ../../src/Field/field.cpp \
            test_indexing.cpp \
            test_gridlayout.cpp \
@@ -40,6 +40,7 @@ HEADERS += ../../src/grid/gridlayout.h \
            ../../src/grid/gridlayoutimplfactory.h \
            ../../src/grid/gridlayoutimplyee.h \
            ../../src/grid/gridlayoutimpl.h \
+           ../../src/grid/gridlayoutimplinternals.h \
            ../../src/types.h \
            ../../src/constants.h \
            ../../src/utility.h \

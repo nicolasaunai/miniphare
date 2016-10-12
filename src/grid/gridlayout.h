@@ -15,22 +15,30 @@
 
 
 /**
- * @brief Gridlayout is an interface class used by Faraday, FaradayImpl,
- * Ohm, OhmImplInternals and Solver.
- * It is used to handle all operations related to a specific grid layout,
- * it provides:
- * - physical domain start/end indexes
- * - indexes of the first and last ghost nodes
- * - allocation sizes for Field attributes
- * - a partial derivative operator (Faraday)
- * - a physical coordinate given a field and a primal point (ix, iy, iz)
- * - a cell centered coordinates given a primal point (ix, iy, iz)
+ * @brief Gridlayout is a class used to handle all operations related to
+ * a specific grid layout, for instance the Yee layout.
  *
+ * A GridLayout is a central object in PHARE. All grid operation need to manipulate
+ * a GridLayout. It is used to get start and end indices of ghost nodes, or of
+ * nodes of the physical domain. GridLayout is the object that knows how to
+ * calculate derivatives, and therefore enable other classes to be written
+ * in a very general way, without knowing anything that is specific to the layout
+ * of quantities on the grid.
+ *
+ * The GridLayout class follows the Pimpl idiom to be seen, from client code, as
+ * a simple object living in its scope. The implementation pointer is abstract
+ * and concrete child classes implement concret layouts, such as Yee.
  */
 class GridLayout
 {
+
+    // ------------------------------------------------------------------------
+    //                              PRIVATE
+    // ------------------------------------------------------------------------
+
 private:
-    uint32 nbDims_ ;
+
+    uint32 nbDims_ ;    // dimensionality (1, 2, 3)
 
     double dx_ ;        // mesh sizes
     double dy_ ;        // mesh sizes
@@ -40,15 +48,16 @@ private:
     double ody_ ;       // 1./dy
     double odz_ ;       // 1./dz
 
-    uint32 nbrCellx_  ;
+    uint32 nbrCellx_  ; // # of cells (not nodes) in each direction
     uint32 nbrCelly_  ;
     uint32 nbrCellz_  ;
 
-    uint32 ghostParameter_ ;
+    uint32 ghostParameter_ ;                            // TODO find a better name.
+                                                        // If interpOrder is the best so be it.
 
-    std::unique_ptr<GridLayoutImpl> implPtr_;
+    std::unique_ptr<GridLayoutImpl> implPtr_;           // abstract private implementation
 
-    using error = std::runtime_error;
+    using error = std::runtime_error;                   // TODO: find a better error handling
     static const std::string errorInverseMesh;
 
 
@@ -57,6 +66,10 @@ private:
     void throwNotValid2D() const;
     void throwNotValid3D() const;
 
+
+    // ------------------------------------------------------------------------
+    //                          PUBLIC INTERFACE
+    // ------------------------------------------------------------------------
 
 public:
 
@@ -89,6 +102,9 @@ public:
 
     uint32 physicalStartIndex(Field const& field, Direction direction) const;
     uint32 physicalEndIndex  (Field const& field, Direction direction) const;
+    uint32 physicalStartIndex( QtyCentering centering, Direction direction ) const ;
+    uint32 physicalEndIndex  ( QtyCentering centering, Direction direction ) const ;
+
 
     uint32 ghostStartIndex(Field const& field, Direction direction) const;
     uint32 ghostEndIndex  (Field const& field, Direction direction) const;
@@ -104,8 +120,6 @@ public:
     Point cellCenteredCoordinates( const Point & origin,
                                    uint32 ix, uint32 iy, uint32 iz ) const;
 
-    uint32 indexAtMin( QtyCentering centering, Direction direction ) const ;
-    uint32 indexAtMax( QtyCentering centering, Direction direction ) const ;
 
 };
 
