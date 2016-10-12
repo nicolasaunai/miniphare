@@ -166,21 +166,18 @@ std::array<uint32, NBR_COMPO> GridLayoutImplInternals::nodeNbrFromCentering_(
 
 
 
-
+/**
+ * @brief GridLayoutImplInternals::allocSize_
+ * @return An AllocSizeT object, containing the size to which allocate arrays
+ * of an HybridQuantity 'qty' in every directions.
+ */
 AllocSizeT GridLayoutImplInternals::allocSize_( HybridQuantity qty ) const
 {
-    gridDataT data{} ;
-
     uint32 iQty = static_cast<uint32>(qty) ;
 
-    std::array<QtyCentering, NBR_COMPO>
-            qtyCenterings{ {hybridQtyCentering_[iQty][data.idirX],
-                            hybridQtyCentering_[iQty][data.idirY],
-                            hybridQtyCentering_[iQty][data.idirZ]} } ;
+    auto sizeArray = nodeNbrFromCentering_( hybridQtyCentering_[iQty] ) ;
 
-    auto allocSizes = nodeNbrFromCentering_( qtyCenterings ) ;
-
-    return AllocSizeT( allocSizes[0], allocSizes[1], allocSizes[2] );
+    return AllocSizeT( sizeArray[0], sizeArray[1], sizeArray[2] );
 }
 
 
