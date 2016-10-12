@@ -32,8 +32,17 @@ std::vector<FaradayParams> getFaraday1DInputsFromFile() ;
 
 /* ----------------------------------------------------------------------------
  *
- *                            GridLayout TEST
+ *                            Faraday TEST
  * ---------------------------------------------------------------------------- */
+
+struct SuperVectorT
+{
+    std::vector<double> x, y, z;
+    std::vector<double> field ;
+
+    HybridQuantity fieldQty ;
+};
+
 
 struct FaradayParams
 {
@@ -61,24 +70,9 @@ struct FaradayParams
 
     uint32 nbrTimeSteps ;
 
-    std::vector<double>  x_Bx, y_Bx, z_Bx ;
-    std::vector<double>  Bx ;
-
-    std::vector<double>  x_By, y_By, z_By ;
-    std::vector<double>  By ;
-
-    std::vector<double>  x_Bz, y_Bz, z_Bz ;
-    std::vector<double>  Bz ;
-
-    std::vector<double>  x_Ex, y_Ex, z_Ex ;
-    std::vector<double>  Ex ;
-
-    std::vector<double>  x_Ey, y_Ey, z_Ey ;
-    std::vector<double>  Ey ;
-
-    std::vector<double>  x_Ez, y_Ez, z_Ez ;
-    std::vector<double>  Ez ;
-
+    // we have 6 components for the electromag field in the most complex case
+    // Bx, By, Bz, Ex, Ey, Ez
+    std::array<SuperVectorT, 6> fieldInputs ;
 
     std::string testComment;
 

@@ -40,7 +40,7 @@ public:
         GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
         // Here the Field sizes for allocations are overestimated
-        AllocSizeT allocSize{2*inputs.nbrCells[0],1,1};
+//        AllocSizeT allocSize{2*inputs.nbrCells[0],1,1};
 
         std::string testName = inputs.testName ;
 
@@ -50,6 +50,7 @@ public:
             std::string fieldName = inputs.fieldNames[ifield] ;
 
             HybridQuantity qty = GetHybridQtyFromString( fieldName ) ;
+            uint32 iqty = static_cast<uint32>(qty);
 
             for( uint32 itime=0 ; itime<inputs.nbrTimeSteps ; ++itime )
             {
@@ -65,6 +66,9 @@ public:
                     std::cout << "Could not open file : " << filename << std::endl ;
                     exit(-1);
                 }
+
+//                uint32 iStart = gl.physicalStartIndex( qty, Direction::X ) ;
+//                uint32 iEnd   = gl.physicalEndIndex( qty, Direction::X ) ;
 
 
 
