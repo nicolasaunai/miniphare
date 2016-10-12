@@ -149,16 +149,19 @@ std::vector<GridLayoutParams> getFieldCoordsInputsFromFile()
     {
         uint32 iqty;
 
-        ifs1 >> params[i].interpOrder
-                >> params[i].nbDim
-                >> iqty
-                >> params[i].nbrCells[params[i].nbDim]
-                >> params[i].dxdydz[params[i].nbDim]
-                >> params[i].field_iStart
-                >> params[i].field_iEnd
-                >> params[i].origin.x_
-                >> params[i].origin.y_
-                >> params[i].origin.z_ ;
+        ifs1 >> params[i].interpOrder;
+        ifs1    >> params[i].nbDim;
+        ifs1    >> iqty;
+        for (uint32 idim=0; idim < params[i].nbDim; ++idim)
+        {
+            ifs1 >> params[i].nbrCells[idim];
+            ifs1 >> params[i].dxdydz[idim];
+        }
+        ifs1 >> params[i].field_iStart;
+        ifs1 >> params[i].field_iEnd;
+        ifs1 >> params[i].origin.x_;
+        ifs1 >> params[i].origin.y_;
+        ifs1 >> params[i].origin.z_ ;
 
         params[i].qty = GetHybridQty(iqty);
         params[i].qtyName = GetHybridQtyName(iqty);
@@ -201,15 +204,20 @@ std::vector<GridLayoutParams> getDerivInputsFromFile()
 
         infile >> params[i].interpOrder
                >> params[i].nbDim
-               >> iqty
-               >> params[i].nbrCells[params[i].nbDim]
-               >> params[i].dxdydz[params[i].nbDim]
-               >> params[i].field_iStart
-               >> params[i].field_iEnd
-               >> params[i].origin.x_
-               >> params[i].origin.y_
-               >> params[i].origin.z_
-               >> params[i].functionName ;
+               >> iqty;
+
+        for (uint32 idim=0; idim < params[i].nbDim; ++idim)
+        {
+            infile >> params[i].nbrCells[idim];
+            infile >> params[i].dxdydz[idim];
+        }
+
+        infile >> params[i].field_iStart;
+        infile >> params[i].field_iEnd;
+        infile >> params[i].origin.x_;
+        infile >> params[i].origin.y_;
+        infile >> params[i].origin.z_;
+        infile >> params[i].functionName;
 
         params[i].qty = GetHybridQty(iqty);
         params[i].qtyName = GetHybridQtyName(iqty);
@@ -245,15 +253,20 @@ std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile()
 
     for (uint32 i=0 ; i < nbrTestCases ; ++i)
     {
-        ifs1 >> params[i].interpOrder
-             >> params[i].nbDim
-             >> params[i].nbrCells[params[i].nbDim]
-             >> params[i].dxdydz[params[i].nbDim]
-             >> params[i].field_iStart
-             >> params[i].field_iEnd
-             >> params[i].origin.x_
-             >> params[i].origin.y_
-             >> params[i].origin.z_ ;
+        ifs1 >> params[i].interpOrder;
+        ifs1 >> params[i].nbDim;
+
+        for (uint32 idim=0; idim < params[i].nbDim; ++idim)
+        {
+            ifs1 >> params[i].nbrCells[idim];
+            ifs1 >> params[i].dxdydz[idim];
+        }
+
+        ifs1  >> params[i].field_iStart;
+        ifs1  >> params[i].field_iEnd;
+        ifs1  >> params[i].origin.x_;
+        ifs1  >> params[i].origin.y_;
+        ifs1  >> params[i].origin.z_;
 
         params[i].cellCenteredXCoords.assign(MAX_SIZE, 0.) ;
     }

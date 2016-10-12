@@ -115,10 +115,6 @@ void GridLayoutImplInternals::initGhostEnd( const gridDataT & data )
 
     ghostEndIndexTable_[idual][data.idirZ]   =  physicalEndIndexTable_[idual][data.idirZ]
                                               + nbrGhosts(data.dual);
-
-
-
-
 }
 
 
@@ -284,7 +280,8 @@ uint32 GridLayoutImplInternals::ghostEndIndex_(Field const& field, Direction dir
 {
     uint32 iQty = static_cast<uint32>(field.hybridQty());
     uint32 iDir = static_cast<uint32>(direction);
-    return ghostEndIndexTable_[iQty][iDir];
+    uint32 iCentering = static_cast<uint32>(hybridQtyCentering_[iQty][iDir]);
+    return ghostEndIndexTable_[iCentering][iDir];
 }
 
 
@@ -332,9 +329,9 @@ Point GridLayoutImplInternals::fieldNodeCoordinates_(
     uint32 idirZ   = static_cast<uint32>(Direction::Z) ;
     uint32 iprimal = static_cast<uint32>(QtyCentering::primal);
 
-    uint32 ixStart = physicalEndIndexTable_[iprimal][idirX];
-    uint32 iyStart = physicalEndIndexTable_[iprimal][idirY];
-    uint32 izStart = physicalEndIndexTable_[iprimal][idirZ];
+    uint32 ixStart = physicalStartIndexTable_[iprimal][idirX];
+    uint32 iyStart = physicalStartIndexTable_[iprimal][idirY];
+    uint32 izStart = physicalStartIndexTable_[iprimal][idirZ];
 
 
     std::array<double, 3> halfCell{ {0, 0, 0} } ;
@@ -388,9 +385,9 @@ Point GridLayoutImplInternals::cellCenteredCoordinates_(
     uint32 idirZ   = static_cast<uint32>(Direction::Z) ;
     uint32 iprimal = static_cast<uint32>(QtyCentering::primal);
 
-    uint32 ixStart = physicalEndIndexTable_[iprimal][idirX];
-    uint32 iyStart = physicalEndIndexTable_[iprimal][idirY];
-    uint32 izStart = physicalEndIndexTable_[iprimal][idirZ];
+    uint32 ixStart = physicalStartIndexTable_[iprimal][idirX];
+    uint32 iyStart = physicalStartIndexTable_[iprimal][idirY];
+    uint32 izStart = physicalStartIndexTable_[iprimal][idirZ];
 
     double halfCell = 0.5 ;
     // A shift of -dx/2, -dy/2, -dz/2 is necessary to get the
