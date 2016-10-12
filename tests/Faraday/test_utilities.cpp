@@ -81,8 +81,6 @@ std::vector<FaradayParams> getFaraday1DInputsFromFile()
     // reading parameters relative to the test cases
     for (uint32 i=0 ; i < nbrTestCases ; ++i)
     {
-        uint32 iqty;
-
         ifs1 >> params[i].interpOrder ;
         ifs1 >> params[i].nbDim ;
         ifs1 >> params[i].nbrCells[0] ;
@@ -106,25 +104,14 @@ std::vector<FaradayParams> getFaraday1DInputsFromFile()
 
         ifs1 >> params[i].nbrTimeSteps ;
 
-//        params[i].qty = GetHybridQty(iqty);
-//        params[i].qtyName = GetHybridQtyName(iqty);
-//        params[i].iqty = iqty;
+        for(uint32 icompo=0 ; icompo<6 ; ++icompo)
+        {
+            params[i].fieldInputs[icompo].x.assign(MAX_SIZE, 0.) ;
+            params[i].fieldInputs[icompo].y.assign(MAX_SIZE, 0.) ;
+            params[i].fieldInputs[icompo].z.assign(MAX_SIZE, 0.) ;
+            params[i].fieldInputs[icompo].field.assign(MAX_SIZE, 0.) ;
+        }
 
-        params[i].x_Bx.assign(MAX_SIZE, 0.) ;
-        params[i].x_By.assign(MAX_SIZE, 0.) ;
-        params[i].x_Bz.assign(MAX_SIZE, 0.) ;
-
-        params[i].x_Ex.assign(MAX_SIZE, 0.) ;
-        params[i].x_Ey.assign(MAX_SIZE, 0.) ;
-        params[i].x_Ez.assign(MAX_SIZE, 0.) ;
-
-        params[i].Bx.assign(MAX_SIZE, 0.) ;
-        params[i].By.assign(MAX_SIZE, 0.) ;
-        params[i].Bz.assign(MAX_SIZE, 0.) ;
-
-        params[i].Ex.assign(MAX_SIZE, 0.) ;
-        params[i].Ey.assign(MAX_SIZE, 0.) ;
-        params[i].Ez.assign(MAX_SIZE, 0.) ;
     }
 
     return params ;
