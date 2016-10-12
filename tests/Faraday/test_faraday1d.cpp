@@ -22,10 +22,10 @@ MATCHER_P(FloatNear, tol, "Precision out of range")
 }
 
 
-class Faraday1D: public ::testing::TestWithParam<GridLayoutParams>
+class Faraday1D: public ::testing::TestWithParam<FaradayParams>
 {
 public:
-    GridLayoutParams inputs;
+    FaradayParams inputs;
 
     double precision ;
 
@@ -42,83 +42,106 @@ public:
         // Here the Field sizes for allocations are overestimated
         AllocSizeT allocSize{2*inputs.nbrCells[0],1,1};
 
-        std::string qtyName = inputs.qtyName;
+        std::string testName = inputs.testName ;
 
-        std::string fctName = inputs.functionName;
 
-        std::string filename{"../GridLayout/deriv1D_" + qtyName +
-                      "_" + fctName + ".txt"};
-
-        std::cout << filename << std::endl ;
-
-        std::ifstream infile{filename};
-        if (!infile )
+        for( uint32 ifield=0 ; ifield<inputs.nbrOfFields ; ++ifield )
         {
-            std::cout << "Could not open file : " << filename << std::endl ;
-            exit(-1);
-        }
+            std::string fieldName = inputs.fieldNames[ifield] ;
 
-        uint32 iStart = inputs.field_iStart ;
-        uint32 iEnd   = inputs.field_iEnd   ;
-        for (uint32 ik=iStart ; ik<= iEnd ; ++ik)
-        {
-            infile >> inputs.fieldXCoords[ik] ;
-            infile >> inputs.fieldXValues[ik] ;
-            infile >> inputs.derivedFieldXCoords[ik] ;
-            infile >> inputs.derivedFieldXValues[ik] ;
-        }
+            HybridQuantity qty = GetHybridQtyFromString( fieldName ) ;
 
-        // inputs.qty is the important parameter
-        Field operand{allocSize , inputs.qty, "operandField" };
+            for( uint32 itime=0 ; itime<inputs.nbrTimeSteps ; ++itime )
+            {
+                // faraday1D_test03_Bz_t10.txt
+                std::string filename{"../Faraday/faraday1D_" + testName +
+                            "_" + fieldName + "_t" + std::to_string(itime) + ".txt"};
 
-        for (uint32 ik=iStart ; ik<= iEnd ; ++ik)
-        {
-            double x = inputs.fieldXCoords[ik] ;
+                std::cout << filename << std::endl ;
 
-            if(inputs.functionName == "linear")
-            {
-                operand(ik) = x ;
-            } else if(inputs.functionName == "square")
-            {
-                operand(ik) = x*x ;
-            } else if(inputs.functionName == "sin")
-            {
-                operand(ik) = sin(x) ;
-            } else if(inputs.functionName == "compo01")
-            {
-                operand(ik) = x*x + sin(x) ;
+                std::ifstream ifs1{filename};
+                if (!ifs1 )
+                {
+                    std::cout << "Could not open file : " << filename << std::endl ;
+                    exit(-1);
+                }
+
+
+
+
             }
         }
 
-        // inputs.qty is not the correct argument
-        // this should not be relevant for the test
-        Field derivative{allocSize , inputs.qty, "derivativeField" };
 
-        gl.deriv( operand, Direction::X, derivative ) ;
 
-        // this method has 2nd order precision
-        precision = pow(gl.dx(), 2.) ;
 
-        expected_array.assign(iEnd-iStart, 0.) ;
-        actual_array.assign(iEnd-iStart, 0.) ;
-        for( uint32 ix= iStart ; ix< iEnd ; ++ix )
-        {
-            expected_array[ix] = inputs.derivedFieldXValues[ix] ;
-            actual_array[ix]   = derivative(ix) ;
-        }
+
+
+//        uint32 iStart = inputs.field_iStart ;
+//        uint32 iEnd   = inputs.field_iEnd   ;
+//        for (uint32 ik=iStart ; ik<= iEnd ; ++ik)
+//        {
+//            infile >> inputs.fieldXCoords[ik] ;
+//            infile >> inputs.fieldXValues[ik] ;
+//            infile >> inputs.derivedFieldXCoords[ik] ;
+//            infile >> inputs.derivedFieldXValues[ik] ;
+//        }
+
+//        // inputs.qty is the important parameter
+//        Field operand{allocSize , inputs.qty, "operandField" };
+
+//        for (uint32 ik=iStart ; ik<= iEnd ; ++ik)
+//        {
+//            double x = inputs.fieldXCoords[ik] ;
+
+//            if(inputs.functionName == "linear")
+//            {
+//                operand(ik) = x ;
+//            } else if(inputs.functionName == "square")
+//            {
+//                operand(ik) = x*x ;
+//            } else if(inputs.functionName == "sin")
+//            {
+//                operand(ik) = sin(x) ;
+//            } else if(inputs.functionName == "compo01")
+//            {
+//                operand(ik) = x*x + sin(x) ;
+//            }
+//        }
+
+//        // inputs.qty is not the correct argument
+//        // this should not be relevant for the test
+//        Field derivative{allocSize , inputs.qty, "derivativeField" };
+
+//        gl.deriv( operand, Direction::X, derivative ) ;
+
+//        // this method has 2nd order precision
+//        precision = pow(gl.dx(), 2.) ;
+
+//        expected_array.assign(iEnd-iStart, 0.) ;
+//        actual_array.assign(iEnd-iStart, 0.) ;
+//        for( uint32 ix= iStart ; ix< iEnd ; ++ix )
+//        {
+//            expected_array[ix] = inputs.derivedFieldXValues[ix] ;
+//            actual_array[ix]   = derivative(ix) ;
+//        }
     }
 
 
-    void print(GridLayoutParams const& inputs)
+    void print(FaradayParams const& inputs)
     {
         std::cout << "interpOrder : " << inputs.interpOrder
                   << " nbDims   : " << inputs.nbDim
-                  << " qtyName  : " << static_cast<int>(inputs.qty)
-                  << " nbrCells : " << inputs.nbrCells[0] << ", " \
-                  << inputs.nbrCells[1] << ", " << inputs.nbrCells[2]
-                  << " dxdydz   : " << inputs.dxdydz[0] << ", " \
-                  << inputs.dxdydz[1] << ", " << inputs.dxdydz[2]
-                  << " " <<  inputs.iqty;
+                  << " nbr cell x = " << inputs.nbrCells[0] << ", nbr cell y = " \
+                  << inputs.nbrCells[1] << ", nbr cell z = " << inputs.nbrCells[2]
+                  << " dx = " << inputs.dxdydz[0] << ", dy = " \
+                  << inputs.dxdydz[1] << ", dz = " << inputs.dxdydz[2]
+                  << " dt = " << inputs.dt
+                  << " tStart = " << inputs.tStart
+                  << " tEnd = " << inputs.tEnd
+                  << " testName = " << inputs.testName   ;
+
+        std::cout << std::endl ;
     }
 
 };

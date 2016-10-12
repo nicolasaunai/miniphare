@@ -23,23 +23,6 @@ import gridlayout_commons as commons
 
 
 
-# --------- getters for local tables  ----------------------
-def nbrCellsM(direction, icas):
-    if direction == 'X':
-        return nbrCellX_l[icas]
-    elif direction == 'Y':
-        return nbrCellY_l[icas]
-    elif direction == 'Z':
-        return nbrCellZ_l[icas]
-
-def spatialStep(direction, icas):
-    if direction == 'X':
-        return dx_l[icas]
-    elif direction == 'Y':
-        return dy_l[icas]
-    elif direction == 'Z':
-        return dz_l[icas]
-
 # --------------------------------------------------------------------------
 
 # We return 6 values Bx, By, Bz, Ex, Ey, Ez
@@ -64,7 +47,7 @@ faradayDict = {'test03': test03 }
 
 def field_list( test_name ):
     
-    if test_name == faraday_test_l[0]:
+    if test_name == 'test03':
         print(test_name)
         size = 2
         field_l = ["" for string in range(size)]
@@ -76,20 +59,21 @@ def field_list( test_name ):
 
 # ---------------------- MAIN CODE -----------------------------------------
 if __name__ == "__main__":
+
+    interpOrder_l=[1]
     
-    nbrCellX_l=[40, 40, 40]
-    nbrCellY_l=[ 0, 12, 12]
-    nbrCellZ_l=[ 0,  0, 12]
+    nbrCellX_l=[40]
+    nbrCellY_l=[ 0]
+    nbrCellZ_l=[ 0]
     
-    dx_l=[0.1, 0.1, 0.1] # 1D, 2D, 3D cases 
-    dy_l=[0. , 0.1, 0.1]
-    dz_l=[0. , 0. , 0.1]
+    dx_l=[0.1] 
+    dy_l=[0. ]
+    dz_l=[0. ]
     
-    dim_l =[1, 2, 3]     
+    dim_l =[1] # 1 means 1D    
     
     origin = [0., 0., 0.]    
-    
-    interpOrder_l=[1, 2, 3, 4]
+
     
     Direction_l = commons.Direction_l
     Qty_l = commons.Qty_l
@@ -123,47 +107,61 @@ if __name__ == "__main__":
     
    
     iqty = 0
-    iord = 0
-    idim = 0
     
     x0 = 2.
     
     f = open("faraday1D_summary.txt", "w")
     
-    
     for icase in icase_l:    
-        nbrCells = nbrCellsM(Direction_l[idim][1], icase)
-        stepSize = spatialStep(Direction_l[idim][1], icase)
+        nbrCellsX = nbrCellX_l[icase]
+        nbrCellsY = nbrCellY_l[icase]
+        nbrCellsZ = nbrCellZ_l[icase]
         
-        centering = commons.qtyCentering(Qty_l[iqty][1], Direction_l[idim][1])
+        dx = dx_l[icase]
+        dy = dy_l[icase]
+        dz = dz_l[icase]
         
-        f.write(("%03d %d %s %03d %5.4f ") % 
-           (interpOrder_l[iord],
-            dim_l[idim]+1,
-            Qty_l[iqty][0],
-            nbrCells, stepSize ) )                   
+        centeringX = commons.qtyCentering(Qty_l[iqty][1], 'X')
+        
+        f.write(("%d %d %d %d %d %5.4f %5.4f %5.4f  ") % 
+           (interpOrder_l[icase], dim_l[icase], 
+            nbrCellsX, nbrCellsY, nbrCellsZ, 
+            dx, dy, dz ) )                   
            
-        iStart = commons.physicalStartPrimal(interpOrder_l[iord])
-        iEnd   = commons.physicalEndPrimal  (interpOrder_l[iord], nbrCells)                
-        iEnd = iEnd - commons.isDual( centering )         
-        
-        f.write(("%d %d ") % (iStart, iEnd))
+        iStart = commons.physicalStartPrimal(interpOrder_l[icase])
+        iEnd   = commons.physicalEndPrimal  (interpOrder_l[icase], nbrCellsX) 
         
         f.write(("%10.4f %10.4f %10.4f ") % (dt, t_start, t_end))
            
     #    f.write(("%6.2f %6.2f %6.2f ") % (origin[0], origin[1], origin[2]))
         
-        f.write("%s \n" % faraday_test_l[icase])
+        f.write("%s " % faraday_test_l[icase])
+        
+        field_l = field_list( faraday_test_l[icase] )    
+        ifield_l = np.arange( len(field_l) )
+        
+        f.write("%d " % len(field_l) )        
+        
+        for ifield in ifield_l:
+            f.write("%s " % field_l[ifield])
+            
+        f.write("%d " % len(time_l) )        
     
+        f.write("\n")
     f.close()
     
     
     itime = 0
     
     for icase in icase_l:
-        nbrCells = nbrCellsM(Direction_l[idim][1], icase)     
-        stepSize = spatialStep(Direction_l[idim][1], icase)        
+        nbrCellsX = nbrCellX_l[icase]
+        nbrCellsY = nbrCellY_l[icase]
+        nbrCellsZ = nbrCellZ_l[icase]
         
+        dx = dx_l[icase]
+        dy = dy_l[icase]
+        dz = dz_l[icase]
+                    
         field_l = field_list( faraday_test_l[icase] )    
         ifield_l = np.arange( len(field_l) )    
         
@@ -173,19 +171,19 @@ if __name__ == "__main__":
                 f = open( ("faraday1D_%s_%s_t%d.txt") % (faraday_test_l[icase], field_l[ifield], itime), "w")
         
                 print("field_l[ifield] = %s" % field_l[ifield])
-                centering = commons.qtyCentering(field_l[ifield], Direction_l[idim][1])
-                print("%s along %s is %s" % (field_l[ifield],  Direction_l[idim][1], centering) )
+                centeringX = commons.qtyCentering(field_l[ifield], 'X')
+                print("%s along %s is %s" % (field_l[ifield], 'X', centeringX) )
                                 
-                iStart = commons.physicalStartIndex(interpOrder_l[iord], centering)
-                iEnd   = commons.physicalEndIndex  (interpOrder_l[iord], centering, nbrCells)       
+                iStart = commons.physicalStartIndex(interpOrder_l[icase], centeringX)
+                iEnd   = commons.physicalEndIndex  (interpOrder_l[icase], centeringX, nbrCellsX)       
         
                 print("iStart : %d" % iStart)
                 print("iEnd   : %d" % iEnd)
         
                 print("time = %7.3f" % time_l[itime])
-                for iprimal in range(iStart, iEnd+1):
-                    x = commons.fieldCoords(iprimal, iStart, field_l[ifield], Direction_l[idim], \
-                                            stepSize, origin, 0)
+                for iprimal in np.arange(iStart, iEnd+1):
+                    x = commons.fieldCoords(iprimal, iStart, field_l[ifield], Direction_l[0], \
+                                            dx, origin, 0)
                                            
                     fx = faradayDict[faraday_test_l[icase]](field_l[ifield], x, x0, time_l[itime], dt)
                                            

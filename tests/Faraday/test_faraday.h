@@ -15,13 +15,13 @@
 #include "Field/field.h"
 
 
-struct GridLayoutParams;
+struct FaradayParams;
 
-HybridQuantity GetHybridQty(uint iqty) ;
+HybridQuantity GetHybridQtyFromString( std::string field ) ;
 
 std::string GetHybridQtyName(uint iqty) ;
 
-std::vector<GridLayoutParams> getFaraday1DInputsFromFile() ;
+std::vector<FaradayParams> getFaraday1DInputsFromFile() ;
 
 
 
@@ -35,53 +35,58 @@ std::vector<GridLayoutParams> getFaraday1DInputsFromFile() ;
  *                            GridLayout TEST
  * ---------------------------------------------------------------------------- */
 
-struct GridLayoutParams
+struct FaradayParams
 {
     uint32 interpOrder;
-    uint32 nbDim;
 
-    HybridQuantity qty;
-    std::string qtyName;
-    uint32 iqty ;        // integer equals to static_cast<uint32> (qty)
+    uint32 nbDim ;
 
-    std::string functionName ;
-
-    uint32 icase ;
-
-    std::string layoutName ;
+//    HybridQuantity qty;
+//    std::string qtyName;
+//    uint32 iqty ;
 
     std::array<uint32, 3> nbrCells;
     std::array<double, 3> dxdydz;
 
-    std::array<uint32,3> allocSizes;
-    std::array<uint32,3> allocSizeDerived;
+//    Point origin{0., 0., 0.} ;
 
-    std::array<uint32,3> PSI;
-    std::array<uint32,3> PEI;
-    std::array<uint32,3> GSI;
-    std::array<uint32,3> GEI;
+    double dt ;
+    double tStart, tEnd ;
 
-    uint32  field_iStart ;
-    uint32  field_iEnd   ;
-    Point origin{0., 0., 0.} ;
+    std::string testName ;
 
-    std::vector<double>  fieldXCoords ;
-    std::vector<double>  fieldXValues ;
+    uint32 nbrOfFields ;
 
-    std::vector<double>  derivedFieldXCoords ;
-    std::vector<double>  derivedFieldXValues ;
+    std::vector<std::string> fieldNames ;
 
-    std::vector<double>  cellCenteredXCoords ;
+    uint32 nbrTimeSteps ;
+
+    std::vector<double>  x_Bx, y_Bx, z_Bx ;
+    std::vector<double>  Bx ;
+
+    std::vector<double>  x_By, y_By, z_By ;
+    std::vector<double>  By ;
+
+    std::vector<double>  x_Bz, y_Bz, z_Bz ;
+    std::vector<double>  Bz ;
+
+    std::vector<double>  x_Ex, y_Ex, z_Ex ;
+    std::vector<double>  Ex ;
+
+    std::vector<double>  x_Ey, y_Ey, z_Ey ;
+    std::vector<double>  Ey ;
+
+    std::vector<double>  x_Ez, y_Ez, z_Ez ;
+    std::vector<double>  Ez ;
+
 
     std::string testComment;
 
-    GridLayoutParams() = default ;
+    FaradayParams() = default ;
 
-    GridLayoutParams(double dx, double dy, double dz,
-                     uint32 nbrCellx, uint32 nbrCelly, uint32 nbrCellz,
-                     std::string const& name,
-                     uint32 dim, std::string comment):
-        nbDim{dim}, layoutName{name},
+    FaradayParams(double dx, double dy, double dz,
+                  uint32 nbrCellx, uint32 nbrCelly, uint32 nbrCellz,
+                  std::string comment):
         nbrCells{ {nbrCellx,nbrCelly,nbrCellz} }, dxdydz{ {dx,dy,dz} },
         testComment{comment}
     {

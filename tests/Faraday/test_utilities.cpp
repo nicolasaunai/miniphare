@@ -5,31 +5,32 @@
 #include "test_faraday.h"
 
 
-HybridQuantity GetHybridQty(uint32 iqty)
+
+HybridQuantity GetHybridQtyFromString( std::string field )
 {
-    HybridQuantity quantity = HybridQuantity::count ;
+    HybridQuantity qty = HybridQuantity::count ;
 
-    std::array<HybridQuantity, static_cast<uint32>(HybridQuantity::count) >  hybridQtyTable ;
-
-    hybridQtyTable[0] = HybridQuantity::Bx  ;
-    hybridQtyTable[1] = HybridQuantity::By  ;
-    hybridQtyTable[2] = HybridQuantity::Bz  ;
-    hybridQtyTable[3] = HybridQuantity::Ex  ;
-    hybridQtyTable[4] = HybridQuantity::Ey  ;
-    hybridQtyTable[5] = HybridQuantity::Ez  ;
-    hybridQtyTable[6] = HybridQuantity::rho ;
-    hybridQtyTable[7] = HybridQuantity::V   ;
-    hybridQtyTable[8] = HybridQuantity::P   ;
-
-    if( iqty < static_cast<uint32>(HybridQuantity::count) )
+    if( field == "Bx" )
     {
-        quantity = hybridQtyTable[iqty] ;
-    } else
+        qty = HybridQuantity::Bx ;
+    } else if( field == "By" )
     {
-        quantity = HybridQuantity::count ;
+        qty = HybridQuantity::By ;
+    } else if( field == "Bz" )
+    {
+        qty = HybridQuantity::Bz ;
+    } else if( field == "Ex" )
+    {
+        qty = HybridQuantity::Ex ;
+    } else if( field == "Ey" )
+    {
+        qty = HybridQuantity::Ey ;
+    } else if( field == "Ez" )
+    {
+        qty = HybridQuantity::Ez ;
     }
 
-    return quantity ;
+    return qty ;
 }
 
 
@@ -59,53 +60,71 @@ std::string GetHybridQtyName(uint32 iqty)
 
 
 
-std::vector<GridLayoutParams> getFaraday1DInputsFromFile()
+std::vector<FaradayParams> getFaraday1DInputsFromFile()
 {
 
-    std::string filename{"../GridLayout/deriv1D_summary.txt"};
+    std::string filename{"../Faraday/faraday1D_summary.txt"};
 
-    std::ifstream infile{filename};
-    if (!infile )
+    std::ifstream ifs1{filename};
+    if (!ifs1 )
     {
         std::cout << "Could not open file : " << filename
                   << std::endl ;
         exit(-1);
     }
 
-//    uint32 orderMax = 4 ;
-
-    uint32 numberTestFunctions = 4 ;
-
     //static_cast<uint32>(HybridQuantity::count)
-    uint32 nbrTestCases = 1 * numberTestFunctions ;
+    uint32 nbrTestCases = 1 ;
 
-    std::vector<GridLayoutParams> params(nbrTestCases);
+    std::vector<FaradayParams> params(nbrTestCases);
 
     // reading parameters relative to the test cases
     for (uint32 i=0 ; i < nbrTestCases ; ++i)
     {
         uint32 iqty;
 
-        infile >> params[i].interpOrder
-               >> params[i].nbDim
-               >> iqty
-               >> params[i].nbrCells[params[i].nbDim]
-               >> params[i].dxdydz[params[i].nbDim]
-               >> params[i].field_iStart
-               >> params[i].field_iEnd
-               >> params[i].origin.x_
-               >> params[i].origin.y_
-               >> params[i].origin.z_
-               >> params[i].functionName ;
+        ifs1 >> params[i].interpOrder ;
+        ifs1 >> params[i].nbDim ;
+        ifs1 >> params[i].nbrCells[0] ;
+        ifs1 >> params[i].nbrCells[1] ;
+        ifs1 >> params[i].nbrCells[2] ;
+        ifs1 >> params[i].dxdydz[0] ;
+        ifs1 >> params[i].dxdydz[1] ;
+        ifs1 >> params[i].dxdydz[2] ;
+        ifs1 >> params[i].dt ;
+        ifs1 >> params[i].tStart ;
+        ifs1 >> params[i].tEnd   ;
+        ifs1 >> params[i].testName ;
+        ifs1 >> params[i].nbrOfFields ;
 
-        params[i].qty = GetHybridQty(iqty);
-        params[i].qtyName = GetHybridQtyName(iqty);
-        params[i].iqty = iqty;
+        params[i].fieldNames.assign( params[i].nbrOfFields, "none") ;
 
-        params[i].fieldXCoords.assign(MAX_SIZE, 0.) ;
-        params[i].fieldXValues.assign(MAX_SIZE, 0.) ;
-        params[i].derivedFieldXCoords.assign(MAX_SIZE, 0.) ;
-        params[i].derivedFieldXValues.assign(MAX_SIZE, 0.) ;
+        for(uint32 ifield=0 ; ifield < params[i].nbrOfFields ; ++ifield)
+        {
+            ifs1 >> params[i].fieldNames[ifield] ;
+        }
+
+        ifs1 >> params[i].nbrTimeSteps ;
+
+//        params[i].qty = GetHybridQty(iqty);
+//        params[i].qtyName = GetHybridQtyName(iqty);
+//        params[i].iqty = iqty;
+
+        params[i].x_Bx.assign(MAX_SIZE, 0.) ;
+        params[i].x_By.assign(MAX_SIZE, 0.) ;
+        params[i].x_Bz.assign(MAX_SIZE, 0.) ;
+
+        params[i].x_Ex.assign(MAX_SIZE, 0.) ;
+        params[i].x_Ey.assign(MAX_SIZE, 0.) ;
+        params[i].x_Ez.assign(MAX_SIZE, 0.) ;
+
+        params[i].Bx.assign(MAX_SIZE, 0.) ;
+        params[i].By.assign(MAX_SIZE, 0.) ;
+        params[i].Bz.assign(MAX_SIZE, 0.) ;
+
+        params[i].Ex.assign(MAX_SIZE, 0.) ;
+        params[i].Ey.assign(MAX_SIZE, 0.) ;
+        params[i].Ez.assign(MAX_SIZE, 0.) ;
     }
 
     return params ;
