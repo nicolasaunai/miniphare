@@ -15,9 +15,7 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
 
     gridDataT gridData{} ;
 
-   // initGridUtils( gridData ) ;
-
-    initLayoutCentering( gridData ) ;
+    initLayoutCentering_( gridData ) ;
 
     // all methods MUST BE CALLED AFTER initLayoutCentering()
     // because they USE data in hybridQtycentering_
@@ -31,8 +29,17 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
 
 
 
-
-void GridLayoutImplYee::initLayoutCentering( const gridDataT & data )
+/**
+ * @brief GridLayoutImplYee::initLayoutCentering_ initialize the table
+ * hybridQuantityCentering_. This is THE important array in the GridLayout
+ * module. This table knows which quantity is primal/dual along each direction.
+ * It is **this** array that **defines** what a Yee Layout is.
+ * Once this array is defined, the rest of the GridLayout
+ * needs this array OK and can go on from here... hence all other functions
+ * in the Yee interface are just calling private implementation common
+ * to all layouts
+ */
+void GridLayoutImplYee::initLayoutCentering_( const gridDataT & data )
 {
     hybridQtyCentering_[data.iBx ][data.idirX] = data.primal ;
     hybridQtyCentering_[data.iBx ][data.idirY] = data.dual   ;

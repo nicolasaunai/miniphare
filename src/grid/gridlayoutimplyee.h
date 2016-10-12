@@ -24,15 +24,22 @@
  * - partial derivative operator (Faraday)
  * - physical coordinate given a field and a primal point (ix, iy, iz)
  * - cell centered coordinate given a primal point (ix, iy, iz)
- *
  */
 class GridLayoutImplYee : public GridLayoutImpl, private GridLayoutImplInternals
 {
+
+    // ------------------------------------------------------------------------
+    //                              PRIVATE
+    // ------------------------------------------------------------------------
 private:
 
-    void initLayoutCentering( const gridDataT & staticData ) ;
+    void initLayoutCentering_( const gridDataT & staticData ) ;
 
 
+
+    // ------------------------------------------------------------------------
+    //                          PUBLIC INTERFACE
+    // ------------------------------------------------------------------------
 public:
 
     explicit GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
