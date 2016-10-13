@@ -104,14 +104,6 @@ std::vector<FaradayParams> getFaraday1DInputsFromFile()
 
         ifs1 >> params[i].nbrTimeSteps ;
 
-        for(uint32 icompo=0 ; icompo<6 ; ++icompo)
-        {
-            params[i].fieldInputs[icompo].x.assign(MAX_SIZE, 0.) ;
-            params[i].fieldInputs[icompo].y.assign(MAX_SIZE, 0.) ;
-            params[i].fieldInputs[icompo].z.assign(MAX_SIZE, 0.) ;
-            params[i].fieldInputs[icompo].field.assign(MAX_SIZE, 0.) ;
-        }
-
     }
 
     return params ;

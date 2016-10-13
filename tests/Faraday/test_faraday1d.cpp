@@ -5,52 +5,88 @@
 #include <fstream>
 #include <cmath>
 
-
 #include "test_faraday.h"
 
+#include "Faraday/faraday.h"
+#include "Faraday/faradayimpl1d.h"
+#include "Faraday/faradayfactory.h"
 
 
-MATCHER_P(FloatNear, tol, "Precision out of range")
+
+
+::testing::AssertionResult AreVectorOfBfieldsEqual(
+                                const std::vector<VecField> & expected,
+                                const std::vector<VecField> & actual  ,
+                                uint32 nStep, double precision  )
 {
-    // we get the actual value
-    double actualVal = std::get<0>(arg) ;
+    ::testing::AssertionResult result = ::testing::AssertionFailure();
 
-    // we get the expected value
-    double expectedVal = std::get<1>(arg) ;
 
-    return actualVal > expectedVal-tol && actualVal < expectedVal+tol ;
+
+    return testing::AssertionSuccess() ;
 }
 
 
-class Faraday1D: public ::testing::TestWithParam<FaradayParams>
+class Faraday1DTest: public ::testing::TestWithParam<FaradayParams>
 {
 public:
     FaradayParams inputs;
 
     double precision ;
 
-    std::vector<double> expected_array ;
-    std::vector<double> actual_array ;
+    std::vector<VecField> expected_Bfield ;
+    std::vector<VecField> actual_Bfield ;
+
+
+    ~Faraday1DTest() = default ;
 
     void SetUp()
     {
         inputs = GetParam();
         print(inputs) ;
 
-        GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
+        GridLayout layout{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
+
+        // this method has 2nd order precision
+        precision = pow( layout.dx(), 2.) ;
 
         std::string testName = inputs.testName ;
 
+        Faraday faraday = Faraday(inputs.dt, layout) ;
 
-        for( uint32 ifield=0 ; ifield<inputs.nbrOfFields ; ++ifield )
+        auto allocBx = layout.allocSize(HybridQuantity::Bx) ;
+        auto allocBy = layout.allocSize(HybridQuantity::By) ;
+        auto allocBz = layout.allocSize(HybridQuantity::Bz) ;
+        auto allocEx = layout.allocSize(HybridQuantity::Ex) ;
+        auto allocEy = layout.allocSize(HybridQuantity::Ey) ;
+        auto allocEz = layout.allocSize(HybridQuantity::Ez) ;
+
+        // B at time n-1/2
+        VecField Bold(allocBx, allocBy, allocBz,
+           { {HybridQuantity::Bx, HybridQuantity::By, HybridQuantity::Bz} },
+           "Bold" ) ;
+
+        // B at time n+1/2
+        VecField Bsol(allocBx, allocBy, allocBz,
+           { {HybridQuantity::Bx, HybridQuantity::By, HybridQuantity::Bz} },
+           "Bsol" ) ;
+
+        // E at time n
+        VecField Epred(allocEx, allocEy, allocEz,
+           { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+           "Epred" ) ;
+
+
+        for( uint32 itime=0 ; itime<inputs.nbrTimeSteps ; ++itime )
         {
-            std::string fieldName = inputs.fieldNames[ifield] ;
 
-            HybridQuantity qty = GetHybridQtyFromString( fieldName ) ;
-            uint32 iqty = static_cast<uint32>(qty);
-
-            for( uint32 itime=0 ; itime<inputs.nbrTimeSteps ; ++itime )
+            for( uint32 ifield=0 ; ifield<inputs.nbrOfFields ; ++ifield )
             {
+                std::string fieldName = inputs.fieldNames[ifield] ;
+
+                HybridQuantity qty = GetHybridQtyFromString( fieldName ) ;
+                uint32 iqty = static_cast<uint32>(qty);
+
                 // faraday1D_test03_Bz_t10.txt
                 std::string filename{"../Faraday/faraday1D_" + testName +
                             "_" + fieldName + "_t" + std::to_string(itime) + ".txt"};
@@ -65,79 +101,60 @@ public:
                 }
 
                 // we find out the field size
-                auto allocSize = gl.allocSize(qty) ;
+                auto allocSize = layout.allocSize(qty) ;
 
                 Field EMfieldComponent{allocSize , qty, "fieldName" };
 
-                uint32 iStart = gl.physicalStartIndex( EMfieldComponent, Direction::X ) ;
-                uint32 iEnd   = gl.physicalEndIndex  ( EMfieldComponent, Direction::X ) ;
+                inputs.fieldInputs[iqty] = EMfieldComponent ;
+
+                uint32 iStart = layout.physicalStartIndex( EMfieldComponent, Direction::X ) ;
+                uint32 iEnd   = layout.physicalEndIndex  ( EMfieldComponent, Direction::X ) ;
                 for(uint32 ik=iStart ; ik<=iEnd ; ++ik)
                 {
-                    ifs2 >> inputs.fieldInputs[iqty].x[ik] ;
-                    ifs2 >> inputs.fieldInputs[iqty].field[ik] ;
+                    double x ;
+                    // the coordinate is not used
+                    ifs2 >> x ;
+
+                    ifs2 >> inputs.fieldInputs[iqty](ik) ;
                 }
-
-                // Update B components with Maxwell Faraday's equation
-
-
-
-
             }
+
+
+            if( itime == 0)
+            {
+                // B at time n-1/2
+                Bold.component(VecField::VecX) = inputs.fieldInputs[0] ;
+                Bold.component(VecField::VecY) = inputs.fieldInputs[1] ;
+                Bold.component(VecField::VecZ) = inputs.fieldInputs[2] ;
+            }
+            else
+            {
+                // B at time n+1/2
+                Bsol.component(VecField::VecX) = inputs.fieldInputs[0] ;
+                Bsol.component(VecField::VecY) = inputs.fieldInputs[1] ;
+                Bsol.component(VecField::VecZ) = inputs.fieldInputs[2] ;
+
+                expected_Bfield.push_back(Bsol) ;
+
+                // B at time n-1/2
+                Bold = Bsol ;
+            }
+
+            // E at time n
+            Epred.component(VecField::VecX) = inputs.fieldInputs[3] ;
+            Epred.component(VecField::VecY) = inputs.fieldInputs[4] ;
+            Epred.component(VecField::VecZ) = inputs.fieldInputs[5] ;
+
+            VecField Bnew(allocBx, allocBy, allocBz,
+               { {HybridQuantity::Bx, HybridQuantity::By, HybridQuantity::Bz} },
+               "Bnew" ) ;
+
+            // Update B components with Maxwell Faraday's equation
+            faraday(Epred, Bold, Bnew) ;
+
+            actual_Bfield.push_back(Bnew) ;
         }
 
-
-
-
-
-
-//        uint32 iStart = inputs.field_iStart ;
-//        uint32 iEnd   = inputs.field_iEnd   ;
-//        for (uint32 ik=iStart ; ik<= iEnd ; ++ik)
-//        {
-//            infile >> inputs.fieldXCoords[ik] ;
-//            infile >> inputs.fieldXValues[ik] ;
-//            infile >> inputs.derivedFieldXCoords[ik] ;
-//            infile >> inputs.derivedFieldXValues[ik] ;
-//        }
-
-//        // inputs.qty is the important parameter
-//        Field operand{allocSize , inputs.qty, "operandField" };
-
-//        for (uint32 ik=iStart ; ik<= iEnd ; ++ik)
-//        {
-//            double x = inputs.fieldXCoords[ik] ;
-
-//            if(inputs.functionName == "linear")
-//            {
-//                operand(ik) = x ;
-//            } else if(inputs.functionName == "square")
-//            {
-//                operand(ik) = x*x ;
-//            } else if(inputs.functionName == "sin")
-//            {
-//                operand(ik) = sin(x) ;
-//            } else if(inputs.functionName == "compo01")
-//            {
-//                operand(ik) = x*x + sin(x) ;
-//            }
-//        }
-
-//        // inputs.qty is not the correct argument
-//        // this should not be relevant for the test
-//        Field derivative{allocSize , inputs.qty, "derivativeField" };
-
-//        gl.deriv( operand, Direction::X, derivative ) ;
-
-//        // this method has 2nd order precision
-//        precision = pow(gl.dx(), 2.) ;
-
-//        expected_array.assign(iEnd-iStart, 0.) ;
-//        actual_array.assign(iEnd-iStart, 0.) ;
-//        for( uint32 ix= iStart ; ix< iEnd ; ++ix )
-//        {
-//            expected_array[ix] = inputs.derivedFieldXValues[ix] ;
-//            actual_array[ix]   = derivative(ix) ;
-//        }
     }
 
 
@@ -168,16 +185,17 @@ public:
 /* 2nd order                                               */
 /*                                                         */
 /***********************************************************/
-TEST_P(Faraday1D, testFunction3)
+TEST_P(Faraday1DTest, BfieldSequence)
 {
 
-    EXPECT_THAT( actual_array, \
-                 ::testing::Pointwise(FloatNear(precision), expected_array) ) ;
+    EXPECT_TRUE( AreVectorOfBfieldsEqual(expected_Bfield, actual_Bfield, \
+                                         inputs.nbrTimeSteps, precision) );
+
 }
 
 
 
-INSTANTIATE_TEST_CASE_P(FaradayTest, Faraday1D,
+INSTANTIATE_TEST_CASE_P(FaradayTest, Faraday1DTest,
                         testing::ValuesIn( getFaraday1DInputsFromFile() ) );
 
 
