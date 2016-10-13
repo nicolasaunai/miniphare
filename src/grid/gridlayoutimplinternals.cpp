@@ -146,14 +146,24 @@ std::array<uint32, NBR_COMPO> GridLayoutImplInternals::nodeNbrFromCentering_(
 {
     gridDataT data{} ;
 
-    uint32 nx =  nbrPhysicalCells_[data.idirX] + 1
+    uint32 nx = 1 ;
+    uint32 ny = 1 ;
+    uint32 nz = 1 ;
+
+    nx =  nbrPhysicalCells_[data.idirX] + 1
                + 2*nbrGhosts( qtyCenterings[data.idirX] ) ;
 
-    uint32 ny =  nbrPhysicalCells_[data.idirY] + 1
-               + 2*nbrGhosts( qtyCenterings[data.idirY] ) ;
+    if(nbdims_ >= 2)
+    {
+        ny =  nbrPhysicalCells_[data.idirY] + 1
+                + 2*nbrGhosts( qtyCenterings[data.idirY] ) ;
+    }
 
-    uint32 nz =  nbrPhysicalCells_[data.idirZ] + 1
-               + 2*nbrGhosts( qtyCenterings[data.idirZ] ) ;
+    if(nbdims_ == 3)
+    {
+        nz =  nbrPhysicalCells_[data.idirZ] + 1
+                + 2*nbrGhosts( qtyCenterings[data.idirZ] ) ;
+    }
 
     return { {nx, ny, nz} } ;
 }

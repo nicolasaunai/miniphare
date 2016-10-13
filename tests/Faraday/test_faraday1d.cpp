@@ -15,13 +15,45 @@
 
 
 ::testing::AssertionResult AreVectorOfBfieldsEqual(
-                                const std::vector<VecField> & expected,
-                                const std::vector<VecField> & actual  ,
+                                const std::vector<VecField> & expected_vector,
+                                const std::vector<VecField> & actual_vector  ,
                                 uint32 nStep, double precision  )
 {
-    ::testing::AssertionResult result = ::testing::AssertionFailure();
+    ::testing::AssertionResult failure = ::testing::AssertionFailure();
+
+    uint32 errorNbr = 0 ;
+
+    if( expected_vector.size() != actual_vector.size() )
+        return failure ;
+
+    for( uint32 istep = 0 ; istep < nStep-1 ; ++istep )
+    {
+        for( uint32 iBfield = 0 ; iBfield < actual_vector.size() ; ++iBfield )
+        {
+            for( uint32 iComp = VecField::VecX ; iComp <= VecField::VecZ ; ++iComp )
+            {
+                Field actual_field   = actual_vector[iBfield].component(iComp) ;
+                Field expected_field = expected_vector[iBfield].component(iComp) ;
+
+                for( uint32 ix = 0 ; ix < actual_field.shape()[0] ; ++ix )
+                {
+                    if( fabs(expected_field(ix) - actual_field(ix)) > precision )
+                    {
+                        errorNbr++;
+                    }
+                }
+            }
+        }
+    }
+
+    if( errorNbr > 0 )
+    {
+        // Prepare error display
+        failure << "Total number of differences = " << errorNbr ;
 
 
+        return failure ;
+    }
 
     return testing::AssertionSuccess() ;
 }
@@ -54,12 +86,12 @@ public:
 
         Faraday faraday = Faraday(inputs.dt, layout) ;
 
-        auto allocBx = layout.allocSize(HybridQuantity::Bx) ;
-        auto allocBy = layout.allocSize(HybridQuantity::By) ;
-        auto allocBz = layout.allocSize(HybridQuantity::Bz) ;
-        auto allocEx = layout.allocSize(HybridQuantity::Ex) ;
-        auto allocEy = layout.allocSize(HybridQuantity::Ey) ;
-        auto allocEz = layout.allocSize(HybridQuantity::Ez) ;
+        auto allocBx = AllocSizeT(layout.allocSize(HybridQuantity::Bx).nx_, 1, 1) ;
+        auto allocBy = AllocSizeT(layout.allocSize(HybridQuantity::By).nx_, 1, 1) ;
+        auto allocBz = AllocSizeT(layout.allocSize(HybridQuantity::Bz).nx_, 1, 1) ;
+        auto allocEx = AllocSizeT(layout.allocSize(HybridQuantity::Ex).nx_, 1, 1) ;
+        auto allocEy = AllocSizeT(layout.allocSize(HybridQuantity::Ey).nx_, 1, 1) ;
+        auto allocEz = AllocSizeT(layout.allocSize(HybridQuantity::Ez).nx_, 1, 1) ;
 
         // B at time n-1/2
         VecField Bold(allocBx, allocBy, allocBz,
@@ -103,7 +135,7 @@ public:
                 // we find out the field size
                 auto allocSize = layout.allocSize(qty) ;
 
-                Field EMfieldComponent{allocSize , qty, "fieldName" };
+                Field EMfieldComponent{AllocSizeT(allocSize.nx_, 1, 1) , qty, "fieldName" };
 
                 inputs.fieldInputs[iqty] = EMfieldComponent ;
 
