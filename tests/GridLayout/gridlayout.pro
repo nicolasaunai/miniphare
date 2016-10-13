@@ -3,7 +3,9 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SUBDIRS += GridLayout
+#SUBDIRS += GridLayout
+
+#QMAKE_POST_LINK  = ls $$DESTDIR #python gridlayouttest.py $$DESTDIR
 
 
 # if macx else unix

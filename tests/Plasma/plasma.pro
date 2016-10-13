@@ -3,7 +3,7 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SUBDIRS += Plasma
+#SUBDIRS += Plasma
 
 
 INCLUDEPATH += /opt/local/include \
