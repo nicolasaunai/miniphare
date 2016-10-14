@@ -52,7 +52,7 @@ void FaradayImpl1D::operator()(VecField const& E, VecField const& B, VecField& B
     uint32 iStart = layout_.physicalStartIndex(Bx, Direction::X);
     uint32 iEnd   = layout_.physicalEndIndex  (Bx, Direction::X);
 
-    for (uint32 ix = iStart; ix < iEnd; ++ix )
+    for (uint32 ix = iStart; ix <= iEnd; ++ix )
     {
         Bxnew(ix) = Bx(ix);
     }
@@ -61,18 +61,18 @@ void FaradayImpl1D::operator()(VecField const& E, VecField const& B, VecField& B
     iStart = layout_.physicalStartIndex(By, Direction::X);
     iEnd   = layout_.physicalEndIndex  (By, Direction::X);
 
-    for (uint32 ix = iStart; ix < iEnd; ++ix )
+    for (uint32 ix = iStart; ix <= iEnd; ++ix )
     {
-        Bynew(ix) +=   dt_ * dxEz_(ix);
+        Bynew(ix) = By(ix) + dt_ * dxEz_(ix);
     }
 
 
     iStart = layout_.physicalStartIndex(Bz, Direction::X);
     iEnd   = layout_.physicalEndIndex  (Bz, Direction::X);
 
-    for (uint32 ix = iStart; ix < iEnd; ++ix )
+    for (uint32 ix = iStart; ix <= iEnd; ++ix )
     {
-        Bznew(ix) += - dt_ * dxEy_(ix);
+        Bznew(ix) = Bz(ix) - dt_ * dxEy_(ix);
     }
 
 

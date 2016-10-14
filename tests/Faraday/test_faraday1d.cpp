@@ -23,11 +23,10 @@
 
     uint32 errorNbr = 0 ;
 
-    if( expected_vector.size() != actual_vector.size() )
-        return failure ;
+    if( expected_vector.size() != actual_vector.size() ) return failure ;
 
-    for( uint32 istep = 0 ; istep < nStep-1 ; ++istep )
-    {
+//    for( uint32 istep = 0 ; istep < nStep-1 ; ++istep )
+//    {
         for( uint32 iBfield = 0 ; iBfield < actual_vector.size() ; ++iBfield )
         {
             for( uint32 iComp = VecField::VecX ; iComp <= VecField::VecZ ; ++iComp )
@@ -44,7 +43,7 @@
                 }
             }
         }
-    }
+//    }
 
     if( errorNbr > 0 )
     {
@@ -80,7 +79,7 @@ public:
         GridLayout layout{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
 
         // this method has 2nd order precision
-        precision = pow( layout.dx(), 2.) ;
+        precision = pow( inputs.dt, 2.) ;
 
         std::string testName = inputs.testName ;
 
@@ -186,6 +185,10 @@ public:
 
             actual_Bfield.push_back(Bnew) ;
         }
+
+        // We pop the last actual_Bfield element as we have no expected_Bfield
+        // counterpart to compare with
+        actual_Bfield.pop_back() ;
 
     }
 

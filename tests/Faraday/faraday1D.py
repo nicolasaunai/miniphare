@@ -18,9 +18,8 @@ import math
 import sys
 sys.path.insert(0, '../')
 
-import gridlayout_commons as commons
 
-
+import gridlayout
 
 
 # --------------------------------------------------------------------------
@@ -58,8 +57,8 @@ def field_list( test_name ):
 
 
 # ---------------------- MAIN CODE -----------------------------------------
-if __name__ == "__main__":
-
+def main(path='./'):
+    
     interpOrder_l=[1]
     
     nbrCellX_l=[40]
@@ -74,9 +73,10 @@ if __name__ == "__main__":
     
     origin = [0., 0., 0.]    
 
+    gl = gridlayout.GridLayout()
     
-    Direction_l = commons.Direction_l
-    Qty_l = commons.Qty_l
+    Direction_l = gl.Direction_l
+    Qty_l = gl.Qty_l
     
     faraday_test_l=['test03']
     
@@ -121,15 +121,15 @@ if __name__ == "__main__":
         dy = dy_l[icase]
         dz = dz_l[icase]
         
-        centeringX = commons.qtyCentering(Qty_l[iqty][1], 'X')
+        centeringX = gl.qtyCentering(Qty_l[iqty][1], 'X')
         
         f.write(("%d %d %d %d %d %5.4f %5.4f %5.4f  ") % 
            (interpOrder_l[icase], dim_l[icase], 
             nbrCellsX, nbrCellsY, nbrCellsZ, 
             dx, dy, dz ) )                   
            
-        iStart = commons.physicalStartPrimal(interpOrder_l[icase])
-        iEnd   = commons.physicalEndPrimal  (interpOrder_l[icase], nbrCellsX) 
+        iStart = gl.physicalStartPrimal(interpOrder_l[icase])
+        iEnd   = gl.physicalEndPrimal  (interpOrder_l[icase], nbrCellsX) 
         
         f.write(("%10.4f %10.4f %10.4f ") % (dt, t_start, t_end))
            
@@ -171,18 +171,18 @@ if __name__ == "__main__":
                 f = open( ("faraday1D_%s_%s_t%d.txt") % (faraday_test_l[icase], field_l[ifield], itime), "w")
         
                 print("field_l[ifield] = %s" % field_l[ifield])
-                centeringX = commons.qtyCentering(field_l[ifield], 'X')
+                centeringX = gl.qtyCentering(field_l[ifield], 'X')
                 print("%s along %s is %s" % (field_l[ifield], 'X', centeringX) )
                                 
-                iStart = commons.physicalStartIndex(interpOrder_l[icase], centeringX)
-                iEnd   = commons.physicalEndIndex  (interpOrder_l[icase], centeringX, nbrCellsX)       
+                iStart = gl.physicalStartIndex(interpOrder_l[icase], centeringX)
+                iEnd   = gl.physicalEndIndex  (interpOrder_l[icase], centeringX, nbrCellsX)       
         
                 print("iStart : %d" % iStart)
                 print("iEnd   : %d" % iEnd)
         
                 print("time = %7.3f" % time_l[itime])
                 for iprimal in np.arange(iStart, iEnd+1):
-                    x = commons.fieldCoords(iprimal, iStart, field_l[ifield], Direction_l[0], \
+                    x = gl.fieldCoords(iprimal, iStart, field_l[ifield], Direction_l[0], \
                                             dx, origin, 0)
                                            
                     fx = faradayDict[faraday_test_l[icase]](field_l[ifield], x, x0, time_l[itime], dt)
@@ -193,6 +193,9 @@ if __name__ == "__main__":
         
     # ------------------------------
 
+if __name__ == "__main__":
+    main()
+    
 
 
 
