@@ -40,7 +40,7 @@ bool sameShape(const VecField &v1, const VecField &v2)
 
 Field& VecField::component(uint32 iComp)
 {
-    std::cout << iComp << std::endl;
+//    std::cout << iComp << std::endl;
 
     switch (iComp)
     {

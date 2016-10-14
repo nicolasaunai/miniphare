@@ -86,12 +86,12 @@ public:
 
         Faraday faraday = Faraday(inputs.dt, layout) ;
 
-        auto allocBx = AllocSizeT(layout.allocSize(HybridQuantity::Bx).nx_, 1, 1) ;
-        auto allocBy = AllocSizeT(layout.allocSize(HybridQuantity::By).nx_, 1, 1) ;
-        auto allocBz = AllocSizeT(layout.allocSize(HybridQuantity::Bz).nx_, 1, 1) ;
-        auto allocEx = AllocSizeT(layout.allocSize(HybridQuantity::Ex).nx_, 1, 1) ;
-        auto allocEy = AllocSizeT(layout.allocSize(HybridQuantity::Ey).nx_, 1, 1) ;
-        auto allocEz = AllocSizeT(layout.allocSize(HybridQuantity::Ez).nx_, 1, 1) ;
+        auto allocBx = layout.allocSize(HybridQuantity::Bx) ;
+        auto allocBy = layout.allocSize(HybridQuantity::By) ;
+        auto allocBz = layout.allocSize(HybridQuantity::Bz) ;
+        auto allocEx = layout.allocSize(HybridQuantity::Ex) ;
+        auto allocEy = layout.allocSize(HybridQuantity::Ey) ;
+        auto allocEz = layout.allocSize(HybridQuantity::Ez) ;
 
         // B at time n-1/2
         VecField Bold(allocBx, allocBy, allocBz,
@@ -135,7 +135,7 @@ public:
                 // we find out the field size
                 auto allocSize = layout.allocSize(qty) ;
 
-                Field EMfieldComponent{AllocSizeT(allocSize.nx_, 1, 1) , qty, "fieldName" };
+                Field EMfieldComponent{allocSize, qty, "fieldName" };
 
                 inputs.fieldInputs[iqty] = EMfieldComponent ;
 
