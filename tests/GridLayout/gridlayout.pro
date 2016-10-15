@@ -4,30 +4,29 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 
-#SUBDIRS += GridLayout
-
 #QMAKE_POST_LINK  = ls $$DESTDIR #python gridlayouttest.py $$DESTDIR
 
-GTESTDIRLIB = ../gtest ##$$DESTDIR/../gtest
-GMOCKDIRLIB = ../gmock
-GTESTINC    = /Users/nicolasaunai/Downloads/googletest/googletest/include
-GMOCKINC    = /Users/nicolasaunai/Downloads/googletest/googlemock/include
 
-# if macx else unix
+GTESTDIRLIB = ../gtest
+GMOCKDIRLIB = ../gmock
+GTESTINC    = ../../googletest/googletest/include
+GMOCKINC    = ../../googletest/googlemock/include
+
+
 macx {
     LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock
     INCLUDEPATH += $$GTESTINC $$GMOCKINC
-#    INCLUDEPATH += $$GTESTDIR/include $$GMOCKDIR/include $$GTESTDIR $$GMOCKDIR
-} unix {
+} else {
+unix {
     #LIBS += -L/usr/lib -lpthread -lgtest -lgmock
     #INCLUDEPATH += /usr/include/gtest
     #INCLUDEPATH += /usr/include/gmock
 }
+}
+
 
 INCLUDEPATH += ../../src
 
-
-#    QMAKE_CXXFLAGS +=  -Werror=constant-conversion
 
 
 

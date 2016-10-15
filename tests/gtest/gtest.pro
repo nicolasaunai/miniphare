@@ -5,12 +5,12 @@ CONFIG -= qt
 
 
 
-GTESTDIR = /Users/nicolasaunai/Downloads/googletest/googletest#$$(GTEST_ROOT)
+GTESTDIR = ../../googletest/googletest
 
 # if macx else unix
 macx {
-    LIBS +=  -L$$GTESTDIR/lib -lgtest
-    INCLUDEPATH += $$GTESTDIR/include $$GTESTDIR
+    LIBS        += -L$$GTESTDIR/lib -lgtest
+    INCLUDEPATH +=   $$GTESTDIR/include $$GTESTDIR
 } unix {
     #LIBS += -L/usr/lib -lpthread -lgtest -lgmock
     #INCLUDEPATH += /usr/include/gtest

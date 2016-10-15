@@ -3,24 +3,26 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-#SUBDIRS += Plasma
 
 
-INCLUDEPATH += /opt/local/include \
-               ../../src
+GTESTDIRLIB = ../gtest
+GMOCKDIRLIB = ../gmock
+GTESTINC    = ../../googletest/googletest/include
+GMOCKINC    = ../../googletest/googlemock/include
 
 
-
-# if macx else unix
 macx {
-    LIBS += -L/opt/local/lib -lgtest
-} unix {
-    LIBS += -lgtest
+    LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock
+    INCLUDEPATH += $$GTESTINC $$GMOCKINC
+} else {
+unix {
+    #LIBS += -L/usr/lib -lpthread -lgtest -lgmock
+    #INCLUDEPATH += /usr/include/gtest
+    #INCLUDEPATH += /usr/include/gmock
+}
 }
 
-
-
-QMAKE_CXXFLAGS += -Werror=constant-conversion
+INCLUDEPATH += ../../srck
 
 
 SOURCES += test_ions.cpp \
