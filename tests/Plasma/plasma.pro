@@ -3,17 +3,7 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-
-
-GTESTDIRLIB = ../gtest
-GMOCKDIRLIB = ../gmock
-GTESTINC    = ../../googletest/googletest/include
-GMOCKINC    = ../../googletest/googlemock/include
-
-
-
-LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock -pthread
-INCLUDEPATH += $$GTESTINC $$GMOCKINC
+include(../GTest/GTest.pri)
 
 
 INCLUDEPATH += ../../src
