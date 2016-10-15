@@ -9,15 +9,6 @@ QMAKE_POST_LINK  = PYTHONPATH=$$PWD:$$PWD/.. $$PWD/gridlayouttest.py $$OUT_PWD
 
 include(../GTest/GTest.pri)
 
-#GTESTDIRLIB = ../gtest
-#GMOCKDIRLIB = ../gmock
-#GTESTINC    = ../../googletest/googletest/include
-#GMOCKINC    = ../../googletest/googlemock/include
-
-
-
-#LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock -pthread
-#INCLUDEPATH += $$GTESTINC $$GMOCKINC
 
 INCLUDEPATH += ../../src
 

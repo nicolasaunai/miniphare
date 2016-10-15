@@ -8,7 +8,7 @@ TARGET = gtest
 GTESTDIR = ../../../googletest/googletest
 
 
-LIBS        += -L$$GTESTDIR/lib -lgtest
+#LIBS        += -L$$GTESTDIR/lib -lgtest
 INCLUDEPATH +=   $$GTESTDIR/include $$GTESTDIR
 
 
