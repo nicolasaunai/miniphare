@@ -5,17 +5,17 @@ TEMPLATE = subdirs
 #           Faraday/faraday.pro \
 #           gtest/gtest.pro
 
-SUBDIRS += gtest\
-           gmock\
-           gridlayout \
-           plasma \
+SUBDIRS += gtest/gtest.pro\
+           gmock/gmock.pro \
+           GridLayout/gridlayout.pro\
+           Plasma/plasma.pro \
       #     faraday
 
 
-gtest.subdirs      = gtest/gtest.pro
-gmock.subdirs      = gmock/gmock.pro
-gridlayout.subdirs = GridLayout/gridlayout.pro
-plasma.SUBDIRS     = Plasma/plasma.pro
+#gtest.subdirs      = gtest/gtest.pro
+#gmock.subdirs      = gmock/gmock.pro
+#gridlayout.subdirs = GridLayout/gridlayout.pro
+#plasma.SUBDIRS     = Plasma/plasma.pro
 #faraday.subdirs    = Faraday/faraday.pro
 
 
