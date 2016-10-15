@@ -4,18 +4,11 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 
-#QMAKE_POST_LINK  = ls $$DESTDIR #python gridlayouttest.py $$DESTDIR
+QMAKE_POST_LINK  = PYTHONPATH=$$PWD:$$PWD/.. $$PWD/gridlayouttest.py $$OUT_PWD
 
 
-GTESTDIRLIB = ../gtest
-GMOCKDIRLIB = ../gmock
-GTESTINC    = ../../googletest/googletest/include
-GMOCKINC    = ../../googletest/googlemock/include
+include(../GTest/GTest.pri)
 
-
-
-LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock -pthread
-INCLUDEPATH += $$GTESTINC $$GMOCKINC
 
 INCLUDEPATH += ../../src
 
@@ -46,3 +39,6 @@ HEADERS += ../../src/grid/gridlayout.h \
            ../../src/utility.h \
            ../../src/Field/field.h \
            test_gridlayout.h
+
+OTHER_FILES +=\
+    gridlayouttest.py

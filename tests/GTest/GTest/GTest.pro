@@ -2,13 +2,13 @@ TEMPLATE=lib
 CONFIG += staticlib
 CONFIG -= app_bundle
 CONFIG -= qt
+TARGET = gtest
 
 
+GTESTDIR = ../../../googletest/googletest
 
-GTESTDIR = ../../googletest/googletest
 
-
-LIBS        += -L$$GTESTDIR/lib -lgtest
+#LIBS        += -L$$GTESTDIR/lib -lgtest
 INCLUDEPATH +=   $$GTESTDIR/include $$GTESTDIR
 
 
