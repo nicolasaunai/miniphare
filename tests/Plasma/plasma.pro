@@ -12,7 +12,7 @@ GMOCKINC    = ../../googletest/googlemock/include
 
 
 
-LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock  -lpthread
+LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock -pthread
 INCLUDEPATH += $$GTESTINC $$GMOCKINC
 
 
@@ -22,9 +22,9 @@ INCLUDEPATH += ../../src
 SOURCES += test_ions.cpp \
            test_species.cpp \
            ../../src/Plasmas/ions.cpp \
-           ../../src/grid/gridLayout.cpp \
-           ../../src/grid/gridLayoutimplinternals.cpp \
-           ../../src/grid/gridLayoutimplyee.cpp \
+           ../../src/grid/gridlayout.cpp \
+           ../../src/grid/gridlayoutimplinternals.cpp \
+           ../../src/grid/gridlayoutimplyee.cpp \
            ../../src/Plasmas/species.cpp \
             ../../src/vecfield/vecfield.cpp \
             ../../src/Field/field.cpp \
@@ -33,10 +33,10 @@ SOURCES += test_ions.cpp \
 
 
 HEADERS += ../../src/Plasmas/ions.h \
-           ../../src/grid/gridLayout.h \
-           ../../src/grid/gridLayoutimpl.h \
-           ../../src/grid/gridLayoutimplinternals.h \
-           ../../src/grid/gridLayoutimplyee.h \
+           ../../src/grid/gridlayout.h \
+           ../../src/grid/gridlayoutimpl.h \
+           ../../src/grid/gridlayoutimplinternals.h \
+           ../../src/grid/gridlayoutimplyee.h \
            #../../src/Plasmas/species.h \
            ../../src/vecfield/vecfield.h \
            ../../src/Field/field.h \

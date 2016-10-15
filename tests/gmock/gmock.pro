@@ -10,4 +10,3 @@ LIBS        += -L$$GMOCKDIR/lib -lgmock
 INCLUDEPATH +=   $$GMOCKDIR/include $$GMOCKDIR $$GTESTDIR/include
 
 SOURCES = $$GMOCKDIR/src/gmock-all.cc
-

@@ -23,6 +23,7 @@ SOURCES += main.cpp \
     Faraday/faradayimpl1d.cpp \
     grid/gridlayout.cpp \
     grid/gridlayoutimplyee.cpp \
+    grid/gridlayoutimplinternals.cpp \
     Ohm/ohm.cpp \
     Ohm/ohmimpl1d.cpp \
     Initializer/ionsinitializer.cpp \
@@ -33,7 +34,6 @@ SOURCES += main.cpp \
     Initializer/simpleinitializerfactory.cpp \
     Initializer/initializerfactory.cpp \
     Initializer/fluidparticleinitializer.cpp \
-    grid/gridlayoutimplinternals.cpp
 
 
 HEADERS += \
@@ -63,6 +63,8 @@ HEADERS += \
     grid/gridlayoutimpl.h \
     grid/gridlayoutimplyee.h \
     grid/gridlayoutimplfactory.h \
+    grid/gridlayoutimplinternals.h \
+    grid/gridlayoutdefs.h \
     Ohm/ohm.h \
     Ohm/ohmimplfactory.h \
     Ohm/ohmimpl1d.h \
@@ -74,8 +76,6 @@ HEADERS += \
     Initializer/particleinitializer.h \
     Initializer/simpleinitializerfactory.h \
     Initializer/fluidparticleinitializer.h \
-    grid/gridlayoutimplinternals.h \
-    grid/gridlayoutdefs.h
 
 
 
