@@ -14,7 +14,7 @@ GMOCKINC    = ../../googletest/googlemock/include
 
 
 
-LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock
+LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock -lpthread
 INCLUDEPATH += $$GTESTINC $$GMOCKINC
 
 INCLUDEPATH += ../../src
