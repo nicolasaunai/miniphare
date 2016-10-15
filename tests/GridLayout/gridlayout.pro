@@ -3,19 +3,25 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
+
 #SUBDIRS += GridLayout
 
 #QMAKE_POST_LINK  = ls $$DESTDIR #python gridlayouttest.py $$DESTDIR
 
+GTESTDIRLIB = ../gtest ##$$DESTDIR/../gtest
+GMOCKDIRLIB = ../gmock
+GTESTINC    = /Users/nicolasaunai/Downloads/googletest/googletest/include
+GMOCKINC    = /Users/nicolasaunai/Downloads/googletest/googlemock/include
 
 # if macx else unix
 macx {
-    LIBS += -L/usr/local/lib -lgtest -lgmock  #-L/opt/local/lib -lgtest -lgmock
-    INCLUDEPATH += /usr/local/include #/opt/local/include
+    LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock
+    INCLUDEPATH += $$GTESTINC $$GMOCKINC
+#    INCLUDEPATH += $$GTESTDIR/include $$GMOCKDIR/include $$GTESTDIR $$GMOCKDIR
 } unix {
-    LIBS += -L/usr/lib -lpthread -lgtest -lgmock
-    INCLUDEPATH += /usr/include/gtest
-    INCLUDEPATH += /usr/include/gmock
+    #LIBS += -L/usr/lib -lpthread -lgtest -lgmock
+    #INCLUDEPATH += /usr/include/gtest
+    #INCLUDEPATH += /usr/include/gmock
 }
 
 INCLUDEPATH += ../../src
@@ -36,7 +42,8 @@ SOURCES += ../../src/grid/gridlayout.cpp \
            test_deriv1d.cpp \
            test_allocsizes.cpp \
            test_utilities.cpp \
-           test_main.cpp
+           test_main.cpp \
+
 
 HEADERS += ../../src/grid/gridlayout.h \
            ../../src/grid/gridlayoutimplfactory.h \
