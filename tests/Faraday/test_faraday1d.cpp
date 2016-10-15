@@ -22,6 +22,7 @@
     ::testing::AssertionResult failure = ::testing::AssertionFailure();
 
     uint32 errorNbr = 0 ;
+    uint32 testNbr = 0 ;
 
     if( expected_vector.size() != actual_vector.size() ) return failure ;
 
@@ -36,6 +37,7 @@
 
                 for( uint32 ix = 0 ; ix < actual_field.shape()[0] ; ++ix )
                 {
+                    testNbr++;
                     if( fabs(expected_field(ix) - actual_field(ix)) > precision )
                     {
                         errorNbr++;
@@ -48,7 +50,7 @@
     if( errorNbr > 0 )
     {
         // Prepare error display
-        failure << "Total number of differences = " << errorNbr ;
+        failure << "Total number of differences = " << errorNbr << " / " << testNbr ;
 
 
         return failure ;
@@ -204,9 +206,8 @@ public:
                   << " dt = " << inputs.dt
                   << " tStart = " << inputs.tStart
                   << " tEnd = " << inputs.tEnd
-                  << " testName = " << inputs.testName   ;
-
-        std::cout << std::endl ;
+                  << " testName = " << inputs.testName
+                  << std::endl ;
     }
 
 };

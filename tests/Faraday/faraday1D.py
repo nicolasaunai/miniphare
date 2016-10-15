@@ -1,11 +1,5 @@
-# -*- coding: utf-8 -*-
-#"""
-#Created on Fri Oct  7 16:54:36 2016
-#
-#@author: mdrouin
-#"""
-
-# In[1]:
+#!/usr/bin/env python
+#!coding: utf-8
 
 import numpy as np
 import math
@@ -20,7 +14,7 @@ sys.path.insert(0, '../')
 
 
 import gridlayout
-
+import os
 
 # --------------------------------------------------------------------------
 
@@ -58,7 +52,11 @@ def field_list( test_name ):
 
 # ---------------------- MAIN CODE -----------------------------------------
 def main(path='./'):
+
+    if len(sys.argv) == 2:
+        path = sys.argv[1]
     
+    # ---------------------- INITIALIZATION  -------------------------------
     interpOrder_l=[1]
     
     nbrCellX_l=[40]
