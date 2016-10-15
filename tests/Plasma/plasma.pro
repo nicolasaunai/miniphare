@@ -11,18 +11,12 @@ GTESTINC    = ../../googletest/googletest/include
 GMOCKINC    = ../../googletest/googlemock/include
 
 
-macx {
-    LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock
-    INCLUDEPATH += $$GTESTINC $$GMOCKINC
-} else {
-unix {
-    #LIBS += -L/usr/lib -lpthread -lgtest -lgmock
-    #INCLUDEPATH += /usr/include/gtest
-    #INCLUDEPATH += /usr/include/gmock
-}
-}
 
-INCLUDEPATH += ../../srck
+LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock
+INCLUDEPATH += $$GTESTINC $$GMOCKINC
+
+
+INCLUDEPATH += ../../src
 
 
 SOURCES += test_ions.cpp \

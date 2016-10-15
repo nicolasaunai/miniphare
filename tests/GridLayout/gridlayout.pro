@@ -13,17 +13,9 @@ GTESTINC    = ../../googletest/googletest/include
 GMOCKINC    = ../../googletest/googlemock/include
 
 
-macx {
-    LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock
-    INCLUDEPATH += $$GTESTINC $$GMOCKINC
-} else {
-unix {
-    #LIBS += -L/usr/lib -lpthread -lgtest -lgmock
-    #INCLUDEPATH += /usr/include/gtest
-    #INCLUDEPATH += /usr/include/gmock
-}
-}
 
+LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock
+INCLUDEPATH += $$GTESTINC $$GMOCKINC
 
 INCLUDEPATH += ../../src
 
