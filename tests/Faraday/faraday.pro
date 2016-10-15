@@ -3,7 +3,7 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SUBDIRS += Faraday
+#SUBDIRS += Faraday
 
 
 # if macx else unix

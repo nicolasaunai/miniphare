@@ -3,32 +3,28 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SUBDIRS += Plasma
 
 
-INCLUDEPATH += /opt/local/include \
-               ../../src
-
-
-
-# if macx else unix
-macx {
-    LIBS += -L/opt/local/lib -lgtest
-} unix {
-    LIBS += -lgtest
-}
+GTESTDIRLIB = ../gtest
+GMOCKDIRLIB = ../gmock
+GTESTINC    = ../../googletest/googletest/include
+GMOCKINC    = ../../googletest/googlemock/include
 
 
 
-QMAKE_CXXFLAGS += -Werror=constant-conversion
+LIBS +=  -L$$GTESTDIRLIB -lgtest  -L$$GMOCKDIRLIB -lgmock -pthread
+INCLUDEPATH += $$GTESTINC $$GMOCKINC
+
+
+INCLUDEPATH += ../../src
 
 
 SOURCES += test_ions.cpp \
            test_species.cpp \
            ../../src/Plasmas/ions.cpp \
-           ../../src/grid/gridLayout.cpp \
-           ../../src/grid/gridLayoutimplinternals.cpp \
-           ../../src/grid/gridLayoutimplyee.cpp \
+           ../../src/grid/gridlayout.cpp \
+           ../../src/grid/gridlayoutimplinternals.cpp \
+           ../../src/grid/gridlayoutimplyee.cpp \
            ../../src/Plasmas/species.cpp \
             ../../src/vecfield/vecfield.cpp \
             ../../src/Field/field.cpp \
@@ -37,10 +33,10 @@ SOURCES += test_ions.cpp \
 
 
 HEADERS += ../../src/Plasmas/ions.h \
-           ../../src/grid/gridLayout.h \
-           ../../src/grid/gridLayoutimpl.h \
-           ../../src/grid/gridLayoutimplinternals.h \
-           ../../src/grid/gridLayoutimplyee.h \
+           ../../src/grid/gridlayout.h \
+           ../../src/grid/gridlayoutimpl.h \
+           ../../src/grid/gridlayoutimplinternals.h \
+           ../../src/grid/gridlayoutimplyee.h \
            #../../src/Plasmas/species.h \
            ../../src/vecfield/vecfield.h \
            ../../src/Field/field.h \
