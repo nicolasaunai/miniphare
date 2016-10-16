@@ -53,29 +53,29 @@ void GridLayoutImplInternals::initPhysicalEnd( const gridDataT & data )
     uint32 idual   = static_cast<uint32>(data.dual);
 
     physicalEndIndexTable_[iprimal][data.idirX] =   physicalStartIndexTable_[iprimal][data.idirX]
-                                                  + nbrPhysicalCells_[data.idirX]
-                                                  - isDual(data.primal);
+            + nbrPhysicalCells_[data.idirX]
+            - isDual(data.primal);
 
     physicalEndIndexTable_[iprimal][data.idirY] =   physicalStartIndexTable_[iprimal][data.idirY]
-                                                  + nbrPhysicalCells_ [data.idirY ]
-                                                  - isDual(data.primal);
+            + nbrPhysicalCells_ [data.idirY ]
+            - isDual(data.primal);
 
     physicalEndIndexTable_[iprimal][data.idirZ] =   physicalStartIndexTable_[iprimal][data.idirZ]
-                                                  + nbrPhysicalCells_[data.idirZ ]
-                                                  - isDual(data.primal);
+            + nbrPhysicalCells_[data.idirZ ]
+            - isDual(data.primal);
 
 
     physicalEndIndexTable_[idual][data.idirX] =   physicalStartIndexTable_[idual][data.idirX]
-                                                  + nbrPhysicalCells_[data.idirX ]
-                                                  - isDual(data.dual);
+            + nbrPhysicalCells_[data.idirX ]
+            - isDual(data.dual);
 
     physicalEndIndexTable_[idual][data.idirY] =   physicalStartIndexTable_[idual][data.idirY]
-                                                  + nbrPhysicalCells_[data.idirY]
-                                                  - isDual(data.dual);
+            + nbrPhysicalCells_[data.idirY]
+            - isDual(data.dual);
 
     physicalEndIndexTable_[idual][data.idirZ] =   physicalStartIndexTable_[idual][data.idirZ]
-                                                  + nbrPhysicalCells_[data.idirZ]
-                                                  - isDual(data.dual);
+            + nbrPhysicalCells_[data.idirZ]
+            - isDual(data.dual);
 
 }
 
@@ -93,22 +93,22 @@ void GridLayoutImplInternals::initGhostEnd( const gridDataT & data )
     uint32 idual   = static_cast<uint32>(data.dual);
 
     ghostEndIndexTable_[iprimal][data.idirX] =  physicalEndIndexTable_[iprimal][data.idirX]
-                                              + nbrGhosts(data.primal);
+            + nbrGhosts(data.primal);
 
     ghostEndIndexTable_[iprimal][data.idirY] =  physicalEndIndexTable_[iprimal][data.idirY]
-                                              + nbrGhosts(data.primal);
+            + nbrGhosts(data.primal);
 
     ghostEndIndexTable_[iprimal][data.idirZ] =  physicalEndIndexTable_[iprimal][data.idirZ]
-                                              + nbrGhosts(data.primal);
+            + nbrGhosts(data.primal);
 
     ghostEndIndexTable_[idual][data.idirX]   =  physicalEndIndexTable_[idual][data.idirX]
-                                              + nbrGhosts(data.dual);
+            + nbrGhosts(data.dual);
 
     ghostEndIndexTable_[idual][data.idirY]   =  physicalEndIndexTable_[idual][data.idirY]
-                                              + nbrGhosts(data.dual);
+            + nbrGhosts(data.dual);
 
     ghostEndIndexTable_[idual][data.idirZ]   =  physicalEndIndexTable_[idual][data.idirZ]
-                                              + nbrGhosts(data.dual);
+            + nbrGhosts(data.dual);
 }
 
 
@@ -147,13 +147,13 @@ std::array<uint32, NBR_COMPO> GridLayoutImplInternals::nodeNbrFromCentering_(
     gridDataT data{} ;
 
     uint32 nx =  nbrPhysicalCells_[data.idirX] + 1
-               + 2*nbrGhosts( qtyCenterings[data.idirX] ) ;
+            + 2*nbrGhosts( qtyCenterings[data.idirX] ) ;
 
     uint32 ny =  nbrPhysicalCells_[data.idirY] + 1
-               + 2*nbrGhosts( qtyCenterings[data.idirY] ) ;
+            + 2*nbrGhosts( qtyCenterings[data.idirY] ) ;
 
     uint32 nz =  nbrPhysicalCells_[data.idirZ] + 1
-               + 2*nbrGhosts( qtyCenterings[data.idirZ] ) ;
+            + 2*nbrGhosts( qtyCenterings[data.idirZ] ) ;
 
     return { {nx, ny, nz} } ;
 }
@@ -200,8 +200,8 @@ AllocSizeT  GridLayoutImplInternals::allocSizeDerived_( HybridQuantity qty, Dire
     // now copy the original centering...
     std::array<QtyCentering, NBR_COMPO>
             qtyCenterings{ {hybridQtyCentering_[iQty][data.idirX],
-                            hybridQtyCentering_[iQty][data.idirY],
-                            hybridQtyCentering_[iQty][data.idirZ]} } ;
+                    hybridQtyCentering_[iQty][data.idirY],
+                    hybridQtyCentering_[iQty][data.idirZ]} } ;
 
 
     // ...and permute the centering in the direction of derivation
@@ -213,7 +213,6 @@ AllocSizeT  GridLayoutImplInternals::allocSizeDerived_( HybridQuantity qty, Dire
     // and ship it in a AllocSizeT structure.
     return AllocSizeT( sizeArray[0], sizeArray[1], sizeArray[2] );
 }
-
 
 
 

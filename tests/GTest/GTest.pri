@@ -10,5 +10,5 @@ INCLUDEPATH += $$GTESTINC $$GMOCKINC
 
 
 check.target = check
-check.commands = $$OUT_PWD/$$TARGET
+check.commands = $$OUT_PWD/$$TARGET --gtest_output=xml:gtest_out.xml
 check.depends = $$DESTDIR/$(QMAKE_TARGET)
