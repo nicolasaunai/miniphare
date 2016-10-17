@@ -72,7 +72,9 @@
                         failure << "\nComponent (0: Bx, 1: By, 2: Bz) = " << iComp << "\n" ;
                     }
 
-                    failure << ix << "  " ;
+                    failure << ix << "\n" ;
+                    failure << "Actual   value = " << actual_field(ix) << "\n" ;
+                    failure << "Expected value = " << expected_field(ix) << "\n" ;
 
                     flag_iStep = 1 ;
                     flag_iComp = 1 ;
