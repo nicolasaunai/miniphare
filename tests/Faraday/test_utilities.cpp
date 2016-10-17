@@ -101,8 +101,8 @@ std::vector<FaradayParams> getFaraday1DInputsFromFile()
         exit(-1);
     }
 
-    //static_cast<uint32>(HybridQuantity::count)
-    uint32 nbrTestCases = 1 ;
+    uint32 nbrTestCases = 0 ;
+    ifs1 >> nbrTestCases ;
 
     std::vector<FaradayParams> params(nbrTestCases);
 
@@ -120,6 +120,7 @@ std::vector<FaradayParams> getFaraday1DInputsFromFile()
         ifs1 >> params[i].dt ;
         ifs1 >> params[i].tStart ;
         ifs1 >> params[i].tEnd   ;
+        ifs1 >> params[i].nbrTimeSteps ;
         ifs1 >> params[i].testName ;
         ifs1 >> params[i].nbrOfFields ;
 
@@ -129,9 +130,6 @@ std::vector<FaradayParams> getFaraday1DInputsFromFile()
         {
             ifs1 >> params[i].fieldNames[ifield] ;
         }
-
-        ifs1 >> params[i].nbrTimeSteps ;
-
     }
 
     return params ;
