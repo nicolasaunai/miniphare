@@ -19,6 +19,8 @@ struct FaradayParams;
 
 HybridQuantity GetHybridQtyFromString( std::string field ) ;
 
+HybridQuantity GetHybridQty(uint32 iqty) ;
+
 std::string GetHybridQtyName(uint iqty) ;
 
 std::vector<FaradayParams> getFaraday1DInputsFromFile() ;
@@ -34,15 +36,6 @@ std::vector<FaradayParams> getFaraday1DInputsFromFile() ;
  *
  *                            Faraday TEST
  * ---------------------------------------------------------------------------- */
-
-//struct SuperVectorT
-//{
-//    std::vector<double> x, y, z;
-//    Field  field ;
-
-//    SuperVectorT(const Field& emptyField) ;
-//};
-
 
 struct FaradayParams
 {

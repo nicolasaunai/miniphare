@@ -34,6 +34,34 @@ HybridQuantity GetHybridQtyFromString( std::string field )
 }
 
 
+HybridQuantity GetHybridQty(uint32 iqty)
+{
+    HybridQuantity quantity = HybridQuantity::count ;
+
+    std::array<HybridQuantity, static_cast<uint32>(HybridQuantity::count) >  hybridQtyTable ;
+
+    hybridQtyTable[0] = HybridQuantity::Bx  ;
+    hybridQtyTable[1] = HybridQuantity::By  ;
+    hybridQtyTable[2] = HybridQuantity::Bz  ;
+    hybridQtyTable[3] = HybridQuantity::Ex  ;
+    hybridQtyTable[4] = HybridQuantity::Ey  ;
+    hybridQtyTable[5] = HybridQuantity::Ez  ;
+    hybridQtyTable[6] = HybridQuantity::rho ;
+    hybridQtyTable[7] = HybridQuantity::V   ;
+    hybridQtyTable[8] = HybridQuantity::P   ;
+
+    if( iqty < static_cast<uint32>(HybridQuantity::count) )
+    {
+        quantity = hybridQtyTable[iqty] ;
+    } else
+    {
+        quantity = HybridQuantity::count ;
+    }
+
+    return quantity ;
+}
+
+
 std::string GetHybridQtyName(uint32 iqty)
 {
     std::string qtyName{"None"} ;

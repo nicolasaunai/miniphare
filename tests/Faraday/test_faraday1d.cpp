@@ -17,7 +17,7 @@
 ::testing::AssertionResult AreVectorOfBfieldsEqual(
                                 const std::vector<VecField> & expected_vector,
                                 const std::vector<VecField> & actual_vector  ,
-                                uint32 nStep, double precision  )
+                                double precision  )
 {
     ::testing::AssertionResult failure = ::testing::AssertionFailure();
 
@@ -26,32 +26,65 @@
 
     if( expected_vector.size() != actual_vector.size() ) return failure ;
 
-//    for( uint32 istep = 0 ; istep < nStep-1 ; ++istep )
-//    {
-        for( uint32 iBfield = 0 ; iBfield < actual_vector.size() ; ++iBfield )
-        {
-            for( uint32 iComp = VecField::VecX ; iComp <= VecField::VecZ ; ++iComp )
-            {
-                Field actual_field   = actual_vector[iBfield].component(iComp) ;
-                Field expected_field = expected_vector[iBfield].component(iComp) ;
+    for( uint32 iStep = 0 ; iStep < actual_vector.size() ; ++iStep )
+    {
+        uint32 flag_iStep = 0 ;
 
-                for( uint32 ix = 0 ; ix < actual_field.shape()[0] ; ++ix )
+        for( uint32 iComp = VecField::VecX ; iComp <= VecField::VecZ ; ++iComp )
+        {
+            uint32 flag_iComp = 0 ;
+
+            Field actual_field   = actual_vector[iStep].component(iComp) ;
+            Field expected_field = expected_vector[iStep].component(iComp) ;
+
+            for( uint32 ix = 0 ; ix < actual_field.shape()[0] ; ++ix )
+            {
+                if( expected_field.shape()[0] != actual_field.shape()[0] )
                 {
-                    testNbr++;
-                    if( fabs(expected_field(ix) - actual_field(ix)) > precision )
+                    ::testing::AssertionResult sizeFailure = ::testing::AssertionFailure();
+
+                    sizeFailure << "\nexpected_field.shape()[0] != actual_field.shape()[0] \n" ;
+
+                    sizeFailure << "Size of actual_field \n" << "nx, ny, nz :"
+                            << actual_field.shape()[0] << ", "
+                            << actual_field.shape()[1] << ", "
+                            << actual_field.shape()[2] << "\n" ;
+
+                    sizeFailure << "Size of expected_field \n" << "nx, ny, nz :"
+                            << expected_field.shape()[0] << ", "
+                            << expected_field.shape()[1] << ", "
+                            << expected_field.shape()[2] << "\n" ;
+
+                    return sizeFailure ;
+                }
+
+                testNbr++;
+                if( fabs(expected_field(ix) - actual_field(ix)) > precision )
+                {
+                    errorNbr++;
+                    if( flag_iStep==0 )
                     {
-                        errorNbr++;
+                        failure << "\ntimeStep = " << iStep << "\n" ;
                     }
+
+                    if( flag_iComp== 0)
+                    {
+                        failure << "\nComponent (0: Bx, 1: By, 2: Bz) = " << iComp << "\n" ;
+                    }
+
+                    failure << ix << "  " ;
+
+                    flag_iStep = 1 ;
+                    flag_iComp = 1 ;
                 }
             }
         }
-//    }
+    }
 
     if( errorNbr > 0 )
     {
-        // Prepare error display
-        failure << "Total number of differences = " << errorNbr << " / " << testNbr ;
-
+        // Error Summary
+        failure << "\nTotal number of differences = " << errorNbr << " / " << testNbr << "\n" ;
 
         return failure ;
     }
@@ -112,6 +145,18 @@ public:
 
         for( uint32 itime=0 ; itime<inputs.nbrTimeSteps ; ++itime )
         {
+
+            // In the following loop, we set the correct sizes (for X, Y, Z directions)
+            // for the 6 components of the electromagnetic field
+            for( uint32 ifield=0 ; ifield<inputs.fieldInputs.size() ; ++ifield)
+            {
+                HybridQuantity qty = GetHybridQty(ifield) ;
+                auto allocSize = layout.allocSize(qty) ;
+
+                Field field{allocSize, qty, "fieldName" };
+
+                inputs.fieldInputs[ifield] = field ;
+            }
 
             for( uint32 ifield=0 ; ifield<inputs.nbrOfFields ; ++ifield )
             {
@@ -225,7 +270,7 @@ TEST_P(Faraday1DTest, BfieldSequence)
 {
 
     EXPECT_TRUE( AreVectorOfBfieldsEqual(expected_Bfield, actual_Bfield, \
-                                         inputs.nbrTimeSteps, precision) );
+                                         precision) );
 
 }
 
