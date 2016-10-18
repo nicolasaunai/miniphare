@@ -173,6 +173,8 @@ Point GridLayoutImplYee::cellCenteredCoordinates(
 
 
 
+
+
 /**
  * @brief GridLayoutImplYee::deriv1D It was decided to compute the
  * derivative on the entire physical domain.
@@ -190,72 +192,8 @@ Point GridLayoutImplYee::cellCenteredCoordinates(
  */
 void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const
 {
-    uint32 iDirX = static_cast<uint32>( Direction::X ) ;
-
-    uint32 iQtyOperand = static_cast<uint32>( operand.hybridQty() ) ;
-
-    QtyCentering opCentering = hybridQtyCentering_[iQtyOperand][iDirX] ;
-
-
-    // The QtyCentering of derivative is given by
-    // iQty = static_cast<uint32>( derivative.hybridQty() )
-    // hybridQtyCentering_[iQty][idir]
-    uint32 iDerStart = physicalStartIndex( derivative, Direction::X) ;
-    uint32 iDerEnd   = physicalEndIndex( derivative, Direction::X) ;
-
-    uint32 iOpStart = physicalStartIndex( operand, Direction::X ) ;
-
-    uint32 iOp = iOpStart ;
-    if( opCentering == QtyCentering::dual )
-    {
-        --iOp ;
-    }
-
-    for( uint32 iDer=iDerStart ; iDer<=iDerEnd ; ++iDer )
-    {
-        derivative(iDer) = odxdydz_[0] * ( operand(iOp+1) - operand(iOp) ) ;
-        ++iOp ;
-    }
-
+    deriv1D_(operand, derivative);
 }
-
-
-
-// TODO remove this code
-// after verification of the new method deriv1D
-//
-//void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const
-//{
-//    uint32 iDirX = static_cast<uint32>( Direction::X ) ;
-
-//    uint32 iQtyOperand = static_cast<uint32>( operand.hybridQty() ) ;
-
-//    QtyCentering opLayout = hybridQtyCentering_[iQtyOperand][iDirX] ;
-
-
-//    // The QtyCentering of derivative is given by
-//    // iQty = static_cast<uint32>( derivative.hybridQty() )
-//    // hybridQtyCentering_[iQty][idir]
-//    uint32 iDerStart = physicalStartIndex( derivative, Direction::X) ;
-
-//    uint32 iDer = iDerStart ;
-//    if( opLayout == QtyCentering::dual )
-//    {
-//        iDer++ ;
-//    }
-
-//    uint32 iOpStart = physicalStartIndex( operand, Direction::X ) ;
-//    uint32 iOpEnd   = physicalEndIndex  ( operand, Direction::X ) ;
-
-//    for( uint32 iOp=iOpStart ; iOp<iOpEnd ; ++iOp )
-//    {
-//        derivative(iDer) = odxdydz_[0] * ( operand(iOp+1) - operand(iOp) ) ;
-//        ++iDer ;
-//    }
-
-//}
-
-
 
 
 

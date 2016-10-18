@@ -61,11 +61,11 @@ public:
     virtual uint32 ghostStartIndex(Field const& field, Direction direction) const override;
     virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const override;
 
+    void deriv1D(Field const& operand, Field& derivative) const;
+
     virtual AllocSizeT allocSize( HybridQuantity qtyType ) const override ;
 
     virtual AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const override ;
-
-    virtual void deriv1D(Field const& operand, Field& derivative) const override;
 
     virtual Point fieldNodeCoordinates(
             const Field & field, const Point & origin,
