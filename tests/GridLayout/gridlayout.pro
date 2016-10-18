@@ -12,6 +12,8 @@ include(../GTest/GTest.pri)
 
 INCLUDEPATH += ../../src
 
+QMAKE_CXXFLAGS += -coverage
+QMAKE_LFLAGS +=   -fprofile-arcs -ftest-coverage
 
 
 
@@ -21,8 +23,8 @@ SOURCES += ../../src/grid/gridlayout.cpp \
            ../../src/Field/field.cpp \
            test_indexing.cpp \
            test_gridlayout.cpp \
-           test_fieldnodecoordinates.cpp \
            test_cellcenteredcoordinates.cpp \
+           test_fieldnodecoordinates.cpp \
            test_deriv1d.cpp \
            test_allocsizes.cpp \
            test_utilities.cpp \
