@@ -36,6 +36,18 @@ std::vector<GridLayoutParams> getDerivInputsFromFile() ;
 
 
 
+MATCHER_P(DoubleNear, epsilon, "Precision out of range")
+{
+    // we get the actual value
+    double actual = std::get<0>(arg) ;
+
+    // we get the expected value
+    double expected = std::get<1>(arg) ;
+
+    return actual > expected-epsilon && actual < expected+epsilon ;
+}
+
+
 
 /* ----------------------------------------------------------------------------
  *

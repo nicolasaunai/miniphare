@@ -8,16 +8,6 @@
 #include "test_gridlayout.h"
 
 
-MATCHER_P(DoubleNear, epsilon, "Precision out of range")
-{
-    // we get the actual value
-    double actual = std::get<0>(arg) ;
-
-    // we get the expected value
-    double expected = std::get<1>(arg) ;
-
-    return actual > expected-epsilon && actual < expected+epsilon ;
-}
 
 
 class GridLayoutCenteredCoordsTest: public ::testing::TestWithParam<GridLayoutParams>
@@ -85,8 +75,7 @@ public:
 
 TEST_P(GridLayoutCenteredCoordsTest, XCenteredCoords)
 {
-    EXPECT_THAT( actual_cellCentersX, \
-                 ::testing::Pointwise(DoubleNear(dbl_epsilon), expected_cellCentersX) ) ;
+    EXPECT_THAT( actual_cellCentersX,::testing::Pointwise(DoubleNear(dbl_epsilon), expected_cellCentersX) ) ;
 }
 
 
