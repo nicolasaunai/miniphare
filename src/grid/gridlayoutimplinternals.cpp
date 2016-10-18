@@ -146,14 +146,24 @@ std::array<uint32, NBR_COMPO> GridLayoutImplInternals::nodeNbrFromCentering_(
 {
     gridDataT data{} ;
 
-    uint32 nx =  nbrPhysicalCells_[data.idirX] + 1
-            + 2*nbrGhosts( qtyCenterings[data.idirX] ) ;
+    uint32 nx = 1 ;
+    uint32 ny = 1 ;
+    uint32 nz = 1 ;
 
-    uint32 ny =  nbrPhysicalCells_[data.idirY] + 1
-            + 2*nbrGhosts( qtyCenterings[data.idirY] ) ;
+    nx =  nbrPhysicalCells_[data.idirX] + 1
+               + 2*nbrGhosts( qtyCenterings[data.idirX] ) ;
 
-    uint32 nz =  nbrPhysicalCells_[data.idirZ] + 1
-            + 2*nbrGhosts( qtyCenterings[data.idirZ] ) ;
+    if(nbdims_ >= 2)
+    {
+        ny =  nbrPhysicalCells_[data.idirY] + 1
+                + 2*nbrGhosts( qtyCenterings[data.idirY] ) ;
+    }
+
+    if(nbdims_ == 3)
+    {
+        nz =  nbrPhysicalCells_[data.idirZ] + 1
+                + 2*nbrGhosts( qtyCenterings[data.idirZ] ) ;
+    }
 
     return { {nx, ny, nz} } ;
 }
@@ -475,6 +485,60 @@ uint32 GridLayoutImplInternals::isDual( QtyCentering centering ) const noexcept
 
     return isdual ;
 }
+
+
+
+
+
+
+
+
+/**
+ * @brief GridLayoutImplYee::deriv1D It was decided to compute the
+ * derivative on the entire physical domain.
+ * In the case of Maxwell Ampere (dual centering of the operand),
+ * it will therefore be necessary to get the values
+ * of the operand outside the physical domain before applying
+ * Maxwell Ampere
+ *
+ * @param operand is always primal in the case of Maxwell Faraday
+ * rotational operator (dEz/dy, dEy/dz, dEx/dz, dEz/dx, dEy/dx, dEx/dy)
+ * operand is always dual in the case of Maxwell Ampere
+ * rotational operator (dBz/dy, dBy/dz, dBx/dz, dBz/dx, dBy/dx, dBx/dy)
+ *
+ * @param derivative
+ */
+void GridLayoutImplInternals::deriv1D_(Field const& operand, Field& derivative) const
+{
+    uint32 iDirX = static_cast<uint32>( Direction::X ) ;
+
+    uint32 iQtyOperand = static_cast<uint32>( operand.hybridQty() ) ;
+
+    QtyCentering opCentering = hybridQtyCentering_[iQtyOperand][iDirX] ;
+
+
+    // The QtyCentering of derivative is given by
+    // iQty = static_cast<uint32>( derivative.hybridQty() )
+    // hybridQtyCentering_[iQty][idir]
+    uint32 iDerStart = physicalStartIndex_( derivative, Direction::X) ;
+    uint32 iDerEnd   = physicalEndIndex_( derivative, Direction::X) ;
+
+    uint32 iOpStart = physicalStartIndex_( operand, Direction::X ) ;
+
+    uint32 iOp = iOpStart ;
+    if( opCentering == QtyCentering::dual )
+    {
+        --iOp ;
+    }
+
+    for( uint32 iDer=iDerStart ; iDer<=iDerEnd ; ++iDer )
+    {
+        derivative(iDer) = odxdydz_[0] * ( operand(iOp+1) - operand(iOp) ) ;
+        ++iOp ;
+    }
+
+}
+
 
 
 

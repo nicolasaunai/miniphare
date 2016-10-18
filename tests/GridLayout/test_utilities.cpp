@@ -188,12 +188,8 @@ std::vector<GridLayoutParams> getDerivInputsFromFile()
         exit(-1);
     }
 
-//    uint32 orderMax = 4 ;
-
-    uint32 numberTestFunctions = 4 ;
-
-    //static_cast<uint32>(HybridQuantity::count)
-    uint32 nbrTestCases = 1 * numberTestFunctions ;
+    uint32 nbrTestCases = 0 ;
+    infile >> nbrTestCases ;
 
     std::vector<GridLayoutParams> params(nbrTestCases);
 

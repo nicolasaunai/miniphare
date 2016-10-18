@@ -15,13 +15,15 @@
 #include "Field/field.h"
 
 
-struct GridLayoutParams;
+struct FaradayParams;
 
-HybridQuantity GetHybridQty(uint iqty) ;
+HybridQuantity GetHybridQtyFromString( std::string field ) ;
+
+HybridQuantity GetHybridQty(uint32 iqty) ;
 
 std::string GetHybridQtyName(uint iqty) ;
 
-std::vector<GridLayoutParams> getFaraday1DInputsFromFile() ;
+std::vector<FaradayParams> getFaraday1DInputsFromFile() ;
 
 
 
@@ -32,57 +34,56 @@ std::vector<GridLayoutParams> getFaraday1DInputsFromFile() ;
 
 /* ----------------------------------------------------------------------------
  *
- *                            GridLayout TEST
+ *                            Faraday TEST
  * ---------------------------------------------------------------------------- */
 
-struct GridLayoutParams
+struct FaradayParams
 {
     uint32 interpOrder;
-    uint32 nbDim;
 
-    HybridQuantity qty;
-    std::string qtyName;
-    uint32 iqty ;        // integer equals to static_cast<uint32> (qty)
-
-    std::string functionName ;
-
-    uint32 icase ;
-
-    std::string layoutName ;
+    uint32 nbDim ;
 
     std::array<uint32, 3> nbrCells;
     std::array<double, 3> dxdydz;
 
-    std::array<uint32,3> allocSizes;
-    std::array<uint32,3> allocSizeDerived;
+    double dt ;
+    double tStart, tEnd ;
 
-    std::array<uint32,3> PSI;
-    std::array<uint32,3> PEI;
-    std::array<uint32,3> GSI;
-    std::array<uint32,3> GEI;
+    std::string testName ;
 
-    uint32  field_iStart ;
-    uint32  field_iEnd   ;
-    Point origin{0., 0., 0.} ;
+    uint32 nbrOfFields ;
 
-    std::vector<double>  fieldXCoords ;
-    std::vector<double>  fieldXValues ;
+    std::vector<std::string> fieldNames ;
 
-    std::vector<double>  derivedFieldXCoords ;
-    std::vector<double>  derivedFieldXValues ;
+    uint32 nbrTimeSteps ;
 
-    std::vector<double>  cellCenteredXCoords ;
+    // we have 6 components for the electromag field in the most complex case
+    // Bx, By, Bz, Ex, Ey, Ez
+    //    std::array<SuperVectorT, 6> fieldInputs ;
+    std::array<Field, 6> fieldInputs ;
 
     std::string testComment;
 
-    GridLayoutParams() = default ;
+    FaradayParams():fieldInputs \
+         { { Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
+             Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
+             Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
+             Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
+             Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
+             Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") )} }
+    {
+    }
 
-    GridLayoutParams(double dx, double dy, double dz,
-                     uint32 nbrCellx, uint32 nbrCelly, uint32 nbrCellz,
-                     std::string const& name,
-                     uint32 dim, std::string comment):
-        nbDim{dim}, layoutName{name},
+    FaradayParams(double dx, double dy, double dz,
+                  uint32 nbrCellx, uint32 nbrCelly, uint32 nbrCellz,
+                  std::string comment):
         nbrCells{ {nbrCellx,nbrCelly,nbrCellz} }, dxdydz{ {dx,dy,dz} },
+        fieldInputs{ {Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
+                      Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
+                      Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
+                      Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
+                      Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
+                      Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") )} },
         testComment{comment}
     {
 

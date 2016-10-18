@@ -3,23 +3,14 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-#SUBDIRS += Faraday
+
+QMAKE_POST_LINK  = PYTHONPATH=$$PWD:$$PWD/.. $$PWD/faradaytest.py $$OUT_PWD
 
 
-# if macx else unix
-macx {
-    LIBS += -L/usr/local/lib -lgtest -lgmock
-    INCLUDEPATH += /usr/local/include
-} unix {
-    LIBS += -L/usr/lib -lpthread -lgtest -lgmock
-    INCLUDEPATH += /usr/include/gtest
-    INCLUDEPATH += /usr/include/gmock
-}
+include(../GTest/GTest.pri)
+
 
 INCLUDEPATH += ../../src
-
-
-#    QMAKE_CXXFLAGS +=  -Werror=constant-conversion
 
 
 
@@ -49,3 +40,6 @@ HEADERS += ../../src/Faraday/faradayfactory.h \
            ../../src/Field/field.h \
            ../../src/vecfield/vecfield.h \
            test_faraday.h
+
+OTHER_FILES +=\
+    faradaytest.py

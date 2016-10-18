@@ -94,7 +94,7 @@ protected:
 
     Point cellCenteredCoordinates_(const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const;
 
-
+    void deriv1D_(Field const& operand, Field& derivative) const;
 
     void initPhysicalStart( const gridDataT & data ) ;
     void initPhysicalEnd  ( const gridDataT & data ) ;
@@ -110,6 +110,8 @@ protected:
 
 
     uint32 ghostCellIndexAtMax( QtyCentering centering, Direction direction ) const ;
+
+
 };
 
 #endif // GRIDLAYOUTIMPLINTERNALS_H

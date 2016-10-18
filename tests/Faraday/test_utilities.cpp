@@ -5,6 +5,35 @@
 #include "test_faraday.h"
 
 
+
+HybridQuantity GetHybridQtyFromString( std::string field )
+{
+    HybridQuantity qty = HybridQuantity::count ;
+
+    if( field == "Bx" )
+    {
+        qty = HybridQuantity::Bx ;
+    } else if( field == "By" )
+    {
+        qty = HybridQuantity::By ;
+    } else if( field == "Bz" )
+    {
+        qty = HybridQuantity::Bz ;
+    } else if( field == "Ex" )
+    {
+        qty = HybridQuantity::Ex ;
+    } else if( field == "Ey" )
+    {
+        qty = HybridQuantity::Ey ;
+    } else if( field == "Ez" )
+    {
+        qty = HybridQuantity::Ez ;
+    }
+
+    return qty ;
+}
+
+
 HybridQuantity GetHybridQty(uint32 iqty)
 {
     HybridQuantity quantity = HybridQuantity::count ;
@@ -59,53 +88,48 @@ std::string GetHybridQtyName(uint32 iqty)
 
 
 
-std::vector<GridLayoutParams> getFaraday1DInputsFromFile()
+std::vector<FaradayParams> getFaraday1DInputsFromFile()
 {
 
-    std::string filename{"../GridLayout/deriv1D_summary.txt"};
+    std::string filename{"../Faraday/faraday1D_summary.txt"};
 
-    std::ifstream infile{filename};
-    if (!infile )
+    std::ifstream ifs1{filename};
+    if (!ifs1 )
     {
         std::cout << "Could not open file : " << filename
                   << std::endl ;
         exit(-1);
     }
 
-//    uint32 orderMax = 4 ;
+    uint32 nbrTestCases = 0 ;
+    ifs1 >> nbrTestCases ;
 
-    uint32 numberTestFunctions = 4 ;
-
-    //static_cast<uint32>(HybridQuantity::count)
-    uint32 nbrTestCases = 1 * numberTestFunctions ;
-
-    std::vector<GridLayoutParams> params(nbrTestCases);
+    std::vector<FaradayParams> params(nbrTestCases);
 
     // reading parameters relative to the test cases
     for (uint32 i=0 ; i < nbrTestCases ; ++i)
     {
-        uint32 iqty;
+        ifs1 >> params[i].interpOrder ;
+        ifs1 >> params[i].nbDim ;
+        ifs1 >> params[i].nbrCells[0] ;
+        ifs1 >> params[i].nbrCells[1] ;
+        ifs1 >> params[i].nbrCells[2] ;
+        ifs1 >> params[i].dxdydz[0] ;
+        ifs1 >> params[i].dxdydz[1] ;
+        ifs1 >> params[i].dxdydz[2] ;
+        ifs1 >> params[i].dt ;
+        ifs1 >> params[i].tStart ;
+        ifs1 >> params[i].tEnd   ;
+        ifs1 >> params[i].nbrTimeSteps ;
+        ifs1 >> params[i].testName ;
+        ifs1 >> params[i].nbrOfFields ;
 
-        infile >> params[i].interpOrder
-               >> params[i].nbDim
-               >> iqty
-               >> params[i].nbrCells[params[i].nbDim]
-               >> params[i].dxdydz[params[i].nbDim]
-               >> params[i].field_iStart
-               >> params[i].field_iEnd
-               >> params[i].origin.x_
-               >> params[i].origin.y_
-               >> params[i].origin.z_
-               >> params[i].functionName ;
+        params[i].fieldNames.assign( params[i].nbrOfFields, "none") ;
 
-        params[i].qty = GetHybridQty(iqty);
-        params[i].qtyName = GetHybridQtyName(iqty);
-        params[i].iqty = iqty;
-
-        params[i].fieldXCoords.assign(MAX_SIZE, 0.) ;
-        params[i].fieldXValues.assign(MAX_SIZE, 0.) ;
-        params[i].derivedFieldXCoords.assign(MAX_SIZE, 0.) ;
-        params[i].derivedFieldXValues.assign(MAX_SIZE, 0.) ;
+        for(uint32 ifield=0 ; ifield < params[i].nbrOfFields ; ++ifield)
+        {
+            ifs1 >> params[i].fieldNames[ifield] ;
+        }
     }
 
     return params ;

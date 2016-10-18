@@ -65,7 +65,8 @@ GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCell
 
 
 GridLayout::GridLayout(GridLayout const& source)
-    : dx_{source.dx_}, dy_{source.dy_}, dz_{source.dz_},
+    : nbDims_{source.nbDims_},
+      dx_{source.dx_}, dy_{source.dy_}, dz_{source.dz_},
       odx_{source.odx_},
       ody_{source.ody_},
       odz_{source.odz_},
@@ -74,11 +75,9 @@ GridLayout::GridLayout(GridLayout const& source)
       nbrCellz_{source.nbrCellz_},
       ghostParameter_{source.ghostParameter_}
 {
-    uint32 nbDims = source.nbDimensions();
-
     //TODO : "yee" bad hardcoded. make a clone
     implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(
-                nbDims, ghostParameter_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} },
+                nbDims_, ghostParameter_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} },
                 { {dx_, dy_, dz_} } ) ;
 }
 

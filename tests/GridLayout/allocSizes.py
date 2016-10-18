@@ -79,6 +79,24 @@ def main(path='./'):
                 centeringX = gl.qtyCentering(Qty_l[iqty][1], 'X')
                 centeringY = gl.qtyCentering(Qty_l[iqty][1], 'Y')
                 centeringZ = gl.qtyCentering(Qty_l[iqty][1], 'Z')
+                
+                allocX = gl.allocSize(interpOrder_l[iord], centeringX, nbrCellX_l[icase])
+                allocY = gl.allocSize(interpOrder_l[iord], centeringY, nbrCellY_l[icase])
+                allocZ = gl.allocSize(interpOrder_l[iord], centeringZ, nbrCellZ_l[icase])
+                
+                allocDerX = gl.allocSizeDerived(interpOrder_l[iord], centeringX, nbrCellX_l[icase])
+                allocDerY = gl.allocSizeDerived(interpOrder_l[iord], centeringY, nbrCellY_l[icase])
+                allocDerZ = gl.allocSizeDerived(interpOrder_l[iord], centeringZ, nbrCellZ_l[icase])
+
+                if nbDims_l[icase] == 1:
+                    allocY = 1
+                    allocZ = 1
+                    allocDerY = 1
+                    allocDerZ = 1
+                    
+                if nbDims_l[icase] == 2:
+                    allocZ = 1
+                    allocDerZ = 1
 
                 f.write(("%03d %03d %s %03d %03d %03d %4.1f %4.1f %4.1f"+" %d"*2*maxNbrDim +"\n") %
                    (interpOrder_l[iord],
@@ -90,12 +108,8 @@ def main(path='./'):
                     dx_l[icase],
                     dy_l[icase],
                     dz_l[icase],
-                    gl.allocSize(interpOrder_l[iord], centeringX, nbrCellX_l[icase]),
-                    gl.allocSize(interpOrder_l[iord], centeringY, nbrCellY_l[icase]),
-                    gl.allocSize(interpOrder_l[iord], centeringZ, nbrCellZ_l[icase]),
-                    gl.allocSizeDerived(interpOrder_l[iord], centeringX, nbrCellX_l[icase]),
-                    gl.allocSizeDerived(interpOrder_l[iord], centeringY, nbrCellY_l[icase]),
-                    gl.allocSizeDerived(interpOrder_l[iord], centeringZ, nbrCellZ_l[icase])) )
+                    allocX, allocY, allocZ,
+                    allocDerX, allocDerY, allocDerZ ) )
 
     f.close()
 
