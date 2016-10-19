@@ -65,8 +65,6 @@ struct GridLayoutParams
 
     std::string functionName ;
 
-    uint32 icase ;
-
     std::string layoutName ;
 
     std::array<uint32, 3> nbrCells;

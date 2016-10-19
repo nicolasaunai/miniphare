@@ -10,17 +10,6 @@
 
 
 
-MATCHER_P(FloatNear, tol, "Precision out of range")
-{
-    // we get the actual value
-    double actualVal = std::get<0>(arg) ;
-
-    // we get the expected value
-    double expectedVal = std::get<1>(arg) ;
-
-    return actualVal > expectedVal-tol && actualVal < expectedVal+tol ;
-}
-
 
 class GridLayoutDeriv1D: public ::testing::TestWithParam<GridLayoutParams>
 {
@@ -132,15 +121,10 @@ public:
 /* 2nd order                                               */
 /*                                                         */
 /***********************************************************/
-TEST_P(GridLayoutDeriv1D, DerivedFieldBx)
+TEST_P(GridLayoutDeriv1D, DerivedField)
 {
-    // This test is only for Bx field
-    if( inputs.qtyName == "Bx" )
-    {
         EXPECT_THAT( actual_array, \
-                     ::testing::Pointwise(FloatNear(precision), expected_array) ) ;
-    }
-
+                     ::testing::Pointwise(DoubleNear(precision), expected_array) ) ;
 }
 
 
