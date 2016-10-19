@@ -110,18 +110,20 @@ def main(path='./'):
            (order, idim+1, 
             iqty, nbcells, stepSize ) )
 
-        iPrimalStart = gl.physicalStartPrimal(order)
-        iPrimalEnd   = gl.physicalEndPrimal  (order, nbcells)
+        centering = gl.qtyCentering(qty, Direction_l[idim][1])
 
-#        iPrimalEnd = iPrimalEnd - gl.isDual( gl.qtyCentering(qty, Direction_l[idim][1]) )
+        iStart = gl.physicalStartIndex(order, centering)
+        
+        iGhostStart = gl.ghostStartIndex()
+        iGhostEnd   = gl.ghostEndIndex  (order, centering, nbcells)
 
         # last argument means 1st derivative
-        newCentering = gl.changeCentering( gl.qtyCentering(qty, Direction_l[idim][1]), 1 )
+        newCentering = gl.changeCentering( centering, 1 )
 
         iDerStart = gl.physicalStartIndex(order, newCentering)
         iDerEnd   = gl.physicalEndIndex  (order, newCentering, nbcells)
 
-        f.write(("%d %d %d %d ") % (iPrimalStart, iPrimalEnd, iDerStart, iDerEnd))
+        f.write(("%d %d %d %d ") % (iGhostStart, iGhostEnd, iDerStart, iDerEnd))
 
         f.write(("%6.2f %6.2f %6.2f ") % (origin[0], origin[1], origin[2]))
 
@@ -142,25 +144,31 @@ def main(path='./'):
         
         f = open( os.path.join(path,"deriv1D_%s_%s.txt" % (qty, function_l[icase]) ), "w")
 
-        iPrimalStart = gl.physicalStartPrimal(order)
-        iPrimalEnd   = gl.physicalEndPrimal  (order, nbcells)
+        centering = gl.qtyCentering(qty, Direction_l[idim][1])
 
-#        iPrimalEnd = iPrimalEnd - gl.isDual( gl.qtyCentering(qty, Direction_l[idim][1]) )
+        iStart = gl.physicalStartIndex(order, centering)
 
-        # last argument means 1st derivative
-        newCentering = gl.changeCentering( gl.qtyCentering(qty, Direction_l[idim][1]), 1 )
+        iGhostStart = gl.ghostStartIndex()
+        iGhostEnd   = gl.ghostEndIndex  (order, centering, nbcells)
+
+        for knode in np.arange(iGhostStart, iGhostEnd+1):
+            x = gl.yeeCoords(knode, iStart, centering, Direction_l[idim], \
+                                    stepSize, origin, 0)
+            f.write(("%10.4f %14.10f \n") % (x    , funcDict[function_l[icase]](x)         ) )
+
+        f.write("\n \n")
+        
+        # we take the centering of the 1st derivative
+        newCentering = gl.changeCentering( centering, 1 )
 
         iDerStart = gl.physicalStartIndex(order, newCentering)
         iDerEnd   = gl.physicalEndIndex  (order, newCentering, nbcells)
-
-        for iprimal in np.arange(iPrimalStart, iPrimalEnd+1):
-            x = gl.fieldCoords(iprimal, iPrimalStart, qty, Direction_l[idim], \
-                                    stepSize, origin, 0)
-            x_der = gl.fieldCoords(iprimal, iPrimalStart, qty, Direction_l[idim], \
-                                        stepSize, origin, 1)
-
-            f.write(("%10.4f %14.10f   ") % (x    , funcDict[function_l[icase]](x)         ) )
-            f.write(("%10.4f %14.10f \n") % (x_der, der_funcDict[function_l[icase]](x_der) ) )
+            
+        for knode in np.arange(iDerStart, iDerEnd+1):
+            x_der = gl.yeeCoords(knode, iDerStart, newCentering, Direction_l[idim], \
+                                        stepSize, origin, 0)
+            f.write(("%10.4f %14.10f \n") % (x_der, der_funcDict[function_l[icase]](x_der) ) )            
+            
 
         f.close()
 

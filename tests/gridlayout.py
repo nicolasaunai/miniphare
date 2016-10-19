@@ -131,6 +131,27 @@ class GridLayout(object):
         return size
 
 
+    # ---- Yee coordinate methods -------------------------
+    # knode : a primal or dual node index
+    # 
+    # The centering deduced from qty and direction tells
+    # whether knode is primal or dual
+    #    
+    # ds stands for dx or dy or dz
+    # This method returns a point
+    #
+    def yeeCoords(self, knode, iStart, centering, direction, ds, origin, derivOrder):
+        halfCell = 0.
+
+        newCentering = self.changeCentering( centering, derivOrder )
+
+        if newCentering == 'dual':
+            halfCell = 0.5
+
+        x = ( (knode - iStart) + halfCell )*ds + origin[direction[0]]
+
+        return x
+
 
     # ---- Get coordinate methods -------------------------
     # knode : a primal or dual node index
