@@ -98,18 +98,30 @@ def main(path='./'):
     f.write("%d \n" % len(icase_l) )  
 
     for icase in icase_l:
-        nbcells = nbrCells[Direction_l[dim_l[icase]][1]][icase]
-        stepSize = meshSize[Direction_l[dim_l[icase]][1]][icase]
+        idim  = dim_l[icase]
+        order = interpOrder_l[icase]
+        iqty = Qty_l[qty_l[icase]][0]  # 0 ,  1,  2,  3, ... 
+        qty  = Qty_l[qty_l[icase]][1]  # Bx, By, Bz, Ex, ...
+        
+        nbcells = nbrCells[Direction_l[idim][1]][icase]
+        stepSize = meshSize[Direction_l[idim][1]][icase]
 
         f.write(("%03d %d %s %03d %5.4f ") %
-           (interpOrder_l[interpOrder_l[icase]],
-            dim_l[dim_l[icase]]+1, Qty_l[qty_l[icase]][0], nbcells, stepSize ) )
+           (order, idim+1, 
+            iqty, nbcells, stepSize ) )
 
-        iStart = gl.physicalStartPrimal(interpOrder_l[interpOrder_l[icase]])
-        iEnd   = gl.physicalEndPrimal  (interpOrder_l[interpOrder_l[icase]], nbcells)
-        iEnd = iEnd - gl.isDual( gl.qtyCentering(Qty_l[qty_l[icase]][1], Direction_l[dim_l[icase]][1]) )
+        iPrimalStart = gl.physicalStartPrimal(order)
+        iPrimalEnd   = gl.physicalEndPrimal  (order, nbcells)
 
-        f.write(("%d %d ") % (iStart, iEnd))
+#        iPrimalEnd = iPrimalEnd - gl.isDual( gl.qtyCentering(qty, Direction_l[idim][1]) )
+
+        # last argument means 1st derivative
+        newCentering = gl.changeCentering( gl.qtyCentering(qty, Direction_l[idim][1]), 1 )
+
+        iDerStart = gl.physicalStartIndex(order, newCentering)
+        iDerEnd   = gl.physicalEndIndex  (order, newCentering, nbcells)
+
+        f.write(("%d %d %d %d ") % (iPrimalStart, iPrimalEnd, iDerStart, iDerEnd))
 
         f.write(("%6.2f %6.2f %6.2f ") % (origin[0], origin[1], origin[2]))
 
@@ -120,22 +132,31 @@ def main(path='./'):
 
 
     for icase in icase_l:
-        nbcells = nbrCells[Direction_l[dim_l[icase]][1]][icase]
-        stepSize = meshSize[Direction_l[dim_l[icase]][1]][icase]
+        idim  = dim_l[icase]
+        order = interpOrder_l[icase]
+        iqty = Qty_l[qty_l[icase]][0]  # 0 ,  1,  2,  3, ... 
+        qty  = Qty_l[qty_l[icase]][1]  # Bx, By, Bz, Ex, ...
         
-        f = open( os.path.join(path,"deriv1D_%s_%s.txt" % (Qty_l[qty_l[icase]][1], function_l[icase]) ), "w")
+        nbcells = nbrCells[Direction_l[idim][1]][icase]
+        stepSize = meshSize[Direction_l[idim][1]][icase]
+        
+        f = open( os.path.join(path,"deriv1D_%s_%s.txt" % (qty, function_l[icase]) ), "w")
 
-        iStart = gl.physicalStartPrimal(interpOrder_l[interpOrder_l[icase]])
-        iEnd   = gl.physicalEndPrimal  (interpOrder_l[interpOrder_l[icase]], nbcells)
+        iPrimalStart = gl.physicalStartPrimal(order)
+        iPrimalEnd   = gl.physicalEndPrimal  (order, nbcells)
 
-        iEnd = iEnd - gl.isDual( gl.qtyCentering(Qty_l[qty_l[icase]][1], Direction_l[dim_l[icase]][1]) )
+#        iPrimalEnd = iPrimalEnd - gl.isDual( gl.qtyCentering(qty, Direction_l[idim][1]) )
 
-        # qtyCentering(Qty_l[iqty][1], Direction_l[dim_l[icase]][1])
+        # last argument means 1st derivative
+        newCentering = gl.changeCentering( gl.qtyCentering(qty, Direction_l[idim][1]), 1 )
 
-        for iprimal in np.arange(iStart, iEnd+1):
-            x = gl.fieldCoords(iprimal, iStart, Qty_l[qty_l[icase]][1], Direction_l[dim_l[icase]], \
+        iDerStart = gl.physicalStartIndex(order, newCentering)
+        iDerEnd   = gl.physicalEndIndex  (order, newCentering, nbcells)
+
+        for iprimal in np.arange(iPrimalStart, iPrimalEnd+1):
+            x = gl.fieldCoords(iprimal, iPrimalStart, qty, Direction_l[idim], \
                                     stepSize, origin, 0)
-            x_der = gl.fieldCoords(iprimal, iStart, Qty_l[qty_l[icase]][1], Direction_l[dim_l[icase]], \
+            x_der = gl.fieldCoords(iprimal, iPrimalStart, qty, Direction_l[idim], \
                                         stepSize, origin, 1)
 
             f.write(("%10.4f %14.10f   ") % (x    , funcDict[function_l[icase]](x)         ) )

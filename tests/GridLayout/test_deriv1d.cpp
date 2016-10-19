@@ -10,7 +10,6 @@
 
 
 
-
 class GridLayoutDeriv1D: public ::testing::TestWithParam<GridLayoutParams>
 {
 public:
@@ -47,9 +46,12 @@ public:
             exit(-1);
         }
 
-        uint32 iStart = inputs.field_iStart ;
-        uint32 iEnd   = inputs.field_iEnd   ;
-        for (uint32 ik=iStart ; ik<= iEnd ; ++ik)
+        uint32 iDerStart = inputs.iDerStart ;
+        uint32 iDerEnd   = inputs.iDerEnd   ;
+
+        uint32 iPrimalStart = inputs.field_iStart ;
+        uint32 iPrimalEnd   = inputs.field_iEnd   ;
+        for (uint32 ik=iPrimalStart ; ik<= iPrimalEnd ; ++ik)
         {
             infile >> inputs.fieldXCoords[ik] ;
             infile >> inputs.fieldXValues[ik] ;
@@ -60,7 +62,7 @@ public:
         // inputs.qty is the important parameter
         Field operand{allocSize , inputs.qty, "operandField" };
 
-        for (uint32 ik=iStart ; ik<= iEnd ; ++ik)
+        for (uint32 ik=iPrimalStart ; ik<= iPrimalEnd ; ++ik)
         {
             double x = inputs.fieldXCoords[ik] ;
 
@@ -88,9 +90,9 @@ public:
         // this method has 2nd order precision
         precision = pow(gl.dx(), 2.) ;
 
-        expected_array.assign(iEnd-iStart, 0.) ;
-        actual_array.assign(iEnd-iStart, 0.) ;
-        for( uint32 ix= iStart ; ix< iEnd ; ++ix )
+        expected_array.assign(iDerEnd-iDerStart+1, 0.) ;
+        actual_array.assign  (iDerEnd-iDerStart+1, 0.) ;
+        for( uint32 ix= iDerStart ; ix< iDerEnd ; ++ix )
         {
             expected_array[ix] = inputs.derivedFieldXValues[ix] ;
             actual_array[ix]   = derivative(ix) ;

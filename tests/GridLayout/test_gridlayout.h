@@ -80,6 +80,10 @@ struct GridLayoutParams
 
     uint32  field_iStart ;
     uint32  field_iEnd   ;
+
+    uint32  iDerStart ;
+    uint32  iDerEnd   ;
+
     Point origin{0., 0., 0.} ;
 
     std::vector<double>  fieldXCoords ;

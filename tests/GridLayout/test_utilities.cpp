@@ -276,6 +276,8 @@ std::vector<GridLayoutParams> getDerivInputsFromFile()
 
         ifs1 >> params[i].field_iStart;
         ifs1 >> params[i].field_iEnd;
+        ifs1 >> params[i].iDerStart;
+        ifs1 >> params[i].iDerEnd;
         ifs1 >> params[i].origin.x_;
         ifs1 >> params[i].origin.y_;
         ifs1 >> params[i].origin.z_;

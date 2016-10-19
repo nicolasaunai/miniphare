@@ -9,7 +9,6 @@
 
 
 
-
 class GridLayoutCenteredCoordsTest: public ::testing::TestWithParam<GridLayoutParams>
 {
 public:
