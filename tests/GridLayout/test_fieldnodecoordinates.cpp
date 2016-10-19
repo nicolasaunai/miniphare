@@ -24,7 +24,7 @@ public:
     std::vector<double>  expected_fieldCoordsx ;
 
 
-    void mySetUp( const std::string & testField )
+    void SetUp()
     {
         inputs = GetParam() ;
         print(inputs) ;
@@ -42,43 +42,39 @@ public:
 
         // End of input reading in the adequate file
         uint32 order = inputs.interpOrder ;
-        uint32 icase = inputs.icase ;
         uint32 dim = inputs.nbDim ;
 
         std::string qtyName = inputs.qtyName;
 
-        if( qtyName == testField )
+        std::string filename{"../GridLayout/fieldCoords_ord" + std::to_string(order) +
+                    "_dim" + std::to_string(dim) + "_" + qtyName + ".txt"};
+
+        std::cout << filename << std::endl ;
+
+        std::ifstream ifs2{filename};
+        if (!ifs2 )
         {
-            std::string filename{"../GridLayout/fieldCoords_ord" + std::to_string(order) +
-                        "_dim" + std::to_string(dim) + "_" + qtyName +
-                        "_case" + std::to_string(icase) + ".txt"};
-
-            std::cout << filename << std::endl ;
-
-            std::ifstream ifs2{filename};
-            if (!ifs2 )
-            {
-                std::cout << "Could not open file : " << filename << std::endl ;
-                exit(-1);
-            }
-
-            uint32 iStart = inputs.field_iStart ;
-            uint32 iEnd   = inputs.field_iEnd   ;
-            for (uint32 ik=iStart ; ik<=iEnd ; ++ik)
-            {
-                ifs2 >> inputs.fieldXCoords[ik] ;
-
-                expected_fieldCoordsx.push_back( inputs.fieldXCoords[ik] ) ;
-            }
-
-
-            for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
-            {
-                Point fieldNode = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
-
-                actual_fieldCoordsx.push_back( fieldNode.x_ ) ;
-            }
+            std::cout << "Could not open file : " << filename << std::endl ;
+            exit(-1);
         }
+
+        uint32 iStart = inputs.field_iStart ;
+        uint32 iEnd   = inputs.field_iEnd   ;
+        for (uint32 ik=iStart ; ik<=iEnd ; ++ik)
+        {
+            ifs2 >> inputs.fieldXCoords[ik] ;
+
+            expected_fieldCoordsx.push_back( inputs.fieldXCoords[ik] ) ;
+        }
+
+
+        for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
+        {
+            Point fieldNode = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
+
+            actual_fieldCoordsx.push_back( fieldNode.x_ ) ;
+        }
+
     }
 
 
@@ -108,139 +104,12 @@ public:
  *
  *-----------------------------------------------------*/
 
-TEST_P(GridLayoutFieldCoordsTest, XCoordsBx)
+TEST_P(GridLayoutFieldCoordsTest, XFieldCoords)
 {
-    this->mySetUp("Bx") ;
-
-    // This test is only for Bx field
-    if( inputs.qtyName == "Bx" )
-    {
-        EXPECT_THAT( actual_fieldCoordsx, \
-                     ::testing::Pointwise(DoubleNear(dbl_epsilon), expected_fieldCoordsx) ) ;
-    }
+    EXPECT_THAT( actual_fieldCoordsx, \
+                 ::testing::Pointwise(DoubleNear(dbl_epsilon), expected_fieldCoordsx) ) ;
 }
 
-
-
-TEST_P(GridLayoutFieldCoordsTest, XCoordsBy)
-{
-    this->mySetUp("By") ;
-
-    // This test is only for By field
-    if( inputs.qtyName == "By" )
-    {
-        EXPECT_THAT( actual_fieldCoordsx, \
-                     ::testing::Pointwise(DoubleNear(dbl_epsilon), expected_fieldCoordsx) ) ;
-    }
-}
-
-
-
-TEST_P(GridLayoutFieldCoordsTest, XCoordsBz)
-{
-    this->mySetUp("Bz") ;
-
-    // This test is only for Bz field
-    if( inputs.qtyName == "Bz" )
-    {
-        EXPECT_THAT( actual_fieldCoordsx, \
-                     ::testing::Pointwise(DoubleNear(dbl_epsilon), expected_fieldCoordsx) ) ;
-    }
-}
-
-
-/*-----------------------------------------------------
- *        X coordinates for fields:
- *        - Ex, Ey, Ez
- *
- *-----------------------------------------------------*/
-
-TEST_P(GridLayoutFieldCoordsTest, XCoordsEx)
-{
-    this->mySetUp("Ex") ;
-
-    // This test is only for Ex field
-    if( inputs.qtyName == "Ex" )
-    {
-        EXPECT_THAT( actual_fieldCoordsx, \
-                     ::testing::Pointwise(DoubleNear(dbl_epsilon), expected_fieldCoordsx) ) ;
-    }
-}
-
-
-TEST_P(GridLayoutFieldCoordsTest, XCoordsEy)
-{
-    this->mySetUp("Ey") ;
-
-    // This test is only for Ey field
-    if( inputs.qtyName == "Ey" )
-    {
-        EXPECT_THAT( actual_fieldCoordsx, \
-                     ::testing::Pointwise(DoubleNear(dbl_epsilon), expected_fieldCoordsx) ) ;
-    }
-}
-
-
-TEST_P(GridLayoutFieldCoordsTest, XCoordsEz)
-{
-    this->mySetUp("Ez") ;
-
-    // This test is only for Ez field
-    if( inputs.qtyName == "Ez" )
-    {
-        EXPECT_THAT( actual_fieldCoordsx, \
-                     ::testing::Pointwise(DoubleNear(dbl_epsilon), expected_fieldCoordsx) ) ;
-    }
-
-}
-
-
-/*-----------------------------------------------------
- *        X coordinates for fields:
- *        - rho, V, P
- *
- *-----------------------------------------------------*/
-
-TEST_P(GridLayoutFieldCoordsTest, XCoordsrho)
-{
-    this->mySetUp("rho") ;
-
-    // This test is only for rho field
-    if( inputs.qtyName == "rho" )
-    {
-        EXPECT_THAT( actual_fieldCoordsx, \
-                     ::testing::Pointwise(DoubleNear(dbl_epsilon), expected_fieldCoordsx) ) ;
-    }
-
-}
-
-
-TEST_P(GridLayoutFieldCoordsTest, XCoordsV)
-{
-    this->mySetUp("V") ;
-
-    // This test is only for V field
-    if( inputs.qtyName == "V" )
-    {
-        EXPECT_THAT( actual_fieldCoordsx, \
-                     ::testing::Pointwise(DoubleNear(dbl_epsilon), expected_fieldCoordsx) ) ;
-    }
-
-}
-
-
-TEST_P(GridLayoutFieldCoordsTest, XCoordsP)
-{
-    this->mySetUp("P") ;
-
-    // This test is only for P field
-    if( inputs.qtyName == "P" )
-    {
-        EXPECT_THAT( actual_fieldCoordsx, \
-                     ::testing::Pointwise(DoubleNear(dbl_epsilon), expected_fieldCoordsx) ) ;
-    }
-
-}
 
 
 INSTANTIATE_TEST_CASE_P(GridLayoutTest, GridLayoutFieldCoordsTest,
