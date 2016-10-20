@@ -73,6 +73,15 @@ def main(path='./'):
     # rho, Bz
     derivedQty_l=[6]*4 + [2]*4
 
+    #    Corresponding HybridQuantity for centering 
+    #    after derivation along X direction :
+    #    Ex ---> rho
+    #    Ey ---> Bz
+    #    Ez ---> By
+    #    Bx ---> CC (Cell Centered) No HybridQuantity equivalence !
+    #    By ---> Ez
+    #    Bz ---> Ey
+
     #dim_l =[0, 1, 2]
     dim_l =[0, 0, 0, 0, 0, 0, 0, 0]
 
