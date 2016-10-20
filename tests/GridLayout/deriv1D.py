@@ -66,7 +66,12 @@ def main(path='./'):
     interpOrder_l=[1, 1, 1, 1, 1, 1, 1, 1]
 
     # functions to be derivated : iqty
-    qty_l=[0, 0, 0, 0, 1, 1, 1, 1]
+    # Ex, Ey ...
+    qty_l=[3]*4 + [4]*4
+    
+    # corresponding hybrid quantities on the Yee lattice
+    # rho, Bz
+    derivedQty_l=[6]*4 + [2]*4
 
     #dim_l =[0, 1, 2]
     dim_l =[0, 0, 0, 0, 0, 0, 0, 0]
@@ -103,12 +108,15 @@ def main(path='./'):
         iqty = Qty_l[qty_l[icase]][0]  # 0 ,  1,  2,  3, ... 
         qty  = Qty_l[qty_l[icase]][1]  # Bx, By, Bz, Ex, ...
         
+        iDerivedQty = Qty_l[derivedQty_l[icase]][0]  
+        
         nbcells = nbrCells[Direction_l[idim][1]][icase]
         stepSize = meshSize[Direction_l[idim][1]][icase]
 
-        f.write(("%03d %d %s %03d %5.4f ") %
+        f.write(("%03d %d %d %d %03d %5.4f ") %
            (order, idim+1, 
-            iqty, nbcells, stepSize ) )
+            iqty, iDerivedQty, 
+            nbcells, stepSize ) )
 
         centering = gl.qtyCentering(qty, Direction_l[idim][1])
 
