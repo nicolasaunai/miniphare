@@ -52,7 +52,7 @@ private:
     uint32 nbrCelly_  ;
     uint32 nbrCellz_  ;
 
-    uint32 ghostParameter_ ;                            // TODO find a better name.
+    uint32 interpOrder_ ;                            // TODO find a better name.
                                                         // If interpOrder is the best so be it.
 
     std::unique_ptr<GridLayoutImpl> implPtr_;           // abstract private implementation
@@ -99,6 +99,8 @@ public:
     double nbrCellz() const {return nbrCellz_;}
 
     uint32 nbDimensions() const { return nbDims_ ; }
+
+    uint32 order() const { return interpOrder_ ; }
 
     uint32 physicalStartIndex(Field const& field, Direction direction) const;
     uint32 physicalEndIndex  (Field const& field, Direction direction) const;

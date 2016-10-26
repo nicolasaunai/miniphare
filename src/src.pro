@@ -34,6 +34,12 @@ SOURCES += main.cpp \
     Initializer/simpleinitializerfactory.cpp \
     Initializer/initializerfactory.cpp \
     Initializer/fluidparticleinitializer.cpp \
+    Interpolator/interpolator.cpp \
+    Interpolator/indexesandweights.cpp \
+    Interpolator/indexesandweightso1.cpp \
+    Interpolator/indexesandweightso2.cpp \
+    Interpolator/indexesandweightso3.cpp \
+    Interpolator/indexesandweightso4.cpp
 
 
 HEADERS += \
@@ -76,6 +82,14 @@ HEADERS += \
     Initializer/particleinitializer.h \
     Initializer/simpleinitializerfactory.h \
     Initializer/fluidparticleinitializer.h \
+    Interpolator/interpolator.h \
+    Interpolator/interpolator1d.h \
+    Interpolator/indexesandweights.h \
+    Interpolator/indexesandweightso1.h \
+    Interpolator/indexesandweightso2.h \
+    Interpolator/indexesandweightso3.h \
+    Interpolator/indexesandweightso4.h \
+    Interpolator/interpolatorfactory.h
 
 
 
