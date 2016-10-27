@@ -5,13 +5,13 @@
 
 #include "types.h"
 
-#include "Interpolator/interpolator.h"
-#include "Interpolator/interpolator1d.h"
+#include "interpolator.h"
+#include "interpolator1d.h"
 
-#include "Interpolator/indexesandweightso1.h"
-#include "Interpolator/indexesandweightso2.h"
-#include "Interpolator/indexesandweightso3.h"
-#include "Interpolator/indexesandweightso4.h"
+#include "IndexesAndWeights/indexesandweightso1.h"
+#include "IndexesAndWeights/indexesandweightso2.h"
+#include "IndexesAndWeights/indexesandweightso3.h"
+#include "IndexesAndWeights/indexesandweightso4.h"
 
 
 

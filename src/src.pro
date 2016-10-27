@@ -34,12 +34,12 @@ SOURCES += main.cpp \
     Initializer/simpleinitializerfactory.cpp \
     Initializer/initializerfactory.cpp \
     Initializer/fluidparticleinitializer.cpp \
-    Interpolator/interpolator.cpp \
-    Interpolator/indexesandweights.cpp \
-    Interpolator/indexesandweightso1.cpp \
-    Interpolator/indexesandweightso2.cpp \
-    Interpolator/indexesandweightso3.cpp \
-    Interpolator/indexesandweightso4.cpp
+    IndexesAndWeights/indexesandweights.cpp \
+    IndexesAndWeights/indexesandweightso1.cpp \
+    IndexesAndWeights/indexesandweightso2.cpp \
+    IndexesAndWeights/indexesandweightso3.cpp \
+    IndexesAndWeights/indexesandweightso4.cpp \
+    Interpolator/interpolator.cpp
 
 
 HEADERS += \
@@ -82,14 +82,17 @@ HEADERS += \
     Initializer/particleinitializer.h \
     Initializer/simpleinitializerfactory.h \
     Initializer/fluidparticleinitializer.h \
+    IndexesAndWeights/indexesandweights.h \
+    IndexesAndWeights/indexesandweightso1.h \
+    IndexesAndWeights/indexesandweightso2.h \
+    IndexesAndWeights/indexesandweightso3.h \
+    IndexesAndWeights/indexesandweightso4.h \
     Interpolator/interpolator.h \
     Interpolator/interpolator1d.h \
-    Interpolator/indexesandweights.h \
-    Interpolator/indexesandweightso1.h \
-    Interpolator/indexesandweightso2.h \
-    Interpolator/indexesandweightso3.h \
-    Interpolator/indexesandweightso4.h \
-    Interpolator/interpolatorfactory.h
+    Interpolator/interpolatorfactory.h \
+    Projector/projector.h \
+    Projector/projector1d.h \
+    Projector/projectorfactory.h
 
 
 

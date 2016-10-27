@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "Interpolator/interpolator.h"
+#include "interpolator.h"
 
 
 class Interpolator1D : public Interpolator
