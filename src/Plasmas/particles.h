@@ -1,15 +1,21 @@
 #ifndef PARTICLES_H
 #define PARTICLES_H
 
-#include <vector>
+#include <array>
 
 
 class Particle
 {
 public:
-    double r[3];
-    double v[3];
-    //TODO  include variable weight
+    double weight ;  // variable weight
+
+    std::array<double, 3> r;
+    std::array<double, 3> v;
+
+public:
+    Particle(double weightRel, std::array<double, 3> pos,
+             std::array<double, 3>  vel);
+
 };
 
 
