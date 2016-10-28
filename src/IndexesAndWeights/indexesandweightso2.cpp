@@ -14,13 +14,13 @@
  *
  *
  */
-void IndexesAndWeightsO2::computeWeights()
+void IndexesAndWeightsO2::computeWeights( double reducedCoord )
 {
-    weightList_[0] = 0.5*std::pow( 0.5 + (static_cast<double>(indexList_[1]) - reducedCoord_), 2.) ;
+    weightList_[0] = 0.5*std::pow( 0.5 + (static_cast<double>(indexList_[1]) - reducedCoord), 2.) ;
 
-    weightList_[1] = 0.75 - std::pow( static_cast<double>(indexList_[1]) - reducedCoord_, 2.) ;
+    weightList_[1] = 0.75 - std::pow( static_cast<double>(indexList_[1]) - reducedCoord, 2.) ;
 
-    weightList_[2] = 0.5*std::pow( 0.5 - (static_cast<double>(indexList_[1]) - reducedCoord_), 2.) ;
+    weightList_[2] = 0.5*std::pow( 0.5 - (static_cast<double>(indexList_[1]) - reducedCoord), 2.) ;
 
 }
 

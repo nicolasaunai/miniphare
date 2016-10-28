@@ -45,9 +45,6 @@ private:
       double sminGlobal_ ;
 
 protected:
-      // computed by primalMeshCoord( spart )
-      double reducedCoord_ ;
-
       std::vector<uint64> indexList_ ;
       std::vector<double> weightList_ ;
 
@@ -55,8 +52,6 @@ public:
       IndexesAndWeights( uint32 order, double ods, double sminGlobal )
           : order_{order}, ods_{ods}, sminGlobal_{sminGlobal}
       {
-          reducedCoord_ = 0. ;
-
           indexList_.assign( order_+1, 0 ) ;
           weightList_.assign( order_+1, 0. ) ;
       }
@@ -67,12 +62,12 @@ public:
       virtual ~IndexesAndWeights() ;
 
       // spart is a 1D coordinate in physical unit
-      void reducedCoord( const double & spart ) ;
+      double reducedCoord( double spart ) ;
 
-      void computeIndexes() ;
+      void computeIndexes( double reducedCoord ) ;
 
       // this method depends on the interpolation order
-      virtual void computeWeights() = 0 ;
+      virtual void computeWeights( double reducedCoord ) = 0 ;
 
 };
 

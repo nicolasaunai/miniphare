@@ -9,12 +9,13 @@
 IndexesAndWeights::~IndexesAndWeights() {}
 
 
-void IndexesAndWeights::reducedCoord( const double & spart )
+double IndexesAndWeights::reducedCoord( double spart )
 {
     // real coordinate expressed in primal mesh number
     // TODO : sminGlobal_ must be >= 0.
-    reducedCoord_ = ( spart - sminGlobal_ ) * ods_ ;
+    double reducedCoord = ( spart - sminGlobal_ ) * ods_ ;
 
+    return reducedCoord ;
 }
 
 
@@ -26,11 +27,11 @@ void IndexesAndWeights::reducedCoord( const double & spart )
  *
  *
  */
-void IndexesAndWeights::computeIndexes()
+void IndexesAndWeights::computeIndexes( double reducedCoord )
 {
     // Compute primal integer mesh coordinates of the particle
     uint64 i_min = static_cast<uint64> \
-            ( std::floor(reducedCoord_ - (static_cast<double> (order_)-1.)/2.) ) ;
+            ( std::floor(reducedCoord - (static_cast<double> (order_)-1.)/2.) ) ;
 
     for( uint64 ik=0 ; ik<order_+1 ; ik++ )
     {

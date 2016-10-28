@@ -14,17 +14,17 @@
  *
  *
  */
-void IndexesAndWeightsO3::computeWeights()
+void IndexesAndWeightsO3::computeWeights( double reducedCoord )
 {
-    weightList_[0] = (4./3.)*std::pow(1. + 0.5*(static_cast<double>(indexList_[0]) - reducedCoord_), 3.) ;
+    weightList_[0] = (4./3.)*std::pow(1. + 0.5*(static_cast<double>(indexList_[0]) - reducedCoord), 3.) ;
 
-    weightList_[1] = 2./3. - std::pow(static_cast<double>(indexList_[1]) - reducedCoord_, 2.)
-        - 0.5*std::pow(static_cast<double>(indexList_[1]) - reducedCoord_, 3.) ;
+    weightList_[1] = 2./3. - std::pow(static_cast<double>(indexList_[1]) - reducedCoord, 2.)
+        - 0.5*std::pow(static_cast<double>(indexList_[1]) - reducedCoord, 3.) ;
 
-    weightList_[2] = 2./3. - std::pow(static_cast<double>(indexList_[2]) - reducedCoord_, 2.)
-        + 0.5*std::pow(static_cast<double>(indexList_[2]) - reducedCoord_, 3.) ;
+    weightList_[2] = 2./3. - std::pow(static_cast<double>(indexList_[2]) - reducedCoord, 2.)
+        + 0.5*std::pow(static_cast<double>(indexList_[2]) - reducedCoord, 3.) ;
 
-    weightList_[3] = (4./3.)*std::pow(1. - 0.5*(static_cast<double>(indexList_[3]) - reducedCoord_) , 3.) ;
+    weightList_[3] = (4./3.)*std::pow(1. - 0.5*(static_cast<double>(indexList_[3]) - reducedCoord) , 3.) ;
 
 }
 

@@ -16,7 +16,7 @@ public:
         : IndexesAndWeights(order, ods, sminGlobal) {}
 
     // the formulas ruling the weights are specific to a given order
-    void computeWeights() override ;
+    void computeWeights( double reducedCoord ) override ;
 };
 
 
