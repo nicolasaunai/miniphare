@@ -18,44 +18,37 @@ def main(path='./'):
     if len(sys.argv) == 2:
         path = sys.argv[1]
     # ---------------------- INITIALIZATION  -----------------------------------
-    nbrCellX_l=[40]*8
-    nbrCellY_l=[ 0]*8
-    nbrCellZ_l=[ 0]*8
+    nbrParts = 2
+    nbrOrder = 4
+    nbrTestCases = nbrParts*nbrOrder
+
+    nbrCellX_l=[40]*nbrTestCases
+    nbrCellY_l=[ 0]*nbrTestCases
+    nbrCellZ_l=[ 0]*nbrTestCases
     nbrCells = {'X':nbrCellX_l, 'Y':nbrCellY_l, 'Z':nbrCellZ_l}
 
-    dx_l=[0.1]*8 
-    dy_l=[0. ]*8
-    dz_l=[0. ]*8
+    dx_l=[0.1]*nbrTestCases 
+    dy_l=[0. ]*nbrTestCases
+    dz_l=[0. ]*nbrTestCases
     meshSize= {'X':dx_l, 'Y':dy_l, 'Z':dz_l}
 
-    interpOrder_l=[1, 2, 3, 4]*2
+    interpOrder_l=[1, 2, 3, 4]*nbrParts
 
-    # functions to be derivated : iqty
-    # 'Bx':0, 'By':1, 'Bz':2, 'Ex':3, 'Ey':4, 'Ez':5, 'rho':6, 'V':7, 'P':8
-    qty_l=[6]*8
+    # Hybrid quantities
+    field_l=['rho']*nbrTestCases
     
-    dim_l =[0]*8
+    patchMinX_l = [0.]*nbrTestCases
 
-
-
-
-
+    particlePosX_l = [1.01]*nbrOrder + [1.09]*nbrOrder
+    
     gl  = gridlayout.GridLayout()
 
     Direction_l = gl.Direction_l
     Qty_l       = gl.Qty_l
 
-    origin = [0., 0., 0.]
-
-
-    nbrTestCases = len(qty_l)
     print( nbrTestCases )
 
-    print( interpOrder_l )
-    print( qty_l )
-    print( dim_l )
-
-    icase_l = np.arange( len(qty_l) )
+    icase_l = np.arange( nbrTestCases )
     print( icase_l )
 
 
@@ -66,44 +59,73 @@ def main(path='./'):
     f.write("%d \n" % len(icase_l) )  
 
     for icase in icase_l:
-        idim  = dim_l[icase]
         order = interpOrder_l[icase]
-        iqty = Qty_l[qty_l[icase]][0]  # 0 ,  1,  2,  3, ... 
-        qty  = Qty_l[qty_l[icase]][1]  # Bx, By, Bz, Ex, ...
+        nbrX = nbrCellX_l[icase]
+        dx = dx_l[icase]
+        field = field_l[icase]
+        xmin = patchMinX_l[icase]
+        xpart = particlePosX_l[icase]
 
-        nbcells = nbrCells[Direction_l[idim][1]][icase]
-        stepSize = meshSize[Direction_l[idim][1]][icase]
-
-        f.write(("%03d %d %d %d %5.4f ") %
-           (order, idim+1, 
-            iqty, nbcells, 
-            stepSize ) )
-
-        centering = gl.qtyCentering(qty, Direction_l[idim][1])
-
-#        iStart = gl.physicalStartIndex(order, centering)
-        
-        iGhostStart = gl.ghostStartIndex()
-        iGhostEnd   = gl.ghostEndIndex  (order, centering, nbcells)
-
-        # last argument means 1st derivative
-        newCentering = gl.changeCentering( centering, 1 )
-
-        iDerStart = gl.physicalStartIndex(order, newCentering)
-        iDerEnd   = gl.physicalEndIndex  (order, newCentering, nbcells)
-
-        f.write(("%d %d %d %d ") % (iGhostStart, iGhostEnd, iDerStart, iDerEnd))
-
-        f.write(("%6.2f %6.2f %6.2f ") % (origin[0], origin[1], origin[2]))
+        f.write(("%d %d %5.4f %s %f %f") %
+           (order, nbrX, 
+            dx, field, 
+            xmin, xpart ) )
 
         f.write("\n")
 
     f.close()
 
+    for icase in icase_l:
+        f = open( os.path.join(path,("indexes_testCase%d.txt") % \
+        (icase_l[icase])), "w")
+        
+        order = interpOrder_l[icase]
+        nbrX = nbrCellX_l[icase]
+        dx = dx_l[icase]
+        field = field_l[icase]
+        xmin = patchMinX_l[icase]
+        xpart = particlePosX_l[icase]
+        
+        reduced = reducedCoord( field, xmin, xpart, dx, gl )
+        
+        indexes = indexList(order, reduced)
+        print(indexes)
+        size = len(indexes)
+        print("len(indexes) : %d" % size ) 
+        
+        for index in indexes:
+            f.write("%d " % index)
+        
+        
+        f.close()
 
 
 
+def reducedCoord( field, xmin, xpart, dx, gl ):
+    
+    centeringX = gl.qtyCentering(field, 'X')    
+    print(centeringX)
+    
+    delta = 0.
+    if centeringX == 'dual':
+        delta = 0.5
+        
+    reduced = (xpart + delta*dx - xmin)/dx
 
+    return reduced
+    
+
+
+def indexList( order, reduced ):
+    imin = math.floor( reduced - 0.5*(order-1.) )
+
+    ik_l = np.arange(order+1)   
+    
+    indexes = imin + ik_l
+    
+    return indexes
+    
+    
 
 if __name__ == "__main__":
     main()
