@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 #!coding: utf-8
 """
 This script prepares 'gridIndexing.txt'. The file contains expected values

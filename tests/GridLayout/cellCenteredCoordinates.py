@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 #!coding: utf-8
 """
 this script aims at producing expected values for cell center coordinates
