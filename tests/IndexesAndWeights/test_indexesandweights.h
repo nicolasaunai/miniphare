@@ -48,6 +48,10 @@ struct IndexesParams
     double xmin ;
     double xpart ;
 
+    uint32 testId ;
+
+    static uint32 testCaseNbr ;
+
     // additional attributes used to initialize
     // a GridLayout object
 
@@ -58,7 +62,9 @@ struct IndexesParams
 
     std::string lattice = "yee" ;
 
-    IndexesParams(): dxdydz{ {0., 0., 0.} }, nbrCells{ {0, 0, 0} } {}
+    IndexesParams(): testId{ testCaseNbr },
+        dxdydz{ {0., 0., 0.} }, nbrCells{ {0, 0, 0} }
+    { ++testCaseNbr ;  }
 
 };
 

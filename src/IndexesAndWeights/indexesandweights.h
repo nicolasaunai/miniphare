@@ -45,7 +45,7 @@ private:
       double sminGlobal_ ;
 
 protected:
-      std::vector<uint64> indexList_ ;
+      std::vector<uint32> indexList_ ;
       std::vector<double> weightList_ ;
 
 public:
@@ -60,6 +60,10 @@ public:
       IndexesAndWeights & operator=(const IndexesAndWeights &) = default ;
 
       virtual ~IndexesAndWeights() ;
+
+      std::vector<uint32> indexList() const { return indexList_ ; }
+
+      std::vector<double> weightList() const { return weightList_ ; }
 
       // spart is a 1D coordinate in physical unit
       double reducedCoord( double spart ) ;

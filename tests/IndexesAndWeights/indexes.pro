@@ -17,22 +17,28 @@ INCLUDEPATH += ../../src
 SOURCES += ../../src/grid/gridlayout.cpp \
            ../../src/grid/gridlayoutimplyee.cpp \
            ../../src/grid/gridlayoutimplinternals.cpp \
-           ../../src/Field/field.cpp \
-           ../../src/vecfield/vecfield.cpp \
+           ../../src/IndexesAndWeights/indexesandweights.cpp \
+           ../../src/IndexesAndWeights/indexesandweightso1.cpp \
+           ../../src/IndexesAndWeights/indexesandweightso2.cpp \
+           ../../src/IndexesAndWeights/indexesandweightso3.cpp \
+           ../../src/IndexesAndWeights/indexesandweightso4.cpp \
            test_main.cpp \
            test_utilities.cpp \
            test_indexesandweights.cpp
 
-HEADERS += ../../src/grid/gridlayout.h \
+HEADERS += ../../src/types.h \
+           ../../src/constants.h \
+           ../../src/utility.h \
+           ../../src/grid/gridlayout.h \
            ../../src/grid/gridlayoutimplfactory.h \
            ../../src/grid/gridlayoutimplyee.h \
            ../../src/grid/gridlayoutimpl.h \
            ../../src/grid/gridlayoutimplinternals.h \
-           ../../src/types.h \
-           ../../src/constants.h \
-           ../../src/utility.h \
-           ../../src/Field/field.h \
-           ../../src/vecfield/vecfield.h \
+           ../../src/IndexesAndWeights/indexesandweights.h \
+           ../../src/IndexesAndWeights/indexesandweightso1.h \
+           ../../src/IndexesAndWeights/indexesandweightso2.h \
+           ../../src/IndexesAndWeights/indexesandweightso3.h \
+           ../../src/IndexesAndWeights/indexesandweightso4.h \
            test_indexesandweights.h
 
 OTHER_FILES +=\
