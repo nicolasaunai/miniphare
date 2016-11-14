@@ -18,7 +18,7 @@ void IndexesAndWeightsO1::computeWeights( double reducedCoord )
 {
     weightList_[1] = reducedCoord - static_cast<double> (indexList_[0]) ;
 
-    weightList_[0] = 1. - indexList_[1] ;
+    weightList_[0] = 1. - weightList_[1] ;
 
 }
 

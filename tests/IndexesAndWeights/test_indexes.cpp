@@ -5,7 +5,7 @@
 #include <fstream>
 #include <cmath>
 
-#include "test_indexesandweights.h"
+#include "test_indexes.h"
 
 #include "IndexesAndWeights/indexesandweights.h"
 #include "IndexesAndWeights/indexesandweightso1.h"

@@ -24,7 +24,8 @@ SOURCES += ../../src/grid/gridlayout.cpp \
            ../../src/IndexesAndWeights/indexesandweightso4.cpp \
            test_main.cpp \
            test_utilities.cpp \
-           test_indexesandweights.cpp
+    test_weights.cpp \
+    test_indexes.cpp
 
 HEADERS += ../../src/types.h \
            ../../src/constants.h \
@@ -39,7 +40,8 @@ HEADERS += ../../src/types.h \
            ../../src/IndexesAndWeights/indexesandweightso2.h \
            ../../src/IndexesAndWeights/indexesandweightso3.h \
            ../../src/IndexesAndWeights/indexesandweightso4.h \
-           test_indexesandweights.h
+    test_indexes.h \
+    test_weights.h
 
 OTHER_FILES +=\
     test_IndexesAndWeights.py
