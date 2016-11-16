@@ -3,18 +3,24 @@
 
 #include <array>
 
+#include "types.h"
 
 class Particle
 {
 public:
     double weight ;  // variable weight
 
-    std::array<double, 3> r;
-    std::array<double, 3> v;
+    std::array<int32, 3> icell ;   // node coordinate
+
+    std::array<float, 3> delta ;   // value in [0, 1] in each direction
+
+    std::array<double, 3> v ;      // velocity in each direction
 
 public:
-    Particle(double weightRel, std::array<double, 3> pos,
-             std::array<double, 3>  vel);
+    Particle( double weight,
+              std::array<int32, 3> icell,
+              std::array<float, 3> delta,
+              std::array<double, 3> v   );
 
 };
 

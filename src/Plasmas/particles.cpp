@@ -2,12 +2,18 @@
 
 
 
-Particle::Particle(double weightRel, std::array<double, 3> pos,
-                   std::array<double, 3>  vel)
+
+
+Particle::Particle( double weight,
+          std::array<int32, 3> icell,
+          std::array<float, 3> delta,
+          std::array<double, 3> v   )
 {
-    weight = weightRel ;
+    this->weight = weight ;
 
-    r = pos ;
-    v = vel ;
+    this->icell = icell ;
+
+    this->delta = delta ;
+
+    this->v = v ;
 }
-

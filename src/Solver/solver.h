@@ -11,6 +11,7 @@
 #include "Electromag/electromag.h"
 #include "grid/gridlayout.h"
 
+#include "pusher/pusher.h"
 
 
 class Solver
@@ -41,6 +42,7 @@ private:
 
     //std::vector< std::unique_ptr<Projector> > projector; // is of size Ion.nbSpecies();
 
+    std::unique_ptr<Pusher> pusher ;
 
 
     Electromag EMFieldsPred_;

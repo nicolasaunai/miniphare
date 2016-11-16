@@ -1,24 +1,35 @@
 #ifndef PUSHER_H
 #define PUSHER_H
 
+#include "pusher/pushertype.h"
 
-#include <Plasmas//particles.h>
+#include "Plasmas/particles.h"
 
-class Vector;
-#if 0
+#include "vecfield/vecfield.h"
+
+
 class Pusher
 {
+protected:
+
+    // Bridge pattern for Pusher
+    // PusherType might be Boris pusher,
+    // modified Boris, Vay pusher ...
+    std::unique_ptr<PusherType> impl_ ;
+
+
 public:
-    Pusher();
-    ~Pusher();
+    Pusher( std::unique_ptr<PusherType> && impl )
+        : impl_{std::move(impl) } {}
 
-   virtual void accel(Particles &particles,
-              double dt, double m, double q,
-              const Vector &E,
-              const Vector &B)=0;
+    virtual ~Pusher() ;
 
-   virtual void move(Particles &particles)=0;
+    virtual void move(Particle & particle,
+                      double dt, double m, double q,
+                      VecField const &E,
+                      VecField const &B) = 0 ;
+
 };
-#endif
+
 
 #endif // PUSHER_H

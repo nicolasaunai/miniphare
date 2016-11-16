@@ -10,7 +10,6 @@ SOURCES += main.cpp \
     Plasmas/particles.cpp \
     Plasmas/species.cpp \
     Plasmas/electrons.cpp \
-    pusher/pusher.cpp \
     Solver/solver.cpp \
     Electromag/electromag.cpp \
     vecfield/vecfield.cpp \
@@ -39,7 +38,9 @@ SOURCES += main.cpp \
     IndexesAndWeights/indexesandweightso2.cpp \
     IndexesAndWeights/indexesandweightso3.cpp \
     IndexesAndWeights/indexesandweightso4.cpp \
-    Interpolator/interpolator.cpp
+    Interpolator/interpolator.cpp \
+    pusher/pusher1d.cpp \
+    pusher/modifiedboris.cpp
 
 
 HEADERS += \
@@ -92,7 +93,11 @@ HEADERS += \
     Interpolator/interpolatorfactory.h \
     Projector/projector.h \
     Projector/projector1d.h \
-    Projector/projectorfactory.h
+    Projector/projectorfactory.h \
+    pusher/pusher1d.h \
+    pusher/pushertype.h \
+    pusher/pusherfactory.h \
+    pusher/modifiedboris.h
 
 
 
