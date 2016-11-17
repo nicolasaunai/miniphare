@@ -28,7 +28,7 @@ public:
 
         if( pusherType == "modifiedBoris" )
         {
-            impl = std::unique_ptr<ModifiedBoris>( new ModifiedBoris( pusherType ) ) ;
+            impl = std::unique_ptr<ModifiedBoris>( new ModifiedBoris( pusherType, layout ) ) ;
         }
         else
         {

@@ -10,15 +10,22 @@
  * @param dt
  * @param m
  * @param q
- * @param E
- * @param B
+ * @param E is given at tn+1/2
+ * @param B is given at tn+1/2
  */
 void ModifiedBoris::move1D(Particle & particle,
                            double dt, double m, double q,
                            VecField const & E ,
                            VecField const & B )
 {
+    // the position xn (at time tn) is given by
+    // particle.icell[0]*dx_+ particle.delta[0]
+
+    // we keep only delta_xn
+    float delta_xn = particle.delta[0] ;
+
     // time decentering
+
 
 
 

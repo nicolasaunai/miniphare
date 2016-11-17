@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "grid/gridlayout.h"
+
 #include "Plasmas/particles.h"
 
 #include "vecfield/vecfield.h"
@@ -18,13 +20,20 @@
  */
 class PusherType
 {
-private:
+protected:
     std::string pusherName_ ;
+
+    double dx_ ;
+    uint32 nbrCellx_ ;
 
 
 public:
-    PusherType( const std::string & pusherName)
-        : pusherName_{pusherName} {}
+    PusherType( const std::string & pusherName, const GridLayout & layout)
+        : pusherName_{pusherName}
+    {
+        dx_ = layout.dx() ;
+        nbrCellx_ = layout.nbrCellx() ;
+    }
 
     PusherType(PusherType&& toMove)      = default;
     PusherType& operator=(PusherType&& source) = default;

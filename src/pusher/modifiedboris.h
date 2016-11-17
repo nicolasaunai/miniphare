@@ -9,14 +9,8 @@ class ModifiedBoris : public PusherType
 
 
 public:
-    ModifiedBoris( const std::string & pusherName )
-        : PusherType(pusherName) {}
-
-//    ModifiedBoris(ModifiedBoris const& source) = delete;
-//    ModifiedBoris& operator=(ModifiedBoris const& source) = delete;
-
-//    ModifiedBoris(ModifiedBoris&& toMove)      = default;
-//    ModifiedBoris& operator=(ModifiedBoris&& source) = default;
+    ModifiedBoris( const std::string & pusherName, const GridLayout & layout )
+        : PusherType(pusherName, layout) {}
 
     virtual ~ModifiedBoris() {}
 
