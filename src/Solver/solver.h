@@ -19,7 +19,8 @@ class Solver
 
 public:
 
-    Solver(GridLayout const& layout, double dt);
+    Solver( const std::string & pusherType, GridLayout const& layout,
+            double dt );
 
     Solver(Solver const& source) = delete;
     Solver& operator=(Solver const& source) = delete;
@@ -42,18 +43,15 @@ private:
 
     //std::vector< std::unique_ptr<Projector> > projector; // is of size Ion.nbSpecies();
 
-    std::unique_ptr<Pusher> pusher ;
-
-
     Electromag EMFieldsPred_;
     Electromag EMFieldsAvg_;
     // vector <particle> part2_;  // vector of vector ou assign.
 
+    std::unique_ptr<Pusher> pusher_ ;
+
 
     // BoundaryCondition bc_;
 
-
-    //std::unique_ptr<Faraday> faradaySolver_;
     Faraday faraday_;
     // ohm object
 

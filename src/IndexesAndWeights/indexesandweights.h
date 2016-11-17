@@ -59,7 +59,9 @@ public:
       IndexesAndWeights( const IndexesAndWeights & ) = default ;
       IndexesAndWeights & operator=(const IndexesAndWeights &) = default ;
 
-      virtual ~IndexesAndWeights() ;
+      // Dont't forget =default HERE
+      // or move operations won't be generated
+      virtual ~IndexesAndWeights() = default ;
 
       std::vector<uint32> indexList() const { return indexList_ ; }
 

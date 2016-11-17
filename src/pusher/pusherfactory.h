@@ -28,7 +28,7 @@ public:
 
         if( pusherType == "modifiedBoris" )
         {
-            impl = std::unique_ptr<ModifiedBoris>( new ModifiedBoris() ) ;
+            impl = std::unique_ptr<ModifiedBoris>( new ModifiedBoris( pusherType ) ) ;
         }
         else
         {
@@ -38,7 +38,7 @@ public:
 
         switch(nbDim){
         case 1:
-            pusher = std::unique_ptr<Pusher1D>( new Pusher1D( std::move(impl), layout) ) ;
+            pusher = std::unique_ptr<Pusher1D>( new Pusher1D( std::move(impl) ) ) ;
             break;
             // same for 2D and 3D
 

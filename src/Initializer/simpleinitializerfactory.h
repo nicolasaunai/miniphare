@@ -18,6 +18,8 @@ public:
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const override;
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
+
+    virtual std::string pusherType() const override;
     virtual GridLayout const& gridLayout() const override;
     virtual double timeStep() const override;
 

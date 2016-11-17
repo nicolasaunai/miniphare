@@ -22,7 +22,15 @@ public:
     Pusher( std::unique_ptr<PusherType> && impl )
         : impl_{std::move(impl) } {}
 
-    virtual ~Pusher() ;
+    Pusher(Pusher const& source) = delete;
+    Pusher& operator=(Pusher const& source) = delete;
+
+    Pusher(Pusher&& toMove)      = default;
+    Pusher& operator=(Pusher&& source) = default;
+
+    // Dont't forget =default HERE
+    // or move operations won't be generated
+    virtual ~Pusher() = default ;
 
     virtual void move(Particle & particle,
                       double dt, double m, double q,

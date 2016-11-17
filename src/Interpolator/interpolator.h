@@ -25,7 +25,9 @@ private:
 
 public:
 
-    virtual ~Interpolator() ;
+    // Dont't forget =default HERE
+    // or move operations won't be generated
+    virtual ~Interpolator() = default ;
 
     Interpolator( std::unique_ptr<IndexesAndWeights> && impl,
                   const GridLayout & layout, const Point & minGlobal )

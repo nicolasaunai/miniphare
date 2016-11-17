@@ -2,6 +2,8 @@
 
 #include "Solver/solver.h"
 #include "Faraday/faradayfactory.h"
+#include "pusher/pusherfactory.h"
+
 #include "Field/field.h"
 #include "Plasmas/ions.h"
 #include "Plasmas/electrons.h"
@@ -9,16 +11,15 @@
 
 
 
-Solver::Solver(GridLayout const& layout, double dt)
+Solver::Solver( std::string const & pusherType, GridLayout const& layout,
+                double dt )
     : EMFieldsPred_{{ {layout.allocSize(HybridQuantity::Ex ),
                     layout.allocSize(HybridQuantity::Ey ),
                     layout.allocSize(HybridQuantity::Ez )  }},
 
                     { {layout.allocSize(HybridQuantity::Bx ),
                     layout.allocSize(HybridQuantity::By ),
-                    layout.allocSize(HybridQuantity::Bz )  }},
-
-                   "_pred"},
+                    layout.allocSize(HybridQuantity::Bz )  }}, "_pred"},
 
       EMFieldsAvg_{{ {layout.allocSize(HybridQuantity::Ex ),
                    layout.allocSize(HybridQuantity::Ey ),
@@ -26,14 +27,15 @@ Solver::Solver(GridLayout const& layout, double dt)
 
                    { {layout.allocSize(HybridQuantity::Bx ),
                    layout.allocSize(HybridQuantity::By ),
-                   layout.allocSize(HybridQuantity::Bz )  }},
+                   layout.allocSize(HybridQuantity::Bz )  }}, "_avg" },
 
-                  "_avg" },
-
-     faraday_{dt, layout}
+      pusher_{ PusherFactory::createPusher( layout, pusherType ) },
+      faraday_{dt, layout}
 {
 
-    std::vector<double>dxdydz{layout.dx(), layout.dy(), layout.dz()};
+//    std::vector<double>dxdydz{layout.dx(), layout.dy(), layout.dz()};
+
+
 
     // TODO need to initialize OHM object
     // TODO and vector (?) of particles (n+1)

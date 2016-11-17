@@ -6,8 +6,6 @@
 
 
 
-IndexesAndWeights::~IndexesAndWeights() {}
-
 
 double IndexesAndWeights::reducedCoord( double spart )
 {

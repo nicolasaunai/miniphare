@@ -47,7 +47,6 @@ HEADERS += \
     Plasmas/ions.h \
     Plasmas/particles.h \
     Plasmas/species.h \
-    pusher/pusher.h \
     Plasmas/electrons.h \
     Solver/solver.h \
     Electromag/electromag.h \
@@ -94,6 +93,7 @@ HEADERS += \
     Projector/projector.h \
     Projector/projector1d.h \
     Projector/projectorfactory.h \
+    pusher/pusher.h \
     pusher/pusher1d.h \
     pusher/pushertype.h \
     pusher/pusherfactory.h \

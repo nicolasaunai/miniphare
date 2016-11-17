@@ -7,9 +7,18 @@
 class ModifiedBoris : public PusherType
 {
 
+
 public:
-    ModifiedBoris() {}
-    virtual ~ModifiedBoris() ;
+    ModifiedBoris( const std::string & pusherName )
+        : PusherType(pusherName) {}
+
+//    ModifiedBoris(ModifiedBoris const& source) = delete;
+//    ModifiedBoris& operator=(ModifiedBoris const& source) = delete;
+
+//    ModifiedBoris(ModifiedBoris&& toMove)      = default;
+//    ModifiedBoris& operator=(ModifiedBoris&& source) = default;
+
+    virtual ~ModifiedBoris() {}
 
     virtual void move1D( Particle & particle,
                          double dt, double m, double q,

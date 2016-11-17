@@ -1,6 +1,8 @@
 #ifndef PUSHERTYPE_H
 #define PUSHERTYPE_H
 
+#include <string>
+
 #include "Plasmas/particles.h"
 
 #include "vecfield/vecfield.h"
@@ -17,11 +19,19 @@
 class PusherType
 {
 private:
+    std::string pusherName_ ;
 
 
 public:
-    PusherType() {}
-    virtual ~PusherType() ;
+    PusherType( const std::string & pusherName)
+        : pusherName_{pusherName} {}
+
+    PusherType(PusherType&& toMove)      = default;
+    PusherType& operator=(PusherType&& source) = default;
+
+    // Dont't forget =default HERE
+    // or move operations won't be generated
+    virtual ~PusherType() = default ;
 
     virtual void move1D(Particle & particle,
                         double dt, double m, double q,

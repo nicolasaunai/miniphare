@@ -57,7 +57,12 @@ std::unique_ptr<OhmInitializer> SimpleInitializerFactory::createOhmInitializer()
     return nullptr;
 }
 
+std::string SimpleInitializerFactory::pusherType() const
+{
+    std::string pusher = "modifiedBoris" ;
 
+    return pusher ;
+}
 
 GridLayout const& SimpleInitializerFactory::gridLayout() const
 {
