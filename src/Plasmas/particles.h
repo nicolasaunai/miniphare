@@ -10,7 +10,7 @@ class Particle
 public:
     double weight ;  // variable weight
 
-    std::array<int32, 3> icell ;   // node coordinate
+    std::array<uint32, 3> icell ;   // node coordinate
 
     std::array<float, 3> delta ;   // value in [0, 1] in each direction
 
@@ -18,7 +18,7 @@ public:
 
 public:
     Particle( double weight,
-              std::array<int32, 3> icell,
+              std::array<uint32, 3> icell,
               std::array<float, 3> delta,
               std::array<double, 3> v   );
 

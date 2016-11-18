@@ -44,18 +44,18 @@ public:
 
     virtual void move1D(Particle & particle,
                         double dt, double m, double q,
-                        VecField const &E,
-                        VecField const &B) = 0 ;
+                        Point const & Epart,
+                        Point const & Bpart) = 0 ;
 
     virtual void move2D(Particle & particle,
                         double dt, double m, double q,
-                        VecField const &E,
-                        VecField const &B) = 0 ;
+                        Point const & Epart,
+                        Point const & Bpart) = 0 ;
 
     virtual void move3D(Particle & particle,
                         double dt, double m, double q,
-                        VecField const &E,
-                        VecField const &B) = 0 ;
+                        Point const & Epart,
+                        Point const & Bpart) = 0 ;
 
 };
 

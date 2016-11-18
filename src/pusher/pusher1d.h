@@ -26,8 +26,8 @@ public:
 
     virtual void move(Particle & particle,
                       double dt, double m, double q,
-                      VecField const &E,
-                      VecField const &B) override
+                      Point const &E,
+                      Point const &B) override
     {
         impl_->move1D( particle,
                        dt, m, q,

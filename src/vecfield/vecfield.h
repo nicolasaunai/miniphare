@@ -13,7 +13,7 @@
 
 #include "Field/field.h"
 
-//namespace VectorField{
+
 
 class VecField
 {
@@ -73,7 +73,7 @@ public:
 
 //void avg(Vecfield const& VF1, Vecfield const& VF2, Vecfield& Vavg);
 
-//}
+
 
 
 #endif // VECFIELD_H

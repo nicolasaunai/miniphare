@@ -16,18 +16,18 @@ public:
 
     virtual void move1D( Particle & particle,
                          double dt, double m, double q,
-                         VecField const &E,
-                         VecField const &B) override ;
+                         Point const & Epart,
+                         Point const & Bpart) override ;
 
     virtual void move2D( Particle & particle,
                          double dt, double m, double q,
-                         VecField const &E,
-                         VecField const &B) override ;
+                         Point const &Epart,
+                         Point const &Bpart) override ;
 
     virtual void move3D( Particle & particle,
                          double dt, double m, double q,
-                         VecField const &E,
-                         VecField const &B) override ;
+                         Point const &Epart,
+                         Point const &Bpart) override ;
 
 };
 

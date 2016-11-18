@@ -5,7 +5,7 @@
 
 
 Particle::Particle( double weight,
-          std::array<int32, 3> icell,
+          std::array<uint32, 3> icell,
           std::array<float, 3> delta,
           std::array<double, 3> v   )
 {

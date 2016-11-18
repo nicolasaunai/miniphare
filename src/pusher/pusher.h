@@ -34,8 +34,8 @@ public:
 
     virtual void move(Particle & particle,
                       double dt, double m, double q,
-                      VecField const &E,
-                      VecField const &B) = 0 ;
+                      Point const &E,
+                      Point const &B) = 0 ;
 
 };
 
