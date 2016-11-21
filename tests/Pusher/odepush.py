@@ -27,7 +27,7 @@ def main():
 
     xv3_t0 = [5., 0., 0., 0., 2., 0.]
     
-    t = np.linspace(0, 100, 10001)
+    t = np.linspace(0, 1, 10001)
     
     sol = integrate.odeint(dynamicsEB, xv3_t0, t, args=(q, m, Ex, Ey, Ez, Bx, By, Bz))
     
