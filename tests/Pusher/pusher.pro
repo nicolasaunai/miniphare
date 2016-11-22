@@ -4,7 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 
-QMAKE_POST_LINK  = PYTHONPATH=$$PWD:$$PWD/.. $$PWD/faradaytest.py $$OUT_PWD
+QMAKE_POST_LINK  = PYTHONPATH=$$PWD:$$PWD/.. $$PWD/test_pusher.py $$OUT_PWD
 
 
 include(../GTest/GTest.pri)
@@ -39,4 +39,4 @@ HEADERS += ../../src/pusher/pushertype.h \
            test_pusher1d.h
 
 OTHER_FILES +=\
-    pusher1dtest.py
+    test_pusher.py
