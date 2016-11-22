@@ -27,9 +27,12 @@ def main():
 
     xv3_t0 = [5., 0., 0., 0., 2., 0.]
     
-    t = np.linspace(0, 1, 10001)
+    t = np.linspace(0, 10*1.57, 32*10)
     
     sol = integrate.odeint(dynamicsEB, xv3_t0, t, args=(q, m, Ex, Ey, Ez, Bx, By, Bz))
+    
+#    print( np.size(sol[:,0]) )
+    
     
     plt.figure()
     plt.xlabel('x')
