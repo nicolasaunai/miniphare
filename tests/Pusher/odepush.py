@@ -1,7 +1,7 @@
 import scipy.integrate as integrate
 import matplotlib.pyplot as plt
 import numpy as np
-
+import math
 
 
 import sys
@@ -10,7 +10,18 @@ sys.path.insert(0, '../')
 import gridlayout
 import os
 
+# --------- mathematical functions ----------------------
+def uniform( E0, t, x ):
+    return E0
 
+def wave( E0, t, x ):
+    return E0*math.cos(t-x)
+    
+# ---------------------------------------------------------
+
+funcDict = {'unif' : uniform,
+            'wave' : wave }
+            
 
 def main(path='./'):
 
@@ -23,12 +34,12 @@ def main(path='./'):
 
     q_l = [1]
     m_l = [1]
-    Ex_l = [0.]
-    Ey_l = [0.]
-    Ez_l = [0.]
-    Bx_l = [0.]
-    By_l = [0.]
-    Bz_l = [5.]
+    Ex0_l = [0.] ; ExShape_l = ['unif'] 
+    Ey0_l = [0.] ; EyShape_l = ['unif'] 
+    Ez0_l = [0.] ; EzShape_l = ['unif'] 
+    Bx0_l = [0.] ; BxShape_l = ['unif'] 
+    By0_l = [0.] ; ByShape_l = ['unif'] 
+    Bz0_l = [5.] ; BzShape_l = ['unif'] 
 
     tbegin_l = [0.]
     tend_l   = [1.57]
@@ -47,13 +58,19 @@ def main(path='./'):
     f.write("%d \n" % len(icase_l) )  
 
     for icase in icase_l:
-        f.write(("%f %f %d \n%d %d \n%f %f %f \n%f %f %f \n%f %f %f \n%f %f %f") %
+        f.write(("%f %f %d \n%d %d \n%f %f %f \n%f %f %f \n" \
+                 "%f %s \n%f %s \n%f %s \n" \
+                 "%f %s \n%f %s \n%f %s ") %
            (tbegin_l[icase], tend_l[icase], nstep_l[icase], 
             q_l[icase], m_l[icase], 
             x0_l[icase], y0_l[icase], z0_l[icase], 
             vx0_l[icase], vy0_l[icase], vz0_l[icase],
-            Ex_l[icase], Ey_l[icase], Ez_l[icase], 
-            Bx_l[icase], By_l[icase], Bz_l[icase] ) )
+            Ex0_l[icase], ExShape_l[icase],
+            Ey0_l[icase], EyShape_l[icase],
+            Ez0_l[icase], EzShape_l[icase],
+            Bx0_l[icase], BxShape_l[icase],
+            By0_l[icase], ByShape_l[icase],
+            Bz0_l[icase], BzShape_l[icase] ) )
 
         f.write("\n")
 
@@ -61,7 +78,7 @@ def main(path='./'):
     
 
     for icase in icase_l:
-        f = open( os.path.join(path,("odepush_testCase%d.txt") % \
+        fsol = open( os.path.join(path,("odepush_solutionCase%d.txt") % \
         (icase_l[icase])), "w")        
         
         x0  = x0_l[icase]
@@ -72,38 +89,64 @@ def main(path='./'):
         vz0 = vz0_l[icase]
         xv3_t0 = [x0, y0, z0, vx0, vy0, vz0]
     
-        t1 = tbegin_l[icase]
-        t2 = tend_l[icase]
+        t0 = tbegin_l[icase]
+        tf = tend_l[icase]
         nstep = nstep_l[icase]
     
-        t = np.linspace(t1, t2, nstep)
+        t = np.linspace(t0, tf, nstep)
 
         q = q_l[icase] 
         m = m_l[icase]    
-        Ex = Ex_l[icase]
-        Ey = Ey_l[icase]
-        Ez = Ez_l[icase]
-        Bx = Bx_l[icase]
-        By = By_l[icase]
-        Bz = Bz_l[icase]
-        sol = integrate.odeint(dynamicsEB, xv3_t0, t, args=(q, m, Ex, Ey, Ez, Bx, By, Bz))
+
+        sol = integrate.odeint(dynamicsEB, xv3_t0, t, \
+              args=(q, m, \
+              Ex0_l[icase], funcDict[ExShape_l[icase]], \
+              Ey0_l[icase], funcDict[EyShape_l[icase]], \
+              Ez0_l[icase], funcDict[EzShape_l[icase]], \
+              Bx0_l[icase], funcDict[BxShape_l[icase]], \
+              By0_l[icase], funcDict[ByShape_l[icase]], \
+              Bz0_l[icase], funcDict[BzShape_l[icase]] ) )
 
 #        print( np.size(sol[:,0]) )
 
         for xsol in sol[:,0]:
-            f.write("%f " % xsol)
-        f.write("\n")
+            fsol.write("%f " % xsol)
+        fsol.write("\n")
 
         for ysol in sol[:,1]:
-            f.write("%f " % ysol)
-        f.write("\n")        
+            fsol.write("%f " % ysol)
+        fsol.write("\n")        
         
-        f.close()
+        for zsol in sol[:,2]:
+            fsol.write("%f " % zsol)
+        fsol.write("\n")    
+
+        for vxsol in sol[:,3]:
+            fsol.write("%f " % vxsol)
+        fsol.write("\n")    
+
+        for vysol in sol[:,4]:
+            fsol.write("%f " % vysol)
+        fsol.write("\n")    
+
+        for vzsol in sol[:,5]:
+            fsol.write("%f " % vzsol)
+        fsol.write("\n")            
+        
+        fsol.close()
     
 
 
-def dynamicsEB(xv3, t, q, m, Ex, Ey, Ez, Bx, By, Bz):
+def dynamicsEB(xv3, t, q, m, Ex0, Exdef, Ey0, Eydef, Ez0, Ezdef, \
+                             Bx0, Bxdef, By0, Bydef, Bz0, Bzdef ):
     x, y, z, vx, vy, vz = xv3
+    
+#    Ex = Exdef(Ex0, t, x)
+#    Ey = Eydef(Ey0, t, x)
+#    Ez = Ezdef(Ez0, t, x)
+    Bx = Bxdef(Bx0, t, x)
+    By = Bydef(By0, t, x)
+    Bz = Bzdef(Bz0, t, x)
     dxv3dt = [vx, vy, vz, (q/m)*(vy*Bz-vz*By), (q/m)*(vz*Bx-vx*Bz), (q/m)*(vx*By-vy*Bx)]
     return dxv3dt
 
