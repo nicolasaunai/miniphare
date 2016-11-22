@@ -38,17 +38,18 @@ void ModifiedBoris::move1D(Particle & particle,
     double invDet = 2./(1. + rx*rx + ry*ry + rz*rz ) ;
 
     // preparing rotation matrix due to the magnetic field
-    double mxx = invDet*( 1. + rx*rx ) - 1. ;
-    double mxy = invDet*( 1. + rx*ry + rz ) ;
-    double mxz = invDet*( 1. + rx*rz - ry ) ;
+    // m = invDet*(I + r*r - r x I) - I where x denotes the cross product
+    double mxx = invDet*( 1. + rx*rx      ) - 1. ;
+    double mxy = invDet*(      rx*ry + rz ) ;
+    double mxz = invDet*(      rx*rz - ry ) ;
 
-    double myx = invDet*( 1. + ry*rx - rz ) ;
-    double myy = invDet*( 1. + ry*ry ) - 1. ;
-    double myz = invDet*( 1. + ry*rz + rx ) ;
+    double myx = invDet*(      ry*rx - rz ) ;
+    double myy = invDet*( 1. + ry*ry      ) - 1. ;
+    double myz = invDet*(      ry*rz + rx ) ;
 
-    double mzx = invDet*( 1. + rz*rx + ry ) ;
-    double mzy = invDet*( 1. + rz*ry - rx ) ;
-    double mzz = invDet*( 1. + rz*rz ) - 1. ;
+    double mzx = invDet*(      rz*rx + ry ) ;
+    double mzy = invDet*(      rz*ry - rx ) ;
+    double mzz = invDet*( 1. + rz*rz      ) - 1. ;
 
 
     // We now apply the 3 steps of the BORIS PUSHER
