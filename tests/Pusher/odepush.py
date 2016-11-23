@@ -12,7 +12,7 @@ import os
 
 # --------- mathematical functions ----------------------
 def uniform( E0, t, x ):
-    return E0
+    return E0 
 
 def wave( E0, t, x ):
     return E0*math.cos(t-x)
@@ -58,28 +58,18 @@ def main(path='./'):
     f.write("%d \n" % len(icase_l) )  
 
     for icase in icase_l:
-        f.write(("%f %f %d \n%d %d \n%f %f %f \n%f %f %f \n" \
-                 "%f %s \n%f %s \n%f %s \n" \
-                 "%f %s \n%f %s \n%f %s ") %
+        f.write(("%f %f %d \n%d %d \n%f %f %f \n%f %f %f \n" ) %
            (tbegin_l[icase], tend_l[icase], nstep_l[icase], 
             q_l[icase], m_l[icase], 
             x0_l[icase], y0_l[icase], z0_l[icase], 
-            vx0_l[icase], vy0_l[icase], vz0_l[icase],
-            Ex0_l[icase], ExShape_l[icase],
-            Ey0_l[icase], EyShape_l[icase],
-            Ez0_l[icase], EzShape_l[icase],
-            Bx0_l[icase], BxShape_l[icase],
-            By0_l[icase], ByShape_l[icase],
-            Bz0_l[icase], BzShape_l[icase] ) )
-
-        f.write("\n")
+            vx0_l[icase], vy0_l[icase], vz0_l[icase] ) )
 
     f.close() 
     
 
     for icase in icase_l:
-        fsol = open( os.path.join(path,("odepush_solutionCase%d.txt") % \
-        (icase_l[icase])), "w")        
+        fsol = open( os.path.join(path,("odepush_testCase%d.txt") % \
+        (icase_l[icase])), "w") 
         
         x0  = x0_l[icase]
         y0  = y0_l[icase]
@@ -98,14 +88,24 @@ def main(path='./'):
         q = q_l[icase] 
         m = m_l[icase]    
 
+        Ex0 = Ex0_l[icase] 
+        Ey0 = Ey0_l[icase]
+        Ez0 = Ez0_l[icase]
+        Bx0 = Bx0_l[icase]
+        By0 = By0_l[icase]
+        Bz0 = Bz0_l[icase]
+        
+        Exdef = funcDict[ExShape_l[icase]]
+        Eydef = funcDict[EyShape_l[icase]]
+        Ezdef = funcDict[EzShape_l[icase]]
+        Bxdef = funcDict[BxShape_l[icase]]
+        Bydef = funcDict[ByShape_l[icase]] 
+        Bzdef = funcDict[BzShape_l[icase]]
+                             
+
         sol = integrate.odeint(dynamicsEB, xv3_t0, t, \
-              args=(q, m, \
-              Ex0_l[icase], funcDict[ExShape_l[icase]], \
-              Ey0_l[icase], funcDict[EyShape_l[icase]], \
-              Ez0_l[icase], funcDict[EzShape_l[icase]], \
-              Bx0_l[icase], funcDict[BxShape_l[icase]], \
-              By0_l[icase], funcDict[ByShape_l[icase]], \
-              Bz0_l[icase], funcDict[BzShape_l[icase]] ) )
+              args=(q, m, Ex0, Exdef, Ey0, Eydef, Ez0, Ezdef, \
+                          Bx0, Bxdef, By0, Bydef, Bz0, Bzdef ) )
 
 #        print( np.size(sol[:,0]) )
 
@@ -134,7 +134,41 @@ def main(path='./'):
         fsol.write("\n")            
         
         fsol.close()
-    
+ 
+        Ex_p = [ Exdef(Ex0, t[ik], sol[ik,0]) \
+                 for ik in range(t.shape[0])]
+
+        Ey_p = [ Exdef(Ey0, t[ik], sol[ik,0]) \
+                 for ik in range(t.shape[0])]
+
+        Ez_p = [ Exdef(Ez0, t[ik], sol[ik,0]) \
+                 for ik in range(t.shape[0])]
+        
+        Bx_p = [ Bzdef(Bx0, t[ik], sol[ik,0]) \
+                 for ik in range(t.shape[0])]
+        
+        By_p = [ Bzdef(By0, t[ik], sol[ik,0]) \
+                 for ik in range(t.shape[0])]
+
+        Bz_p = [ Bzdef(Bz0, t[ik], sol[ik,0]) \
+                 for ik in range(t.shape[0])]
+
+        np.savetxt(os.path.join(path,("odepush_fields_testCase%d.txt") % (icase_l[icase])), \
+        (Ex_p, Ey_p, Ez_p, Bx_p, By_p, Bz_p), delimiter=' ') 
+
+#        plt.figure()
+#        plt.xlabel('x')
+#        plt.ylabel('y')
+#        plt.grid()
+#        plt.plot(sol[:, 0], sol[:, 1], '-b', label='(x, y)')
+
+#        print(Ex_p)
+#        print(Ey_p)
+#        print(Ez_p)
+#        print(Bx_p)
+#        print(By_p)
+#        print(Bz_p)
+        
 
 
 def dynamicsEB(xv3, t, q, m, Ex0, Exdef, Ey0, Eydef, Ez0, Ezdef, \
@@ -147,7 +181,10 @@ def dynamicsEB(xv3, t, q, m, Ex0, Exdef, Ey0, Eydef, Ez0, Ezdef, \
     Bx = Bxdef(Bx0, t, x)
     By = Bydef(By0, t, x)
     Bz = Bzdef(Bz0, t, x)
-    dxv3dt = [vx, vy, vz, (q/m)*(vy*Bz-vz*By), (q/m)*(vz*Bx-vx*Bz), (q/m)*(vx*By-vy*Bx)]
+    dxv3dt = [vx, vy, vz, (q/m)*(vy*Bz-vz*By), \
+              (q/m)*(vz*Bx-vx*Bz), \
+              (q/m)*(vx*By-vy*Bx)]
+              
     return dxv3dt
 
 
