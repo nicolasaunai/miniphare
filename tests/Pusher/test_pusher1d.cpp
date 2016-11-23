@@ -5,7 +5,7 @@
 #include <fstream>
 #include <cmath>
 
-#include "test_pusher1d.h"
+#include "test_pusher.h"
 
 #include "pusher/pusher.h"
 #include "pusher/pusher1d.h"
@@ -16,32 +16,34 @@
 
 
 
-uint32 Pusher1dParams::testCaseNbr = 0 ;
+uint32 PusherParams::testCaseNbr = 0 ;
 
 
-::testing::AssertionResult AreIndexListsEqual(
-        const std::vector<uint32> & expected_indexes,
-        const std::vector<uint32> & actual_indexes  )
+
+::testing::AssertionResult AreVectorsEqual(
+        const std::vector<double> & expected_vector,
+        const std::vector<double> & actual_vector  ,
+        double precision  )
 {
     ::testing::AssertionResult failure = ::testing::AssertionFailure();
 
     uint32 errorNbr = 0 ;
 
-    if( expected_indexes.size() != actual_indexes.size() )
+    if( expected_vector.size() != actual_vector.size() )
     {
         ::testing::AssertionResult sizeFailure = ::testing::AssertionFailure();
 
         return sizeFailure ;
     }
 
-    for( uint32 ik=0 ; ik<actual_indexes.size() ; ++ik)
+    for( uint32 ik=0 ; ik<actual_vector.size() ; ++ik)
     {
-        if( actual_indexes[ik] != expected_indexes[ik])
+        if( fabs(expected_vector[ik] - actual_vector[ik]) > precision )
         {
             failure << "\n" ;
-            failure << "expected[" << ik << "] = " << expected_indexes[ik] ;
+            failure << "expected[" << ik << "] = " << expected_vector[ik] ;
             failure << "    " ;
-            failure << "actual  [" << ik << "] = " << actual_indexes[ik] ;
+            failure << "actual  [" << ik << "] = " << actual_vector[ik] ;
             failure << "\n" ;
             ++errorNbr ;
         }
@@ -60,18 +62,35 @@ uint32 Pusher1dParams::testCaseNbr = 0 ;
 }
 
 
-class Pusher1DTest: public ::testing::TestWithParam<Pusher1dParams>
+
+void readFieldsAtParticle(PusherParams const & inputs,
+                          std::vector<double> & Ex_p,
+                          std::vector<double> & Ey_p,
+                          std::vector<double> & Ez_p,
+                          std::vector<double> & Bx_p,
+                          std::vector<double> & By_p,
+                          std::vector<double> & Bz_p ) ;
+
+
+class XComponentTest: public ::testing::TestWithParam<PusherParams>
 {
 public:
-    Pusher1dParams inputs;
+    PusherParams inputs;
 
-    double precision ;
+    double precision = 1.e-4 ;
 
-    std::vector<uint32> expected_indexes ;
-    std::vector<uint32> actual_indexes ;
+    std::vector<double> expected_x_part ;
+//    std::vector<double> expected_vx_part ;
+//    std::vector<double> expected_vy_part ;
+//    std::vector<double> expected_vz_part ;
+
+    std::vector<double> actual_x_part ;
+//    std::vector<double> actual_vx_part ;
+//    std::vector<double> actual_vy_part ;
+//    std::vector<double> actual_vz_part ;
 
 
-    ~Pusher1DTest() = default ;
+    ~XComponentTest() = default ;
 
     void SetUp()
     {
@@ -81,7 +100,7 @@ public:
         GridLayout layout{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, inputs.lattice, inputs.interpOrder  };
 
 
-        std::string filename{"../IndexesAndWeights/indexes_testCase"
+        std::string filename{"../Pusher/odepush_x_testCase"
                     + std::to_string(inputs.testId) + ".txt"};
 
         std::cout << filename << std::endl ;
@@ -93,81 +112,127 @@ public:
             exit(-1);
         }
 
-        expected_indexes.assign( inputs.interpOrder+1, 0 ) ;
-        for(uint32 ik=0 ; ik< (inputs.interpOrder+1) ; ik++)
+        expected_x_part.assign( inputs.nstep, 0 ) ;
+        for(uint32 ik=0 ; ik< inputs.nstep ; ++ik)
         {
-            ifs2 >> expected_indexes[ik] ;
+            ifs2 >> expected_x_part[ik] ;
         }
 
-        uint32 order = inputs.interpOrder ;
-        double ods = 1./inputs.dx ;
-        double smin = inputs.xmin ;
+        std::vector<double> Ex_p( inputs.nstep, 0.) ;
+        std::vector<double> Ey_p( inputs.nstep, 0.) ;
+        std::vector<double> Ez_p( inputs.nstep, 0.) ;
+        std::vector<double> Bx_p( inputs.nstep, 0.) ;
+        std::vector<double> By_p( inputs.nstep, 0.) ;
+        std::vector<double> Bz_p( inputs.nstep, 0.) ;
 
-//        std::unique_ptr<IndexesAndWeights> impl  ;
-//        switch(order){
-//        case 1:
-//            impl = std::unique_ptr<IndexesAndWeightsO1>( new IndexesAndWeightsO1(order, ods, smin) ) ;
-//            break;
-//        case 2:
-//            impl = std::unique_ptr<IndexesAndWeightsO2>( new IndexesAndWeightsO2(order, ods, smin) ) ;
-//            break;
-//        case 3:
-//            impl = std::unique_ptr<IndexesAndWeightsO3>( new IndexesAndWeightsO3(order, ods, smin) ) ;
-//            break;
-//        case 4:
-//            impl = std::unique_ptr<IndexesAndWeightsO4>( new IndexesAndWeightsO4(order, ods, smin) ) ;
-//            break;
-//        }
+        readFieldsAtParticle( inputs,
+                              Ex_p, Ey_p, Ez_p,
+                              Bx_p, By_p, Bz_p ) ;
 
-        // test particle coordinate
-//        double spart = inputs.xpart ;
-//        double reduced = impl->reducedCoord(spart) ;
 
-        // We build the actual index List
-//        impl->computeIndexes(reduced) ;
+        std::unique_ptr<Pusher> pusher = PusherFactory::createPusher( layout, "modifiedBoris" ) ;
 
-//        actual_indexes = impl->indexList() ;
+        // Initialize the Particle to be pushed
+        double weight = 1. ;
+
+//        Particle( weight, inputs.q,
+//                  std::array<uint32, 3> icell,
+//                  std::array<float, 3> delta,
+//                  std::array<double, 3> v   );
+
+        for(uint32 ik=0 ; ik< inputs.nstep ; ++ik)
+        {
+            Point E_part(Ex_p[ik], Ey_p[ik], Ez_p[ik]) ;
+            Point B_part(Bx_p[ik], By_p[ik], Bz_p[ik]) ;
+
+            //        pusher->move( Particle & particle,
+            //                      double dt, double m, double q,
+            //                      Point const &E,
+            //                      Point const &B) = 0 ;
+
+        }
+
+
+
     }
 
 
-    void print(Pusher1dParams const& inputs)
+    void print(PusherParams const& inputs)
     {
-        std::cout << "interpOrder : " << inputs.interpOrder
-                  << " nbrX   : " << inputs.nbrX
-                  << " dx = " << inputs.dx << "\n"
-                  << " field = " << inputs.field
-                  << " xmin = " << inputs.xmin
-                  << " xpart = " << inputs.xpart << "\n"
-                  << " testId = " << inputs.testId << "\n"
+        std::cout << "tbegin = " << inputs.tbegin
+                  << " tend  = " << inputs.tend
+                  << " nstep = " << inputs.nstep << "\n"
+                  << " q = " << inputs.q << "\t"
+                  << " m = " << inputs.m
+                  << " x0 = " << inputs.x0 << "\n"
+                  << " y0 = " << inputs.y0 << "\n"
+                  << " z0 = " << inputs.z0 << "\n"
+                  << " vx0 = " << inputs.vx0 << "\n"
+                  << " vy0 = " << inputs.vy0 << "\n"
+                  << " vz0 = " << inputs.vz0 << "\n"
                   << " dxdydz[0] = " << inputs.dxdydz[0]
-                  << " dxdydz[1] = " << inputs.dxdydz[0]
-                  << " dxdydz[2] = " << inputs.dxdydz[0] << "\n"
+                  << " dxdydz[1] = " << inputs.dxdydz[1]
+                  << " dxdydz[2] = " << inputs.dxdydz[2] << "\n"
                   << " nbrCells[0] = " << inputs.nbrCells[0]
                   << " nbrCells[1] = " << inputs.nbrCells[1]
                   << " nbrCells[2] = " << inputs.nbrCells[2] << "\n"
-                  << " nbDim = " << inputs.nbDim << "\n"
-                  << " lattice = " << inputs.lattice << "\n"
+                  << " nbDim = " << inputs.nbDim
+                  << " lattice = " << inputs.lattice
+                  << " interpOrder : " << inputs.interpOrder
                   << std::endl ;
     }
 
 };
 
 
+
+void readFieldsAtParticle(PusherParams const & inputs,
+                          std::vector<double> & Ex_p,
+                          std::vector<double> & Ey_p,
+                          std::vector<double> & Ez_p,
+                          std::vector<double> & Bx_p,
+                          std::vector<double> & By_p,
+                          std::vector<double> & Bz_p )
+{
+
+    std::string fileFields{"../Pusher/odepush_fields_testCase"
+                + std::to_string(inputs.testId) + ".txt"};
+
+    std::cout << fileFields << std::endl ;
+
+    std::ifstream ifsFields{fileFields};
+    if (!ifsFields )
+    {
+        std::cout << "Could not open file : " << fileFields << std::endl ;
+        exit(-1);
+    }
+
+    // Reading Exyz(t), Bxyz(t) at the particle position
+    for(uint32 ik=0 ; ik< inputs.nstep ; ++ik) ifsFields >> Ex_p[ik] ;
+    for(uint32 ik=0 ; ik< inputs.nstep ; ++ik) ifsFields >> Ey_p[ik] ;
+    for(uint32 ik=0 ; ik< inputs.nstep ; ++ik) ifsFields >> Ez_p[ik] ;
+    for(uint32 ik=0 ; ik< inputs.nstep ; ++ik) ifsFields >> Bx_p[ik] ;
+    for(uint32 ik=0 ; ik< inputs.nstep ; ++ik) ifsFields >> By_p[ik] ;
+    for(uint32 ik=0 ; ik< inputs.nstep ; ++ik) ifsFields >> Bz_p[ik] ;
+
+}
+
+
 /***********************************************************/
 /* */
 /*                                                         */
 /***********************************************************/
-TEST_P(Pusher1DTest, testPositions)
+TEST_P(XComponentTest, testPositions)
 {
 
-    EXPECT_TRUE( AreIndexListsEqual(expected_indexes, actual_indexes ) );
+    EXPECT_TRUE( AreVectorsEqual(expected_x_part, actual_x_part, precision ) );
 
 }
 
 
 
-INSTANTIATE_TEST_CASE_P(Pusher1DTest, Pusher1DTest,
-                        testing::ValuesIn( getPusher1dParamsFromFile() ) );
+INSTANTIATE_TEST_CASE_P(Pusher1DTest, XComponentTest,
+                        testing::ValuesIn( getPusherParamsFromFile() ) );
 
 
 

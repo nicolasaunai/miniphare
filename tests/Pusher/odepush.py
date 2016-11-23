@@ -68,8 +68,23 @@ def main(path='./'):
     
 
     for icase in icase_l:
-        fsol = open( os.path.join(path,("odepush_testCase%d.txt") % \
-        (icase_l[icase])), "w") 
+        file_x = open( os.path.join(path,("odepush_x_testCase%d.txt") % \
+        (icase_l[icase])), "w")
+
+        file_y = open( os.path.join(path,("odepush_y_testCase%d.txt") % \
+        (icase_l[icase])), "w")
+        
+        file_z = open( os.path.join(path,("odepush_z_testCase%d.txt") % \
+        (icase_l[icase])), "w")
+        
+        file_vx = open( os.path.join(path,("odepush_vx_testCase%d.txt") % \
+        (icase_l[icase])), "w")
+        
+        file_vy = open( os.path.join(path,("odepush_vy_testCase%d.txt") % \
+        (icase_l[icase])), "w")
+        
+        file_vz = open( os.path.join(path,("odepush_vz_testCase%d.txt") % \
+        (icase_l[icase])), "w")
         
         x0  = x0_l[icase]
         y0  = y0_l[icase]
@@ -110,30 +125,35 @@ def main(path='./'):
 #        print( np.size(sol[:,0]) )
 
         for xsol in sol[:,0]:
-            fsol.write("%f " % xsol)
-        fsol.write("\n")
+            file_x.write("%f " % xsol)
+        file_x.write("\n")
 
         for ysol in sol[:,1]:
-            fsol.write("%f " % ysol)
-        fsol.write("\n")        
+            file_y.write("%f " % ysol)
+        file_y.write("\n")        
         
         for zsol in sol[:,2]:
-            fsol.write("%f " % zsol)
-        fsol.write("\n")    
+            file_z.write("%f " % zsol)
+        file_z.write("\n")    
 
         for vxsol in sol[:,3]:
-            fsol.write("%f " % vxsol)
-        fsol.write("\n")    
+            file_vx.write("%f " % vxsol)
+        file_vx.write("\n")    
 
         for vysol in sol[:,4]:
-            fsol.write("%f " % vysol)
-        fsol.write("\n")    
+            file_vy.write("%f " % vysol)
+        file_vy.write("\n")    
 
         for vzsol in sol[:,5]:
-            fsol.write("%f " % vzsol)
-        fsol.write("\n")            
+            file_vz.write("%f " % vzsol)
+        file_vz.write("\n")            
         
-        fsol.close()
+        file_x.close()
+        file_y.close()
+        file_z.close()
+        file_vx.close()
+        file_vy.close()
+        file_vz.close()
  
         Ex_p = [ Exdef(Ex0, t[ik], sol[ik,0]) \
                  for ik in range(t.shape[0])]

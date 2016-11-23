@@ -15,7 +15,7 @@
 #include "Field/field.h"
 
 
-struct Pusher1dParams;
+struct PusherParams;
 
 HybridQuantity GetHybridQtyFromString( std::string field ) ;
 
@@ -23,7 +23,7 @@ HybridQuantity GetHybridQty(uint32 iqty) ;
 
 std::string GetHybridQtyName(uint iqty) ;
 
-std::vector<Pusher1dParams>  getPusher1dParamsFromFile() ;
+std::vector<PusherParams>  getPusherParamsFromFile() ;
 
 
 
@@ -35,18 +35,18 @@ std::vector<Pusher1dParams>  getPusher1dParamsFromFile() ;
  *                       the index list
  * ---------------------------------------------------------------------------- */
 
-struct Pusher1dParams
+struct PusherParams
 {
 
-    uint32 interpOrder ;
-    uint32 nbrX ;
+    double tbegin, tend ;
+    uint32 nstep ;
 
-    double dx ;
+    double q, m ;
 
-    std::string field ;
+    // Initial conditions
+    double x0, y0, z0 ;
+    double vx0, vy0, vz0 ;
 
-    double xmin ;
-    double xpart ;
 
     uint32 testId ;
 
@@ -55,16 +55,17 @@ struct Pusher1dParams
     // additional attributes used to initialize
     // a GridLayout object
 
-    std::array<double, 3> dxdydz ;
-    std::array<uint32, 3> nbrCells ;
+    std::array<double, 3> dxdydz = { {0.1, 0., 0.} } ;
+    std::array<uint32, 3> nbrCells = { {1000, 0, 0} } ;
 
     uint32 nbDim = 1 ;
 
     std::string lattice = "yee" ;
 
-    Pusher1dParams(): testId{ testCaseNbr },
-        dxdydz{ {0., 0., 0.} }, nbrCells{ {0, 0, 0} }
-    { ++testCaseNbr ;  }
+    uint32 interpOrder = 1 ;
+
+    PusherParams(): testId{ testCaseNbr }
+     { ++testCaseNbr ; }
 
 };
 

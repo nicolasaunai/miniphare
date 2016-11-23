@@ -21,7 +21,7 @@ SOURCES += ../../src/pusher/modifiedboris.cpp \
            ../../src/grid/gridlayoutimplinternals.cpp \
            test_main.cpp \
            test_utilities.cpp \
-           test_pusher1d.cpp
+    test_pusher1d.cpp
 
 HEADERS += ../../src/pusher/pushertype.h \
            ../../src/pusher/modifiedboris.h \
@@ -36,7 +36,7 @@ HEADERS += ../../src/pusher/pushertype.h \
            ../../src/types.h \
            ../../src/constants.h \
            ../../src/utility.h \
-           test_pusher1d.h
+    test_pusher.h
 
 OTHER_FILES +=\
     test_pusher.py
