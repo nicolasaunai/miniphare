@@ -26,6 +26,9 @@ std::vector<PusherParams> getPusherParamsFromFile()
     // reading parameters relative to the test cases
     for (uint32 i=0 ; i < nbrTestCases ; ++i)
     {
+        ifs1 >> params[i].tbegin ;
+        ifs1 >> params[i].tend ;
+        ifs1 >> params[i].nstep ;
         ifs1 >> params[i].q ;
         ifs1 >> params[i].m ;
         ifs1 >> params[i].x0 ;

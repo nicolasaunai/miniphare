@@ -14,16 +14,18 @@ INCLUDEPATH += ../../src
 
 
 
-SOURCES += ../../src/pusher/modifiedboris.cpp \
+SOURCES += ../../src/Plasmas/particles.cpp \
+           ../../src/pusher/modifiedboris.cpp \
            ../../src/pusher/pusher1d.cpp \
            ../../src/grid/gridlayout.cpp \
            ../../src/grid/gridlayoutimplyee.cpp \
            ../../src/grid/gridlayoutimplinternals.cpp \
            test_main.cpp \
            test_utilities.cpp \
-    test_pusher1d.cpp
+           test_pusher1d.cpp
 
-HEADERS += ../../src/pusher/pushertype.h \
+HEADERS += ../../src/Plasmas/particles.h \
+           ../../src/pusher/pushertype.h \
            ../../src/pusher/modifiedboris.h \
            ../../src/pusher/pusher.h \
            ../../src/pusher/pusher1d.h \
@@ -36,7 +38,7 @@ HEADERS += ../../src/pusher/pushertype.h \
            ../../src/types.h \
            ../../src/constants.h \
            ../../src/utility.h \
-    test_pusher.h
+           test_pusher.h
 
 OTHER_FILES +=\
     test_pusher.py

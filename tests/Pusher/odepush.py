@@ -25,25 +25,35 @@ funcDict = {'unif' : uniform,
 
 def main(path='./'):
 
-    x0_l  = [5.]
-    y0_l  = [0.]
-    z0_l  = [0.]
-    vx0_l = [0.]
-    vy0_l = [2.]
-    vz0_l = [0.]
+    nbCase = 4
 
-    q_l = [1]
-    m_l = [1]
-    Ex0_l = [0.] ; ExShape_l = ['unif'] 
-    Ey0_l = [0.] ; EyShape_l = ['unif'] 
-    Ez0_l = [0.] ; EzShape_l = ['unif'] 
-    Bx0_l = [0.] ; BxShape_l = ['unif'] 
-    By0_l = [0.] ; ByShape_l = ['unif'] 
-    Bz0_l = [5.] ; BzShape_l = ['unif'] 
+    x0_l  = [5.]*nbCase
+    y0_l  = [0.]*nbCase
+    z0_l  = [0.]*nbCase
+    vx0_l = [0., 0., 0., 2.]
+    vy0_l = [2., 2., 2., 0.]
+    vz0_l = [0.]*nbCase
 
-    tbegin_l = [0.]
-    tend_l   = [1.57]
-    nstep_l = [32]
+    q_l = [1]*nbCase
+    m_l = [1]*nbCase
+    
+    Ex0_l = [0.]*nbCase ; ExShape_l = ['unif']*nbCase 
+    Ey0_l = [0.]*nbCase ; EyShape_l = ['unif']*nbCase 
+    Ez0_l = [0.]*nbCase ; EzShape_l = ['unif']*nbCase 
+    Bx0_l = [0.]*nbCase ; BxShape_l = ['unif']*nbCase 
+    By0_l = [0.]*nbCase ; ByShape_l = ['unif']*nbCase 
+    Bz0_l = [5.]*nbCase ; BzShape_l = ['unif']*nbCase 
+
+    # Tgyro = 2*pi/omega with omega = q*B/m    
+    print(len(Bz0_l))
+    omega_l = [q_l[ik]*Bz0_l[ik]/m_l[ik] for ik in range(len(Bz0_l))]    
+    Tgyro_l = [2*np.pi/omega_l[ik] for ik in range(len(Bz0_l))]
+
+    tbegin_l = [0.]*nbCase
+    tend_l   = [Tgyro_l[ik] for ik in range(len(Bz0_l))]
+    nstep_l  = [16, 32, 64, 32]
+    
+    print("T_gyro = ", tend_l)
 
 
     nbrTestCases = len( x0_l )
@@ -68,6 +78,10 @@ def main(path='./'):
     
 
     for icase in icase_l:
+        # Time step
+        dt = (tend_l[icase] - tbegin_l[icase])/nstep_l[icase]
+        print("dt = %f" % dt)        
+
         file_x = open( os.path.join(path,("odepush_x_testCase%d.txt") % \
         (icase_l[icase])), "w")
 
@@ -181,6 +195,18 @@ def main(path='./'):
 #        plt.ylabel('y')
 #        plt.grid()
 #        plt.plot(sol[:, 0], sol[:, 1], '-b', label='(x, y)')
+
+#        plt.figure()
+#        plt.xlabel('t')
+#        plt.ylabel('vx')
+#        plt.grid()
+#        plt.plot(t, sol[:, 3], '-b', label='(t, vx)')
+#
+#        plt.figure()
+#        plt.xlabel('t')
+#        plt.ylabel('vy')
+#        plt.grid()
+#        plt.plot(t, sol[:, 4], '-b', label='(t, vy)')
 
 #        print(Ex_p)
 #        print(Ey_p)

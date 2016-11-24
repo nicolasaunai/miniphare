@@ -7,6 +7,8 @@
 
 #include "test_pusher.h"
 
+#include "Plasmas/particles.h"
+
 #include "pusher/pusher.h"
 #include "pusher/pusher1d.h"
 #include "pusher/pushertype.h"
@@ -32,6 +34,8 @@ uint32 PusherParams::testCaseNbr = 0 ;
     if( expected_vector.size() != actual_vector.size() )
     {
         ::testing::AssertionResult sizeFailure = ::testing::AssertionFailure();
+
+        sizeFailure << "expected_vector.size() != actual_vector.size()" ;
 
         return sizeFailure ;
     }
@@ -112,7 +116,7 @@ public:
             exit(-1);
         }
 
-        expected_x_part.assign( inputs.nstep, 0 ) ;
+        expected_x_part.assign( inputs.nstep, 0. ) ;
         for(uint32 ik=0 ; ik< inputs.nstep ; ++ik)
         {
             ifs2 >> expected_x_part[ik] ;
@@ -134,23 +138,42 @@ public:
 
         // Initialize the Particle to be pushed
         double weight = 1. ;
+        double mass = 1. ;
 
-//        Particle( weight, inputs.q,
-//                  std::array<uint32, 3> icell,
-//                  std::array<float, 3> delta,
-//                  std::array<double, 3> v   );
+        uint32 icellx0 = static_cast<uint32>( std::floor(inputs.x0/layout.dx()) ) ;
+
+        Particle testParticle( weight, inputs.q,
+                 { {icellx0, 0, 0} },
+                 { {static_cast<float>( inputs.x0 - icellx0*layout.dx() ), 0., 0.} },
+                 { {inputs.vx0, inputs.vy0, inputs.vz0} }   );
+
+        double posx = testParticle.icell[0]*layout.dx()
+                + static_cast<double>(testParticle.delta[0]) ;
+
+        actual_x_part.push_back( posx ) ;
+
+        // we compute the time step
+        double dt = (inputs.tend - inputs.tbegin)/inputs.nstep ;
 
         for(uint32 ik=0 ; ik< inputs.nstep ; ++ik)
         {
             Point E_part(Ex_p[ik], Ey_p[ik], Ez_p[ik]) ;
             Point B_part(Bx_p[ik], By_p[ik], Bz_p[ik]) ;
 
-            //        pusher->move( Particle & particle,
-            //                      double dt, double m, double q,
-            //                      Point const &E,
-            //                      Point const &B) = 0 ;
+            pusher->move( testParticle,
+                          dt, mass, inputs.q,
+                          E_part, B_part) ;
+
+            double posx = testParticle.icell[0]*layout.dx()
+                 + static_cast<double>(testParticle.delta[0]) ;
+
+            actual_x_part.push_back( posx ) ;
 
         }
+
+
+        printTable( actual_x_part, "actual_x_part" ) ;
+        printTable( expected_x_part, "expected_x_part" ) ;
 
 
 
@@ -163,7 +186,7 @@ public:
                   << " tend  = " << inputs.tend
                   << " nstep = " << inputs.nstep << "\n"
                   << " q = " << inputs.q << "\t"
-                  << " m = " << inputs.m
+                  << " m = " << inputs.m << "\n"
                   << " x0 = " << inputs.x0 << "\n"
                   << " y0 = " << inputs.y0 << "\n"
                   << " z0 = " << inputs.z0 << "\n"
@@ -181,6 +204,18 @@ public:
                   << " interpOrder : " << inputs.interpOrder
                   << std::endl ;
     }
+
+    void printTable( std::vector<double> const & table, const std::string & name )
+    {
+        std::cout << "- " << name << " -" << std::endl ;
+        for( uint32 ik=0 ; ik<table.size() ; ++ik)
+        {
+            std::cout << " [" << ik << "] = " << table[ik] << "," ;
+        }
+        std::cout << std::endl ;
+    }
+
+
 
 };
 

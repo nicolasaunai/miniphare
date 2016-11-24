@@ -56,8 +56,8 @@ void ModifiedBoris::move1D(Particle & particle,
 
     // 1st half push of the electric field
     double velx1 = particle.v[0] + coef1*Epart.x_ ;
-    double vely1 = particle.v[0] + coef1*Epart.y_ ;
-    double velz1 = particle.v[0] + coef1*Epart.z_ ;
+    double vely1 = particle.v[1] + coef1*Epart.y_ ;
+    double velz1 = particle.v[2] + coef1*Epart.z_ ;
 
     // magnetic rotation
     double velx2 = mxx*velx1 + mxy*vely1 + mxz*velz1 ;
@@ -72,13 +72,17 @@ void ModifiedBoris::move1D(Particle & particle,
     // we update the position at tn+1
     posx = posx_d + dto2 * velx1 ;
 
-    // TODO later handle the origin of a patch
+    // Update velocity
+    particle.v[0] = velx1 ;
+    particle.v[1] = vely1 ;
+    particle.v[2] = velz1 ;
 
+    // TODO later handle the origin of a patch
     // get the node coordinate
-    particle.icell[0] = static_cast<uint32>( std::floor( posx ) ) ;
+    particle.icell[0] = static_cast<uint32>( std::floor( posx/dx_ ) ) ;
 
     // get the delta
-    particle.delta[0] = static_cast<float>( posx - particle.icell[0] ) ;
+    particle.delta[0] = static_cast<float>( posx - particle.icell[0]*dx_ ) ;
 
 
 }

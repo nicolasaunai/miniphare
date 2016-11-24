@@ -27,7 +27,11 @@ def main():
 
     xv3_t0 = [5., 0., 0., 0., 2., 0.]
     
-    t = np.linspace(0, 10*1.57, 32*10)
+# period = 2*pi/omega with omega = q*B/m    
+    omega = q*Bz/m    
+    Tgyro = 2*pi/omega    
+    
+    t = np.linspace(0, 10*Tgyro, 32*10)
     
     sol = integrate.odeint(dynamicsEB, xv3_t0, t, args=(q, m, Ex, Ey, Ez, Bx, By, Bz))
     
