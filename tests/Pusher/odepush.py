@@ -112,7 +112,7 @@ def main(path='./'):
         tf = tend_l[icase]
         nstep = nstep_l[icase]
     
-        t = np.linspace(t0, tf, nstep)
+        t = np.linspace(t0, tf, nstep+1)
 
         q = q_l[icase] 
         m = m_l[icase]    
@@ -139,27 +139,27 @@ def main(path='./'):
 #        print( np.size(sol[:,0]) )
 
         for xsol in sol[:,0]:
-            file_x.write("%f " % xsol)
+            file_x.write("%f \n" % xsol)
         file_x.write("\n")
 
         for ysol in sol[:,1]:
-            file_y.write("%f " % ysol)
+            file_y.write("%f \n" % ysol)
         file_y.write("\n")        
         
         for zsol in sol[:,2]:
-            file_z.write("%f " % zsol)
+            file_z.write("%f \n" % zsol)
         file_z.write("\n")    
 
         for vxsol in sol[:,3]:
-            file_vx.write("%f " % vxsol)
+            file_vx.write("%f \n" % vxsol)
         file_vx.write("\n")    
 
         for vysol in sol[:,4]:
-            file_vy.write("%f " % vysol)
+            file_vy.write("%f \n" % vysol)
         file_vy.write("\n")    
 
         for vzsol in sol[:,5]:
-            file_vz.write("%f " % vzsol)
+            file_vz.write("%f \n" % vzsol)
         file_vz.write("\n")            
         
         file_x.close()
