@@ -25,7 +25,9 @@ void ModifiedBoris::move1D(Particle & particle,
     double coef1 = q*dto2/m ;
 
     // position at time tn
-    double posx = particle.icell[0]*dx_+ static_cast<double>( particle.delta[0] ) ;
+    double posx = particle.position[0] ;
+
+//    double posx = particle.icell[0]*dx_+ static_cast<double>( particle.delta[0] ) ;
 
     // time decentering position at tn+1/2
     double posx_d = posx + dto2* particle.v[0] ;
@@ -69,20 +71,22 @@ void ModifiedBoris::move1D(Particle & particle,
     vely1 = vely2 + coef1*Epart.y_ ;
     velz1 = velz2 + coef1*Epart.z_ ;
 
-    // we update the position at tn+1
-    posx = posx_d + dto2 * velx1 ;
-
     // Update velocity
     particle.v[0] = velx1 ;
     particle.v[1] = vely1 ;
     particle.v[2] = velz1 ;
 
+    // we update the position at tn+1
+    posx = posx_d + dto2 * velx1 ;
+
+    particle.position[0] = posx ;
+
     // TODO later handle the origin of a patch
     // get the node coordinate
-    particle.icell[0] = static_cast<uint32>( std::floor( posx/dx_ ) ) ;
+//    particle.icell[0] = static_cast<uint32>( std::floor( posx/dx_ ) ) ;
 
     // get the delta
-    particle.delta[0] = static_cast<float>( posx - particle.icell[0]*dx_ ) ;
+//    particle.delta[0] = static_cast<float>( posx - particle.icell[0]*dx_ ) ;
 
 
 }
