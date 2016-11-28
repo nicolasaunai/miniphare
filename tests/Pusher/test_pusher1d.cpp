@@ -181,21 +181,21 @@ public:
 
         uint32 icellx0 = static_cast<uint32>( std::floor(inputs.x0/layout.dx()) ) ;
 
-//        Particle testParticle( weight, inputs.q,
-//                 { {icellx0, 0, 0} },
-//                 { {static_cast<float>( inputs.x0 - icellx0*layout.dx() ), 0., 0.} },
-//                 { {inputs.vx0, inputs.vy0, inputs.vz0} }   );
-
         Particle testParticle( weight, inputs.q,
-                 { {inputs.x0 , 0., 0.} },
+                 { {icellx0, 0, 0} },
+                 { {static_cast<float>( inputs.x0 - icellx0*layout.dx() ), 0., 0.} },
                  { {inputs.vx0, inputs.vy0, inputs.vz0} }   );
 
-//        double posx = testParticle.icell[0]*layout.dx()
-//                + static_cast<double>(testParticle.delta[0]) ;
+//        Particle testParticle( weight, inputs.q,
+//                 { {inputs.x0 , 0., 0.} },
+//                 { {inputs.vx0, inputs.vy0, inputs.vz0} }   );
 
-//        actual_x_part.push_back( posx ) ;
+        double posx = testParticle.icell[0]*layout.dx()
+                + static_cast<double>(testParticle.delta[0]) ;
 
-        actual_x_part.push_back( testParticle.position[0] ) ;
+        actual_x_part.push_back( posx ) ;
+//        actual_x_part.push_back( testParticle.position[0] ) ;
+
         actual_vx_part.push_back( testParticle.v[0] ) ;
         actual_vy_part.push_back( testParticle.v[1] ) ;
         actual_vz_part.push_back( testParticle.v[2] ) ;
@@ -203,8 +203,8 @@ public:
         // we compute the time step
         double dt = (inputs.tend - inputs.tbegin)/inputs.nstep ;
 
-        precision_x = 6.*dt*dt ;
-        precision_v = 6.*dt*dt ; // sqrt(6.) = 2.45
+        precision_x = dt*dt ;
+        precision_v = dt*dt ; // sqrt(6.) = 2.45
 
         for(uint32 ik=1 ; ik< inputs.nstep+1 ; ++ik)
         {
@@ -215,12 +215,12 @@ public:
                           dt, mass, inputs.q,
                           E_part, B_part) ;
 
-//            double posx = testParticle.icell[0]*layout.dx()
-//                 + static_cast<double>(testParticle.delta[0]) ;
+            double posx = testParticle.icell[0]*layout.dx()
+                 + static_cast<double>(testParticle.delta[0]) ;
 
-//        actual_x_part.push_back( posx ) ;
+            actual_x_part.push_back( posx ) ;
+//            actual_x_part.push_back( testParticle.position[0] ) ;
 
-            actual_x_part.push_back( testParticle.position[0] ) ;
             actual_vx_part.push_back( testParticle.v[0] ) ;
             actual_vy_part.push_back( testParticle.v[1] ) ;
             actual_vz_part.push_back( testParticle.v[2] ) ;

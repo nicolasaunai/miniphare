@@ -25,12 +25,20 @@ void ModifiedBoris::move1D(Particle & particle,
     double coef1 = q*dto2/m ;
 
     // position at time tn
-    double posx = particle.position[0] ;
+//    double posx = particle.position[0] ;
 
-//    double posx = particle.icell[0]*dx_+ static_cast<double>( particle.delta[0] ) ;
+    double posx = particle.icell[0]*dx_+ static_cast<double>( particle.delta[0] ) ;
 
     // time decentering position at tn+1/2
     double posx_d = posx + dto2* particle.v[0] ;
+
+    // We now apply the 3 steps of the BORIS PUSHER
+
+    // 1st half push of the electric field
+    double velx1 = particle.v[0] + coef1*Epart.x_ ;
+    double vely1 = particle.v[1] + coef1*Epart.y_ ;
+    double velz1 = particle.v[2] + coef1*Epart.z_ ;
+
 
     // preparing variables for magnetic rotation
     double rx = coef1 *Bpart.x_ ;
@@ -53,18 +61,11 @@ void ModifiedBoris::move1D(Particle & particle,
     double mzy = invDet*(      rz*ry - rx ) ;
     double mzz = invDet*( 1. + rz*rz      ) - 1. ;
 
-
-    // We now apply the 3 steps of the BORIS PUSHER
-
-    // 1st half push of the electric field
-    double velx1 = particle.v[0] + coef1*Epart.x_ ;
-    double vely1 = particle.v[1] + coef1*Epart.y_ ;
-    double velz1 = particle.v[2] + coef1*Epart.z_ ;
-
     // magnetic rotation
     double velx2 = mxx*velx1 + mxy*vely1 + mxz*velz1 ;
     double vely2 = myx*velx1 + myy*vely1 + myz*velz1 ;
     double velz2 = mzx*velx1 + mzy*vely1 + mzz*velz1 ;
+
 
     // 2nd half push of the electric field
     velx1 = velx2 + coef1*Epart.x_ ;
@@ -79,14 +80,14 @@ void ModifiedBoris::move1D(Particle & particle,
     // we update the position at tn+1
     posx = posx_d + dto2 * velx1 ;
 
-    particle.position[0] = posx ;
+//    particle.position[0] = posx ;
 
     // TODO later handle the origin of a patch
     // get the node coordinate
-//    particle.icell[0] = static_cast<uint32>( std::floor( posx/dx_ ) ) ;
+    particle.icell[0] = static_cast<uint32>( std::floor( posx/dx_ ) ) ;
 
     // get the delta
-//    particle.delta[0] = static_cast<float>( posx - particle.icell[0]*dx_ ) ;
+    particle.delta[0] = static_cast<float>( posx - particle.icell[0]*dx_ ) ;
 
 
 }
