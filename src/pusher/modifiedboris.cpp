@@ -30,7 +30,7 @@ void ModifiedBoris::move1D(Particle & particle,
     double posx = particle.icell[0]*dx_+ static_cast<double>( particle.delta[0] ) ;
 
     // time decentering position at tn+1/2
-    double posx_d = posx + dto2* particle.v[0] ;
+    double x_pred = posx + dto2* particle.v[0] ;
 
     // We now apply the 3 steps of the BORIS PUSHER
 
@@ -80,7 +80,7 @@ void ModifiedBoris::move1D(Particle & particle,
     velz1 = velz2 + coef1*Epart.z_ ;
 
     // we update the position at tn+1
-    posx = posx_d + dto2 * velx1 ;
+    posx = x_pred + dto2 * velx1 ;
 
 
     // Update particle velocity

@@ -25,42 +25,54 @@ funcDict = {'unif' : uniform,
 
 def main(path='./'):
 
-    nbCase = 4
+    nbK1 = 4
+    nbK2 = 4
+    
+    nbCase = nbK1 + nbK2
     # number of Periods
     nPer = 1
 
-    x0_l  = [5.]*nbCase
-    y0_l  = [0.]*nbCase
-    z0_l  = [0.]*nbCase
-    vx0_l = [0., 0., 0., 2.]
-    vy0_l = [2., 2., 2., 0.]
-    vz0_l = [0.]*nbCase
+    x0_l  = [5.]*nbK1 + [20.]*nbK2
+    y0_l  = [0.]*nbK1 + [ 0.]*nbK2
+    z0_l  = [0.]*nbK1 + [ 0.]*nbK2
+    vx0_l = [0.]*nbK1 + [ 1.]*nbK2
+    vy0_l = [2.]*nbK1 + [-1.]*nbK2
+    vz0_l = [0.]*nbK1 + [ 2.]*nbK2
 
     q_l = [1]*nbCase
     m_l = [1]*nbCase
     
-    Ex0_l = [0.]*nbCase ; ExShape_l = ['unif']*nbCase 
-    Ey0_l = [0.]*nbCase ; EyShape_l = ['unif']*nbCase 
-    Ez0_l = [0.]*nbCase ; EzShape_l = ['unif']*nbCase 
-    Bx0_l = [0.]*nbCase ; BxShape_l = ['unif']*nbCase 
-    By0_l = [0.]*nbCase ; ByShape_l = ['unif']*nbCase 
-    Bz0_l = [5.]*nbCase ; BzShape_l = ['unif']*nbCase 
+    Ex0_l = [0.]*nbK1 + [1. ]*nbK2 
+    Ey0_l = [0.]*nbK1 + [2. ]*nbK2 
+    Ez0_l = [0.]*nbK1 + [3. ]*nbK2 
+    Bx0_l = [0.]*nbK1 + [5.5]*nbK2 
+    By0_l = [0.]*nbK1 + [2. ]*nbK2 
+    Bz0_l = [5.]*nbK1 + [5. ]*nbK2 
+    
+    ExShape_l = ['unif']*nbCase 
+    EyShape_l = ['unif']*nbCase 
+    EzShape_l = ['unif']*nbCase 
+    BxShape_l = ['unif']*nbCase 
+    ByShape_l = ['unif']*nbCase 
+    BzShape_l = ['unif']*nbCase 
+
+
+    print(len(Bz0_l))
+    NormB_l = [np.sqrt(Bx0_l[ik]**2 + By0_l[ik]**2 + Bz0_l[ik]**2) for ik in range(len(Bz0_l))]
+    
+    omega_l = [q_l[ik]*NormB_l[ik]/m_l[ik] for ik in range(len(NormB_l))]    
 
     # Tgyro = 2*pi/omega with omega = q*B/m    
-    print(len(Bz0_l))
-    omega_l = [q_l[ik]*Bz0_l[ik]/m_l[ik] for ik in range(len(Bz0_l))]    
     Tgyro_l = [2*np.pi/omega_l[ik] for ik in range(len(Bz0_l))]
 
     tbegin_l = [0.]*nbCase
     tend_l   = [nPer*Tgyro_l[ik] for ik in range(len(Bz0_l))]
-    nstep_l  = [nPer*16, nPer*32, nPer*64, nPer*32]
+    nstep_l  = [nPer*16, nPer*32, nPer*64, nPer*128]*2 
     
     print("T_gyro = ", tend_l)
 
 
-    nbrTestCases = len( x0_l )
-
-    icase_l = np.arange( nbrTestCases )
+    icase_l = np.arange( nbCase )
     print( icase_l )
 
     # -------- Let us define a function on Bx with Yee lattice --------
@@ -134,11 +146,14 @@ def main(path='./'):
         Bzdef = funcDict[BzShape_l[icase]]
                              
 
-        sol = modifiedBorisV2( xv3_t0, t, q, m, \
-                   t0, tf, nstep, \
-                   Ex0, Exdef, Ey0, Eydef, Ez0, Ezdef, \
-                   Bx0, Bxdef, By0, Bydef, Bz0, Bzdef )
+#        sol = modifiedBorisV2( xv3_t0, t, q, m, \
+#                   t0, tf, nstep, \
+#                   Ex0, Exdef, Ey0, Eydef, Ez0, Ezdef, \
+#                   Bx0, Bxdef, By0, Bydef, Bz0, Bzdef )
 
+        sol = integrate.odeint(dynamicsEB, xv3_t0, t, \
+                args=(q, m, Ex0, Exdef, Ey0, Eydef, Ez0, Ezdef, \
+                            Bx0, Bxdef, By0, Bydef, Bz0, Bzdef ) )
 
 #        sol_ref = integrate.odeint(dynamicsEB, xv3_t0, t, \
 #                args=(q, m, Ex0, Exdef, Ey0, Eydef, Ez0, Ezdef, \
@@ -202,20 +217,29 @@ def main(path='./'):
 #        plt.xlabel('x')
 #        plt.ylabel('y')
 #        plt.grid()
-#        plt.plot(sol[:, 0], sol[:, 1], '-b', label='(x, y)')
+#        plt.plot(sol[:, 0], sol[:, 1], 'o-b', label='(x, y)')
 #        plt.plot(sol_ref[:, 0], sol_ref[:, 1], '-r', label='(x, y)')
 
 #        plt.figure()
 #        plt.xlabel('t')
 #        plt.ylabel('vx')
 #        plt.grid()
-#        plt.plot(t, sol[:, 3], '-b', label='(t, vx)')
+#        plt.plot(t, sol[:, 3], 'o-b', label='(t, vx)')
+#        plt.plot(t, sol_ref[:, 3], '-r', label='(t, vx)')
 #
 #        plt.figure()
 #        plt.xlabel('t')
 #        plt.ylabel('vy')
 #        plt.grid()
-#        plt.plot(t, sol[:, 4], '-b', label='(t, vy)')
+#        plt.plot(t, sol[:, 4], 'o-b', label='(t, vy)')
+#        plt.plot(t, sol_ref[:, 4], '-r', label='(t, vy)')
+#        
+#        plt.figure()
+#        plt.xlabel('t')
+#        plt.ylabel('vz')
+#        plt.grid()
+#        plt.plot(t, sol[:, 5], 'o-b', label='(t, vz)')
+#        plt.plot(t, sol_ref[:, 5], '-r', label='(t, vz)')
 
 #        print(Ex_p)
 #        print(Ey_p)
@@ -546,15 +570,15 @@ def dynamicsEB(xv3, t, q, m, Ex0, Exdef, Ey0, Eydef, Ez0, Ezdef, \
                              Bx0, Bxdef, By0, Bydef, Bz0, Bzdef ):
     x, y, z, vx, vy, vz = xv3
     
-#    Ex = Exdef(Ex0, t, x)
-#    Ey = Eydef(Ey0, t, x)
-#    Ez = Ezdef(Ez0, t, x)
+    Ex = Exdef(Ex0, t, x)
+    Ey = Eydef(Ey0, t, x)
+    Ez = Ezdef(Ez0, t, x)
     Bx = Bxdef(Bx0, t, x)
     By = Bydef(By0, t, x)
     Bz = Bzdef(Bz0, t, x)
-    dxv3dt = [vx, vy, vz, (q/m)*(vy*Bz-vz*By), \
-              (q/m)*(vz*Bx-vx*Bz), \
-              (q/m)*(vx*By-vy*Bx)]
+    dxv3dt = [vx, vy, vz, (q/m)*(Ex + vy*Bz-vz*By), \
+              (q/m)*(Ey + vz*Bx-vx*Bz), \
+              (q/m)*(Ez + vx*By-vy*Bx)]
               
     return dxv3dt
 

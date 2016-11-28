@@ -203,8 +203,10 @@ public:
         // we compute the time step
         double dt = (inputs.tend - inputs.tbegin)/inputs.nstep ;
 
-        precision_x = dt*dt ;
-        precision_v = dt*dt ; // sqrt(6.) = 2.45
+//        precision_x = dt*dt ;
+//        precision_v = dt*dt ;
+        precision_x = 6.*dt*dt ;
+        precision_v = 2.45*dt ; // sqrt(6.) = 2.45
 
         for(uint32 ik=1 ; ik< inputs.nstep+1 ; ++ik)
         {
