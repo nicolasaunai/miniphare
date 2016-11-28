@@ -278,12 +278,12 @@ def modifiedBoris( xv3, t, q, m, \
         z_tild = z + dts2*vz
         
         # initializing fields
-        Ex = Exdef(Ex0, t, x)
-        Ey = Eydef(Ey0, t, x)
-        Ez = Ezdef(Ez0, t, x)
-        Bx = Bxdef(Bx0, t, x)
-        By = Bydef(By0, t, x)
-        Bz = Bzdef(Bz0, t, x)
+        Ex = Exdef(Ex0, t+dts2, x_tild)
+        Ey = Eydef(Ey0, t+dts2, x_tild)
+        Ez = Ezdef(Ez0, t+dts2, x_tild)
+        Bx = Bxdef(Bx0, t+dts2, x_tild)
+        By = Bydef(By0, t+dts2, x_tild)
+        Bz = Bzdef(Bz0, t+dts2, x_tild)
         
         coef = q*dts2/m
         
@@ -367,18 +367,18 @@ def modifiedBorisV2( xv3, t, q, m, \
     istep_l = np.arange(nstep)+1
     for istep in istep_l:
         
-        # initializing fields
-        Ex = Exdef(Ex0, t, x)
-        Ey = Eydef(Ey0, t, x)
-        Ez = Ezdef(Ez0, t, x)
-        Bx = Bxdef(Bx0, t, x)
-        By = Bydef(By0, t, x)
-        Bz = Bzdef(Bz0, t, x)
-
         # Preprush from x(tn) to prediction x(tn+1/2) 
         x_tild = x + dts2*vx        
         y_tild = y + dts2*vy
         z_tild = z + dts2*vz
+
+        # initializing fields
+        Ex = Exdef(Ex0, t+dts2, x_tild)
+        Ey = Eydef(Ey0, t+dts2, x_tild)
+        Ez = Ezdef(Ez0, t+dts2, x_tild)
+        Bx = Bxdef(Bx0, t+dts2, x_tild)
+        By = Bydef(By0, t+dts2, x_tild)
+        Bz = Bzdef(Bz0, t+dts2, x_tild)
         
         # 1st psuh of the electric field
         velx1 = vx + coef*Ex
