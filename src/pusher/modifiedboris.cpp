@@ -45,26 +45,33 @@ void ModifiedBoris::move1D(Particle & particle,
     double ry = coef1 *Bpart.y_ ;
     double rz = coef1 *Bpart.z_ ;
 
-    double invDet = 2./(1. + rx*rx + ry*ry + rz*rz ) ;
+    double rx2 = rx*rx ;
+    double ry2 = ry*ry ;
+    double rz2 = rz*rz ;
+    double rxry = rx*ry ;
+    double rxrz = rx*rz ;
+    double ryrz = ry*rz ;
+
+    double invDet = 1./(1. + rx2 + ry2 + rz2 ) ;
 
     // preparing rotation matrix due to the magnetic field
     // m = invDet*(I + r*r - r x I) - I where x denotes the cross product
-    double mxx = invDet*( 1. + rx*rx      ) - 1. ;
-    double mxy = invDet*(      rx*ry + rz ) ;
-    double mxz = invDet*(      rx*rz - ry ) ;
+    double mxx = 1. + rx2 - ry2 - rz2 ;
+    double mxy = 2.*( rxry + rz ) ;
+    double mxz = 2.*( rxrz - ry ) ;
 
-    double myx = invDet*(      ry*rx - rz ) ;
-    double myy = invDet*( 1. + ry*ry      ) - 1. ;
-    double myz = invDet*(      ry*rz + rx ) ;
+    double myx = 2.*( rxry - rz ) ;
+    double myy = 1. + ry2 - rx2 - rz2 ;
+    double myz = 2.*( ryrz + rx ) ;
 
-    double mzx = invDet*(      rz*rx + ry ) ;
-    double mzy = invDet*(      rz*ry - rx ) ;
-    double mzz = invDet*( 1. + rz*rz      ) - 1. ;
+    double mzx = 2.*( rxrz + ry ) ;
+    double mzy = 2.*( ryrz - rx ) ;
+    double mzz = 1. + rz2 - rx2 - ry2 ;
 
     // magnetic rotation
-    double velx2 = mxx*velx1 + mxy*vely1 + mxz*velz1 ;
-    double vely2 = myx*velx1 + myy*vely1 + myz*velz1 ;
-    double velz2 = mzx*velx1 + mzy*vely1 + mzz*velz1 ;
+    double velx2 = ( mxx*velx1 + mxy*vely1 + mxz*velz1 )*invDet ;
+    double vely2 = ( myx*velx1 + myy*vely1 + myz*velz1 )*invDet ;
+    double velz2 = ( mzx*velx1 + mzy*vely1 + mzz*velz1 )*invDet ;
 
 
     // 2nd half push of the electric field
@@ -72,17 +79,17 @@ void ModifiedBoris::move1D(Particle & particle,
     vely1 = vely2 + coef1*Epart.y_ ;
     velz1 = velz2 + coef1*Epart.z_ ;
 
-    // Update velocity
+    // we update the position at tn+1
+    posx = posx_d + dto2 * velx1 ;
+
+
+    // Update particle velocity
     particle.v[0] = velx1 ;
     particle.v[1] = vely1 ;
     particle.v[2] = velz1 ;
 
-    // we update the position at tn+1
-    posx = posx_d + dto2 * velx1 ;
-
-//    particle.position[0] = posx ;
-
     // TODO later handle the origin of a patch
+    //    particle.position[0] = posx ;
     // get the node coordinate
     particle.icell[0] = static_cast<uint32>( std::floor( posx/dx_ ) ) ;
 
