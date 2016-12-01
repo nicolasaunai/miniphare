@@ -63,66 +63,81 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
 
 
 
-    //Faraday& faraday = *faradaySolver_;
-    // Ohm& ohm        = *ohmSolver_;
-
-    // B_{n+1} pred 1
+    // --> Get B_{n+1} pred1 from E^n
     faraday_(E, B, Bpred);
 
+    // --> MOMENTS (n^n, u^n) at time n have
+    // --> already been computed, or are known just after initialization
+    // --> Get ion and electron moments at time n
 
-    // get ion and electron moments at time n
-    // Field const& Ni = ions.chargeDensity();
-    // VecField const& Vi = ions.bulkVelocity();
-    // Field const& Pe = electrons.Pressure(/* Ni ? */ );
-    // VecField const& Ve = electrons.bulkVelocity(B, Vi, Ni);
-    // Field const& Ne  = electrons.chargeDensity();
-
-    // E_{n+1} pred 1
+    // --> Get electric field E_{n+1} pred1 from Ohm's law
+    // --> using (n^n, u^n) and B_{n+1}
     // ohm(Bpred, Ne, Ve, Pe, Epred);
 
-    // (E,B)_(n+1/2) pred 1
+    // BC Fields --> Apply boundary conditions on the electric field
+
+    // --> Get time averaged prediction (E,B)_(n+1/2) pred1
+    // --> using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred1
 
     // VectorField::avg(E, Epred, Eavg);
     // VectorField::avg(B, Bpred, Bavg);
 
-    // move ions from n to n+1 using (E,B)_(n+1/2) pred 1
+    // --> Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred 1
     // moveIons(ions);
 
-    //  // part2_ is invalid
+    // BC Parts --> Apply boundary conditions on particles
 
-    // B_{n+1} Pred 2
+    // --> Get B^{n+1} pred2 from E^{n+1/2} pred1
     faraday_(Eavg, B, Bpred);
 
-    // get ion and electron moments at time n+1 (pred 1)
+
+    // --> DEPOSIT PREDICTED MOMENTS (n^{n+1}, u^{n+1}) AT TIME n+1
+    // --> get ion and electron moments at time n+1 (pred 1)
     // Field const& Ni = ions.chargeDensity();
     // VecField const& Vi = ions.bulkVelocity();
-    // Field const& Pe = electrons.Pressure(/* Ni ? */ );
+
     // VecField const& Ve = electrons.bulkVelocity(B, Vi, Ni);
     // Field const& Ne  = electrons.chargeDensity();
+    // --> Calculate the electron pressure tensor
+    // --> from the electron closure
+    // Field const& Pe = electrons.Pressure(/* Ni ? */ );
 
-    // E_{n+1} pred 2
+    // --> Get electric field E^{n+1} pred2 from Ohm's law
+    // --> using (n^{n+1}, u^{n+1}) pred and B_{n+1} pred2
     // ohm(Bpred, Ne, Ve, Pe, Epred);
 
-    // (E,B)_(n+1/2) pred 2
+    // BC Fields --> Apply boundary conditions on the electric field
+
+    // --> Get time averaged prediction (E^(n+1/2),B^(n+1/2)) pred2
+    // --> using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred2
     // VectorField::avg(E, Epred, Eavg);
     // VectorField::avg(B, Bpred, Bavg);
 
-     // move ions from n to n+1 using (E,B)_(n+1/2) pred 2
+    // --> Get the CORRECTED positions and velocities
+    // --> Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred2
     // moveIons(ions);
 
-    // B_{n+1} Corr. from E_(n+1/2) and Bn
-    // faraday(Eavg, B, B); // B and B artung????
+    // BC Parts --> Apply boundary conditions on particles
 
-    // get ion and electron moments at time n+1 (pred 2)
+    // --> Get CORRECTED B^{n+1} from E^{n+1/2} pred2
+    // faraday(Eavg, B, B);
 
+    // --> DEPOSIT CORRECTED MOMENTS (n^{n+1}, u^{n+1})
+    // --> Get ion and electron moments at time n+1
     // Field const& Ni = ions.chargeDensity();
     // VecField const& Vi = ions.bulkVelocity();
-    // Field const& Pe = electrons.Pressure(/* Ni ? */ );
+
     // VecField const& Ve = electrons.bulkVelocity(B, Vi, Ni);
     // Field const& Ne  = electrons.chargeDensity();
+    // --> Calculate the electron pressure tensor
+    // --> from the electron closure
+    // Field const& Pe = electrons.Pressure(/* Ni ? */ );
 
-    // E_{n+1} pred 2
+    // --> Get CORRECTED electric field E^{n+1} from Ohm's law
+    // --> using (n^{n+1}, u^{n+1}) cor and B_{n+1} cor
     // ohm(B, Ne, Ve, Pe, E);
+
+    // BC Fields --> Apply boundary conditions on the electric field
 
 }
 
