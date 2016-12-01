@@ -186,15 +186,10 @@ public:
                  { {static_cast<float>( inputs.x0 - icellx0*layout.dx() ), 0., 0.} },
                  { {inputs.vx0, inputs.vy0, inputs.vz0} }   );
 
-//        Particle testParticle( weight, inputs.q,
-//                 { {inputs.x0 , 0., 0.} },
-//                 { {inputs.vx0, inputs.vy0, inputs.vz0} }   );
-
-        double posx = testParticle.icell[0]*layout.dx()
-                + static_cast<double>(testParticle.delta[0]) ;
+        double posx = ( testParticle.icell[0] + \
+                static_cast<double>(testParticle.delta[0]) )*layout.dx() ;
 
         actual_x_part.push_back( posx ) ;
-//        actual_x_part.push_back( testParticle.position[0] ) ;
 
         actual_vx_part.push_back( testParticle.v[0] ) ;
         actual_vy_part.push_back( testParticle.v[1] ) ;
@@ -217,11 +212,10 @@ public:
                           dt, mass, inputs.q,
                           E_part, B_part) ;
 
-            double posx = testParticle.icell[0]*layout.dx()
-                 + static_cast<double>(testParticle.delta[0]) ;
+            double posx = ( testParticle.icell[0] + \
+                    static_cast<double>(testParticle.delta[0]) )*layout.dx() ;
 
             actual_x_part.push_back( posx ) ;
-//            actual_x_part.push_back( testParticle.position[0] ) ;
 
             actual_vx_part.push_back( testParticle.v[0] ) ;
             actual_vy_part.push_back( testParticle.v[1] ) ;
