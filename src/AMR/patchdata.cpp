@@ -18,7 +18,7 @@ PatchData::PatchData(std::unique_ptr<InitializerFactory> initFactory)
                   "_currentEMfield"
                 },
       solver_{ initFactory->pusherType(), initFactory->gridLayout(),
-               initFactory->timeStep() },
+               initFactory->minLocal(), initFactory->timeStep() },
 
       ions_{ initFactory->gridLayout(), initFactory->createIonsInitializer() }
 {

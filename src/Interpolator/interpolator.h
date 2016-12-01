@@ -35,7 +35,7 @@ public:
           impl_{ std::move(impl) } {}
 
     // interpolate a field known on a mesh to a particle
-    virtual void gridToParticle( const Field & field, const Particle & part ) const = 0 ;
+//    virtual void gridToParticle( const Field & field, const Particle & part ) const = 0 ;
 
 };
 

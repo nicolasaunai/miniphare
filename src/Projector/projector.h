@@ -26,16 +26,15 @@ private:
 
 public:
 
-    virtual ~Projector() ;
+    virtual ~Projector() = default ;
 
     Projector( std::unique_ptr<IndexesAndWeights> && impl,
                   const GridLayout & layout, const Point & minGlobal )
         : dim_{layout.nbDimensions()}, minGlobal_{minGlobal},
           impl_{ std::move(impl) } {}
 
-    // deposit a particle quantity onto the mesh
-    // Used to build source terms: rho, jx, jy, jz, Pxx ...
-    virtual void particleToGrid( const Field & source, const Particle & part ) const = 0 ;
+    std::tuple<std::vector<uint32>, std::vector<double>>
+    getIndexesAndWeights( Particle const & particle, Direction dir ) ;
 
 };
 

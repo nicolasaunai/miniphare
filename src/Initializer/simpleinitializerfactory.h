@@ -21,6 +21,7 @@ public:
 
     virtual std::string pusherType() const override;
     virtual GridLayout const& gridLayout() const override;
+    virtual Point minLocal() const override;
     virtual double timeStep() const override;
 
     // virtual std::unique_ptr<SolverInitializer> createSolverInitializer() = 0;

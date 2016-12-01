@@ -70,7 +70,17 @@ GridLayout const& SimpleInitializerFactory::gridLayout() const
 }
 
 
+Point SimpleInitializerFactory::minLocal() const
+{
+    Point minLocal{0., 0., 0.} ;
+
+    return minLocal ;
+}
+
+
 double SimpleInitializerFactory::timeStep() const
 {
     return dt_;
 }
+
+

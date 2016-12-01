@@ -12,8 +12,7 @@ class IndexesAndWeightsO3 : public IndexesAndWeights
 public:
     ~IndexesAndWeightsO3() {}
 
-    IndexesAndWeightsO3( uint32 order, double ods, double sminGlobal )
-        : IndexesAndWeights(order, ods, sminGlobal) {}
+    IndexesAndWeightsO3(uint32 order): IndexesAndWeights(order) {}
 
     // the formulas ruling the weights are specific to a given order
     void computeWeights( double reducedCoord ) override ;

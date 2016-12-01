@@ -23,7 +23,7 @@ public:
     }
 
     // deposit a particle quantity onto the mesh
-    virtual void particleToGrid( const Field & source, const Particle & part ) const override ;
+//    virtual void particleToGrid( const Field & source, const Particle & part ) const override ;
 
 };
 

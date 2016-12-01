@@ -11,6 +11,9 @@
 #include "Electromag/electromag.h"
 #include "grid/gridlayout.h"
 
+#include "Interpolator/interpolator.h"
+#include "Projector/projector.h"
+
 #include "pusher/pusher.h"
 
 
@@ -20,7 +23,7 @@ class Solver
 public:
 
     Solver( const std::string & pusherType, GridLayout const& layout,
-            double dt );
+            Point const & minLocal, double dt );
 
     Solver(Solver const& source) = delete;
     Solver& operator=(Solver const& source) = delete;
@@ -33,15 +36,10 @@ public:
 
 private:
 
-    // TODO
-    // projector(); // depositSpecies
-    // deposit();
     // those are Solver attribute because SOLVER decides where interp/project
     // work on the mesh.... a different solver may interp/project elsewhere
-    // (is this really true??)
-
-
-    //std::vector< std::unique_ptr<Projector> > projector; // is of size Ion.nbSpecies();
+    std::unique_ptr<Interpolator> interpolator_ ;
+    std::unique_ptr<Projector> projector_ ;
 
     Electromag EMFieldsPred_;
     Electromag EMFieldsAvg_;
@@ -49,11 +47,10 @@ private:
 
     std::unique_ptr<Pusher> pusher_ ;
 
-
-    // BoundaryCondition bc_;
-
     Faraday faraday_;
     // ohm object
+
+    // BoundaryCondition bc_;
 
     /*
     move_(ions)

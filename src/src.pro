@@ -40,7 +40,8 @@ SOURCES += main.cpp \
     IndexesAndWeights/indexesandweightso4.cpp \
     Interpolator/interpolator.cpp \
     pusher/pusher1d.cpp \
-    pusher/modifiedboris.cpp
+    pusher/modifiedboris.cpp \
+    Projector/projector.cpp
 
 
 HEADERS += \

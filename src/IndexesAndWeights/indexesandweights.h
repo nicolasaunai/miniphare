@@ -6,6 +6,8 @@
 
 #include "types.h"
 
+#include "grid/gridlayout.h"
+
 
 /**
  * @brief The IndexesAndWeights class handles computation of
@@ -41,16 +43,14 @@ class IndexesAndWeights
 private:
       uint32  order_ ;
 
-      double ods_ ;
-      double sminGlobal_ ;
 
 protected:
       std::vector<uint32> indexList_ ;
       std::vector<double> weightList_ ;
 
 public:
-      IndexesAndWeights( uint32 order, double ods, double sminGlobal )
-          : order_{order}, ods_{ods}, sminGlobal_{sminGlobal}
+      IndexesAndWeights( uint32 order )
+          : order_{order}
       {
           indexList_.assign( order_+1, 0 ) ;
           weightList_.assign( order_+1, 0. ) ;
@@ -66,9 +66,6 @@ public:
       std::vector<uint32> indexList() const { return indexList_ ; }
 
       std::vector<double> weightList() const { return weightList_ ; }
-
-      // spart is a 1D coordinate in physical unit
-      double reducedCoord( double spart ) ;
 
       void computeIndexes( double reducedCoord ) ;
 
