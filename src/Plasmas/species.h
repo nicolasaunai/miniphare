@@ -52,7 +52,7 @@ public:
 
     void loadParticles();
 
-    void computeChargeDensityAndCurrents( Projector & project );
+    void computeChargeDensityAndFlux( Projector & project );
 
 };
 

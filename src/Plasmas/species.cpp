@@ -31,16 +31,16 @@ void Species::loadParticles()
 }
 
 
-void Species::computeChargeDensityAndCurrents( Projector & project   )
+void Species::computeChargeDensityAndFlux( Projector & project   )
 {
 
     uint32 idirX = static_cast<uint32>(Direction::X) ;
     uint32 idirY = static_cast<uint32>(Direction::Y) ;
     uint32 idirZ = static_cast<uint32>(Direction::Z) ;
 
-    Field & jx = (*this).flux(idirX) ;
-    Field & jy = (*this).flux(idirY) ;
-    Field & jz = (*this).flux(idirZ) ;
+    Field & vx = (*this).flux(idirX) ;
+    Field & vy = (*this).flux(idirY) ;
+    Field & vz = (*this).flux(idirZ) ;
 
 
     this->resetMoments() ;
@@ -48,11 +48,12 @@ void Species::computeChargeDensityAndCurrents( Projector & project   )
     for( const Particle & part : particleArray_)
     {
 
-        double aux_rh = part.weight * part.charge * layout_.odx() ;
+        double aux_rh   = part.weight * part.charge * layout_.odx() ;
+        double aux_flux = part.weight * layout_.odx() ;
 
-        double aux_cx = aux_rh * part.v[0] ;
-        double aux_cy = aux_rh * part.v[1] ;
-        double aux_cz = aux_rh * part.v[2] ;
+        double aux_vx = aux_flux * part.v[0] ;
+        double aux_vy = aux_flux * part.v[1] ;
+        double aux_vz = aux_flux * part.v[2] ;
 
         auto indexesAndWeights = \
         project.getIndexesAndWeights( part, Direction::X ) ;
@@ -64,9 +65,9 @@ void Species::computeChargeDensityAndCurrents( Projector & project   )
         {
             rho_( ISx[ik] ) += aux_rh * PondSx[ik] ;
 
-            jx( ISx[ik] ) += aux_cx * PondSx[ik] ;
-            jy( ISx[ik] ) += aux_cy * PondSx[ik] ;
-            jz( ISx[ik] ) += aux_cz * PondSx[ik] ;
+            vx( ISx[ik] ) += aux_vx * PondSx[ik] ;
+            vy( ISx[ik] ) += aux_vy * PondSx[ik] ;
+            vz( ISx[ik] ) += aux_vz * PondSx[ik] ;
         }
     }
 
