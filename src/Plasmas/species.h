@@ -53,6 +53,7 @@ public:
     void loadParticles();
 
     void computeChargeDensityAndFlux( Projector & project );
+    void computeFieldsAtParticles( Interpolator & interp );
 
 };
 

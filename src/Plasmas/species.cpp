@@ -74,3 +74,12 @@ void Species::computeChargeDensityAndFlux( Projector & project   )
 }
 
 
+
+void computeFieldsAtParticles( Interpolator & interp )
+{
+
+
+
+
+}
+

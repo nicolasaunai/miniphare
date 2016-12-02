@@ -20,6 +20,10 @@ public:
 
     std::array<double, 3> v ;      // velocity in each direction
 
+    double Ex, Ey, Ez ;    // electric field at the particle position
+    double Bx, By, Bz ;    // magnetic field at the particle position
+
+
 public:
     Particle( double weight, double charge,
               std::array<uint32, 3> icell,

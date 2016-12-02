@@ -17,6 +17,9 @@ Particle::Particle( double weight, double charge,
     this->delta = delta ;
 
     this->v = v ;
+
+    Ex = 0. ; Ey = 0. ; Ez = 0. ;
+    Bx = 0. ; By = 0. ; Bz = 0. ;
 }
 
 
