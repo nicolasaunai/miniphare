@@ -6,6 +6,7 @@
 #include <cmath>
 #include <limits>
 
+#include "Plasmas/particles.h"
 
 #include "test_weights.h"
 
@@ -38,11 +39,20 @@ public:
         inputs = GetParam();
         print(inputs) ;
 
-//        GridLayout layout{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, inputs.lattice, inputs.interpOrder  };
+//        GridLayout layout{ inputs.dxdydz, inputs.nbrCells, \
+//                    inputs.nbDim, inputs.lattice, inputs.interpOrder  };
+
+        // get the node coordinate and the delta
+        double icell = 0. ;
+        double delta = std::modf(inputs.xpart/inputs.dx, &icell)  ;
+
+        Particle testParticle( 1., 1.,
+                 { {static_cast<uint32>(icell), 0, 0} },
+                 { {static_cast<float> (delta), 0., 0.} },
+                 { {0., 0., 0.} }   );
+
 
         uint32 order = inputs.interpOrder ;
-        double ods = 1./inputs.dx ;
-        double smin = inputs.xmin ;
 
         std::unique_ptr<IndexesAndWeights> impl  ;
         switch(order){
@@ -61,8 +71,7 @@ public:
         }
 
         // test particle coordinate
-        double spart = inputs.xpart ;
-        double reduced = impl->reducedCoord(spart) ;
+        double reduced = icell + delta ;
 
         // We build the index List
         impl->computeIndexes(reduced) ;

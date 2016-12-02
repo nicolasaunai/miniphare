@@ -22,6 +22,7 @@ SOURCES += ../../src/grid/gridlayout.cpp \
            ../../src/IndexesAndWeights/indexesandweightso2.cpp \
            ../../src/IndexesAndWeights/indexesandweightso3.cpp \
            ../../src/IndexesAndWeights/indexesandweightso4.cpp \
+           ../../src/Plasmas/particles.cpp \
            test_main.cpp \
            test_utilities.cpp \
     test_weights.cpp \
@@ -40,6 +41,7 @@ HEADERS += ../../src/types.h \
            ../../src/IndexesAndWeights/indexesandweightso2.h \
            ../../src/IndexesAndWeights/indexesandweightso3.h \
            ../../src/IndexesAndWeights/indexesandweightso4.h \
+           ../../src/Plasmas/particles.h \
     test_indexes.h \
     test_weights.h
 

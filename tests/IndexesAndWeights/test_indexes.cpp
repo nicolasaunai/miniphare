@@ -5,6 +5,9 @@
 #include <fstream>
 #include <cmath>
 
+
+#include "Plasmas/particles.h"
+
 #include "test_indexes.h"
 
 #include "IndexesAndWeights/indexesandweights.h"
@@ -77,7 +80,8 @@ public:
         inputs = GetParam();
         print(inputs) ;
 
-        GridLayout layout{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, inputs.lattice, inputs.interpOrder  };
+//        GridLayout layout{ inputs.dxdydz, inputs.nbrCells, \
+//                    inputs.nbDim, inputs.lattice, inputs.interpOrder  };
 
 
         std::string filename{"../IndexesAndWeights/indexes_testCase"
@@ -98,29 +102,35 @@ public:
             ifs2 >> expected_indexes[ik] ;
         }
 
+        // get the node coordinate and the delta
+        double icell = 0. ;
+        double delta = std::modf(inputs.xpart/inputs.dx, &icell)  ;
+
+        Particle testParticle( 1., 1.,
+                 { {static_cast<uint32>(icell), 0, 0} },
+                 { {static_cast<float> (delta), 0., 0.} },
+                 { {0., 0., 0.} }   );
+
         uint32 order = inputs.interpOrder ;
-        double ods = 1./inputs.dx ;
-        double smin = inputs.xmin ;
 
         std::unique_ptr<IndexesAndWeights> impl  ;
         switch(order){
         case 1:
-            impl = std::unique_ptr<IndexesAndWeightsO1>( new IndexesAndWeightsO1(order, ods, smin) ) ;
+            impl = std::unique_ptr<IndexesAndWeightsO1>( new IndexesAndWeightsO1(order) ) ;
             break;
         case 2:
-            impl = std::unique_ptr<IndexesAndWeightsO2>( new IndexesAndWeightsO2(order, ods, smin) ) ;
+            impl = std::unique_ptr<IndexesAndWeightsO2>( new IndexesAndWeightsO2(order) ) ;
             break;
         case 3:
-            impl = std::unique_ptr<IndexesAndWeightsO3>( new IndexesAndWeightsO3(order, ods, smin) ) ;
+            impl = std::unique_ptr<IndexesAndWeightsO3>( new IndexesAndWeightsO3(order) ) ;
             break;
         case 4:
-            impl = std::unique_ptr<IndexesAndWeightsO4>( new IndexesAndWeightsO4(order, ods, smin) ) ;
+            impl = std::unique_ptr<IndexesAndWeightsO4>( new IndexesAndWeightsO4(order) ) ;
             break;
         }
 
         // test particle coordinate
-        double spart = inputs.xpart ;
-        double reduced = impl->reducedCoord(spart) ;
+        double reduced = icell + delta ;
 
         // We build the actual index List
         impl->computeIndexes(reduced) ;
