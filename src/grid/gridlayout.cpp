@@ -252,6 +252,12 @@ Point GridLayout::cellCenteredCoordinates( const Point & origin,
 
 
 
+QtyCentering GridLayout::fieldCentering(Field const& field, Direction dir) const
+{
+    return implPtr_->fieldCentering( field, dir ) ;
+}
+
+
 
 /* ---------------------------------------------------------------------------
  *

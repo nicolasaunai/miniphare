@@ -7,6 +7,8 @@
 
 
 #include "grid/gridlayout.h"
+#include "grid/gridlayoutdefs.h"
+
 #include "Field/field.h"
 #include "Plasmas/particles.h"
 
@@ -34,8 +36,11 @@ public:
         : dim_{layout.nbDimensions()}, minGlobal_{minGlobal},
           impl_{ std::move(impl) } {}
 
-    // interpolate a field known on a mesh to a particle
-//    virtual void gridToParticle( const Field & field, const Particle & part ) const = 0 ;
+    // we might interpolate a field from
+    // a primal or a dual mesh
+    std::tuple<std::vector<uint32>, std::vector<double>>
+    getIndexesAndWeights( Particle const & particle, \
+                          Direction dir, QtyCentering centering ) ;
 
 };
 

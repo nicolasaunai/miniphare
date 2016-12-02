@@ -33,7 +33,6 @@ void Species::loadParticles()
 
 void Species::computeChargeDensityAndFlux( Projector & project   )
 {
-
     uint32 idirX = static_cast<uint32>(Direction::X) ;
     uint32 idirY = static_cast<uint32>(Direction::Y) ;
     uint32 idirZ = static_cast<uint32>(Direction::Z) ;
@@ -75,9 +74,50 @@ void Species::computeChargeDensityAndFlux( Projector & project   )
 
 
 
-void computeFieldsAtParticles( Interpolator & interp )
+void Species::computeFieldsAtParticles( Interpolator & interp,
+                                        VecField const & E ,
+                                        VecField const & B )
 {
+    uint32 idirX = static_cast<uint32>(Direction::X) ;
+    uint32 idirY = static_cast<uint32>(Direction::Y) ;
+    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
 
+    Field const & Ex = E.component(idirX) ;
+    Field const & Ey = E.component(idirY) ;
+    Field const & Ez = E.component(idirZ) ;
+
+    Field const & Bx = B.component(idirX) ;
+    Field const & By = B.component(idirY) ;
+    Field const & Bz = B.component(idirZ) ;
+
+    for( Particle & part : particleArray_)
+    {
+        auto indexesAndWeightsPrimal = \
+        interp.getIndexesAndWeights( part, Direction::X, QtyCentering::primal ) ;
+
+        auto indexesAndWeightsDual = \
+        interp.getIndexesAndWeights( part, Direction::X, QtyCentering::dual ) ;
+
+        std::vector<uint32> ISx_p    = std::get<0>(indexesAndWeightsPrimal) ;
+        std::vector<double> PondSx_p = std::get<1>(indexesAndWeightsPrimal) ;
+
+        std::vector<uint32> ISx_d    = std::get<0>(indexesAndWeightsDual) ;
+        std::vector<double> PondSx_d = std::get<1>(indexesAndWeightsDual) ;
+
+        part.Ex = 0. ; part.Ey = 0. ; part.Ez = 0. ;
+        part.Bx = 0. ; part.By = 0. ; part.Bz = 0. ;
+
+        auto centering = layout_.fieldCentering( Ex, Direction::X ) ;
+
+        auto indexesAndWeights = \
+        interp.getIndexesAndWeights( part, Direction::X, centering ) ;
+
+        std::vector<uint32> ISx    = std::get<0>(indexesAndWeights) ;
+        std::vector<double> PondSx = std::get<1>(indexesAndWeights) ;
+
+
+
+    }
 
 
 

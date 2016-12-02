@@ -96,6 +96,8 @@ protected:
 
     void deriv1D_(Field const& operand, Field& derivative) const;
 
+    QtyCentering fieldCentering_(Field const & field, Direction dir) const ;
+
     void initPhysicalStart( const gridDataT & data ) ;
     void initPhysicalEnd  ( const gridDataT & data ) ;
     void initGhostStart(    const gridDataT & data ) ;
@@ -108,9 +110,7 @@ protected:
     uint32 nbrGhosts( QtyCentering centering ) const noexcept;
     uint32 isDual( QtyCentering centering ) const noexcept;
 
-
     uint32 ghostCellIndexAtMax( QtyCentering centering, Direction direction ) const ;
-
 
 };
 

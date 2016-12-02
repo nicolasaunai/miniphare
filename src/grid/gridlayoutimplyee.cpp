@@ -173,6 +173,11 @@ Point GridLayoutImplYee::cellCenteredCoordinates(
 
 
 
+QtyCentering GridLayoutImplYee::fieldCentering(Field const & field, Direction dir) const
+{
+    return fieldCentering_( field, dir ) ;
+}
+
 
 
 /**

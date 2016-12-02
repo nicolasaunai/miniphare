@@ -9,16 +9,19 @@ include(../GTest/GTest.pri)
 INCLUDEPATH += ../../src
 
 
-SOURCES += test_ions.cpp \
-           test_species.cpp \
-           ../../src/Plasmas/ions.cpp \
+SOURCES += ../../src/Plasmas/ions.cpp \
            ../../src/grid/gridlayout.cpp \
            ../../src/grid/gridlayoutimplinternals.cpp \
            ../../src/grid/gridlayoutimplyee.cpp \
            ../../src/Plasmas/species.cpp \
-            ../../src/vecfield/vecfield.cpp \
-            ../../src/Field/field.cpp \
-            test_ions_chargedensity.cpp
+           ../../src/Interpolator/interpolator.cpp \
+           ../../src/Projector/projector.cpp \
+           ../../src/IndexesAndWeights/indexesandweights.cpp \
+           ../../src/vecfield/vecfield.cpp \
+           ../../src/Field/field.cpp \
+           test_ions.cpp \
+           test_species.cpp \
+           test_ions_chargedensity.cpp
 
 
 
@@ -27,9 +30,12 @@ HEADERS += ../../src/Plasmas/ions.h \
            ../../src/grid/gridlayoutimpl.h \
            ../../src/grid/gridlayoutimplinternals.h \
            ../../src/grid/gridlayoutimplyee.h \
-           #../../src/Plasmas/species.h \
+           ../../src/Plasmas/species.h \
+           ../../src/Interpolator/interpolator.h \
+           ../../src/Projector/projector.h \
+           ../../src/IndexesAndWeights/indexesandweights.h \
            ../../src/vecfield/vecfield.h \
-           ../../src/Field/field.h \
+           ../../src/Field/field.h
 
 
 

@@ -74,6 +74,7 @@ public:
     virtual Point cellCenteredCoordinates(
             const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const override ;
 
+    virtual QtyCentering fieldCentering(Field const & field, Direction dir) const override ;
 };
 
 

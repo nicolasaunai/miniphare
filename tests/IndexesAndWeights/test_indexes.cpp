@@ -106,11 +106,6 @@ public:
         double icell = 0. ;
         double delta = std::modf(inputs.xpart/inputs.dx, &icell)  ;
 
-        Particle testParticle( 1., 1.,
-                 { {static_cast<uint32>(icell), 0, 0} },
-                 { {static_cast<float> (delta), 0., 0.} },
-                 { {0., 0., 0.} }   );
-
         uint32 order = inputs.interpOrder ;
 
         std::unique_ptr<IndexesAndWeights> impl  ;
