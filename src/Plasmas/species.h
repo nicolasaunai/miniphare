@@ -7,6 +7,9 @@
 #include "particles.h"
 #include "Initializer/particleinitializer.h"
 
+#include "Projector/projector.h"
+#include "Interpolator/interpolator.h"
+
 
 /**
  * @brief The Species class contains particles and moments of a specific
@@ -47,20 +50,9 @@ public:
     Field& flux(uint32 iComponent) {return flux_.component(iComponent);}
     Field const& flux(uint32 iComponent) const {return flux_.component(iComponent);}
 
-
     void loadParticles();
 
-
-#if 0
-    Field* getChargeDensity();
-    Field* getBulkVelocity();
-    Field* getFLux();
-
-    void computeChargeDensity();
-    void computeFlux();
-    void computeBulkVelocity();
-
-#endif
+    void computeChargeDensityAndCurrents( Projector & project );
 
 };
 
