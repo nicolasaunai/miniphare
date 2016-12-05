@@ -31,7 +31,7 @@ void Species::loadParticles()
 }
 
 
-void Species::computeChargeDensityAndFlux( Projector & project   )
+void Species::compute1DChargeDensityAndFlux( Projector & project   )
 {
     uint32 idirX = static_cast<uint32>(Direction::X) ;
     uint32 idirY = static_cast<uint32>(Direction::Y) ;
@@ -74,7 +74,7 @@ void Species::computeChargeDensityAndFlux( Projector & project   )
 
 
 
-void Species::computeFieldsAtParticles( Interpolator & interp,
+void Species::compute1DFieldsAtParticles( Interpolator & interp,
                                         VecField const & E ,
                                         VecField const & B )
 {
@@ -90,33 +90,37 @@ void Species::computeFieldsAtParticles( Interpolator & interp,
     Field const & By = B.component(idirY) ;
     Field const & Bz = B.component(idirZ) ;
 
+    std::vector<std::reference_wrapper<Field const>> ExyzBxyzFields \
+            = {Ex, Ey, Ez, Bx, By, Bz} ;
+
+
     for( Particle & part : particleArray_)
     {
-        auto indexesAndWeightsPrimal = \
-        interp.getIndexesAndWeights( part, Direction::X, QtyCentering::primal ) ;
-
-        auto indexesAndWeightsDual = \
-        interp.getIndexesAndWeights( part, Direction::X, QtyCentering::dual ) ;
-
-        std::vector<uint32> ISx_p    = std::get<0>(indexesAndWeightsPrimal) ;
-        std::vector<double> PondSx_p = std::get<1>(indexesAndWeightsPrimal) ;
-
-        std::vector<uint32> ISx_d    = std::get<0>(indexesAndWeightsDual) ;
-        std::vector<double> PondSx_d = std::get<1>(indexesAndWeightsDual) ;
-
         part.Ex = 0. ; part.Ey = 0. ; part.Ez = 0. ;
         part.Bx = 0. ; part.By = 0. ; part.Bz = 0. ;
 
-        auto centering = layout_.fieldCentering( Ex, Direction::X ) ;
+        std::vector<std::reference_wrapper<double>> partFields = \
+        {part.Ex, part.Ey, part.Ez, part.Bx, part.By, part.Bz} ;
 
-        auto indexesAndWeights = \
-        interp.getIndexesAndWeights( part, Direction::X, centering ) ;
+        for(uint32 ifield=0 ; ifield<partFields.size() ; ++ifield )
+        {
+            double & particleField = partFields[ifield] ;
 
-        std::vector<uint32> ISx    = std::get<0>(indexesAndWeights) ;
-        std::vector<double> PondSx = std::get<1>(indexesAndWeights) ;
+            Field const & meshField = ExyzBxyzFields[ifield] ;
 
+            auto centering = layout_.fieldCentering( Ex, Direction::X ) ;
 
+            auto indexesAndWeights = \
+            interp.getIndexesAndWeights( part, Direction::X, centering ) ;
 
+            std::vector<uint32> ISx    = std::get<0>(indexesAndWeights) ;
+            std::vector<double> PondSx = std::get<1>(indexesAndWeights) ;
+
+            for(uint32 ik=0 ; ik<ISx.size() ; ++ik)
+            {
+                particleField += meshField(ISx[ik]) * PondSx[ik] ;
+            }
+        }
     }
 
 
