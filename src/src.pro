@@ -41,7 +41,8 @@ SOURCES += main.cpp \
     Interpolator/interpolator.cpp \
     pusher/pusher1d.cpp \
     pusher/modifiedboris.cpp \
-    Projector/projector.cpp
+    Projector/projector.cpp \
+    Initializer/simpleparticleinitializer.cpp
 
 
 HEADERS += \
@@ -98,7 +99,8 @@ HEADERS += \
     pusher/pusher1d.h \
     pusher/pushertype.h \
     pusher/pusherfactory.h \
-    pusher/modifiedboris.h
+    pusher/modifiedboris.h \
+    Initializer/simpleparticleinitializer.h
 
 
 

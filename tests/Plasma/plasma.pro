@@ -10,10 +10,10 @@ INCLUDEPATH += ../../src
 
 
 SOURCES += ../../src/Plasmas/ions.cpp \
+           ../../src/Plasmas/species.cpp \
            ../../src/grid/gridlayout.cpp \
            ../../src/grid/gridlayoutimplinternals.cpp \
            ../../src/grid/gridlayoutimplyee.cpp \
-           ../../src/Plasmas/species.cpp \
            ../../src/Interpolator/interpolator.cpp \
            ../../src/Projector/projector.cpp \
            ../../src/IndexesAndWeights/indexesandweights.cpp \
@@ -26,11 +26,11 @@ SOURCES += ../../src/Plasmas/ions.cpp \
 
 
 HEADERS += ../../src/Plasmas/ions.h \
+           ../../src/Plasmas/species.h \
            ../../src/grid/gridlayout.h \
            ../../src/grid/gridlayoutimpl.h \
            ../../src/grid/gridlayoutimplinternals.h \
            ../../src/grid/gridlayoutimplyee.h \
-           ../../src/Plasmas/species.h \
            ../../src/Interpolator/interpolator.h \
            ../../src/Projector/projector.h \
            ../../src/IndexesAndWeights/indexesandweights.h \

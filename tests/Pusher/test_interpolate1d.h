@@ -1,6 +1,5 @@
-#ifndef TEST_PUSHER_H
-#define TEST_PUSHER_H
-
+#ifndef TEST_INTERPOLATE1D_H
+#define TEST_INTERPOLATE1D_H
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
@@ -15,7 +14,7 @@
 
 
 
-struct PusherParams;
+struct InterpPushParams;
 
 HybridQuantity GetHybridQtyFromString( std::string field ) ;
 
@@ -23,7 +22,7 @@ HybridQuantity GetHybridQty(uint32 iqty) ;
 
 std::string GetHybridQtyName(uint iqty) ;
 
-std::vector<PusherParams>  getPusherParamsFromFile() ;
+std::vector<InterpPushParams>  getPusherParamsFromFile() ;
 
 
 
@@ -35,7 +34,7 @@ std::vector<PusherParams>  getPusherParamsFromFile() ;
  *                       the index list
  * ---------------------------------------------------------------------------- */
 
-struct PusherParams
+struct InterpPushParams
 {
 
     double tbegin, tend ;
@@ -64,10 +63,10 @@ struct PusherParams
 
     uint32 interpOrder = 1 ;
 
-    PusherParams(): testId{ testCaseNbr }
+    InterpPushParams(): testId{ testCaseNbr }
      { ++testCaseNbr ; }
 
 };
 
 
-#endif // TEST_PUSHER_H
+#endif // TEST_INTERPOLATE1D_H
