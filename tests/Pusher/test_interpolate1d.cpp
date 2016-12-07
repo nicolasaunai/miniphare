@@ -209,6 +209,12 @@ public:
         // We need an interpolator
         std::unique_ptr<Interpolator> interpol{ InterpolatorFactory::createInterpolator( layout, minLocal )} ;
 
+        // Write a file: simpleInit.txt
+        // using the information from inputs
+        //
+        // Next this file will be used by SimpleParticleInitializer
+        // to initialise a Specie object
+
         // we need to initialize a specie
         Species::Species(GridLayout const& layout, double mass,
                          std::unique_ptr<ParticleInitializer> particleInitializer,
@@ -255,6 +261,41 @@ public:
     }
 
 };
+
+
+
+// ----------------------------------------------------------------------------
+// 1D diagnostic method
+// ----------------------------------------------------------------------------
+void write1D_diag(const std::vector<double> & xsupport,
+                              const std::vector<double> & data1d,
+                              uint64 data1d_size, const char * data1d_name,
+                              uint32 nbppm, unsigned int order,
+                              const std::string & specie_name)
+{
+
+    std::ostringstream fileStream ;
+
+    fileStream << results_directory.str() << "/" << specie_name << "_" << data1d_name
+               << "_nbppm" << nbppm << "_ord" << order << ".dat" ;
+
+    std::ofstream output ;
+    output.open( fileStream.str() );
+    if(!output)
+    {
+        std::cout << "File " << fileStream.str() << "could not be created ! FATAL !!" << std::endl ;
+        exit(1) ;
+    }
+
+    for( unsigned int i=0 ; i<data1d_size ; i++ )
+    {
+        output << std::setw(6) << xsupport[i] << "   " << data1d[i] << std::endl ;
+    }
+
+
+
+}
+
 
 
 

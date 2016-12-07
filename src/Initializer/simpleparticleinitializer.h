@@ -26,7 +26,7 @@ public:
 
     virtual void loadParticles(std::vector<Particle>& particles) const override;
 
-    virtual ~SimpleParticleInitializer();
+    virtual ~SimpleParticleInitializer() {}
 
     ScalarFunction density;
     VectorFunction bulkVelocity;
