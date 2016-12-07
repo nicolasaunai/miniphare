@@ -9,6 +9,7 @@
 #include "hybridenums.h"
 #include "constants.h"
 #include "gridlayoutdefs.h"
+#include "types.h"
 
 
 /**
@@ -52,6 +53,8 @@ protected:
     double dy_ ;
     double dz_ ;
 
+    Point origin_;
+
     std::array<double, NBR_COMPO> odxdydz_ ;
     std::array<uint32, NBR_COMPO> nbrPhysicalCells_ ;
 
@@ -64,7 +67,7 @@ protected:
     std::array< std::array<uint32, 3>, 2 > ghostEndIndexTable_;
 
 
-    GridLayoutImplInternals(uint32 nbDims, uint32 ghostParameter,
+    GridLayoutImplInternals(uint32 nbDims, Point origin, uint32 ghostParameter,
                             std::array<uint32,3> nbrCellsXYZ ,
                             std::array<double,3> dxdydz      );
 
@@ -92,7 +95,7 @@ protected:
     Point fieldNodeCoordinates_( const Field & field, const Point & origin,
                                  uint32 ix, uint32 iy, uint32 iz ) const;
 
-    Point cellCenteredCoordinates_(const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const;
+    Point cellCenteredCoordinates_(uint32 ix, uint32 iy, uint32 iz ) const;
 
     void deriv1D_(Field const& operand, Field& derivative) const;
 

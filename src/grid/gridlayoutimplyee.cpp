@@ -6,10 +6,10 @@
 
 
 
-GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
+GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, Point origin, uint32 interpOrder,
                                      std::array<uint32,3> nbrCellsXYZ ,
                                      std::array<double,3> dxdydz      )
-    : GridLayoutImplInternals(nbDims, interpOrder,
+    : GridLayoutImplInternals(nbDims, origin, interpOrder,
                               nbrCellsXYZ, dxdydz)
 {
 
@@ -165,10 +165,9 @@ Point GridLayoutImplYee::fieldNodeCoordinates(
 
 
 
-Point GridLayoutImplYee::cellCenteredCoordinates(
-        const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const
+Point GridLayoutImplYee::cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz ) const
 {
-    return cellCenteredCoordinates_( origin, ix, iy, iz ) ;
+    return cellCenteredCoordinates_(ix, iy, iz) ;
 }
 
 

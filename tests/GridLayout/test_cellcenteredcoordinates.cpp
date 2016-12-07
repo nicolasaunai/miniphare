@@ -28,7 +28,8 @@ public:
         inputs = GetParam();
         print(inputs) ;
 
-        GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
+        GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee",
+                    inputs.origin, inputs.interpOrder  };
 
         uint32 isDual = 1 ;
 
@@ -40,7 +41,7 @@ public:
 
         for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
         {
-            Point cellCenter = gl.cellCenteredCoordinates(inputs.origin, ix, iy, iz) ;
+            Point cellCenter = gl.cellCenteredCoordinates(ix, iy, iz) ;
 
             actual_cellCentersX.push_back( cellCenter.x_ ) ;
 

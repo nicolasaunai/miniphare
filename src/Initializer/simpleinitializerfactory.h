@@ -7,7 +7,8 @@
 /**
  * @brief The SimpleInitializerFactory class is a concrete InitializerFactory
  * used to simply initialize miniphare with hard-coded parameters. It is mainly
- * used for development purposes while the code ar
+ * used for development purposes. The SumpleInitializerFactory will create
+ * ions etc. from the FluidParticleInitializer
  */
 class SimpleInitializerFactory : public InitializerFactory
 {

@@ -113,7 +113,8 @@ public:
         inputs = GetParam();
         print(inputs) ;
 
-        GridLayout layout{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
+        GridLayout layout{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee",
+                    Point{0.,0.,0.}, inputs.interpOrder  };
 
         // this method has 2nd order precision
         precision = pow( inputs.dt, 2.) ;

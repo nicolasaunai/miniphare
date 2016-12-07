@@ -2,10 +2,11 @@
 #define GRIDLAYOUTIMPLFACTORY_H
 
 #include <array>
+#include <iostream>
 
+#include "types.h"
 #include "gridlayout.h"
 #include "gridlayoutimplyee.h"
-#include <iostream>
 
 
 /**
@@ -22,6 +23,7 @@ public:
 
     static std::unique_ptr<GridLayoutImpl>
     createGridLayoutImpl(uint32 nbDims,
+                         Point origin,
                          uint32 interpOrder,
                          std::string const& layoutName,
                          std::array<uint32,3> nbrCellsXYZ,
@@ -35,7 +37,7 @@ public:
         if (layoutName == "yee")
         {
             return std::unique_ptr<GridLayoutImpl> (
-                        new GridLayoutImplYee( nbDims, interpOrder,
+                        new GridLayoutImplYee( nbDims, origin, interpOrder,
                                                nbrCellsXYZ, dxdydz ));
         }
         //else if{}

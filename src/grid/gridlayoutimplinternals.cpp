@@ -6,11 +6,13 @@
 
 
 
-GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims, uint32 ghostParameter,
+GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims, Point origin,
+                                                 uint32 ghostParameter,
                                                  std::array<uint32,3> nbrCellsXYZ ,
                                                  std::array<double,3> dxdydz      )
     : nbdims_{nbDims},
       dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]},
+      origin_{origin},
       odxdydz_{ {1./dx_, 1./dy_, 1./dz_} },
       nbrPhysicalCells_{ {nbrCellsXYZ[0], nbrCellsXYZ[1], nbrCellsXYZ[2] }}
 {
@@ -394,9 +396,9 @@ Point GridLayoutImplInternals::fieldNodeCoordinates_( const Field & field, const
  * @return Point
  * the desired cell-centered (dual/dual/dual) coordinate
  */
-Point GridLayoutImplInternals::cellCenteredCoordinates_(
-        const Point & origin,
-        uint32 ix, uint32 iy, uint32 iz ) const
+Point GridLayoutImplInternals::cellCenteredCoordinates_(uint32 ix,
+                                                        uint32 iy,
+                                                        uint32 iz ) const
 {
     uint32 idirX   = static_cast<uint32>(Direction::X) ;
     uint32 idirY   = static_cast<uint32>(Direction::Y) ;
@@ -412,9 +414,9 @@ Point GridLayoutImplInternals::cellCenteredCoordinates_(
     // cell center physical coordinates,
     // because this point is located on the dual mesh
 
-    double x = ( (ix-ixStart) + halfCell)*dx_ + origin.x_ ;
-    double y = ( (iy-iyStart) + halfCell)*dy_ + origin.y_ ;
-    double z = ( (iz-izStart) + halfCell)*dz_ + origin.z_ ;
+    double x = ( (ix-ixStart) + halfCell)*dx_ + origin_.x_ ;
+    double y = ( (iy-iyStart) + halfCell)*dy_ + origin_.y_ ;
+    double z = ( (iz-izStart) + halfCell)*dz_ + origin_.z_ ;
 
     return Point(x, y, z) ;
 }

@@ -31,7 +31,8 @@ public:
 
         print(inputs);
 
-        GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee", inputs.interpOrder  };
+        GridLayout gl{ inputs.dxdydz, inputs.nbrCells, inputs.nbDim, "yee",
+                    Point{0.,0.,0.}, inputs.interpOrder  };
 
         // Here the Field sizes for allocations are overestimated
         // We are not testing the alloc methods but only the methods devoted

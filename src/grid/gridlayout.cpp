@@ -33,16 +33,17 @@
  * of ghost nodes required for each quantity in each direction.
  */
 GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
-                       uint32 nbDims      , std::string layoutName,
+                       uint32 nbDims      , std::string layoutName, Point origin,
                        uint32 ghostParameter )
 
     : nbDims_{nbDims},
       dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]},
       odx_{1./dx_}, ody_{1./dy_}, odz_{1./dz_},
       nbrCellx_{nbrCells[0]}, nbrCelly_{nbrCells[1]}, nbrCellz_{nbrCells[2]},
+      origin_{origin},
       ghostParameter_{ghostParameter},
       implPtr_{ GridLayoutImplFactory::createGridLayoutImpl(
-                    nbDims, ghostParameter, layoutName, nbrCells, dxdydz ) }
+                    nbDims, origin, ghostParameter, layoutName, nbrCells, dxdydz ) }
 {
     switch (nbDims)
     {
@@ -73,11 +74,12 @@ GridLayout::GridLayout(GridLayout const& source)
       nbrCellx_{source.nbrCellx_},
       nbrCelly_{source.nbrCelly_},
       nbrCellz_{source.nbrCellz_},
+      origin_{source.origin_},
       ghostParameter_{source.ghostParameter_}
 {
     //TODO : "yee" bad hardcoded. make a clone
     implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(
-                nbDims_, ghostParameter_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} },
+                nbDims_, origin_, ghostParameter_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} },
                 { {dx_, dy_, dz_} } ) ;
 }
 
@@ -89,6 +91,8 @@ GridLayout::GridLayout(GridLayout&& source)
       nbrCellx_{std::move(source.nbrCellx_)},
       nbrCelly_{std::move(source.nbrCelly_)},
       nbrCellz_{std::move(source.nbrCellz_)},
+      origin_{std::move(source.origin_)},
+      ghostParameter_{std::move(source.ghostParameter_)},
       implPtr_{std::move(source.implPtr_)}
 {
 }
@@ -244,10 +248,9 @@ Point GridLayout::fieldNodeCoordinates( const Field & field, const Point & origi
  * of a cell center indexed (ix,iy,iz).
  * @return a Point coordinate centered at the cell center.
  */
-Point GridLayout::cellCenteredCoordinates( const Point & origin,
-                                            uint32 ix, uint32 iy, uint32 iz ) const
+Point GridLayout::cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz ) const
 {
-    return implPtr_->cellCenteredCoordinates( origin, ix, iy, iz ) ;
+    return implPtr_->cellCenteredCoordinates( ix, iy, iz ) ;
 }
 
 
@@ -263,7 +266,7 @@ Point GridLayout::cellCenteredCoordinates( const Point & origin,
 const std::string GridLayout::errorInverseMesh= "GridLayout error: Invalid use of";
 
 
-void GridLayout::throwNotValid1D()const
+void GridLayout::throwNotValid1D() const
 {
     // 1D with tiny dx must be a problem
     if (dx_ == 0.0)

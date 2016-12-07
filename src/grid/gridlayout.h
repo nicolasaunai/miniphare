@@ -52,6 +52,8 @@ private:
     uint32 nbrCelly_  ;
     uint32 nbrCellz_  ;
 
+    Point origin_;      // origin of the grid
+
     uint32 ghostParameter_ ;                            // TODO find a better name.
                                                         // If interpOrder is the best so be it.
 
@@ -78,6 +80,7 @@ public:
 
     GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
                uint32 nbDims      , std::string layoutName,
+               Point origin,
                uint32 ghostParameter ); // TODO see if better name
 
     GridLayout(GridLayout const& source);
@@ -112,13 +115,12 @@ public:
     AllocSizeT allocSize(HybridQuantity qtyType) const;
     AllocSizeT allocSizeDerived( HybridQuantity qty, Direction dir ) const ;
 
-    void deriv(Field const& operand, Direction direction, Field& derivative)const;
+    void deriv(Field const& operand, Direction direction, Field& derivative) const;
 
     Point fieldNodeCoordinates( const Field & field, const Point & origin,
                                 uint32 ix, uint32 iy, uint32 iz ) const;
 
-    Point cellCenteredCoordinates( const Point & origin,
-                                   uint32 ix, uint32 iy, uint32 iz ) const;
+    Point cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz ) const;
 
 
 };

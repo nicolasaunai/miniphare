@@ -54,8 +54,7 @@ public:
     virtual Point fieldNodeCoordinates( const Field & field, const Point & origin,
                                         uint32 ix, uint32 iy, uint32 iz ) const = 0;
 
-    virtual Point cellCenteredCoordinates(const Point & origin,
-                                          uint32 ix, uint32 iy, uint32 iz ) const = 0 ;
+    virtual Point cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz ) const = 0 ;
 
 
     virtual uint32 nbDimensions() const = 0;

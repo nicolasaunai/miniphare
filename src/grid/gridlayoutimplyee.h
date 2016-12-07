@@ -42,7 +42,7 @@ private:
     // ------------------------------------------------------------------------
 public:
 
-    explicit GridLayoutImplYee(uint32 nbDims, uint32 interpOrder,
+    explicit GridLayoutImplYee(uint32 nbDims, Point origin, uint32 interpOrder,
                                std::array<uint32,3> nbrCellsXYZ ,
                                std::array<double,3> dxdydz      );
 
@@ -71,8 +71,7 @@ public:
             const Field & field, const Point & origin,
             uint32 ix, uint32 iy, uint32 iz ) const override ;
 
-    virtual Point cellCenteredCoordinates(
-            const Point & origin, uint32 ix, uint32 iy, uint32 iz ) const override ;
+    virtual Point cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz ) const override ;
 
 };
 
