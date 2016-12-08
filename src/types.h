@@ -27,8 +27,11 @@ struct AllocSizeT{
 
 struct Point
 {
-    double x_,y_,z_;
+    double x_ = 0.;
+    double y_ = 0.;
+    double z_ = 0.;
 
+    Point() = default;
     Point(double x, double y, double z):
         x_{x}, y_{y}, z_{z} {}
 
