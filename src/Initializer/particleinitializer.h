@@ -33,8 +33,6 @@ private:
 
 public:
 
-    using ScalarFunction = double (*) (double x, double y, double z);
-    using VectorFunction = void   (*) (double x, double y, double z, std::array<double,3> vec);
 
 
     // TODO deal with copy/move Ctors

@@ -20,28 +20,24 @@ SimpleInitializerFactory::SimpleInitializerFactory()
 
 double densityProton1(double x, double y, double z)
 {
-    std::cout << "densityProton1\n";
     return 1.;
 }
 
 
 double densityProton2(double x, double y, double z)
 {
-    std::cout << "densityProton1\n";
     return 0.25;
 }
 
 
-double temperatureProton1(double x, double y, double z)
+double thermalSpeedProton1(double x, double y, double z)
 {
-    std::cout << "temperatureProton1\n";
     return 0.25;
 }
 
 
-double temperatureProton2(double x, double y, double z)
+double thermalSpeedProton2(double x, double y, double z)
 {
-    std::cout << "temperatureProton2\n";
     return 0.25;
 }
 
@@ -51,7 +47,6 @@ void bulkVelocityProton1(double x, double y, double z, std::array<double,3> vec)
     vec[0] = 0.;
     vec[0] = 0.;
     vec[0] = 0.;
-    std::cout << "bulkVelProton1\n";
 }
 
 void bulkVelocityProton2(double x, double y, double z, std::array<double,3> vec)
@@ -59,7 +54,6 @@ void bulkVelocityProton2(double x, double y, double z, std::array<double,3> vec)
     vec[0] = 0.;
     vec[0] = 0.;
     vec[0] = 0.;
-    std::cout << "bulkVelProton2\n";
 }
 
 
@@ -111,13 +105,13 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
                                                     {new FluidParticleInitializer{layout_,
                                                                 densityProton1,
                                                                 bulkVelocityProton1,
-                                                                temperatureProton1,
+                                                                thermalSpeedProton1,
                                                                 nbrPartPerCell} } );
 
     ionInitPtr->particleInitializers.push_back( std::unique_ptr<ParticleInitializer>
                                                     {new FluidParticleInitializer{layout_,
                                                      densityProton2, bulkVelocityProton2,
-                                                     temperatureProton2,
+                                                     thermalSpeedProton2,
                                                      nbrPartPerCell} } );
 
     return ionInitPtr;
