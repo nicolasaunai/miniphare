@@ -1,8 +1,6 @@
 #ifndef TEST_INTERPOLATE1D_H
 #define TEST_INTERPOLATE1D_H
 
-#include "gtest/gtest.h"
-#include "gmock/gmock.h"
 
 #include "types.h"
 #include "utility.h"
@@ -16,13 +14,8 @@
 
 struct InterpPushParams;
 
-HybridQuantity GetHybridQtyFromString( std::string field ) ;
 
-HybridQuantity GetHybridQty(uint32 iqty) ;
-
-std::string GetHybridQtyName(uint iqty) ;
-
-std::vector<InterpPushParams>  getPusherParamsFromFile() ;
+std::vector<InterpPushParams>  getInterpPushParamsFromFile() ;
 
 
 

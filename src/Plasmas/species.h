@@ -50,6 +50,9 @@ public:
     Field& flux(uint32 iComponent) {return flux_.component(iComponent);}
     Field const& flux(uint32 iComponent) const {return flux_.component(iComponent);}
 
+    std::vector<Particle>& particles() {return particleArray_;}
+    std::vector<Particle> const& particles() const {return particleArray_;}
+
     void loadParticles();
 
     void compute1DChargeDensityAndFlux( Projector & project );

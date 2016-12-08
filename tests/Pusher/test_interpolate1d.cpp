@@ -5,14 +5,18 @@
 #include <fstream>
 #include <cmath>
 
+#include "test_commons.h"
+
 #include "test_interpolate1d.h"
 
+#include "Plasmas/species.h"
 #include "Plasmas/particles.h"
 
 #include "Interpolator/interpolatorfactory.h"
 #include "Interpolator/interpolator.h"
 
 #include "Initializer/particleinitializer.h"
+#include "Initializer/simpleparticleinitializer.h"
 
 #include "pusher/pusher.h"
 #include "pusher/pusher1d.h"
@@ -27,54 +31,19 @@ uint32 InterpPushParams::testCaseNbr = 0 ;
 
 
 
-::testing::AssertionResult AreVectorsEqual(
-        const std::vector<double> & expected_vector,
-        const std::vector<double> & actual_vector  ,
-        double precision  )
-{
-    ::testing::AssertionResult failure = ::testing::AssertionFailure();
+void print(InterpPushParams const& inputs) ;
 
-    uint32 errorNbr = 0 ;
+void writeSimpleInitData( std::vector<Particle> const & particles );
 
-    if( expected_vector.size() != actual_vector.size() )
-    {
-        ::testing::AssertionResult sizeFailure = ::testing::AssertionFailure();
+void allocEBVecFields( GridLayout const & layout, \
+                      std::shared_ptr<VecField> & E_out, \
+                      std::shared_ptr<VecField> & B_out );
 
-        sizeFailure << "expected_vector.size() != actual_vector.size()" ;
+void initEVecField( VecField & E_out,
+                    double Ex, double Ey, double Ez ) ;
 
-        return sizeFailure ;
-    }
-
-    for( uint32 ik=0 ; ik<actual_vector.size() ; ++ik)
-    {
-        if( fabs(expected_vector[ik] - actual_vector[ik]) > precision )
-        {
-            failure << "\n" ;
-            failure << "expected[" << ik << "] = " << expected_vector[ik] ;
-            failure << "    " ;
-            failure << "actual  [" << ik << "] = " << actual_vector[ik] ;
-            failure << "\n" ;
-            ++errorNbr ;
-        }
-    }
-
-
-    if( errorNbr > 0 )
-    {
-        // Error Summary
-        failure << "\nTotal number of differences = " << errorNbr << "\n" ;
-
-        return failure ;
-    }
-
-    return testing::AssertionSuccess() ;
-}
-
-
-void print(InterpPushParams const& inputs);
-
-void printTable( std::vector<double> const & table, const std::string & name );
-
+void initBVecField( VecField & B_out,
+                    double Bx, double By, double Bz ) ;
 
 void readFieldsAtParticle(InterpPushParams const & inputs,
                           std::vector<double> & Ex_p,
@@ -174,9 +143,9 @@ public:
         std::vector<double> Bz_p( inputs.nstep+1, 0.) ;
 
         // HERE: We do not use fields read from input files
-//        readFieldsAtParticle( inputs,
-//                              Ex_p, Ey_p, Ez_p,
-//                              Bx_p, By_p, Bz_p ) ;
+        readFieldsAtParticle( inputs,
+                              Ex_p, Ey_p, Ez_p,
+                              Bx_p, By_p, Bz_p ) ;
 
 
         std::unique_ptr<Pusher> pusher = PusherFactory::createPusher( layout, "modifiedBoris" ) ;
@@ -187,68 +156,75 @@ public:
 
         uint32 icellx0 = static_cast<uint32>( std::floor(inputs.x0/layout.dx()) ) ;
 
-        Particle testParticle( weight, inputs.q,
+        Particle partic( weight, inputs.q,
                  { {icellx0, 0, 0} },
                  { {static_cast<float>( inputs.x0 - icellx0*layout.dx() ), 0., 0.} },
                  { {inputs.vx0, inputs.vy0, inputs.vz0} }   );
 
-        double posx = ( testParticle.icell[0] + \
-                static_cast<double>(testParticle.delta[0]) )*layout.dx() ;
+        double posx = ( partic.icell[0] + \
+                static_cast<double>(partic.delta[0]) )*layout.dx() ;
 
         actual_x_part.push_back( posx ) ;
 
-        actual_vx_part.push_back( testParticle.v[0] ) ;
-        actual_vy_part.push_back( testParticle.v[1] ) ;
-        actual_vz_part.push_back( testParticle.v[2] ) ;
+        actual_vx_part.push_back( partic.v[0] ) ;
+        actual_vy_part.push_back( partic.v[1] ) ;
+        actual_vz_part.push_back( partic.v[2] ) ;
 
         // we compute the time step
         double dt = (inputs.tend - inputs.tbegin)/inputs.nstep ;
 
         Point minLocal(0., 0., 0.) ;
-
         // We need an interpolator
         std::unique_ptr<Interpolator> interpol{ InterpolatorFactory::createInterpolator( layout, minLocal )} ;
 
-        // Write a file: simpleInit.txt
+        std::vector<Particle> particles{partic} ;
+        // Write a file: simpleParticleInit.txt
         // using the information from inputs
-        //
+        writeSimpleInitData( particles ) ;
+
         // Next this file will be used by SimpleParticleInitializer
         // to initialise a Specie object
+        Species testSpecie( layout, mass,
+                            std::unique_ptr<ParticleInitializer>{new SimpleParticleInitializer(layout)},
+                            "testSpecie" ) ;
 
-        // we need to initialize a specie
-        Species::Species(GridLayout const& layout, double mass,
-                         std::unique_ptr<ParticleInitializer> particleInitializer,
-                         std::string const& name)
+        testSpecie.loadParticles() ;
 
-//        precision_x = dt*dt ;
-//        precision_v = dt*dt ;
+
         precision_x = 6.*dt*dt ;
         precision_v = 2.45*dt ; // sqrt(6.) = 2.45
 
         for(uint32 ik=1 ; ik< inputs.nstep+1 ; ++ik)
         {
+            std::shared_ptr<VecField> E_ptr = nullptr ;
+            std::shared_ptr<VecField> B_ptr = nullptr ;
+
+            allocEBVecFields( layout, E_ptr, B_ptr ) ;
+            initEVecField( *E_ptr, Ex_p[ik], Ey_p[ik], Ez_p[ik] ) ;
+            initBVecField( *B_ptr, Bx_p[ik], By_p[ik], Bz_p[ik] ) ;
+
             // Use compute1DFieldsAtParticles(...) to find out
             // E_part and B_part
-//            compute1DFieldsAtParticles( *interpol,
-//                                        VecField const & E ,
-//                                        VecField const & B ) ;
+            testSpecie.compute1DFieldsAtParticles( *interpol,
+                                                   *E_ptr, *B_ptr ) ;
 
-            // HERE: We do not use fields read from input files
-            Point E_part(Ex_p[ik], Ey_p[ik], Ez_p[ik]) ;
-            Point B_part(Bx_p[ik], By_p[ik], Bz_p[ik]) ;
+            Particle & iPart = testSpecie.particles()[0] ;
+            // HERE: We use fields just computed at the particle position
+            Point E_part(iPart.Ex, iPart.Ey, iPart.Ez) ;
+            Point B_part(iPart.Bx, iPart.By, iPart.Bz) ;
 
-            pusher->move( testParticle,
+            pusher->move( iPart,
                           dt, mass, inputs.q,
                           E_part, B_part) ;
 
-            double posx = ( testParticle.icell[0] + \
-                    static_cast<double>(testParticle.delta[0]) )*layout.dx() ;
+            double posx = ( iPart.icell[0] + \
+                    static_cast<double>(iPart.delta[0]) )*layout.dx() ;
 
             actual_x_part.push_back( posx ) ;
 
-            actual_vx_part.push_back( testParticle.v[0] ) ;
-            actual_vy_part.push_back( testParticle.v[1] ) ;
-            actual_vz_part.push_back( testParticle.v[2] ) ;
+            actual_vx_part.push_back( iPart.v[0] ) ;
+            actual_vy_part.push_back( iPart.v[1] ) ;
+            actual_vz_part.push_back( iPart.v[2] ) ;
         }
 
 
@@ -265,19 +241,15 @@ public:
 
 
 // ----------------------------------------------------------------------------
-// 1D diagnostic method
+//        Write file simpleParticleInit.txt
+//
 // ----------------------------------------------------------------------------
-void write1D_diag(const std::vector<double> & xsupport,
-                              const std::vector<double> & data1d,
-                              uint64 data1d_size, const char * data1d_name,
-                              uint32 nbppm, unsigned int order,
-                              const std::string & specie_name)
+void writeSimpleInitData( std::vector<Particle> const & particles)
 {
 
     std::ostringstream fileStream ;
 
-    fileStream << results_directory.str() << "/" << specie_name << "_" << data1d_name
-               << "_nbppm" << nbppm << "_ord" << order << ".dat" ;
+    fileStream << "simpleParticleInit.txt" ;
 
     std::ofstream output ;
     output.open( fileStream.str() );
@@ -287,53 +259,91 @@ void write1D_diag(const std::vector<double> & xsupport,
         exit(1) ;
     }
 
-    for( unsigned int i=0 ; i<data1d_size ; i++ )
+    // we write the number of particles
+    output << particles.size() << std::endl ;
+
+    for( uint32 ik=0 ; ik<particles.size() ; ++ik )
     {
-        output << std::setw(6) << xsupport[i] << "   " << data1d[i] << std::endl ;
+        Particle const & part = particles[ik] ;
+
+        output << part.weight << "  " << part.charge << std::endl ;
+        output << part.icell[0] << "  " << part.icell[1]
+                                << "  " << part.icell[2] << std::endl ;
+        output << part.delta[0] << "  " << part.delta[1]
+                                << "  " << part.delta[2] << std::endl ;
+
+        output << part.v[0] << "  " << part.v[1] << "  " << part.v[2] << std::endl ;
+        output << "\n" ;
     }
 
-
-
 }
 
 
 
 
-void print(InterpPushParams const& inputs)
+void allocEBVecFields( GridLayout const & layout, \
+                      std::shared_ptr<VecField> & E_out, \
+                      std::shared_ptr<VecField> & B_out )
 {
-    std::cout << "tbegin = " << inputs.tbegin
-              << " tend  = " << inputs.tend
-              << " nstep = " << inputs.nstep << "\n"
-              << " q = " << inputs.q << "\t"
-              << " m = " << inputs.m << "\n"
-              << " x0 = " << inputs.x0 << "\n"
-              << " y0 = " << inputs.y0 << "\n"
-              << " z0 = " << inputs.z0 << "\n"
-              << " vx0 = " << inputs.vx0 << "\n"
-              << " vy0 = " << inputs.vy0 << "\n"
-              << " vz0 = " << inputs.vz0 << "\n"
-              << " dxdydz[0] = " << inputs.dxdydz[0]
-              << " dxdydz[1] = " << inputs.dxdydz[1]
-              << " dxdydz[2] = " << inputs.dxdydz[2] << "\n"
-              << " nbrCells[0] = " << inputs.nbrCells[0]
-              << " nbrCells[1] = " << inputs.nbrCells[1]
-              << " nbrCells[2] = " << inputs.nbrCells[2] << "\n"
-              << " nbDim = " << inputs.nbDim
-              << " lattice = " << inputs.lattice
-              << " interpOrder : " << inputs.interpOrder
-              << std::endl ;
+    auto allocEx = layout.allocSize(HybridQuantity::Ex) ;
+    auto allocEy = layout.allocSize(HybridQuantity::Ey) ;
+    auto allocEz = layout.allocSize(HybridQuantity::Ez) ;
+    auto allocBx = layout.allocSize(HybridQuantity::Bx) ;
+    auto allocBy = layout.allocSize(HybridQuantity::By) ;
+    auto allocBz = layout.allocSize(HybridQuantity::Bz) ;
+
+    E_out = std::make_shared<VecField>( VecField(allocEx, allocEy, allocEz,\
+            { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} }, "E") ) ;
+
+    B_out = std::make_shared<VecField>( VecField(allocBx, allocBy, allocBz,\
+            { {HybridQuantity::Bx, HybridQuantity::By, HybridQuantity::Bz} }, "B") ) ;
+
 }
 
 
-void printTable( std::vector<double> const & table, const std::string & name )
+/**
+ * @brief initEVecField
+ * @param E_out is set using Ex, Ey, Ez
+ * @param Ex uniform value for Field E_out.x_
+ * @param Ey uniform value for Field E_out.y_
+ * @param Ez uniform value for Field E_out.z_
+ */
+void initEVecField( VecField & E_out,
+                    double uniformEx, double uniformEy, double uniformEz )
 {
-    std::cout << "- " << name << " -" << std::endl ;
-    for( uint32 ik=0 ; ik<table.size() ; ++ik)
-    {
-        std::cout << " [" << ik << "] = " << table[ik] << "," ;
-    }
-    std::cout << std::endl ;
+    Field & Ex = E_out.component(VecField::VecX) ;
+    Field & Ey = E_out.component(VecField::VecY) ;
+    Field & Ez = E_out.component(VecField::VecZ) ;
+
+    for( auto it=Ex.begin() ; it<Ex.end() ; ++it ) *it = uniformEx ;
+
+    for( auto it=Ey.begin() ; it<Ey.end() ; ++it ) *it = uniformEy ;
+
+    for( auto it=Ez.begin() ; it<Ez.end() ; ++it ) *it = uniformEz ;
 }
+
+
+/**
+ * @brief initBVecField
+ * @param B_out is set using Bx, By, Bz
+ * @param Bx uniform value for Field B_out.x_
+ * @param By uniform value for Field B_out.y_
+ * @param Bz uniform value for Field B_out.z_
+ */
+void initBVecField( VecField & B_out,
+                    double uniformBx, double uniformBy, double uniformBz )
+{
+    Field & Bx = B_out.component(VecField::VecX) ;
+    Field & By = B_out.component(VecField::VecY) ;
+    Field & Bz = B_out.component(VecField::VecZ) ;
+
+    for( auto it=Bx.begin() ; it<Bx.end() ; ++it ) *it = uniformBx ;
+
+    for( auto it=By.begin() ; it<By.end() ; ++it ) *it = uniformBy ;
+
+    for( auto it=Bz.begin() ; it<Bz.end() ; ++it ) *it = uniformBz ;
+}
+
 
 
 void readFieldsAtParticle(InterpPushParams const & inputs,
@@ -368,6 +378,38 @@ void readFieldsAtParticle(InterpPushParams const & inputs,
 }
 
 
+
+
+
+void print(InterpPushParams const& inputs)
+{
+    std::cout << "tbegin = " << inputs.tbegin
+              << " tend  = " << inputs.tend
+              << " nstep = " << inputs.nstep << "\n"
+              << " q = " << inputs.q << "\t"
+              << " m = " << inputs.m << "\n"
+              << " x0 = " << inputs.x0 << "\n"
+              << " y0 = " << inputs.y0 << "\n"
+              << " z0 = " << inputs.z0 << "\n"
+              << " vx0 = " << inputs.vx0 << "\n"
+              << " vy0 = " << inputs.vy0 << "\n"
+              << " vz0 = " << inputs.vz0 << "\n"
+              << " dxdydz[0] = " << inputs.dxdydz[0]
+              << " dxdydz[1] = " << inputs.dxdydz[1]
+              << " dxdydz[2] = " << inputs.dxdydz[2] << "\n"
+              << " nbrCells[0] = " << inputs.nbrCells[0]
+              << " nbrCells[1] = " << inputs.nbrCells[1]
+              << " nbrCells[2] = " << inputs.nbrCells[2] << "\n"
+              << " nbDim = " << inputs.nbDim
+              << " lattice = " << inputs.lattice
+              << " interpOrder : " << inputs.interpOrder
+              << std::endl ;
+}
+
+
+
+
+
 /***********************************************************/
 /* */
 /*                                                         */
@@ -390,7 +432,7 @@ TEST_P(PusherTest, xVxyzCompo)
 
 
 INSTANTIATE_TEST_CASE_P(Interpolate1DTest, PusherTest,
-                        testing::ValuesIn( getPusherParamsFromFile() ) );
+                        testing::ValuesIn( getInterpPushParamsFromFile() ) );
 
 
 

@@ -2,9 +2,6 @@
 #define TEST_PUSHER_H
 
 
-#include "gtest/gtest.h"
-#include "gmock/gmock.h"
-
 #include "types.h"
 #include "utility.h"
 
@@ -17,11 +14,7 @@
 
 struct PusherParams;
 
-HybridQuantity GetHybridQtyFromString( std::string field ) ;
 
-HybridQuantity GetHybridQty(uint32 iqty) ;
-
-std::string GetHybridQtyName(uint iqty) ;
 
 std::vector<PusherParams>  getPusherParamsFromFile() ;
 
