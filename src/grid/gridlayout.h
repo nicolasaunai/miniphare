@@ -89,6 +89,8 @@ public:
     GridLayout& operator=(GridLayout const& source) = delete;
     GridLayout& operator=(GridLayout&& source) = delete;
 
+    Point origin() const {return origin_;}
+
     double dx() const {return dx_;}
     double dy() const {return dy_;}
     double dz() const {return dz_;}
