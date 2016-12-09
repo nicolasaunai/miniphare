@@ -32,10 +32,11 @@ public:
     // or move operations won't be generated
     virtual ~Pusher() = default ;
 
-    virtual void move(Particle & particle,
-                      double dt, double m, double q,
-                      Point const &E,
-                      Point const &B) = 0 ;
+    virtual void move(std::vector<Particle> & partIn ,
+                      std::vector<Particle> & partOut,
+                      double dt, double m,
+                      VecField const & E ,
+                      VecField const & B ) = 0 ;
 
 };
 

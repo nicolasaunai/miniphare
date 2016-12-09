@@ -127,8 +127,7 @@ public:
                               Ex_p, Ey_p, Ez_p,
                               Bx_p, By_p, Bz_p ) ;
 
-
-        std::unique_ptr<Pusher> pusher = PusherFactory::createPusher( layout, "modifiedBoris" ) ;
+        ModifiedBoris pusher( "modifiedBoris", layout ) ;
 
         // Initialize the Particle to be pushed
         double weight = 1. ;
@@ -160,12 +159,18 @@ public:
 
         for(uint32 ik=1 ; ik< inputs.nstep+1 ; ++ik)
         {
-            Point E_part(Ex_p[ik], Ey_p[ik], Ez_p[ik]) ;
-            Point B_part(Bx_p[ik], By_p[ik], Bz_p[ik]) ;
+            testParticle.Ex = Ex_p[ik] ;
+            testParticle.Ey = Ey_p[ik] ;
+            testParticle.Ez = Ez_p[ik] ;
+            testParticle.Bx = Bx_p[ik] ;
+            testParticle.By = By_p[ik] ;
+            testParticle.Bz = Bz_p[ik] ;
 
-            pusher->move( testParticle,
-                          dt, mass, inputs.q,
-                          E_part, B_part) ;
+            pusher.prePush1D( testParticle, testParticle, dt ) ;
+
+            pusher.pushVelocity1D( testParticle, testParticle, dt, mass );
+
+            pusher.corPush1D( testParticle, testParticle, dt );
 
             double posx = ( testParticle.icell[0] + \
                     static_cast<double>(testParticle.delta[0]) )*layout.dx() ;

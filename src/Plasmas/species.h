@@ -4,7 +4,7 @@
 #include "Field/field.h"
 #include "vecfield/vecfield.h"
 #include "grid/gridlayout.h"
-#include "particles.h"
+#include "Plasmas/particles.h"
 #include "Initializer/particleinitializer.h"
 
 #include "Projector/projector.h"
@@ -56,9 +56,6 @@ public:
     void loadParticles();
 
     void compute1DChargeDensityAndFlux( Projector & project );
-    void compute1DFieldsAtParticles( Interpolator & interp, \
-                                   VecField const & E , \
-                                   VecField const & B );
 
 };
 

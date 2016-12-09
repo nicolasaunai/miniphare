@@ -42,7 +42,8 @@ SOURCES += main.cpp \
     pusher/pusher1d.cpp \
     pusher/modifiedboris.cpp \
     Projector/projector.cpp \
-    Initializer/simpleparticleinitializer.cpp
+    Initializer/simpleparticleinitializer.cpp \
+    helper.cpp
 
 
 HEADERS += \
@@ -100,7 +101,8 @@ HEADERS += \
     pusher/pushertype.h \
     pusher/pusherfactory.h \
     pusher/modifiedboris.h \
-    Initializer/simpleparticleinitializer.h
+    Initializer/simpleparticleinitializer.h \
+    helper.h
 
 
 

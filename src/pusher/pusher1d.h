@@ -24,14 +24,14 @@ public:
 
     virtual ~Pusher1D() {}
 
-    virtual void move(Particle & particle,
-                      double dt, double m, double q,
-                      Point const &E,
-                      Point const &B) override
+    virtual void move(std::vector<Particle> & partIn ,
+                      std::vector<Particle> & partOut,
+                      double dt, double m,
+                      VecField const & E ,
+                      VecField const & B ) override
     {
-        impl_->move1D( particle,
-                       dt, m, q,
-                       E , B ) ;
+        impl_->move1D( partIn, partOut,
+                       dt, m, E, B ) ;
     }
 
 };

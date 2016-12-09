@@ -9,14 +9,10 @@
 
 #include "test_interpolate1d.h"
 
-#include "Plasmas/species.h"
 #include "Plasmas/particles.h"
 
 #include "Interpolator/interpolatorfactory.h"
 #include "Interpolator/interpolator.h"
-
-#include "Initializer/particleinitializer.h"
-#include "Initializer/simpleparticleinitializer.h"
 
 #include "pusher/pusher.h"
 #include "pusher/pusher1d.h"
@@ -32,8 +28,6 @@ uint32 InterpPushParams::testCaseNbr = 0 ;
 
 
 void print(InterpPushParams const& inputs) ;
-
-void writeSimpleInitData( std::vector<Particle> const & particles );
 
 void allocEBVecFields( GridLayout const & layout, \
                       std::shared_ptr<VecField> & E_out, \
@@ -177,19 +171,7 @@ public:
         // We need an interpolator
         std::unique_ptr<Interpolator> interpol{ InterpolatorFactory::createInterpolator( layout, minLocal )} ;
 
-        std::vector<Particle> particles{partic} ;
-        // Write a file: simpleParticleInit.txt
-        // using the information from inputs
-        writeSimpleInitData( particles ) ;
-
-        // Next this file will be used by SimpleParticleInitializer
-        // to initialise a Specie object
-        Species testSpecie( layout, mass,
-                            std::unique_ptr<ParticleInitializer>{new SimpleParticleInitializer(layout)},
-                            "testSpecie" ) ;
-
-        testSpecie.loadParticles() ;
-
+        std::vector<Particle> particArray{partic} ;
 
         precision_x = 6.*dt*dt ;
         precision_v = 2.45*dt ; // sqrt(6.) = 2.45
@@ -203,19 +185,10 @@ public:
             initEVecField( *E_ptr, Ex_p[ik], Ey_p[ik], Ez_p[ik] ) ;
             initBVecField( *B_ptr, Bx_p[ik], By_p[ik], Bz_p[ik] ) ;
 
-            // Use compute1DFieldsAtParticles(...) to find out
-            // E_part and B_part
-            testSpecie.compute1DFieldsAtParticles( *interpol,
-                                                   *E_ptr, *B_ptr ) ;
+            pusher->move( particArray, particArray,
+                          dt, mass, *E_ptr, *B_ptr) ;
 
-            Particle & iPart = testSpecie.particles()[0] ;
-            // HERE: We use fields just computed at the particle position
-            Point E_part(iPart.Ex, iPart.Ey, iPart.Ez) ;
-            Point B_part(iPart.Bx, iPart.By, iPart.Bz) ;
-
-            pusher->move( iPart,
-                          dt, mass, inputs.q,
-                          E_part, B_part) ;
+            Particle const & iPart = particArray[0] ;
 
             double posx = ( iPart.icell[0] + \
                     static_cast<double>(iPart.delta[0]) )*layout.dx() ;
@@ -237,46 +210,6 @@ public:
     }
 
 };
-
-
-
-// ----------------------------------------------------------------------------
-//        Write file simpleParticleInit.txt
-//
-// ----------------------------------------------------------------------------
-void writeSimpleInitData( std::vector<Particle> const & particles)
-{
-
-    std::ostringstream fileStream ;
-
-    fileStream << "simpleParticleInit.txt" ;
-
-    std::ofstream output ;
-    output.open( fileStream.str() );
-    if(!output)
-    {
-        std::cout << "File " << fileStream.str() << "could not be created ! FATAL !!" << std::endl ;
-        exit(1) ;
-    }
-
-    // we write the number of particles
-    output << particles.size() << std::endl ;
-
-    for( uint32 ik=0 ; ik<particles.size() ; ++ik )
-    {
-        Particle const & part = particles[ik] ;
-
-        output << part.weight << "  " << part.charge << std::endl ;
-        output << part.icell[0] << "  " << part.icell[1]
-                                << "  " << part.icell[2] << std::endl ;
-        output << part.delta[0] << "  " << part.delta[1]
-                                << "  " << part.delta[2] << std::endl ;
-
-        output << part.v[0] << "  " << part.v[1] << "  " << part.v[2] << std::endl ;
-        output << "\n" ;
-    }
-
-}
 
 
 

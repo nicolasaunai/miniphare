@@ -3,45 +3,122 @@
 
 #include "pusher/modifiedboris.h"
 
+#include "Interpolator/interpolator.h"
+#include "Interpolator/interpolatorfactory.h"
+
+#include "helper.h"
+
 
 
 /**
- * @brief Modified Boris pusher proposed by Kunz
- * @param particle
- * we get position and velocity at time tn
+ * @brief ModifiedBoris::move1D
+ * @param partIn positions and velocities at time tn
+ * @param partPred positions and velocities at time tpred
  * @param dt
  * @param m
- * @param q
  * @param E is given at tn+1/2
  * @param B is given at tn+1/2
  */
-void ModifiedBoris::move1D(Particle & particle,
-                           double dt, double m, double q,
-                           Point const & Epart ,
-                           Point const & Bpart )
+void ModifiedBoris::move1D( std::vector<Particle> & partIn ,
+                            std::vector<Particle> & partPred,
+                            double dt, double m,
+                            VecField const & E , VecField const & B)
+{
+    partPred = partIn ;
+
+    for( uint32 ik=0 ; ik<partIn.size() ; ++ik )
+    {
+        prePush1D( partIn[ik], partPred[ik], dt ) ;
+    }
+
+    Point minLocal(0., 0., 0.) ;
+    std::unique_ptr<Interpolator> \
+            interpol{ InterpolatorFactory::createInterpolator( layout_, minLocal )} ;
+
+    for( uint32 ik=0 ; ik<partPred.size() ; ++ik )
+    {
+        compute1DFieldsAtParticles( *interpol, partPred[ik],
+                                    layout_, E, B ) ;
+    }
+
+    for( uint32 ik=0 ; ik<partPred.size() ; ++ik )
+    {
+        pushVelocity1D( partPred[ik], partPred[ik], dt, m );
+    }
+
+
+    for( uint32 ik=0 ; ik<partPred.size() ; ++ik )
+    {
+        corPush1D( partPred[ik], partPred[ik], dt );
+    }
+
+}
+
+
+
+void ModifiedBoris::move2D( std::vector<Particle> & partIn ,
+                            std::vector<Particle> & partOut,
+                            double dt, double m,
+                            VecField const & E ,
+                            VecField const & B )
+{
+
+}
+
+
+
+void ModifiedBoris::move3D( std::vector<Particle> & partIn ,
+                            std::vector<Particle> & partOut,
+                            double dt, double m,
+                            VecField const & E ,
+                            VecField const & B )
+{
+
+}
+
+
+
+void ModifiedBoris::prePush1D( Particle & part_tn,
+                               Particle & part_tp,
+                               double dt )
 {
     double dto2 = 0.5*dt ;
 
-    double coef1 = q*dto2/m ;
-
     // position at time tn
-    double posx = ( particle.icell[0] + static_cast<double>(particle.delta[0]) )*dx_ ;
+    double posx = ( part_tn.icell[0] + static_cast<double>(part_tn.delta[0]) )*dx_ ;
 
     // time decentering position at tn+1/2
-    double x_pred = posx + dto2* particle.v[0] ;
+    double x_pred = posx + dto2* part_tn.v[0] ;
+
+    // get the node coordinate and the delta
+    double integerPart = 0. ;
+    part_tp.delta[0] = static_cast<float>( std::modf(x_pred/dx_, &integerPart) ) ;
+    part_tp.icell[0] = static_cast<uint32>( integerPart ) ;
+
+}
+
+
+
+void ModifiedBoris::pushVelocity1D( Particle & part_tn,
+                                    Particle & part_tp,
+                                    double dt, double m )
+{
+    double dto2 = 0.5*dt ;
+
+    double coef1 = part_tn.charge * dto2/m ;
 
     // We now apply the 3 steps of the BORIS PUSHER
 
     // 1st half push of the electric field
-    double velx1 = particle.v[0] + coef1*Epart.x_ ;
-    double vely1 = particle.v[1] + coef1*Epart.y_ ;
-    double velz1 = particle.v[2] + coef1*Epart.z_ ;
+    double velx1 = part_tn.v[0] + coef1*part_tn.Ex ;
+    double vely1 = part_tn.v[1] + coef1*part_tn.Ey ;
+    double velz1 = part_tn.v[2] + coef1*part_tn.Ez ;
 
 
     // preparing variables for magnetic rotation
-    double rx = coef1 *Bpart.x_ ;
-    double ry = coef1 *Bpart.y_ ;
-    double rz = coef1 *Bpart.z_ ;
+    double rx = coef1 *part_tn.Bx ;
+    double ry = coef1 *part_tn.By ;
+    double rz = coef1 *part_tn.Bz ;
 
     double rx2 = rx*rx ;
     double ry2 = ry*ry ;
@@ -73,44 +150,41 @@ void ModifiedBoris::move1D(Particle & particle,
 
 
     // 2nd half push of the electric field
-    velx1 = velx2 + coef1*Epart.x_ ;
-    vely1 = vely2 + coef1*Epart.y_ ;
-    velz1 = velz2 + coef1*Epart.z_ ;
-
-    // we update the position at tn+1
-    posx = x_pred + dto2 * velx1 ;
-
+    velx1 = velx2 + coef1*part_tn.Ex ;
+    vely1 = vely2 + coef1*part_tn.Ey ;
+    velz1 = velz2 + coef1*part_tn.Ez ;
 
     // Update particle velocity
-    particle.v[0] = velx1 ;
-    particle.v[1] = vely1 ;
-    particle.v[2] = velz1 ;
+    part_tp.v[0] = velx1 ;
+    part_tp.v[1] = vely1 ;
+    part_tp.v[2] = velz1 ;
+
+}
+
+
+
+void ModifiedBoris::corPush1D( Particle & part_tp,
+                               Particle & part_tcor,
+                               double dt )
+{
+    double dto2 = 0.5*dt ;
+
+    // position at time tpred
+    double x_pred = ( part_tp.icell[0] + static_cast<double>(part_tp.delta[0]) )*dx_ ;
+
+    // we update the position at tn+1
+    double posx = x_pred + dto2 * part_tp.v[0] ;
 
     // TODO later handle the origin of a patch
     //    particle.position[0] = posx ;
 
     // get the node coordinate and the delta
     double integerPart = 0. ;
-    particle.delta[0] = static_cast<float>( std::modf(posx/dx_, &integerPart) ) ;
-    particle.icell[0] = static_cast<uint32>( integerPart ) ;
-
-}
-
-void ModifiedBoris::move2D(Particle & particle,
-                           double dt, double m, double q,
-                           Point const & E ,
-                           Point const & B )
-{
+    part_tcor.delta[0] = static_cast<float>( std::modf(posx/dx_, &integerPart) ) ;
+    part_tcor.icell[0] = static_cast<uint32>( integerPart ) ;
 
 }
 
 
-void ModifiedBoris::move3D(Particle & particle,
-                           double dt, double m, double q,
-                           Point const & E ,
-                           Point const & B )
-{
-
-}
 
 

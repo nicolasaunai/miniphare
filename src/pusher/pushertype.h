@@ -26,10 +26,12 @@ protected:
     double dx_ ;
     uint32 nbrCellx_ ;
 
+    GridLayout layout_ ;
+
 
 public:
-    PusherType( const std::string & pusherName, const GridLayout & layout)
-        : pusherName_{pusherName}
+    PusherType( std::string const & pusherName, GridLayout const & layout)
+        : pusherName_{pusherName}, layout_{layout}
     {
         dx_ = layout.dx() ;
         nbrCellx_ = layout.nbrCellx() ;
@@ -42,20 +44,24 @@ public:
     // or move operations won't be generated
     virtual ~PusherType() = default ;
 
-    virtual void move1D(Particle & particle,
-                        double dt, double m, double q,
-                        Point const & Epart,
-                        Point const & Bpart) = 0 ;
 
-    virtual void move2D(Particle & particle,
-                        double dt, double m, double q,
-                        Point const & Epart,
-                        Point const & Bpart) = 0 ;
+    virtual void move1D(std::vector<Particle> & partIn ,
+                        std::vector<Particle> & partOut,
+                        double dt, double m,
+                        VecField const & E ,
+                        VecField const & B ) = 0 ;
 
-    virtual void move3D(Particle & particle,
-                        double dt, double m, double q,
-                        Point const & Epart,
-                        Point const & Bpart) = 0 ;
+    virtual void move2D(std::vector<Particle> & partIn ,
+                        std::vector<Particle> & partOut,
+                        double dt, double m,
+                        VecField const & E ,
+                        VecField const & B ) = 0 ;
+
+    virtual void move3D(std::vector<Particle> & partIn ,
+                        std::vector<Particle> & partOut,
+                        double dt, double m,
+                        VecField const & E ,
+                        VecField const & B ) = 0 ;
 
 };
 
