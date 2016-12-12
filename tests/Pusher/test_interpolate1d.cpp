@@ -11,7 +11,6 @@
 
 #include "Plasmas/particles.h"
 
-#include "Interpolator/interpolatorfactory.h"
 #include "Interpolator/interpolator.h"
 
 #include "pusher/pusher.h"
@@ -169,9 +168,8 @@ public:
         // we compute the time step
         double dt = (inputs.tend - inputs.tbegin)/inputs.nstep ;
 
-        Point minLocal(0., 0., 0.) ;
         // We need an interpolator
-        std::unique_ptr<Interpolator> interpol{ InterpolatorFactory::createInterpolator( layout, minLocal )} ;
+        std::unique_ptr<Interpolator> interpol{ new Interpolator{layout}} ;
 
         std::vector<Particle> particArray{partic} ;
 

@@ -19,19 +19,13 @@ class Projector
 {
 private:
     uint32  dim_ ;
-
-    Point  minGlobal_ ;
-
     std::unique_ptr<IndexesAndWeights> impl_ ;
 
 public:
 
     virtual ~Projector() = default ;
 
-    Projector( std::unique_ptr<IndexesAndWeights> && impl,
-                  const GridLayout & layout, const Point & minGlobal )
-        : dim_{layout.nbDimensions()}, minGlobal_{minGlobal},
-          impl_{ std::move(impl) } {}
+    Projector(const GridLayout & layout);
 
     std::tuple<std::vector<uint32>, std::vector<double>>
     getIndexesAndWeights( Particle const & particle, Direction dir ) ;

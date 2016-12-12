@@ -2,8 +2,8 @@
 
 #include "Solver/solver.h"
 
-#include "Interpolator/interpolatorfactory.h"
-#include "Projector/projectorfactory.h"
+#include "Interpolator/interpolator.h"
+#include "Projector/projector.h"
 
 #include "Faraday/faradayfactory.h"
 #include "pusher/pusherfactory.h"
@@ -15,10 +15,9 @@
 
 
 
-Solver::Solver( std::string const & pusherType, GridLayout const& layout,
-                Point const & minLocal, double dt )
-    : interpolator_{ InterpolatorFactory::createInterpolator( layout, minLocal )},
-      projector_{ ProjectorFactory::createProjector( layout, minLocal) },
+Solver::Solver( std::string const & pusherType, GridLayout const& layout, double dt )
+    : interpolator_{ new Interpolator{layout}} ,
+      projector_{ new Projector{layout} },
       EMFieldsPred_{{ {layout.allocSize(HybridQuantity::Ex ),
                     layout.allocSize(HybridQuantity::Ey ),
                     layout.allocSize(HybridQuantity::Ez )  }},

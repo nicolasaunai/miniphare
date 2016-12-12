@@ -36,7 +36,6 @@ SOURCES += ../../src/Plasmas/particles.cpp \
 
 
 HEADERS += ../../src/Plasmas/particles.h \
-           ../../src/Interpolator/interpolatorfactory.h \
            ../../src/Interpolator/interpolator.h \
            ../../src/IndexesAndWeights/indexesandweights.h \
            ../../src/IndexesAndWeights/indexesandweightso1.h \

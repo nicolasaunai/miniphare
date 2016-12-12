@@ -14,9 +14,12 @@ SOURCES += ../../src/Plasmas/ions.cpp \
            ../../src/grid/gridlayout.cpp \
            ../../src/grid/gridlayoutimplinternals.cpp \
            ../../src/grid/gridlayoutimplyee.cpp \
-           ../../src/Interpolator/interpolator.cpp \
            ../../src/Projector/projector.cpp \
            ../../src/IndexesAndWeights/indexesandweights.cpp \
+           ../../src/IndexesAndWeights/indexesandweightso1.cpp \
+           ../../src/IndexesAndWeights/indexesandweightso2.cpp \
+           ../../src/IndexesAndWeights/indexesandweightso3.cpp \
+           ../../src/IndexesAndWeights/indexesandweightso4.cpp \
            ../../src/vecfield/vecfield.cpp \
            ../../src/Field/field.cpp \
            test_ions.cpp \
@@ -31,9 +34,12 @@ HEADERS += ../../src/Plasmas/ions.h \
            ../../src/grid/gridlayoutimpl.h \
            ../../src/grid/gridlayoutimplinternals.h \
            ../../src/grid/gridlayoutimplyee.h \
-           ../../src/Interpolator/interpolator.h \
            ../../src/Projector/projector.h \
            ../../src/IndexesAndWeights/indexesandweights.h \
+           ../../src/IndexesAndWeights/indexesandweightso1.h \
+           ../../src/IndexesAndWeights/indexesandweightso2.h \
+           ../../src/IndexesAndWeights/indexesandweightso3.h \
+           ../../src/IndexesAndWeights/indexesandweightso4.h \
            ../../src/vecfield/vecfield.h \
            ../../src/Field/field.h
 

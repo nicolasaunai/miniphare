@@ -22,8 +22,7 @@ class Solver
 
 public:
 
-    Solver( const std::string & pusherType, GridLayout const& layout,
-            Point const & minLocal, double dt );
+    Solver( const std::string & pusherType, GridLayout const& layout, double dt );
 
     Solver(Solver const& source) = delete;
     Solver& operator=(Solver const& source) = delete;

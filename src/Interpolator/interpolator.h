@@ -20,9 +20,6 @@ class Interpolator
 {
 private:
     uint32  dim_ ;
-
-    Point  minGlobal_ ;
-
     std::unique_ptr<IndexesAndWeights> impl_ ;
 
 public:
@@ -31,10 +28,7 @@ public:
     // or move operations won't be generated
     virtual ~Interpolator() = default ;
 
-    Interpolator( std::unique_ptr<IndexesAndWeights> && impl,
-                  const GridLayout & layout, const Point & minGlobal )
-        : dim_{layout.nbDimensions()}, minGlobal_{minGlobal},
-          impl_{ std::move(impl) } {}
+    Interpolator(const GridLayout & layout);
 
     // we might interpolate a field from
     // a primal or a dual mesh

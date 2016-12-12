@@ -42,7 +42,6 @@ SOURCES += main.cpp \
     pusher/pusher1d.cpp \
     pusher/modifiedboris.cpp \
     Projector/projector.cpp \
-    Initializer/simpleparticleinitializer.cpp \
     helper.cpp
 
 
@@ -91,17 +90,12 @@ HEADERS += \
     IndexesAndWeights/indexesandweightso3.h \
     IndexesAndWeights/indexesandweightso4.h \
     Interpolator/interpolator.h \
-    Interpolator/interpolator1d.h \
-    Interpolator/interpolatorfactory.h \
     Projector/projector.h \
-    Projector/projector1d.h \
-    Projector/projectorfactory.h \
     pusher/pusher.h \
     pusher/pusher1d.h \
     pusher/pushertype.h \
     pusher/pusherfactory.h \
     pusher/modifiedboris.h \
-    Initializer/simpleparticleinitializer.h \
     helper.h
 
 

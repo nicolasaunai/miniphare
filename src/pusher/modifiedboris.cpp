@@ -4,7 +4,6 @@
 #include "pusher/modifiedboris.h"
 
 #include "Interpolator/interpolator.h"
-#include "Interpolator/interpolatorfactory.h"
 
 #include "helper.h"
 
@@ -20,36 +19,36 @@
  * @param B is given at tn+1/2
  */
 void ModifiedBoris::move1D( std::vector<Particle> & partIn ,
-                            std::vector<Particle> & partPred,
+                            std::vector<Particle> & partOut,
                             double dt, double m,
                             VecField const & E , VecField const & B)
 {
-    partPred = partIn ;
+    partOut = partIn ;
 
     for( uint32 ik=0 ; ik<partIn.size() ; ++ik )
     {
-        prePush1D( partIn[ik], partPred[ik], dt ) ;
+        prePush1D( partIn[ik], partOut[ik], dt ) ;
     }
 
-    Point minLocal(0., 0., 0.) ;
+    // TODO take the solver interpolator rather than this local one
     std::unique_ptr<Interpolator> \
-            interpol{ InterpolatorFactory::createInterpolator( layout_, minLocal )} ;
+            interpol{ new Interpolator( layout_)} ;
 
-    for( uint32 ik=0 ; ik<partPred.size() ; ++ik )
+    for( uint32 ik=0 ; ik<partOut.size() ; ++ik )
     {
-        compute1DFieldsAtParticles( *interpol, partPred[ik],
+        compute1DFieldsAtParticles( *interpol, partOut[ik],
                                     layout_, E, B ) ;
     }
 
-    for( uint32 ik=0 ; ik<partPred.size() ; ++ik )
+    for( uint32 ik=0 ; ik<partOut.size() ; ++ik )
     {
-        pushVelocity1D( partPred[ik], partPred[ik], dt, m );
+        pushVelocity1D( partOut[ik], partOut[ik], dt, m );
     }
 
 
-    for( uint32 ik=0 ; ik<partPred.size() ; ++ik )
+    for( uint32 ik=0 ; ik<partOut.size() ; ++ik )
     {
-        corPush1D( partPred[ik], partPred[ik], dt );
+        corPush1D( partOut[ik], partOut[ik], dt );
     }
 
 }
