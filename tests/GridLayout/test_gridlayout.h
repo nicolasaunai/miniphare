@@ -29,7 +29,6 @@ std::vector<GridLayoutParams> getFieldCoordsInputsFromFile() ;
 
 std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile() ;
 
-std::vector<GridLayoutParams> getDerivInputsFromFile() ;
 
 
 #define  MAX_SIZE 1000
@@ -65,8 +64,6 @@ struct GridLayoutParams
 
     std::string functionName ;
 
-    uint32 icase ;
-
     std::string layoutName ;
 
     std::array<uint32, 3> nbrCells;
@@ -82,13 +79,11 @@ struct GridLayoutParams
 
     uint32  field_iStart ;
     uint32  field_iEnd   ;
+
     Point origin{0., 0., 0.} ;
 
     std::vector<double>  fieldXCoords ;
     std::vector<double>  fieldXValues ;
-
-    std::vector<double>  derivedFieldXCoords ;
-    std::vector<double>  derivedFieldXValues ;
 
     std::vector<double>  cellCenteredXCoords ;
 

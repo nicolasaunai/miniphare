@@ -18,15 +18,14 @@
 class FluidParticleInitializer : public ParticleInitializer
 {
 
-private:
 
-    using ScalarFunction = double (*) (double x, double y, double z);
-    using VectorFunction = void   (*) (double x, double y, double z, std::array<double,3> vec);
+private:
 
     GridLayout     layout_;
     ScalarFunction density;
     VectorFunction bulkVelocity;
     ScalarFunction thermalSpeed;
+    double particleCharge_;
 
     uint32 nbrParticlePerCell_;
 
@@ -41,7 +40,8 @@ public:
                              ScalarFunction densityProfile,
                              VectorFunction bulkVelocityProfile,
                              ScalarFunction thermalSpeedProfile,
-                             uint32 nbrPartPerCell);
+                             uint32 nbrPartPerCell,
+                             double particleCharge);
 
     virtual void loadParticles(std::vector<Particle>& particles) const override;
 

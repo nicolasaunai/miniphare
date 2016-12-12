@@ -17,7 +17,8 @@ PatchData::PatchData(std::unique_ptr<InitializerFactory> initFactory)
                      initFactory->gridLayout().allocSize(HybridQuantity::Ez )  }},
                   "_currentEMfield"
                 },
-      solver_{ initFactory->gridLayout(), initFactory->timeStep() },
+      solver_{ initFactory->pusherType(), initFactory->gridLayout(),
+               initFactory->minLocal(), initFactory->timeStep() },
 
       ions_{ initFactory->gridLayout(), initFactory->createIonsInitializer() }
 {

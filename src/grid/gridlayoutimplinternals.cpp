@@ -491,7 +491,15 @@ uint32 GridLayoutImplInternals::isDual( QtyCentering centering ) const noexcept
 
 
 
+QtyCentering GridLayoutImplInternals::fieldCentering_(Field const & field,
+                                                      Direction dir ) const
+{
+    uint32 iDir = static_cast<uint32>( dir ) ;
 
+    uint32 iQty = static_cast<uint32>( field.hybridQty() ) ;
+
+    return hybridQtyCentering_[iQty][iDir] ;
+}
 
 
 

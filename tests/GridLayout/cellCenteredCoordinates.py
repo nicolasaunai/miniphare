@@ -47,14 +47,22 @@ def main(path='./'):
     if len(sys.argv) == 2:
         path = sys.argv[1]
 
-    nbrCellX_l=[40, 40, 40]
-    nbrCellY_l=[ 0, 12, 12]
-    nbrCellZ_l=[ 0,  0, 12]
-    nbrCells = {'X':nbrCellX_l, 'Y':nbrCellY_l, 'Z':nbrCellZ_l}
+    nbrOrder = 4
+    nbrTestCases = nbrOrder 
 
-    dx_l=[0.1, 0.1, 0.1] # 1D, 2D, 3D cases
-    dy_l=[0. , 0.1, 0.1]
-    dz_l=[0. , 0. , 0.1]
+    dim_l =[0]*nbrTestCases
+
+    interpOrder_l=[1, 2, 3, 4]
+
+    nbrCellX_l=[40]*nbrTestCases
+    nbrCellY_l=[ 0]*nbrTestCases
+    nbrCellZ_l=[ 0]*nbrTestCases
+
+    dx_l=[0.1]*nbrTestCases 
+    dy_l=[0. ]*nbrTestCases
+    dz_l=[0. ]*nbrTestCases
+    
+    nbrCells = {'X':nbrCellX_l, 'Y':nbrCellY_l, 'Z':nbrCellZ_l}
     meshSize= {'X':dx_l, 'Y':dy_l, 'Z':dz_l}
 
     origin = [0., 0., 0.]
@@ -62,73 +70,64 @@ def main(path='./'):
     gl = gridlayout.GridLayout()
     Direction_l = gl.Direction_l
 
-    interpOrder_l=[1, 2, 3, 4]
-    case_l=[0]
-    #dim_l =[0, 1, 2]
-    dim_l =[0]
-
-
-    maxNbrDim = 3
-
-    nbrTestCases = len(interpOrder_l)*len(dim_l)*len(case_l)
-    print( nbrTestCases )
-
-    iord_l=np.arange( len(interpOrder_l) )
-    print( iord_l )
+    
+    icase_l = np.arange( nbrTestCases )
 
     # ------- Debug commands -------
-    for icase in case_l:
-        for iord in iord_l:
-                print( "Interpolation order = %d" % interpOrder_l[iord] )
-
-                idim = 0
-                print( "Nbr of cells = %d" %  nbrCells[Direction_l[idim][1]][icase])
-
-                print( "Nbr of ghost cells on the primal mesh = %d on each side" %
-                gl.nbrGhostsPrimal(interpOrder_l[iord]) )
+    for icase in icase_l:
+        idim = dim_l[icase]
+        order = interpOrder_l[icase]
+        print( "Interpolation order = %d" % order )
+        print( "Nbr of cells = %d" %  nbrCells[Direction_l[idim][1]][icase])
+        print( "Nbr of ghost cells on the primal mesh = %d on each side" %
+                gl.nbrGhostsPrimal(order) )
 
     # ------------------------------
 
     f = open(os.path.join(path,"centeredCoords_summary.txt"), "w")
-    for iord in iord_l:
-        for icase in case_l:
-            for idim in dim_l:
+    
+    # the number of test cases
+    f.write("%d \n" % nbrTestCases )     
+    
+    for icase in icase_l:
+        idim = dim_l[icase]
+        order = interpOrder_l[icase]        
+        
+        f.write(("%d %d %06d %4.1f ") %
+           (order, dim_l[idim]+1, 
+            nbrCells[Direction_l[idim][1]][icase],
+            meshSize[Direction_l[idim][1]][icase]))
 
-                f.write(("%d %d %06d %4.1f ") %
-                   (interpOrder_l[iord],
-                    dim_l[idim]+1, nbrCells[Direction_l[idim][1]][icase],
-                    meshSize[Direction_l[idim][1]][icase]))
+        iStart = gl.physicalStartPrimal( order )
+        iEnd   = gl.physicalEndPrimal  ( order, nbrCells[Direction_l[idim][1]][icase])
 
-                iStart = gl.physicalStartPrimal(interpOrder_l[iord])
-                iEnd   = gl.physicalEndPrimal  (interpOrder_l[iord], nbrCells[Direction_l[idim][1]][icase])
+        # a cell-centered coordinate is always dual
+        iEnd = iEnd - 1
 
-                # a cell-centered coordinate is always dual
-                iEnd = iEnd - 1
-
-                f.write(("%d %d ") % (iStart, iEnd))
-                f.write(("%6.2f %6.2f %6.2f\n") % (origin[0], origin[1], origin[2]))
+        f.write(("%d %d ") % (iStart, iEnd))
+        f.write(("%6.2f %6.2f %6.2f\n") % (origin[0], origin[1], origin[2]))
 
     f.close()
 
+    for icase in icase_l:
+        idim = dim_l[icase]
+        order = interpOrder_l[icase]         
+        
+        f = open((os.path.join(path,"centeredCoords_ord%d_dim%d.txt") %
+        (order, dim_l[idim]+1)), "w")
 
-    for iord in iord_l:
-        for icase in case_l:
-            for idim in dim_l:
-                f = open((os.path.join(path,"centeredCoords_ord%d_dim%d_case%d.txt") %
-                (interpOrder_l[iord], dim_l[idim]+1, icase)), "w")
+        iStart = gl.physicalStartPrimal(order)
+        iEnd   = gl.physicalEndPrimal  (order, nbrCells[Direction_l[idim][1]][icase])
 
-                iStart = gl.physicalStartPrimal(interpOrder_l[iord])
-                iEnd   = gl.physicalEndPrimal  (interpOrder_l[iord], nbrCells[Direction_l[idim][1]][icase])
+        # a cell-centered coordinate is always dual
+        iEnd = iEnd - 1
 
-                # a cell-centered coordinate is always dual
-                iEnd = iEnd - 1
+        for iprimal in np.arange(iStart, iEnd+1):
+            x = centeredCoords(iprimal, iStart, Direction_l[idim], \
+                               meshSize[Direction_l[idim][1]][icase], origin )
+            f.write(("%8.2f ") % (x))
 
-                for iprimal in np.arange(iStart, iEnd+1):
-                    x = centeredCoords(iprimal, iStart, Direction_l[idim], \
-                                       meshSize[Direction_l[idim][1]][icase], origin )
-                    f.write(("%8.2f ") % (x))
-
-                f.close()
+        f.close()
 
 
 #np.savetxt("gridlayouttest.txt", caseParamsTable, delimiter=" ", fmt="%4.1f")

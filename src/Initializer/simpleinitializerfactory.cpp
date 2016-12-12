@@ -88,6 +88,7 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
 {
     const uint32 nbrSpecies = 2;
     const uint32 nbrPartPerCell = 100;
+    double chargeProton1 = 1., chargeProton2 = 1.;
 
     // should be obtained from
     // the factory somehow...
@@ -100,19 +101,22 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
     ionInitPtr->names.push_back("proton1");
     ionInitPtr->names.push_back("proton2");
 
+
     // TODO those rvalues should be moved so ParticleInitializer should have noexcept move Ctor.
     ionInitPtr->particleInitializers.push_back( std::unique_ptr<ParticleInitializer>
                                                     {new FluidParticleInitializer{layout_,
                                                                 densityProton1,
                                                                 bulkVelocityProton1,
                                                                 thermalSpeedProton1,
-                                                                nbrPartPerCell} } );
+                                                                nbrPartPerCell,
+                                                                chargeProton1} } );
 
     ionInitPtr->particleInitializers.push_back( std::unique_ptr<ParticleInitializer>
                                                     {new FluidParticleInitializer{layout_,
                                                      densityProton2, bulkVelocityProton2,
                                                      thermalSpeedProton2,
-                                                     nbrPartPerCell} } );
+                                                     nbrPartPerCell,
+                                                     chargeProton2} } );
 
     return ionInitPtr;
 
@@ -136,7 +140,12 @@ std::unique_ptr<OhmInitializer> SimpleInitializerFactory::createOhmInitializer()
     return nullptr;
 }
 
+std::string SimpleInitializerFactory::pusherType() const
+{
+    std::string pusher = "modifiedBoris" ;
 
+    return pusher ;
+}
 
 GridLayout const& SimpleInitializerFactory::gridLayout() const
 {
@@ -144,7 +153,17 @@ GridLayout const& SimpleInitializerFactory::gridLayout() const
 }
 
 
+Point SimpleInitializerFactory::minLocal() const
+{
+    Point minLocal{0., 0., 0.} ;
+
+    return minLocal ;
+}
+
+
 double SimpleInitializerFactory::timeStep() const
 {
     return dt_;
 }
+
+

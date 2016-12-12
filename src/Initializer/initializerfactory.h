@@ -2,10 +2,13 @@
 #define INITIALIZERFACTORY_H
 
 
-#include "memory"
+#include <memory>
+#include <string>
+
 #include "ionsinitializer.h"
 #include "electromaginitializer.h"
 #include "ohminitializer.h"
+
 
 
 /**
@@ -34,7 +37,10 @@ public:
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const = 0;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const = 0;
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const = 0;
+
+    virtual std::string pusherType() const = 0;
     virtual GridLayout const& gridLayout() const = 0;
+    virtual Point minLocal() const = 0;
     virtual double timeStep() const = 0;
 
     // virtual std::unique_ptr<SolverInitializer> createSolverInitializer() = 0;

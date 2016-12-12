@@ -139,9 +139,8 @@ std::vector<GridLayoutParams> getFieldCoordsInputsFromFile()
         exit(-1);
     }
 
-    uint32 orderMax = 4 ;
-
-    uint32 nbrTestCases = orderMax * static_cast<uint32>(HybridQuantity::count) ;
+    uint32 nbrTestCases = 0 ;
+    ifs1 >> nbrTestCases ;
 
     std::vector<GridLayoutParams> params(nbrTestCases);
 
@@ -175,61 +174,6 @@ std::vector<GridLayoutParams> getFieldCoordsInputsFromFile()
 
 
 
-std::vector<GridLayoutParams> getDerivInputsFromFile()
-{
-
-    std::string filename{"../GridLayout/deriv1D_summary.txt"};
-
-    std::ifstream infile{filename};
-    if (!infile )
-    {
-        std::cout << "Could not open file : " << filename
-                  << std::endl ;
-        exit(-1);
-    }
-
-    uint32 nbrTestCases = 0 ;
-    infile >> nbrTestCases ;
-
-    std::vector<GridLayoutParams> params(nbrTestCases);
-
-    // reading parameters relative to the test cases
-    for (uint32 i=0 ; i < nbrTestCases ; ++i)
-    {
-        uint32 iqty;
-
-        infile >> params[i].interpOrder
-               >> params[i].nbDim
-               >> iqty;
-
-        for (uint32 idim=0; idim < params[i].nbDim; ++idim)
-        {
-            infile >> params[i].nbrCells[idim];
-            infile >> params[i].dxdydz[idim];
-        }
-
-        infile >> params[i].field_iStart;
-        infile >> params[i].field_iEnd;
-        infile >> params[i].origin.x_;
-        infile >> params[i].origin.y_;
-        infile >> params[i].origin.z_;
-        infile >> params[i].functionName;
-
-        params[i].qty = GetHybridQty(iqty);
-        params[i].qtyName = GetHybridQtyName(iqty);
-        params[i].iqty = iqty;
-
-        params[i].fieldXCoords.assign(MAX_SIZE, 0.) ;
-        params[i].fieldXValues.assign(MAX_SIZE, 0.) ;
-        params[i].derivedFieldXCoords.assign(MAX_SIZE, 0.) ;
-        params[i].derivedFieldXValues.assign(MAX_SIZE, 0.) ;
-    }
-
-    return params ;
-}
-
-
-
 std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile()
 {
 
@@ -241,9 +185,8 @@ std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile()
         exit(-1);
     }
 
-    uint32 orderMax = 4 ;
-
-    uint32 nbrTestCases = orderMax ;
+    uint32 nbrTestCases = 0 ;
+    ifs1 >> nbrTestCases ;
 
     std::vector<GridLayoutParams> params(nbrTestCases);
 
@@ -270,12 +213,10 @@ std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile()
     for (uint32 i=0 ; i < nbrTestCases ; ++i)
     {
         uint32 order = params[i].interpOrder ;
-        uint32 icase = params[i].icase ;
         uint32 dim = params[i].nbDim ;
 
         std::string filename{"../GridLayout/centeredCoords_ord" + std::to_string(order) +
-                    "_dim" + std::to_string(dim) +
-                    "_case" + std::to_string(icase) + ".txt"};
+                    "_dim" + std::to_string(dim) + ".txt"};
 
         std::cout << filename << std::endl ;
 
@@ -297,5 +238,11 @@ std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile()
 
     return params ;
 }
+
+
+
+
+
+
 
 

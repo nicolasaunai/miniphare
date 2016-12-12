@@ -273,38 +273,9 @@
                       </DAssociation>
                      </instance>
                     </item>
-                    <item>
-                     <instance type="DAnnotation">
-                      <DAnnotation>
-                       <base-DElement>
-                        <DElement>
-                         <uid>{e3441669-99c3-4051-a04f-547850a95c43}</uid>
-                        </DElement>
-                       </base-DElement>
-                       <text>std::vector&lt;ParticleInitializer&gt; particleInitializers_; eee</text>
-                       <pos>x:95;y:575</pos>
-                       <rect>x:0;y:0;w:207.031;h:42</rect>
-                       <auto-sized>false</auto-sized>
-                       <visual-role>4</visual-role>
-                      </DAnnotation>
-                     </instance>
-                    </item>
-                    <item>
-                     <instance type="DBoundary">
-                      <DBoundary>
-                       <base-DElement>
-                        <DElement>
-                         <uid>{fe6faa99-5fc2-4e66-afa6-466ced8c79db}</uid>
-                        </DElement>
-                       </base-DElement>
-                       <pos>x:130;y:565</pos>
-                       <rect>x:-70;y:-40;w:140;h:80</rect>
-                      </DBoundary>
-                     </instance>
-                    </item>
                    </qlist>
                   </elements>
-                  <last-modified>1481022898558</last-modified>
+                  <last-modified>1481207389984</last-modified>
                   <toolbarid>General</toolbarid>
                  </MDiagram>
                 </base-MDiagram>

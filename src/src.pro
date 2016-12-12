@@ -10,7 +10,6 @@ SOURCES += main.cpp \
     Plasmas/particles.cpp \
     Plasmas/species.cpp \
     Plasmas/electrons.cpp \
-    pusher/pusher.cpp \
     Solver/solver.cpp \
     Electromag/electromag.cpp \
     vecfield/vecfield.cpp \
@@ -34,13 +33,23 @@ SOURCES += main.cpp \
     Initializer/simpleinitializerfactory.cpp \
     Initializer/initializerfactory.cpp \
     Initializer/fluidparticleinitializer.cpp \
+    IndexesAndWeights/indexesandweights.cpp \
+    IndexesAndWeights/indexesandweightso1.cpp \
+    IndexesAndWeights/indexesandweightso2.cpp \
+    IndexesAndWeights/indexesandweightso3.cpp \
+    IndexesAndWeights/indexesandweightso4.cpp \
+    Interpolator/interpolator.cpp \
+    pusher/pusher1d.cpp \
+    pusher/modifiedboris.cpp \
+    Projector/projector.cpp \
+    Initializer/simpleparticleinitializer.cpp \
+    helper.cpp
 
 
 HEADERS += \
     Plasmas/ions.h \
     Plasmas/particles.h \
     Plasmas/species.h \
-    pusher/pusher.h \
     Plasmas/electrons.h \
     Solver/solver.h \
     Electromag/electromag.h \
@@ -76,6 +85,24 @@ HEADERS += \
     Initializer/particleinitializer.h \
     Initializer/simpleinitializerfactory.h \
     Initializer/fluidparticleinitializer.h \
+    IndexesAndWeights/indexesandweights.h \
+    IndexesAndWeights/indexesandweightso1.h \
+    IndexesAndWeights/indexesandweightso2.h \
+    IndexesAndWeights/indexesandweightso3.h \
+    IndexesAndWeights/indexesandweightso4.h \
+    Interpolator/interpolator.h \
+    Interpolator/interpolator1d.h \
+    Interpolator/interpolatorfactory.h \
+    Projector/projector.h \
+    Projector/projector1d.h \
+    Projector/projectorfactory.h \
+    pusher/pusher.h \
+    pusher/pusher1d.h \
+    pusher/pushertype.h \
+    pusher/pusherfactory.h \
+    pusher/modifiedboris.h \
+    Initializer/simpleparticleinitializer.h \
+    helper.h
 
 
 

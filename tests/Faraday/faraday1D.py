@@ -226,8 +226,8 @@ def main(path='./'):
                 print("iEnd   : %d" % iEnd)
         
                 print("time = %7.3f" % time_l[itime])
-                for iprimal in np.arange(iStart, iEnd+1):
-                    x = gl.fieldCoords(iprimal, iStart, field_l[ifield], Direction_l[0], \
+                for knode in np.arange(iStart, iEnd+1):
+                    x = gl.fieldCoords(knode, iStart, field_l[ifield], Direction_l[0], \
                                             dx, origin, 0)
                                            
                     fx = faradayDict[faraday_test_l[icase]](field_l[ifield], x, param_l[icase], time_l[itime], dt)

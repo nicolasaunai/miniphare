@@ -41,7 +41,7 @@ GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCell
       odx_{1./dx_}, ody_{1./dy_}, odz_{1./dz_},
       nbrCellx_{nbrCells[0]}, nbrCelly_{nbrCells[1]}, nbrCellz_{nbrCells[2]},
       origin_{origin},
-      ghostParameter_{ghostParameter},
+      interpOrder_{ghostParameter},
       implPtr_{ GridLayoutImplFactory::createGridLayoutImpl(
                     nbDims, origin, ghostParameter, layoutName, nbrCells, dxdydz ) }
 {
@@ -75,11 +75,11 @@ GridLayout::GridLayout(GridLayout const& source)
       nbrCelly_{source.nbrCelly_},
       nbrCellz_{source.nbrCellz_},
       origin_{source.origin_},
-      ghostParameter_{source.ghostParameter_}
+      interpOrder_{source.interpOrder_}
 {
     //TODO : "yee" bad hardcoded. make a clone
     implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(
-                nbDims_, origin_, ghostParameter_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} },
+                nbDims_, origin_, interpOrder_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} },
                 { {dx_, dy_, dz_} } ) ;
 }
 
@@ -92,7 +92,7 @@ GridLayout::GridLayout(GridLayout&& source)
       nbrCelly_{std::move(source.nbrCelly_)},
       nbrCellz_{std::move(source.nbrCellz_)},
       origin_{std::move(source.origin_)},
-      ghostParameter_{std::move(source.ghostParameter_)},
+      interpOrder_{std::move(source.interpOrder_)},
       implPtr_{std::move(source.implPtr_)}
 {
 }
@@ -253,6 +253,12 @@ Point GridLayout::cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz ) cons
     return implPtr_->cellCenteredCoordinates( ix, iy, iz ) ;
 }
 
+
+
+QtyCentering GridLayout::fieldCentering(Field const& field, Direction dir) const
+{
+    return implPtr_->fieldCentering( field, dir ) ;
+}
 
 
 

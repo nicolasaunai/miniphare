@@ -10,12 +10,14 @@ FluidParticleInitializer::FluidParticleInitializer(GridLayout const& layout,
                                                    ScalarFunction densityProfile,
                                                    VectorFunction bulkVelocityProfile,
                                                    ScalarFunction thermalSpeedProfile,
-                                                   uint32 nbrPartPerCell)
+                                                   uint32 nbrPartPerCell,
+                                                   double particleCharge)
     : ParticleInitializer {},
       layout_{layout},
       density{densityProfile}, bulkVelocity{bulkVelocityProfile},
       thermalSpeed{thermalSpeedProfile},
-      nbrParticlePerCell_{nbrPartPerCell}
+      nbrParticlePerCell_{nbrPartPerCell},
+      particleCharge_{particleCharge_}
 {
 
 }
@@ -25,15 +27,16 @@ FluidParticleInitializer::FluidParticleInitializer(GridLayout const& layout,
 
 
 void maxwellianVelocity(std::array<double, 3> V, double Vth,
-                        std::mt19937_64 generator, Particle& particle)
+                        std::mt19937_64 generator,
+                        std::array<double,3> partVelocity)
 {
     std::normal_distribution<> maxwellX(V[0], Vth*Vth);
     std::normal_distribution<> maxwellY(V[1], Vth*Vth);
     std::normal_distribution<> maxwellZ(V[2], Vth*Vth);
 
-    particle.v[0] = maxwellX(generator);
-    particle.v[1] = maxwellY(generator);
-    particle.v[2] = maxwellZ(generator);
+    partVelocity[0] = maxwellX(generator);
+    partVelocity[1] = maxwellY(generator);
+    partVelocity[2] = maxwellZ(generator);
 }
 
 
@@ -71,7 +74,7 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
         double Vth;                 // cell centered thermal speed
         std::array<double,3> V;     // cell centered bulk velocity
         double cellWeight;          // weight for all particles in this cell
-
+        std::array<double,3> particleVelocity;
 
         // get the coordinate of the current cell
         coord  = layout_.cellCenteredCoordinates(ix,0,0);
@@ -83,18 +86,19 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
         Vth    = thermalSpeed(x, origin.y_, origin.z_);
 
         cellWeight = n*cellVolume / nbrParticlePerCell_;
-        std::uniform_real_distribution<> randPosX(x-0.5*dx, x+0.5*dx);
+        std::uniform_real_distribution<float> randPosX(0.5*dx, 0.5*dx);
 
         for (uint32 ipart=0; ipart < nbrParticlePerCell_; ++ipart)
         {
-            Particle tmpParticle;
+            maxwellianVelocity(V, Vth, generator, particleVelocity);
 
-            maxwellianVelocity(V, Vth, generator, tmpParticle);
-            tmpParticle.r[0] = randPosX(generator);
-            tmpParticle.r[1] = origin.y_;
-            tmpParticle.r[2] = origin.z_;
+            std::array<float, 3> delta = { { randPosX(generator), 0. , 0. } };
 
-            tmpParticle.weight = cellWeight;
+            Particle tmpParticle(cellWeight,
+                                 particleCharge_,
+                                 {ix, 0, 0},
+                                 delta,
+                                 particleVelocity );
 
             particles.push_back(std::move(tmpParticle));
         }
@@ -142,6 +146,7 @@ void FluidParticleInitializer::loadParticles2D_(std::vector<Particle>& particles
             double Vth;                 // cell centered thermal speed
             std::array<double,3> V;     // cell centered bulk velocity
             double cellWeight;          // weight for all particles in this cell
+            std::array<double,3> particleVelocity;
 
             // get the coordinate of the current cell
             coord  = layout_.cellCenteredCoordinates(ix,iy,0);
@@ -154,19 +159,21 @@ void FluidParticleInitializer::loadParticles2D_(std::vector<Particle>& particles
             Vth    = thermalSpeed(x, y, origin.z_);
 
             cellWeight = n*cellVolume / nbrParticlePerCell_;
-            std::uniform_real_distribution<> randPosX(x-0.5*dx, x+0.5*dx);
-            std::uniform_real_distribution<> randPosY(y-0.5*dy, y+0.5*dy);
+            std::uniform_real_distribution<float> randPosX(-0.5*dx, 0.5*dx);
+            std::uniform_real_distribution<float> randPosY(-0.5*dy, 0.5*dy);
 
             for (uint32 ipart=0; ipart < nbrParticlePerCell_; ++ipart)
             {
-                Particle tmpParticle;
+                maxwellianVelocity(V, Vth, generator, particleVelocity);
 
-                maxwellianVelocity(V, Vth, generator, tmpParticle);
-                tmpParticle.r[0] = randPosX(generator);
-                tmpParticle.r[1] = randPosY(generator);
-                tmpParticle.r[2] = origin.z_;
+                std::array<float, 3> delta =
+                 { { randPosX(generator), randPosY(generator), 0. } };
 
-                tmpParticle.weight = cellWeight;
+                Particle tmpParticle(cellWeight,
+                                     particleCharge_,
+                                     {ix, iy, 0},
+                                     delta,
+                                     particleVelocity );
 
                 particles.push_back(std::move(tmpParticle));
             }
@@ -214,35 +221,41 @@ void FluidParticleInitializer::loadParticles3D_(std::vector<Particle>& particles
             for (uint32 iz = iz0; iz < iz1; ++iz)
             {
                 Point coord;                // cell physical coordinate
-                double x,y;                 // cell coordinate along x and y
+                double x,y,z;               // cell coordinate along x and y
                 double n;                   // cell centered density
                 double Vth;                 // cell centered thermal speed
                 std::array<double,3> V;     // cell centered bulk velocity
                 double cellWeight;          // weight for all particles in this cell
+                std::array<double,3> particleVelocity;
 
                 // get the coordinate of the current cell
                 coord  = layout_.cellCenteredCoordinates(ix,iy,0);
                 x      = coord.x_;
                 y      = coord.y_;
+                z      = coord.z_;
 
                 // now get density, velocity and thermal speed values
-                n      = density(x, y, origin.z_);
-                bulkVelocity(x, y, origin.z_, V);
-                Vth    = thermalSpeed(x, y, origin.z_);
-                cellWeight = n*cellVolume / nbrParticlePerCell_;
+                n      = density(x, y, z);
+                bulkVelocity(x, y, z, V);
+                Vth    = thermalSpeed(x, y, z);
+                cellWeight = n * cellVolume / nbrParticlePerCell_;
 
-                std::uniform_real_distribution<> randPosX(x-0.5*dx, x+0.5*dx);
-                std::uniform_real_distribution<> randPosY(y-0.5*dy, y+0.5*dy);
+                std::uniform_real_distribution<float> randPosX(-0.5*dx, 0.5*dx);
+                std::uniform_real_distribution<float> randPosY(-0.5*dy, 0.5*dy);
+                std::uniform_real_distribution<float> randPosZ(-0.5*dz, 0.5*dz);
 
                 for (uint32 ipart=0; ipart < nbrParticlePerCell_; ++ipart)
                 {
-                    Particle tmpParticle;
+                    maxwellianVelocity(V, Vth, generator, particleVelocity);
 
-                    maxwellianVelocity(V, Vth, generator, tmpParticle);
-                    tmpParticle.r[0] = randPosX(generator);
-                    tmpParticle.r[1] = randPosY(generator);
-                    tmpParticle.r[2] = origin.z_;
-                    tmpParticle.weight = cellWeight;
+                    std::array<float, 3> delta =
+                     { { randPosX(generator), randPosY(generator), randPosZ(generator) } };
+
+                    Particle tmpParticle(cellWeight,
+                                         particleCharge_,
+                                         {ix, iy, iz},
+                                         delta,
+                                          particleVelocity );
 
                     particles.push_back(std::move(tmpParticle));
                 }

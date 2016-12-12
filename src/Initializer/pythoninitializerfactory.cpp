@@ -28,13 +28,17 @@ std::unique_ptr<OhmInitializer> PythonInitializerFactory::createOhmInitializer()
 }
 
 
+std::string PythonInitializerFactory::pusherType() const
+{
+    std::string pusher = "modifiedBoris" ;
+
+    return pusher ;
+}
+
 GridLayout const& PythonInitializerFactory::gridLayout() const
 {
     return layout_;
 }
-
-
-
 
 double PythonInitializerFactory::timeStep() const
 {

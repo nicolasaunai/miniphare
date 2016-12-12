@@ -4,8 +4,11 @@
 #include "Field/field.h"
 #include "vecfield/vecfield.h"
 #include "grid/gridlayout.h"
-#include "particles.h"
+#include "Plasmas/particles.h"
 #include "Initializer/particleinitializer.h"
+
+#include "Projector/projector.h"
+#include "Interpolator/interpolator.h"
 
 
 /**
@@ -47,20 +50,12 @@ public:
     Field& flux(uint32 iComponent) {return flux_.component(iComponent);}
     Field const& flux(uint32 iComponent) const {return flux_.component(iComponent);}
 
+    std::vector<Particle>& particles() {return particleArray_;}
+    std::vector<Particle> const& particles() const {return particleArray_;}
 
     void loadParticles();
 
-
-#if 0
-    Field* getChargeDensity();
-    Field* getBulkVelocity();
-    Field* getFLux();
-
-    void computeChargeDensity();
-    void computeFlux();
-    void computeBulkVelocity();
-
-#endif
+    void compute1DChargeDensityAndFlux( Projector & project );
 
 };
 

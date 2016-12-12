@@ -53,8 +53,8 @@ private:
     uint32 nbrCellz_  ;
 
     Point origin_;      // origin of the grid
+    uint32 interpOrder_ ;                            // TODO find a better name.
 
-    uint32 ghostParameter_ ;                            // TODO find a better name.
                                                         // If interpOrder is the best so be it.
 
     std::unique_ptr<GridLayoutImpl> implPtr_;           // abstract private implementation
@@ -99,11 +99,13 @@ public:
     double ody()const { return dy_ == 0. ? throw error(errorInverseMesh +" dy() (dy==0)"): ody_;}
     double odz()const { return dz_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
 
-    double nbrCellx() const {return nbrCellx_;}
-    double nbrCelly() const {return nbrCelly_;}
-    double nbrCellz() const {return nbrCellz_;}
+    uint32 nbrCellx() const {return nbrCellx_;}
+    uint32 nbrCelly() const {return nbrCelly_;}
+    uint32 nbrCellz() const {return nbrCellz_;}
 
     uint32 nbDimensions() const { return nbDims_ ; }
+
+    uint32 order() const { return interpOrder_ ; }
 
     uint32 physicalStartIndex(Field const& field, Direction direction) const;
     uint32 physicalEndIndex  (Field const& field, Direction direction) const;
@@ -123,6 +125,8 @@ public:
                                 uint32 ix, uint32 iy, uint32 iz ) const;
 
     Point cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz ) const;
+
+    QtyCentering fieldCentering(Field const& field, Direction dir) const;
 
 
 };

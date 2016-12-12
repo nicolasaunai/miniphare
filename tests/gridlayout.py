@@ -5,7 +5,7 @@
 #@author: mdrouin
 #"""
 
-#import numpy as np
+
 import math
 
 
@@ -131,13 +131,38 @@ class GridLayout(object):
         return size
 
 
-
-    # ---- Get coordinate methods -------------------------
+    # ---- Yee coordinate methods -------------------------
+    # knode : a primal or dual node index
+    # 
+    # The centering deduced from qty and direction tells
+    # whether knode is primal or dual
+    #    
     # ds stands for dx or dy or dz
-    #
     # This method returns a point
     #
-    def fieldCoords(self, iprimal, iStart, qty, direction, ds, origin, derivOrder):
+    def yeeCoords(self, knode, iStart, centering, direction, ds, origin, derivOrder):
+        halfCell = 0.
+
+        newCentering = self.changeCentering( centering, derivOrder )
+
+        if newCentering == 'dual':
+            halfCell = 0.5
+
+        x = ( (knode - iStart) + halfCell )*ds + origin[direction[0]]
+
+        return x
+
+
+    # ---- Get coordinate methods -------------------------
+    # knode : a primal or dual node index
+    # 
+    # The centering deduced from qty and direction tells
+    # whether knode is primal or dual
+    #    
+    # ds stands for dx or dy or dz
+    # This method returns a point
+    #
+    def fieldCoords(self, knode, iStart, qty, direction, ds, origin, derivOrder):
         halfCell = 0.
 
         newCentering = self.changeCentering( self.qtyCentering(qty, direction[1]), derivOrder )
@@ -145,7 +170,7 @@ class GridLayout(object):
         if newCentering == 'dual':
             halfCell = 0.5
 
-        x = ( (iprimal - iStart) + halfCell )*ds + origin[direction[0]]
+        x = ( (knode - iStart) + halfCell )*ds + origin[direction[0]]
 
         return x
 
