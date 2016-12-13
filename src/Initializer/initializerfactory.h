@@ -40,7 +40,7 @@ public:
 
     virtual std::string pusherType() const = 0;
     virtual GridLayout const& gridLayout() const = 0;
-    virtual Point minLocal() const = 0;
+
     virtual double timeStep() const = 0;
 
     // virtual std::unique_ptr<SolverInitializer> createSolverInitializer() = 0;
