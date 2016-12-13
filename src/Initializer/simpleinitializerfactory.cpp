@@ -123,7 +123,24 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
 }
 
 
+std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitializer() const
+{
+    const uint32 nbrSpecies = 2;
+    const std::string pusher = "modifiedBoris" ;
 
+    const std::vector<uint32>  interpolationOrders = {2, 2} ;
+
+
+    std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
+
+    solverInitPtr->nbrSpecies = nbrSpecies ;
+    solverInitPtr->pusherType = pusher ;
+    solverInitPtr->interpolationOrders = interpolationOrders ;
+
+
+    return  solverInitPtr;
+
+}
 
 
 std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectromagInitializer() const
@@ -140,17 +157,13 @@ std::unique_ptr<OhmInitializer> SimpleInitializerFactory::createOhmInitializer()
     return nullptr;
 }
 
-std::string SimpleInitializerFactory::pusherType() const
-{
-    std::string pusher = "modifiedBoris" ;
 
-    return pusher ;
-}
 
 GridLayout const& SimpleInitializerFactory::gridLayout() const
 {
     return layout_;
 }
+
 
 
 double SimpleInitializerFactory::timeStep() const

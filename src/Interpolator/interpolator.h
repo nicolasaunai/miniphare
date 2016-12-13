@@ -19,7 +19,8 @@
 class Interpolator
 {
 private:
-    uint32  dim_ ;
+
+    uint32 order_ ;
     std::unique_ptr<IndexesAndWeights> impl_ ;
 
 public:
@@ -28,7 +29,7 @@ public:
     // or move operations won't be generated
     virtual ~Interpolator() = default ;
 
-    Interpolator(const GridLayout & layout);
+    Interpolator(uint32 order);
 
     // we might interpolate a field from
     // a primal or a dual mesh

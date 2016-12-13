@@ -96,7 +96,8 @@ HEADERS += \
     pusher/pushertype.h \
     pusher/pusherfactory.h \
     pusher/modifiedboris.h \
-    helper.h
+    helper.h \
+    Initializer/solverinitializer.h
 
 
 

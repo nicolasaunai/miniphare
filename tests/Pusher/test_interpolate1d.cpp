@@ -169,7 +169,7 @@ public:
         double dt = (inputs.tend - inputs.tbegin)/inputs.nstep ;
 
         // We need an interpolator
-        std::unique_ptr<Interpolator> interpol{ new Interpolator{layout}} ;
+        std::unique_ptr<Interpolator> interpol{ new Interpolator{layout.order()} } ;
 
         std::vector<Particle> particArray{partic} ;
 

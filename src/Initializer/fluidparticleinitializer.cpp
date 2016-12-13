@@ -16,8 +16,8 @@ FluidParticleInitializer::FluidParticleInitializer(GridLayout const& layout,
       layout_{layout},
       density{densityProfile}, bulkVelocity{bulkVelocityProfile},
       thermalSpeed{thermalSpeedProfile},
-      nbrParticlePerCell_{nbrPartPerCell},
-      particleCharge_{particleCharge_}
+      particleCharge_{particleCharge},
+      nbrParticlePerCell_{nbrPartPerCell}
 {
 
 }
@@ -86,7 +86,7 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
         Vth    = thermalSpeed(x, origin.y_, origin.z_);
 
         cellWeight = n*cellVolume / nbrParticlePerCell_;
-        std::uniform_real_distribution<float> randPosX(0.5*dx, 0.5*dx);
+        std::uniform_real_distribution<float> randPosX(-0.5*dx, 0.5*dx);
 
         for (uint32 ipart=0; ipart < nbrParticlePerCell_; ++ipart)
         {

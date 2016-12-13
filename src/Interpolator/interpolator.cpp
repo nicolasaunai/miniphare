@@ -9,11 +9,10 @@
 
 
 
-Interpolator::Interpolator(const GridLayout & layout)
-    : dim_{layout.nbDimensions()},
+Interpolator::Interpolator(uint32 order)
+    : order_{order},
       impl_{ nullptr}
 {
-    uint32 order = layout.order();
 
     switch( order )
     {

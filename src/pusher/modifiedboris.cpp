@@ -32,7 +32,7 @@ void ModifiedBoris::move1D( std::vector<Particle> & partIn ,
 
     // TODO take the solver interpolator rather than this local one
     std::unique_ptr<Interpolator> \
-            interpol{ new Interpolator( layout_)} ;
+            interpol{ new Interpolator(layout_.order()) } ;
 
     for( uint32 ik=0 ; ik<partOut.size() ; ++ik )
     {

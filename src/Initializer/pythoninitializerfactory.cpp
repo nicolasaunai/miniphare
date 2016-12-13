@@ -27,12 +27,9 @@ std::unique_ptr<OhmInitializer> PythonInitializerFactory::createOhmInitializer()
     return nullptr;
 }
 
-
-std::string PythonInitializerFactory::pusherType() const
+std::unique_ptr<SolverInitializer> PythonInitializerFactory::createSolverInitializer() const
 {
-    std::string pusher = "modifiedBoris" ;
-
-    return pusher ;
+    return nullptr;
 }
 
 GridLayout const& PythonInitializerFactory::gridLayout() const
