@@ -31,7 +31,6 @@ SOURCES += ../../src/Plasmas/particles.cpp \
            test_main.cpp \
            test_utilities.cpp \
            test_commons.cpp \
-           test_pusher1d.cpp \
            test_interpolate1d.cpp
 
 
@@ -59,7 +58,6 @@ HEADERS += ../../src/Plasmas/particles.h \
            ../../src/helper.h \
            ../../src/utility.h \
            test_commons.h \
-           test_pusher.h \
            test_interpolate1d.h
 
 OTHER_FILES +=\

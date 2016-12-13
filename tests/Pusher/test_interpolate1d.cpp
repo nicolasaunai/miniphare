@@ -22,9 +22,6 @@
 
 
 
-uint32 InterpPushParams::testCaseNbr = 0 ;
-
-
 
 void print(InterpPushParams const& inputs) ;
 
@@ -45,6 +42,10 @@ void readFieldsAtParticle(InterpPushParams const & inputs,
                           std::vector<double> & Bx_p,
                           std::vector<double> & By_p,
                           std::vector<double> & Bz_p ) ;
+
+
+
+uint32 InterpPushParams::testCaseNbr = 0 ;
 
 
 class PusherTest: public ::testing::TestWithParam<InterpPushParams>
