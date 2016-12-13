@@ -8,7 +8,18 @@
 
 class ModifiedBoris : public PusherType
 {
+private:
+    void prePush1D( Particle & particleIn,
+                    Particle & particleOut,
+                    double dt ) ;
 
+    void pushVelocity1D( Particle & particleIn,
+                         Particle & particleOut,
+                         double dt, double m ) ;
+
+    void corPush1D( Particle & particleIn,
+                    Particle & particleOut,
+                    double dt ) ;
 
 public:
     ModifiedBoris( const std::string & pusherName, const GridLayout & layout )
@@ -36,20 +47,6 @@ public:
                          VecField const & E ,
                          VecField const & B ,
                          Interpolator & interpolator ) override ;
-
-    void prePush1D( Particle & particleIn,
-                    Particle & particleOut,
-                    double dt ) ;
-
-    void pushVelocity1D( Particle & particleIn,
-                         Particle & particleOut,
-                         double dt, double m ) ;
-
-    void corPush1D( Particle & particleIn,
-                    Particle & particleOut,
-                    double dt ) ;
-
-
 
 };
 
