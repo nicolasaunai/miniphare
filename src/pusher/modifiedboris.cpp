@@ -3,7 +3,7 @@
 
 #include "pusher/modifiedboris.h"
 
-#include "Interpolator/interpolator.h"
+
 
 #include "helper.h"
 
@@ -21,7 +21,8 @@
 void ModifiedBoris::move1D( std::vector<Particle> & partIn ,
                             std::vector<Particle> & partOut,
                             double dt, double m,
-                            VecField const & E , VecField const & B)
+                            VecField const & E , VecField const & B,
+                            Interpolator & interpolator )
 {
     partOut = partIn ;
 
@@ -30,13 +31,9 @@ void ModifiedBoris::move1D( std::vector<Particle> & partIn ,
         prePush1D( partIn[ik], partOut[ik], dt ) ;
     }
 
-    // TODO take the solver interpolator rather than this local one
-    std::unique_ptr<Interpolator> \
-            interpol{ new Interpolator(layout_.order()) } ;
-
     for( uint32 ik=0 ; ik<partOut.size() ; ++ik )
     {
-        compute1DFieldsAtParticles( *interpol, partOut[ik],
+        compute1DFieldsAtParticles( interpolator, partOut[ik],
                                     layout_, E, B ) ;
     }
 
@@ -59,7 +56,8 @@ void ModifiedBoris::move2D( std::vector<Particle> & partIn ,
                             std::vector<Particle> & partOut,
                             double dt, double m,
                             VecField const & E ,
-                            VecField const & B )
+                            VecField const & B ,
+                            Interpolator & interpolator )
 {
 
 }
@@ -70,7 +68,8 @@ void ModifiedBoris::move3D( std::vector<Particle> & partIn ,
                             std::vector<Particle> & partOut,
                             double dt, double m,
                             VecField const & E ,
-                            VecField const & B )
+                            VecField const & B ,
+                            Interpolator & interpolator )
 {
 
 }

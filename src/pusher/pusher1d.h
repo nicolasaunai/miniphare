@@ -28,10 +28,12 @@ public:
                       std::vector<Particle> & partOut,
                       double dt, double m,
                       VecField const & E ,
-                      VecField const & B ) override
+                      VecField const & B ,
+                      Interpolator & interpolator ) override
     {
         impl_->move1D( partIn, partOut,
-                       dt, m, E, B ) ;
+                       dt, m, E, B,
+                       interpolator ) ;
     }
 
 };

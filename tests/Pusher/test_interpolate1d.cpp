@@ -169,7 +169,7 @@ public:
         double dt = (inputs.tend - inputs.tbegin)/inputs.nstep ;
 
         // We need an interpolator
-        std::unique_ptr<Interpolator> interpol{ new Interpolator{layout.order()} } ;
+        std::unique_ptr<Interpolator> interpolator{ new Interpolator{layout.order()} } ;
 
         std::vector<Particle> particArray{partic} ;
 
@@ -186,7 +186,8 @@ public:
             initBVecField( *B_ptr, Bx_p[ik], By_p[ik], Bz_p[ik] ) ;
 
             pusher->move( particArray, particArray,
-                          dt, mass, *E_ptr, *B_ptr) ;
+                          dt, mass, *E_ptr, *B_ptr,
+                          *interpolator ) ;
 
             Particle const & iPart = particArray[0] ;
 

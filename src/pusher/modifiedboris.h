@@ -3,6 +3,8 @@
 
 #include "pusher/pushertype.h"
 
+#include "Interpolator/interpolator.h"
+
 
 class ModifiedBoris : public PusherType
 {
@@ -18,19 +20,22 @@ public:
                          std::vector<Particle> & partOut,
                          double dt, double m,
                          VecField const & E ,
-                         VecField const & B ) override ;
+                         VecField const & B ,
+                         Interpolator & interpolator ) override ;
 
     virtual void move2D( std::vector<Particle> & partIn ,
                          std::vector<Particle> & partOut,
                          double dt, double m,
                          VecField const & E ,
-                         VecField const & B ) override ;
+                         VecField const & B ,
+                         Interpolator & interpolator ) override ;
 
     virtual void move3D( std::vector<Particle> & partIn ,
                          std::vector<Particle> & partOut,
                          double dt, double m,
                          VecField const & E ,
-                         VecField const & B ) override ;
+                         VecField const & B ,
+                         Interpolator & interpolator ) override ;
 
     void prePush1D( Particle & particleIn,
                     Particle & particleOut,

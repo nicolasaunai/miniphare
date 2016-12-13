@@ -36,7 +36,8 @@ public:
                       std::vector<Particle> & partOut,
                       double dt, double m,
                       VecField const & E ,
-                      VecField const & B ) = 0 ;
+                      VecField const & B ,
+                      Interpolator & interpolator ) = 0 ;
 
 };
 
