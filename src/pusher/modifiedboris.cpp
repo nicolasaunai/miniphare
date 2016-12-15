@@ -24,11 +24,13 @@ void ModifiedBoris::move1D( std::vector<Particle> & partIn ,
                             VecField const & E , VecField const & B,
                             Interpolator & interpolator )
 {
+    double dto2dx = 0.5*dt/dx_ ;
+
     partOut = partIn ;
 
     for( uint32 ik=0 ; ik<partIn.size() ; ++ik )
     {
-        prePush1D( partIn[ik], partOut[ik], dt ) ;
+        prePush1D( partIn[ik], partOut[ik], dto2dx ) ;
     }
 
     for( uint32 ik=0 ; ik<partOut.size() ; ++ik )
@@ -45,7 +47,7 @@ void ModifiedBoris::move1D( std::vector<Particle> & partIn ,
 
     for( uint32 ik=0 ; ik<partOut.size() ; ++ik )
     {
-        corPush1D( partOut[ik], partOut[ik], dt );
+        corPush1D( partOut[ik], partOut[ik], dto2dx );
     }
 
 }
@@ -78,27 +80,18 @@ void ModifiedBoris::move3D( std::vector<Particle> & partIn ,
 
 void ModifiedBoris::prePush1D( Particle & part_tn,
                                Particle & part_tp,
-                               double dt )
+                               double dto2dx )
 {
-    double dto2dx = 0.5*dt/dx_ ;
-
-    // position at time tn
-//    double posx = ( part_tn.icell[0] + static_cast<double>(part_tn.delta[0]) )*dx_ ;
-
-    // time decentering position at tn+1/2
+    // time decentering of the delta position at tn+1/2
     float delta = part_tn.delta[0] + static_cast<float>( dto2dx * part_tn.v[0] ) ;
 
-    // get the node coordinate and the delta
-//    double integerPart = 0. ;
-//    part_tp.delta[0] = static_cast<float>( std::modf(x_pred/dx_, &integerPart) ) ;
-//    part_tp.icell[0] = static_cast<uint32>( integerPart ) ;
+    // check the validity of delta (0 <= delta <= 1)
+    // and do auto-correction
+    float iPart = std::floor(delta) ;
+    part_tp.delta[0] = delta - iPart ;
 
-    double iPart = 0. ;
-    part_tp.delta[0] = std::fabs(delta) - std::floor(delta) ;
-
-    std::modf( std::floor(delta), &iPart ) ;
+    // update the logical node
     part_tp.icell[0] += iPart ;
-
 }
 
 
@@ -168,27 +161,18 @@ void ModifiedBoris::pushVelocity1D( Particle & part_tn,
 
 void ModifiedBoris::corPush1D( Particle & part_tp,
                                Particle & part_tcor,
-                               double dt )
+                               double dto2dx )
 {
-    double dto2dx = 0.5*dt/dx_ ;
-
-    // position at time tpred
-//    double x_pred = ( part_tp.icell[0] + static_cast<double>(part_tp.delta[0]) )*dx_ ;
-
-    // we update the position at tn+1
+    // we update the delta position at tn+1
     float delta = part_tp.delta[0] + static_cast<float>( dto2dx * part_tp.v[0] ) ;
 
-    // get the node coordinate and the delta
-//    double integerPart = 0. ;
-//    part_tcor.delta[0] = static_cast<float>( std::modf(posx/dx_, &integerPart) ) ;
-//    part_tcor.icell[0] = static_cast<uint32>( integerPart ) ;
+    // check the validity of delta (0 <= delta <= 1)
+    // and do auto-correction
+    float iPart = std::floor(delta) ;
+    part_tcor.delta[0] = delta - iPart ;
 
-    double iPart = 0. ;
-    part_tcor.delta[0] = std::fabs(delta) - std::floor(delta) ;
-
-    std::modf( std::floor(delta), &iPart ) ;
+    // update the logical node
     part_tcor.icell[0] += iPart ;
-
 }
 
 
