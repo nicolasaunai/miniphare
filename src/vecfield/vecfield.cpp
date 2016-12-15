@@ -11,13 +11,10 @@ VecField::VecField(AllocSizeT xComponentSizes,
                    AllocSizeT yComponentSizes,
                    AllocSizeT zComponentSizes,
                    std::array<HybridQuantity, NBR_COMPO> componentTypes,
-                   std::string name)
-    :
-            xComponent_( xComponentSizes, componentTypes[0], name.insert(1,"_x") ),
-
-            yComponent_( yComponentSizes, componentTypes[1], name.insert(1,"_y") ),
-
-            zComponent_( zComponentSizes, componentTypes[2], name.insert(1,"_z") )
+                   std::string name):
+            xComponent_( xComponentSizes, componentTypes[0], name + "_x" ),
+            yComponent_( yComponentSizes, componentTypes[1], name + "_y" ),
+            zComponent_( zComponentSizes, componentTypes[2], name + "_z" )
 {
 
 }
