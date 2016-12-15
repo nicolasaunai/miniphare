@@ -90,12 +90,12 @@ def main(path='./'):
     f.write("%d \n" % len(icase_l) )  
 
     for icase in icase_l:
-        f.write(("%f %f %d \n%d %d \n%f %f %f \n%f %f %f \n%f %d\n" ) %
+        f.write(("%f %f %d \n%d %d \n%f %f %f \n%f %f %f \n%f %f %d\n" ) %
            (tbegin_l[icase], tend_l[icase], nstep_l[icase], 
             q_l[icase], m_l[icase], 
             x0_l[icase] , y0_l[icase] , z0_l[icase], 
             vx0_l[icase], vy0_l[icase], vz0_l[icase],
-            dx_l[icase], nx_l[icase] ) )
+            xmin_l[icase], dx_l[icase], nx_l[icase] ) )
 
     f.close() 
     

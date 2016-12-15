@@ -47,6 +47,7 @@ struct InterpPushParams
     // additional attributes used to initialize
     // a GridLayout object
 
+    std::array<double, 3> origin = { {0., 0., 0.} } ;
     std::array<double, 3> dxdydz = { {0.1, 0., 0.} } ;
     std::array<uint32, 3> nbrCells = { {1000, 0, 0} } ;
 

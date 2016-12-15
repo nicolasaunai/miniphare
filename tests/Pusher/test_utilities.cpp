@@ -25,6 +25,7 @@ std::vector<InterpPushParams> getInterpPushParamsFromFile()
 
     std::vector<InterpPushParams> params(nbrTestCases);
 
+
     // reading parameters relative to the test cases
     for (uint32 i=0 ; i < nbrTestCases ; ++i)
     {
@@ -39,6 +40,9 @@ std::vector<InterpPushParams> getInterpPushParamsFromFile()
         ifs1 >> params[i].vx0 ;
         ifs1 >> params[i].vy0 ;
         ifs1 >> params[i].vz0 ;
+        ifs1 >> params[i].origin[0] ;
+        ifs1 >> params[i].dxdydz[0] ;
+        ifs1 >> params[i].nbrCells[0] ;
     }
 
     return params ;
