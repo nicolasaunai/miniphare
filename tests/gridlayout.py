@@ -54,18 +54,6 @@ class GridLayout(object):
             return math.floor( (interpOrder +1)/2 )
 
 
-
-    def nbrGhostsDerived(self,interpOrder, centering):
-        if centering == 'primal':
-            # 1st order derivative becomes dual
-            return math.floor( (interpOrder +1)/2 )
-        else:
-            # 1st order derivative becomes primal
-            return math.floor( interpOrder/2 )
-
-
-
-
     def nbrGhostsPrimal(self,interpOrder):
         return math.floor( interpOrder/2 )
 
@@ -121,13 +109,18 @@ class GridLayout(object):
     # ---- Alloc methods -------------------------
 
     def allocSize(self, interpOrder, centering, nbrCells):
-        size = nbrCells + 1 + 2*self.nbrGhosts(interpOrder, centering)
+        size = nbrCells + 1 + 2*self.nbrGhosts(interpOrder, centering) \
+               - self.isDual(centering)
         return size
 
 
 
+    # 1st derivative
     def allocSizeDerived(self, interpOrder, centering, nbrCells):
-        size = nbrCells + 1 + 2*self.nbrGhostsDerived(interpOrder, centering)
+        newCentering = self.changeCentering( centering, 1 )
+        
+        size = nbrCells + 1 + 2*self.nbrGhosts(interpOrder, newCentering) \
+             - self.isDual(newCentering)
         return size
 
 

@@ -153,17 +153,20 @@ std::array<uint32, NBR_COMPO> GridLayoutImplInternals::nodeNbrFromCentering_(
     uint32 nz = 1 ;
 
     nx =  nbrPhysicalCells_[data.idirX] + 1
+               - isDual(qtyCenterings[data.idirX])
                + 2*nbrGhosts( qtyCenterings[data.idirX] ) ;
 
     if(nbdims_ >= 2)
     {
         ny =  nbrPhysicalCells_[data.idirY] + 1
+                - isDual(qtyCenterings[data.idirY])
                 + 2*nbrGhosts( qtyCenterings[data.idirY] ) ;
     }
 
     if(nbdims_ == 3)
     {
         nz =  nbrPhysicalCells_[data.idirZ] + 1
+                - isDual(qtyCenterings[data.idirZ])
                 + 2*nbrGhosts( qtyCenterings[data.idirZ] ) ;
     }
 
