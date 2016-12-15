@@ -80,18 +80,24 @@ void ModifiedBoris::prePush1D( Particle & part_tn,
                                Particle & part_tp,
                                double dt )
 {
-    double dto2 = 0.5*dt ;
+    double dto2dx = 0.5*dt/dx_ ;
 
     // position at time tn
-    double posx = ( part_tn.icell[0] + static_cast<double>(part_tn.delta[0]) )*dx_ ;
+//    double posx = ( part_tn.icell[0] + static_cast<double>(part_tn.delta[0]) )*dx_ ;
 
     // time decentering position at tn+1/2
-    double x_pred = posx + dto2* part_tn.v[0] ;
+    float delta = part_tn.delta[0] + static_cast<float>( dto2dx * part_tn.v[0] ) ;
 
     // get the node coordinate and the delta
-    double integerPart = 0. ;
-    part_tp.delta[0] = static_cast<float>( std::modf(x_pred/dx_, &integerPart) ) ;
-    part_tp.icell[0] = static_cast<uint32>( integerPart ) ;
+//    double integerPart = 0. ;
+//    part_tp.delta[0] = static_cast<float>( std::modf(x_pred/dx_, &integerPart) ) ;
+//    part_tp.icell[0] = static_cast<uint32>( integerPart ) ;
+
+    double iPart = 0. ;
+    part_tp.delta[0] = std::fabs(delta) - std::floor(delta) ;
+
+    std::modf( std::floor(delta), &iPart ) ;
+    part_tp.icell[0] += iPart ;
 
 }
 
@@ -160,26 +166,28 @@ void ModifiedBoris::pushVelocity1D( Particle & part_tn,
 }
 
 
-
 void ModifiedBoris::corPush1D( Particle & part_tp,
                                Particle & part_tcor,
                                double dt )
 {
-    double dto2 = 0.5*dt ;
+    double dto2dx = 0.5*dt/dx_ ;
 
     // position at time tpred
-    double x_pred = ( part_tp.icell[0] + static_cast<double>(part_tp.delta[0]) )*dx_ ;
+//    double x_pred = ( part_tp.icell[0] + static_cast<double>(part_tp.delta[0]) )*dx_ ;
 
     // we update the position at tn+1
-    double posx = x_pred + dto2 * part_tp.v[0] ;
-
-    // TODO later handle the origin of a patch
-    //    particle.position[0] = posx ;
+    float delta = part_tp.delta[0] + static_cast<float>( dto2dx * part_tp.v[0] ) ;
 
     // get the node coordinate and the delta
-    double integerPart = 0. ;
-    part_tcor.delta[0] = static_cast<float>( std::modf(posx/dx_, &integerPart) ) ;
-    part_tcor.icell[0] = static_cast<uint32>( integerPart ) ;
+//    double integerPart = 0. ;
+//    part_tcor.delta[0] = static_cast<float>( std::modf(posx/dx_, &integerPart) ) ;
+//    part_tcor.icell[0] = static_cast<uint32>( integerPart ) ;
+
+    double iPart = 0. ;
+    part_tcor.delta[0] = std::fabs(delta) - std::floor(delta) ;
+
+    std::modf( std::floor(delta), &iPart ) ;
+    part_tcor.icell[0] += iPart ;
 
 }
 
