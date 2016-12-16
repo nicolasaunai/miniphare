@@ -102,6 +102,6 @@ HEADERS += \
 
 
 DISTFILES += \
-    pusher/ModelPusher.qmodel \
     Plasmas/Plasma.qmodel\
     Initializer/Initializer.qmodel\
+    pusher/pusher.qmodel
