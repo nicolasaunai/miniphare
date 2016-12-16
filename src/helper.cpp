@@ -41,12 +41,12 @@ void compute1DFieldsAtParticles( Interpolator & interp,
         auto indexesAndWeights = \
                 interp.getIndexesAndWeights( part, Direction::X, centering ) ;
 
-        std::vector<uint32> ISx    = std::get<0>(indexesAndWeights) ;
-        std::vector<double> PondSx = std::get<1>(indexesAndWeights) ;
+        std::vector<uint32> indexes = std::get<0>(indexesAndWeights) ;
+        std::vector<double> weights = std::get<1>(indexesAndWeights) ;
 
-        for(uint32 ik=0 ; ik<ISx.size() ; ++ik)
+        for(uint32 ik=0 ; ik<indexes.size() ; ++ik)
         {
-            particleField += meshField(ISx[ik]) * PondSx[ik] ;
+            particleField += meshField(indexes[ik]) * weights[ik] ;
         }
     }
 

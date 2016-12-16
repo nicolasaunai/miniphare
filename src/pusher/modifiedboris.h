@@ -11,7 +11,7 @@ class ModifiedBoris : public PusherType
 private:
     void prePush1D( Particle & particleIn,
                     Particle & particleOut,
-                    double dt ) ;
+                    double dto2dx ) ;
 
     void pushVelocity1D( Particle & particleIn,
                          Particle & particleOut,
@@ -19,7 +19,7 @@ private:
 
     void corPush1D( Particle & particleIn,
                     Particle & particleOut,
-                    double dt ) ;
+                    double dto2dx ) ;
 
 public:
     ModifiedBoris( const std::string & pusherName, const GridLayout & layout )

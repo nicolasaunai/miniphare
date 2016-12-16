@@ -79,7 +79,7 @@ void ModifiedBoris::move3D( std::vector<Particle> & partIn ,
 
 
 void ModifiedBoris::prePush1D( Particle & part_tn,
-                               Particle & part_tp,
+                               Particle & part_tpred,
                                double dto2dx )
 {
     // time decentering of the delta position at tn+1/2
@@ -88,10 +88,10 @@ void ModifiedBoris::prePush1D( Particle & part_tn,
     // check the validity of delta (0 <= delta <= 1)
     // and do auto-correction
     float iPart = std::floor(delta) ;
-    part_tp.delta[0] = delta - iPart ;
+    part_tpred.delta[0] = delta - iPart ;
 
     // update the logical node
-    part_tp.icell[0] += iPart ;
+    part_tpred.icell[0] += iPart ;
 }
 
 
@@ -159,12 +159,12 @@ void ModifiedBoris::pushVelocity1D( Particle & part_tn,
 }
 
 
-void ModifiedBoris::corPush1D( Particle & part_tp,
+void ModifiedBoris::corPush1D( Particle & part_tpred,
                                Particle & part_tcor,
                                double dto2dx )
 {
     // we update the delta position at tn+1
-    float delta = part_tp.delta[0] + static_cast<float>( dto2dx * part_tp.v[0] ) ;
+    float delta = part_tpred.delta[0] + static_cast<float>( dto2dx * part_tpred.v[0] ) ;
 
     // check the validity of delta (0 <= delta <= 1)
     // and do auto-correction
