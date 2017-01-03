@@ -151,5 +151,19 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
 
 
 
+void Solver::applyElectricBoundaryConditions()
+{
+
+
+}
+
+
+void Solver::applyMagneticBoundaryConditions()
+{
+
+
+}
+
+
 
 

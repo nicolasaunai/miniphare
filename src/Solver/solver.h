@@ -2,6 +2,7 @@
 #define SOLVER_H
 
 #include <memory>
+#include <array>
 #include <vector>
 
 #include "types.h"
@@ -12,6 +13,9 @@
 #include "Faraday/faraday.h"
 #include "Electromag/electromag.h"
 #include "grid/gridlayout.h"
+
+#include "Field/fieldbc.h"
+#include "Plasmas/particlesbc.h"
 
 #include "Interpolator/interpolator.h"
 #include "Projector/projector.h"
@@ -38,13 +42,16 @@ public:
 
 private:
 
+    void applyElectricBoundaryConditions() ;
+    void applyMagneticBoundaryConditions() ;
+
     // those are Solver attribute because SOLVER decides where interp/project
     // work on the mesh.... a different solver may interp/project elsewhere
     std::vector< std::unique_ptr<Interpolator> > interpolator_ ;
     std::vector< std::unique_ptr<Projector> > projector_ ;
 
-//    std::unique_ptr<Interpolator> interpolator_ ;
-//    std::unique_ptr<Projector> projector_ ;
+    std::array< std::unique_ptr<FieldBC>, 6> fieldsBoundaryConditions ;
+    std::array< std::unique_ptr<ParticlesBC>, 6> particlesBoundaryConditions ;
 
     Electromag EMFieldsPred_;
     Electromag EMFieldsAvg_;

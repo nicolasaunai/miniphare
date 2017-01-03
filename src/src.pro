@@ -97,7 +97,9 @@ HEADERS += \
     pusher/pusherfactory.h \
     pusher/modifiedboris.h \
     helper.h \
-    Initializer/solverinitializer.h
+    Initializer/solverinitializer.h \
+    Field/fieldbc.h \
+    Plasmas/particlesbc.h
 
 
 
