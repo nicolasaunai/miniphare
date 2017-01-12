@@ -137,9 +137,15 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
     solverInitPtr->pusherType = pusher ;
     solverInitPtr->interpolationOrders = interpolationOrders ;
 
+    solverInitPtr->fieldBCType = {{"periodic", "periodic", \
+                                   "periodic", "periodic", \
+                                   "periodic", "periodic"}} ;
+
+    solverInitPtr->particleBCType = {{"periodic", "periodic", \
+                                      "periodic", "periodic", \
+                                      "periodic", "periodic" }} ;
 
     return  solverInitPtr;
-
 }
 
 

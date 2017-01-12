@@ -42,7 +42,9 @@ SOURCES += main.cpp \
     pusher/pusher1d.cpp \
     pusher/modifiedboris.cpp \
     Projector/projector.cpp \
-    helper.cpp
+    helper.cpp \
+    Field/periodicfieldbc.cpp \
+    Field/fieldbc3dcollection.cpp
 
 
 HEADERS += \
@@ -99,7 +101,11 @@ HEADERS += \
     helper.h \
     Initializer/solverinitializer.h \
     Field/fieldbc.h \
-    Plasmas/particlesbc.h
+    Plasmas/particlesbc.h \
+    Field/fieldbctype.h \
+    Field/fieldbcfactory.h \
+    Field/periodicfieldbc.h \
+    Field/fieldbc3dcollection.h
 
 
 
