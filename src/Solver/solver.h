@@ -5,6 +5,8 @@
 #include <vector>
 
 #include "types.h"
+#include "Initializer/solverinitializer.h"
+
 #include "Plasmas/ions.h"
 #include "Plasmas/electrons.h"
 #include "Faraday/faraday.h"
@@ -22,7 +24,8 @@ class Solver
 
 public:
 
-    Solver( const std::string & pusherType, GridLayout const& layout, double dt );
+    Solver( GridLayout const& layout, double dt, \
+            std::unique_ptr<SolverInitializer> solverInitializer );
 
     Solver(Solver const& source) = delete;
     Solver& operator=(Solver const& source) = delete;
@@ -37,8 +40,11 @@ private:
 
     // those are Solver attribute because SOLVER decides where interp/project
     // work on the mesh.... a different solver may interp/project elsewhere
-    std::unique_ptr<Interpolator> interpolator_ ;
-    std::unique_ptr<Projector> projector_ ;
+    std::vector< std::unique_ptr<Interpolator> > interpolator_ ;
+    std::vector< std::unique_ptr<Projector> > projector_ ;
+
+//    std::unique_ptr<Interpolator> interpolator_ ;
+//    std::unique_ptr<Projector> projector_ ;
 
     Electromag EMFieldsPred_;
     Electromag EMFieldsAvg_;

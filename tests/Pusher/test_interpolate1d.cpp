@@ -22,9 +22,6 @@
 
 
 
-uint32 InterpPushParams::testCaseNbr = 0 ;
-
-
 
 void print(InterpPushParams const& inputs) ;
 
@@ -38,13 +35,12 @@ void initEVecField( VecField & E_out,
 void initBVecField( VecField & B_out,
                     double Bx, double By, double Bz ) ;
 
-void readFieldsAtParticle(InterpPushParams const & inputs,
-                          std::vector<double> & Ex_p,
-                          std::vector<double> & Ey_p,
-                          std::vector<double> & Ez_p,
-                          std::vector<double> & Bx_p,
-                          std::vector<double> & By_p,
-                          std::vector<double> & Bz_p ) ;
+void readFieldsOnTheMesh(InterpPushParams const & inputs,
+                        GridLayout const & layout,
+                        VecField & field, uint32 ik  ) ;
+
+
+uint32 InterpPushParams::testCaseNbr = 0 ;
 
 
 class PusherTest: public ::testing::TestWithParam<InterpPushParams>
@@ -130,18 +126,18 @@ public:
             ifs_vz >> expected_vz_part[ik] ;
         }
 
-        std::vector<double> Ex_p( inputs.nstep+1, 0.) ;
-        std::vector<double> Ey_p( inputs.nstep+1, 0.) ;
-        std::vector<double> Ez_p( inputs.nstep+1, 0.) ;
-        std::vector<double> Bx_p( inputs.nstep+1, 0.) ;
-        std::vector<double> By_p( inputs.nstep+1, 0.) ;
-        std::vector<double> Bz_p( inputs.nstep+1, 0.) ;
+        auto allocBx = layout.allocSize(HybridQuantity::Bx) ;
+        auto allocBy = layout.allocSize(HybridQuantity::By) ;
+        auto allocBz = layout.allocSize(HybridQuantity::Bz) ;
+        auto allocEx = layout.allocSize(HybridQuantity::Ex) ;
+        auto allocEy = layout.allocSize(HybridQuantity::Ey) ;
+        auto allocEz = layout.allocSize(HybridQuantity::Ez) ;
 
-        // HERE: We do not use fields read from input files
-        readFieldsAtParticle( inputs,
-                              Ex_p, Ey_p, Ez_p,
-                              Bx_p, By_p, Bz_p ) ;
+        VecField Bfields(allocBx, allocBy, allocBz,
+           { {HybridQuantity::Bx, HybridQuantity::By, HybridQuantity::Bz} }, "B" ) ;
 
+        VecField Efields(allocEx, allocEy, allocEz,
+           { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} }, "E" ) ;
 
         std::unique_ptr<Pusher> pusher = PusherFactory::createPusher( layout, "modifiedBoris" ) ;
 
@@ -169,7 +165,7 @@ public:
         double dt = (inputs.tend - inputs.tbegin)/inputs.nstep ;
 
         // We need an interpolator
-        std::unique_ptr<Interpolator> interpol{ new Interpolator{layout}} ;
+        std::unique_ptr<Interpolator> interpolator{ new Interpolator{layout.order()} } ;
 
         std::vector<Particle> particArray{partic} ;
 
@@ -178,15 +174,13 @@ public:
 
         for(uint32 ik=1 ; ik< inputs.nstep+1 ; ++ik)
         {
-            std::shared_ptr<VecField> E_ptr = nullptr ;
-            std::shared_ptr<VecField> B_ptr = nullptr ;
-
-            allocEBVecFields( layout, E_ptr, B_ptr ) ;
-            initEVecField( *E_ptr, Ex_p[ik], Ey_p[ik], Ez_p[ik] ) ;
-            initBVecField( *B_ptr, Bx_p[ik], By_p[ik], Bz_p[ik] ) ;
+            // reading fields on the mesh
+            readFieldsOnTheMesh( inputs, layout, Bfields, ik ) ;
+            readFieldsOnTheMesh( inputs, layout, Efields, ik ) ;
 
             pusher->move( particArray, particArray,
-                          dt, mass, *E_ptr, *B_ptr) ;
+                          dt, mass, Efields, Bfields,
+                          *interpolator ) ;
 
             Particle const & iPart = particArray[0] ;
 
@@ -279,37 +273,40 @@ void initBVecField( VecField & B_out,
 
 
 
-void readFieldsAtParticle(InterpPushParams const & inputs,
-                          std::vector<double> & Ex_p,
-                          std::vector<double> & Ey_p,
-                          std::vector<double> & Ez_p,
-                          std::vector<double> & Bx_p,
-                          std::vector<double> & By_p,
-                          std::vector<double> & Bz_p )
+void readFieldsOnTheMesh(InterpPushParams const & inputs,
+                        GridLayout const & layout,
+                        VecField & vecfield, uint32 ik  )
 {
 
-    std::string fileFields{"../Pusher/odepush_fields_testCase"
-                + std::to_string(inputs.testId) + ".txt"};
-
-    std::cout << fileFields << std::endl ;
-
-    std::ifstream ifsFields{fileFields};
-    if (!ifsFields )
+    for( uint32 ifield=0 ; ifield<3 ; ifield++ )
     {
-        std::cout << "Could not open file : " << fileFields << std::endl ;
-        exit(-1);
+        Field & field = vecfield.component(ifield) ;
+
+        uint32 iqty = static_cast<uint32>( field.hybridQty() ) ;
+
+        //    odepush_Ex_t108_testCase3.txt
+        std::string fileFields{"../Pusher/odepush_" + GetHybridQtyName(iqty)
+                    + "_t" + std::to_string(ik) + "_testCase"
+                    + std::to_string(inputs.testId) + ".txt"};
+
+        // std::cout << fileFields << std::endl ;
+
+        std::ifstream ifsFields{fileFields};
+        if (!ifsFields )
+        {
+            std::cout << "Could not open file : " << fileFields << std::endl ;
+            exit(-1);
+        }
+
+        uint32 ix0 = layout.physicalStartIndex( field, Direction::X ) ;
+        uint32 ix1 = layout.physicalEndIndex  ( field, Direction::X ) ;
+
+        uint32 sizeX = field.shape()[0] ;
+        // Reading the field on the whole mesh
+        for(uint32 ix=ix0 ; ix<= ix1 ; ++ix) ifsFields >> field(ix) ;
     }
 
-    // Reading Exyz(t), Bxyz(t) at the particle position
-    for(uint32 ik=0 ; ik< inputs.nstep+1 ; ++ik) ifsFields >> Ex_p[ik] ;
-    for(uint32 ik=0 ; ik< inputs.nstep+1 ; ++ik) ifsFields >> Ey_p[ik] ;
-    for(uint32 ik=0 ; ik< inputs.nstep+1 ; ++ik) ifsFields >> Ez_p[ik] ;
-    for(uint32 ik=0 ; ik< inputs.nstep+1 ; ++ik) ifsFields >> Bx_p[ik] ;
-    for(uint32 ik=0 ; ik< inputs.nstep+1 ; ++ik) ifsFields >> By_p[ik] ;
-    for(uint32 ik=0 ; ik< inputs.nstep+1 ; ++ik) ifsFields >> Bz_p[ik] ;
-
 }
-
 
 
 

@@ -55,6 +55,14 @@ def main(path='./'):
     BxShape_l = ['unif']*nbCase 
     ByShape_l = ['unif']*nbCase 
     BzShape_l = ['unif']*nbCase 
+    
+    # mesh parameters used by the C++ code
+    # global min 
+    xmin_l = [0.]*nbCase
+    # spatial step size
+    dx_l = [0.1]*nbCase
+    # mesh number
+    nx_l = [1000]*nbCase
 
 
     print(len(Bz0_l))
@@ -82,11 +90,12 @@ def main(path='./'):
     f.write("%d \n" % len(icase_l) )  
 
     for icase in icase_l:
-        f.write(("%f %f %d \n%d %d \n%f %f %f \n%f %f %f \n" ) %
+        f.write(("%f %f %d \n%d %d \n%f %f %f \n%f %f %f \n%f %f %d\n" ) %
            (tbegin_l[icase], tend_l[icase], nstep_l[icase], 
             q_l[icase], m_l[icase], 
-            x0_l[icase], y0_l[icase], z0_l[icase], 
-            vx0_l[icase], vy0_l[icase], vz0_l[icase] ) )
+            x0_l[icase] , y0_l[icase] , z0_l[icase], 
+            vx0_l[icase], vy0_l[icase], vz0_l[icase],
+            xmin_l[icase], dx_l[icase], nx_l[icase] ) )
 
     f.close() 
     
@@ -192,26 +201,77 @@ def main(path='./'):
         file_vy.close()
         file_vz.close()
  
-        Ex_p = [ Exdef(Ex0, t[ik], sol[ik,0]) \
-                 for ik in range(t.shape[0])]
-
-        Ey_p = [ Exdef(Ey0, t[ik], sol[ik,0]) \
-                 for ik in range(t.shape[0])]
-
-        Ez_p = [ Exdef(Ez0, t[ik], sol[ik,0]) \
-                 for ik in range(t.shape[0])]
+        xmin = xmin_l[icase] 
+        xmax = xmin_l[icase] + dx_l[icase]*nx_l[icase] 
+        xArray = np.linspace(xmin, xmax, nx_l[icase]+1)
+#        print(xArray)
+#        print( xArray.shape[0] )
+ 
+        for itime in range(nstep_l[icase]+1):
+            Ex_field = [ Exdef(Ex0, t[itime], xArray[ik]) \
+            for ik in range(xArray.shape[0])] 
+ 
+            Ey_field = [ Eydef(Ey0, t[itime], xArray[ik]) \
+            for ik in range(xArray.shape[0])] 
+                     
+            Ez_field = [ Ezdef(Ez0, t[itime], xArray[ik]) \
+            for ik in range(xArray.shape[0])] 
+                         
+            Bx_field = [ Bxdef(Bx0, t[itime], xArray[ik]) \
+            for ik in range(xArray.shape[0])] 
+ 
+            By_field = [ Bydef(By0, t[itime], xArray[ik]) \
+            for ik in range(xArray.shape[0])] 
+                     
+            Bz_field = [ Bzdef(Bz0, t[itime], xArray[ik]) \
+            for ik in range(xArray.shape[0])] 
+                         
+            np.savetxt(os.path.join(path,("odepush_Ex_t%d_testCase%d.txt") % \
+                     (itime, icase_l[icase])), \
+                     (Ex_field), delimiter=' ')  
+                     
+            np.savetxt(os.path.join(path,("odepush_Ey_t%d_testCase%d.txt") % \
+                     (itime, icase_l[icase])), \
+                     (Ey_field), delimiter=' ') 
+                     
+            np.savetxt(os.path.join(path,("odepush_Ez_t%d_testCase%d.txt") % \
+                     (itime, icase_l[icase])), \
+                     (Ez_field), delimiter=' ') 
+                     
+            np.savetxt(os.path.join(path,("odepush_Bx_t%d_testCase%d.txt") % \
+                     (itime, icase_l[icase])), \
+                     (Bx_field), delimiter=' ') 
+                     
+            np.savetxt(os.path.join(path,("odepush_By_t%d_testCase%d.txt") % \
+                     (itime, icase_l[icase])), \
+                     (By_field), delimiter=' ') 
+                     
+            np.savetxt(os.path.join(path,("odepush_Bz_t%d_testCase%d.txt") % \
+                     (itime, icase_l[icase])), \
+                     (Bz_field), delimiter=' ') 
         
-        Bx_p = [ Bzdef(Bx0, t[ik], sol[ik,0]) \
-                 for ik in range(t.shape[0])]
-        
-        By_p = [ Bzdef(By0, t[ik], sol[ik,0]) \
-                 for ik in range(t.shape[0])]
+#        print( np.size(Ex_field) )
+ 
+ 
+#        Ex_p = [ Exdef(Ex0, t[ik], sol[ik,0]) \
+#                 for ik in range(t.shape[0])]
+#
+#        Ey_p = [ Exdef(Ey0, t[ik], sol[ik,0]) \
+#                 for ik in range(t.shape[0])]
+#
+#        Ez_p = [ Exdef(Ez0, t[ik], sol[ik,0]) \
+#                 for ik in range(t.shape[0])]
+#        
+#        Bx_p = [ Bzdef(Bx0, t[ik], sol[ik,0]) \
+#                 for ik in range(t.shape[0])]
+#        
+#        By_p = [ Bzdef(By0, t[ik], sol[ik,0]) \
+#                 for ik in range(t.shape[0])]
+#
+#        Bz_p = [ Bzdef(Bz0, t[ik], sol[ik,0]) \
+#                 for ik in range(t.shape[0])]
 
-        Bz_p = [ Bzdef(Bz0, t[ik], sol[ik,0]) \
-                 for ik in range(t.shape[0])]
 
-        np.savetxt(os.path.join(path,("odepush_fields_testCase%d.txt") % (icase_l[icase])), \
-        (Ex_p, Ey_p, Ez_p, Bx_p, By_p, Bz_p), delimiter=' ') 
 
 #        plt.figure()
 #        plt.xlabel('x')

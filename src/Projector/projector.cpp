@@ -9,11 +9,9 @@
 #include "IndexesAndWeights/indexesandweightso4.h"
 
 
-Projector::Projector(const GridLayout & layout)
-    : dim_{layout.nbDimensions()}
+Projector::Projector(uint32 order)
+    : order_{order}
 {
-    uint32 order = layout.order() ;
-
     std::unique_ptr<IndexesAndWeights> impl  ;
     std::unique_ptr<Projector> projector ;
 

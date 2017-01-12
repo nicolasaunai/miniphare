@@ -18,14 +18,14 @@
 class Projector
 {
 private:
-    uint32  dim_ ;
+    uint32 order_ ;
     std::unique_ptr<IndexesAndWeights> impl_ ;
 
 public:
 
     virtual ~Projector() = default ;
 
-    Projector(const GridLayout & layout);
+    Projector(uint32 order);
 
     std::tuple<std::vector<uint32>, std::vector<double>>
     getIndexesAndWeights( Particle const & particle, Direction dir ) ;

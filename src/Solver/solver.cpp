@@ -15,10 +15,9 @@
 
 
 
-Solver::Solver( std::string const & pusherType, GridLayout const& layout, double dt )
-    : interpolator_{ new Interpolator{layout}} ,
-      projector_{ new Projector{layout} },
-      EMFieldsPred_{{ {layout.allocSize(HybridQuantity::Ex ),
+Solver::Solver( GridLayout const& layout, double dt,
+                std::unique_ptr<SolverInitializer> solverInitializer )
+    : EMFieldsPred_{{ {layout.allocSize(HybridQuantity::Ex ),
                     layout.allocSize(HybridQuantity::Ey ),
                     layout.allocSize(HybridQuantity::Ez )  }},
 
@@ -33,13 +32,20 @@ Solver::Solver( std::string const & pusherType, GridLayout const& layout, double
                    { {layout.allocSize(HybridQuantity::Bx ),
                    layout.allocSize(HybridQuantity::By ),
                    layout.allocSize(HybridQuantity::Bz )  }}, "_avg" },
-
-      pusher_{ PusherFactory::createPusher( layout, pusherType ) },
       faraday_{dt, layout}
 {
 
-//    std::vector<double>dxdydz{layout.dx(), layout.dy(), layout.dz()};
+    uint32 size = static_cast<uint32> ( solverInitializer->interpolationOrders.size() ) ;
+    for( uint32 ik=0 ; ik<size ; ++ik )
+    {
+        uint32 order = solverInitializer->interpolationOrders[ik] ;
+        interpolator_.push_back( std::unique_ptr<Interpolator>(new Interpolator(order)) ) ;
+        projector_.push_back( std::unique_ptr<Projector>(new Projector(order)) ) ;
+    }
 
+    const std::string pusherType = solverInitializer->pusherType ;
+
+    pusher_ =  PusherFactory::createPusher( layout, pusherType ) ;
 
 
     // TODO need to initialize OHM object
@@ -48,9 +54,6 @@ Solver::Solver( std::string const & pusherType, GridLayout const& layout, double
     // TODO projections/interpolations
 
 }
-
-
-
 
 
 

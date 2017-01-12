@@ -198,7 +198,7 @@
                     </item>
                    </qlist>
                   </elements>
-                  <last-modified>1473602551309</last-modified>
+                  <last-modified>1481899552467</last-modified>
                   <toolbarid>General</toolbarid>
                  </MDiagram>
                 </base-MDiagram>
@@ -312,7 +312,7 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{34a4933f-7b11-4070-804f-e9b6cb779579}</uid>
+                    <uid>{4f4a11fd-409e-471b-af74-8484454a8633}</uid>
                     <visibility>3</visibility>
                     <type>1</type>
                     <declaration>densityProfile: Profile</declaration>
@@ -320,7 +320,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{c0b49332-a9e3-44bd-8d84-fd126165c5ae}</uid>
+                    <uid>{433a16f6-7414-41a4-bd9b-344182cee27b}</uid>
                     <visibility>3</visibility>
                     <type>1</type>
                     <declaration>velocityProfile: profile</declaration>
@@ -328,7 +328,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{637599d0-fc69-4d5f-a542-b9b299c7ce6d}</uid>
+                    <uid>{25c38b75-d045-4ce6-b77a-e3029a355533}</uid>
                     <visibility>3</visibility>
                     <type>1</type>
                     <declaration>temperatyreProfile:Profile</declaration>
@@ -336,7 +336,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{6fbe8fe2-20f6-4f69-897a-6769d20bfe36}</uid>
+                    <uid>{236cae25-b98c-46cf-9ee9-99be4a887d61}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <declaration>loadParticles()</declaration>

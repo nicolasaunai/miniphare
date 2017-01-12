@@ -3,7 +3,7 @@
 
 #include "pusher/modifiedboris.h"
 
-#include "Interpolator/interpolator.h"
+
 
 #include "helper.h"
 
@@ -21,22 +21,21 @@
 void ModifiedBoris::move1D( std::vector<Particle> & partIn ,
                             std::vector<Particle> & partOut,
                             double dt, double m,
-                            VecField const & E , VecField const & B)
+                            VecField const & E , VecField const & B,
+                            Interpolator & interpolator )
 {
+    double dto2dx = 0.5*dt/dx_ ;
+
     partOut = partIn ;
 
     for( uint32 ik=0 ; ik<partIn.size() ; ++ik )
     {
-        prePush1D( partIn[ik], partOut[ik], dt ) ;
+        prePush1D( partIn[ik], partOut[ik], dto2dx ) ;
     }
-
-    // TODO take the solver interpolator rather than this local one
-    std::unique_ptr<Interpolator> \
-            interpol{ new Interpolator( layout_)} ;
 
     for( uint32 ik=0 ; ik<partOut.size() ; ++ik )
     {
-        compute1DFieldsAtParticles( *interpol, partOut[ik],
+        compute1DFieldsAtParticles( interpolator, partOut[ik],
                                     layout_, E, B ) ;
     }
 
@@ -48,7 +47,7 @@ void ModifiedBoris::move1D( std::vector<Particle> & partIn ,
 
     for( uint32 ik=0 ; ik<partOut.size() ; ++ik )
     {
-        corPush1D( partOut[ik], partOut[ik], dt );
+        corPush1D( partOut[ik], partOut[ik], dto2dx );
     }
 
 }
@@ -59,7 +58,8 @@ void ModifiedBoris::move2D( std::vector<Particle> & partIn ,
                             std::vector<Particle> & partOut,
                             double dt, double m,
                             VecField const & E ,
-                            VecField const & B )
+                            VecField const & B ,
+                            Interpolator & interpolator )
 {
 
 }
@@ -70,7 +70,8 @@ void ModifiedBoris::move3D( std::vector<Particle> & partIn ,
                             std::vector<Particle> & partOut,
                             double dt, double m,
                             VecField const & E ,
-                            VecField const & B )
+                            VecField const & B ,
+                            Interpolator & interpolator )
 {
 
 }
@@ -78,22 +79,19 @@ void ModifiedBoris::move3D( std::vector<Particle> & partIn ,
 
 
 void ModifiedBoris::prePush1D( Particle & part_tn,
-                               Particle & part_tp,
-                               double dt )
+                               Particle & part_tpred,
+                               double dto2dx )
 {
-    double dto2 = 0.5*dt ;
+    // time decentering of the delta position at tn+1/2
+    float delta = part_tn.delta[0] + static_cast<float>( dto2dx * part_tn.v[0] ) ;
 
-    // position at time tn
-    double posx = ( part_tn.icell[0] + static_cast<double>(part_tn.delta[0]) )*dx_ ;
+    // check the validity of delta (0 <= delta <= 1)
+    // and do auto-correction
+    float iPart = std::floor(delta) ;
+    part_tpred.delta[0] = delta - iPart ;
 
-    // time decentering position at tn+1/2
-    double x_pred = posx + dto2* part_tn.v[0] ;
-
-    // get the node coordinate and the delta
-    double integerPart = 0. ;
-    part_tp.delta[0] = static_cast<float>( std::modf(x_pred/dx_, &integerPart) ) ;
-    part_tp.icell[0] = static_cast<uint32>( integerPart ) ;
-
+    // update the logical node
+    part_tpred.icell[0] += iPart ;
 }
 
 
@@ -161,27 +159,20 @@ void ModifiedBoris::pushVelocity1D( Particle & part_tn,
 }
 
 
-
-void ModifiedBoris::corPush1D( Particle & part_tp,
+void ModifiedBoris::corPush1D( Particle & part_tpred,
                                Particle & part_tcor,
-                               double dt )
+                               double dto2dx )
 {
-    double dto2 = 0.5*dt ;
+    // we update the delta position at tn+1
+    float delta = part_tpred.delta[0] + static_cast<float>( dto2dx * part_tpred.v[0] ) ;
 
-    // position at time tpred
-    double x_pred = ( part_tp.icell[0] + static_cast<double>(part_tp.delta[0]) )*dx_ ;
+    // check the validity of delta (0 <= delta <= 1)
+    // and do auto-correction
+    float iPart = std::floor(delta) ;
+    part_tcor.delta[0] = delta - iPart ;
 
-    // we update the position at tn+1
-    double posx = x_pred + dto2 * part_tp.v[0] ;
-
-    // TODO later handle the origin of a patch
-    //    particle.position[0] = posx ;
-
-    // get the node coordinate and the delta
-    double integerPart = 0. ;
-    part_tcor.delta[0] = static_cast<float>( std::modf(posx/dx_, &integerPart) ) ;
-    part_tcor.icell[0] = static_cast<uint32>( integerPart ) ;
-
+    // update the logical node
+    part_tcor.icell[0] += iPart ;
 }
 
 

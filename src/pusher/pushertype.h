@@ -4,10 +4,12 @@
 #include <string>
 
 #include "grid/gridlayout.h"
-
 #include "Plasmas/particles.h"
-
 #include "vecfield/vecfield.h"
+
+#include "Interpolator/interpolator.h"
+
+
 
 
 /**
@@ -49,19 +51,22 @@ public:
                         std::vector<Particle> & partOut,
                         double dt, double m,
                         VecField const & E ,
-                        VecField const & B ) = 0 ;
+                        VecField const & B ,
+                        Interpolator & interpolator ) = 0 ;
 
     virtual void move2D(std::vector<Particle> & partIn ,
                         std::vector<Particle> & partOut,
                         double dt, double m,
                         VecField const & E ,
-                        VecField const & B ) = 0 ;
+                        VecField const & B ,
+                        Interpolator & interpolator ) = 0 ;
 
     virtual void move3D(std::vector<Particle> & partIn ,
                         std::vector<Particle> & partOut,
                         double dt, double m,
                         VecField const & E ,
-                        VecField const & B ) = 0 ;
+                        VecField const & B ,
+                        Interpolator & interpolator ) = 0 ;
 
 };
 
