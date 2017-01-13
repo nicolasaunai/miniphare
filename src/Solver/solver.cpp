@@ -42,8 +42,8 @@ Solver::Solver( GridLayout const& layout, double dt,
     for( uint32 ik=0 ; ik<size ; ++ik )
     {
         uint32 order = solverInitializer->interpolationOrders[ik] ;
-        interpolator_.push_back( std::unique_ptr<Interpolator>(new Interpolator(order)) ) ;
-        projector_.push_back( std::unique_ptr<Projector>(new Projector(order)) ) ;
+        interpolators_.push_back( std::unique_ptr<Interpolator>(new Interpolator(order)) ) ;
+        projectors_.push_back( std::unique_ptr<Projector>(new Projector(order)) ) ;
     }
 
     const std::string pusherType = solverInitializer->pusherType ;
