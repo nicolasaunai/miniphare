@@ -128,6 +128,8 @@ public:
 
     QtyCentering fieldCentering(Field const& field, Direction dir) const;
 
+    uint32 nbrGhostCells( QtyCentering const& centering ) const;
+
 
 };
 

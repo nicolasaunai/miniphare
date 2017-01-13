@@ -178,6 +178,11 @@ QtyCentering GridLayoutImplYee::fieldCentering(Field const & field, Direction di
 }
 
 
+uint32 GridLayoutImplYee::nbrGhostCells( QtyCentering centering ) const
+{
+    return nbrGhosts( centering ) ;
+}
+
 
 /**
  * @brief GridLayoutImplYee::deriv1D It was decided to compute the

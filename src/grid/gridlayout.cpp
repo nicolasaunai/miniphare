@@ -262,6 +262,11 @@ QtyCentering GridLayout::fieldCentering(Field const& field, Direction dir) const
 
 
 
+uint32 GridLayout::nbrGhostCells( QtyCentering const& centering ) const
+{
+    return implPtr_->nbrGhostCells( centering ) ;
+}
+
 /* ---------------------------------------------------------------------------
  *
  *                                  PRIVATE
