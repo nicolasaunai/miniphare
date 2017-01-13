@@ -14,6 +14,7 @@ using ScalarFunction = double (*) (double x, double y, double z);
 using VectorFunction = void   (*) (double x, double y, double z, std::array<double,3> vec);
 
 
+enum class Edge{ Xmin, Xmax, Ymin, Ymax, Zmin, Zmax } ;
 
 struct AllocSizeT{
 

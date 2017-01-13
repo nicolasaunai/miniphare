@@ -137,9 +137,10 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
     solverInitPtr->pusherType = pusher ;
     solverInitPtr->interpolationOrders = interpolationOrders ;
 
-    solverInitPtr->fieldBCType = {{"periodic", "periodic", \
-                                   "periodic", "periodic", \
-                                   "periodic", "periodic"}} ;
+    std::pair< Edge, std::string > XminBC = std::make_pair(Edge::Xmin, "periodic");
+    std::pair< Edge, std::string > XmaxBC = std::make_pair(Edge::Xmax, "periodic");
+
+    solverInitPtr->fieldBCType = {{XminBC, XmaxBC}} ;
 
     solverInitPtr->particleBCType = {{"periodic", "periodic", \
                                       "periodic", "periodic", \

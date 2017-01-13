@@ -22,7 +22,8 @@ struct SolverInitializer
 
     std::vector<uint32>  interpolationOrders ;
 
-    std::array<std::string, 6> fieldBCType ;
+    std::array< std::pair< Edge, std::string>, 6> fieldBCType ;
+
     std::array<std::string, 6> particleBCType ;
 };
 

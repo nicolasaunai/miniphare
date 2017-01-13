@@ -10,6 +10,7 @@
 
 
 
+
 class FieldBC
 {
 protected:
@@ -18,9 +19,11 @@ protected:
     // FieldBCType might be periodic ...
     std::unique_ptr<FieldBCType> impl_ ;
 
+    Edge edge_ ;
+
 public:
-    FieldBC( std::unique_ptr<FieldBCType> && impl )
-        : impl_{std::move(impl) } {}
+    FieldBC( std::unique_ptr<FieldBCType> && impl, Edge edge  )
+        : impl_{std::move(impl) }, edge_{edge} {}
 
     FieldBC(FieldBC const& source) = delete;
     FieldBC& operator=(FieldBC const& source) = delete;

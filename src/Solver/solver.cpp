@@ -1,5 +1,4 @@
 
-
 #include "Solver/solver.h"
 
 #include "Interpolator/interpolator.h"
@@ -51,9 +50,9 @@ Solver::Solver( GridLayout const& layout, double dt,
     pusher_ =  PusherFactory::createPusher( layout, pusherType ) ;
 
     std::vector< std::unique_ptr<FieldBC> > collectionOfBC ;
-    for( std::string & condition : solverInitializer->particleBCType )
+    for( std::pair< Edge, std::string> & edgeAndCondition : solverInitializer->fieldBCType )
     {
-        collectionOfBC.push_back( FieldBCFactory::createFieldBC( layout, condition ) ) ;
+        collectionOfBC.push_back( FieldBCFactory::createFieldBC( layout, edgeAndCondition ) ) ;
     }
 
 

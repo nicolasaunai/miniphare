@@ -21,7 +21,7 @@ public:
 
     static std::unique_ptr<FieldBC>
     createFieldBC( GridLayout const & layout,
-                   std::string const & condition )
+                   std::pair< Edge, std::string> edgeAndCondition )
     {
         std::unique_ptr<FieldBCType> impl  ;
         std::unique_ptr<FieldBC> fieldBC ;
@@ -37,7 +37,7 @@ public:
                                      - periodic ");
         }
 
-        fieldBC = std::unique_ptr<FieldBC>( new FieldBC( std::move(impl) ) ) ;
+        fieldBC = std::unique_ptr<FieldBC>( new FieldBC( std::move(impl), edge ) ) ;
 
         return  fieldBC ;
     }
