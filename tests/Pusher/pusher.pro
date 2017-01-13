@@ -15,6 +15,7 @@ INCLUDEPATH += ../../src
 
 SOURCES += ../../src/Plasmas/particles.cpp \
            ../../src/Interpolator/interpolator.cpp \
+           ../../src/Interpolator/interpolatefields.cpp \
            ../../src/IndexesAndWeights/indexesandweights.cpp \
            ../../src/IndexesAndWeights/indexesandweightso1.cpp \
            ../../src/IndexesAndWeights/indexesandweightso2.cpp \
@@ -27,7 +28,6 @@ SOURCES += ../../src/Plasmas/particles.cpp \
            ../../src/grid/gridlayoutimplinternals.cpp \
            ../../src/vecfield/vecfield.cpp \
            ../../src/Field/field.cpp \
-           ../../src/helper.cpp \
            test_main.cpp \
            test_utilities.cpp \
            test_commons.cpp \
