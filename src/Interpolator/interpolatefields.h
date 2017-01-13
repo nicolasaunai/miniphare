@@ -1,5 +1,5 @@
-#ifndef HELPER_H
-#define HELPER_H
+#ifndef INTERPOLATEFIELDS_H
+#define INTERPOLATEFIELDS_H
 
 #include <vector>
 
@@ -14,5 +14,4 @@ void compute1DFieldsAtParticles( Interpolator & interp,
                                  VecField const & E , VecField const & B );
 
 
-
-#endif // HELPER_H
+#endif // INTERPOLATEFIELDS_H

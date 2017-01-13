@@ -42,9 +42,9 @@ SOURCES += main.cpp \
     pusher/pusher1d.cpp \
     pusher/modifiedboris.cpp \
     Projector/projector.cpp \
-    helper.cpp \
     Field/periodicfieldbc.cpp \
-    Field/fieldbc3dcollection.cpp
+    Field/fieldbc3dcollection.cpp \
+    Interpolator/interpolatefields.cpp
 
 
 HEADERS += \
@@ -92,13 +92,13 @@ HEADERS += \
     IndexesAndWeights/indexesandweightso3.h \
     IndexesAndWeights/indexesandweightso4.h \
     Interpolator/interpolator.h \
+    Interpolator/interpolatefields.h \
     Projector/projector.h \
     pusher/pusher.h \
     pusher/pusher1d.h \
     pusher/pushertype.h \
     pusher/pusherfactory.h \
     pusher/modifiedboris.h \
-    helper.h \
     Initializer/solverinitializer.h \
     Field/fieldbc.h \
     Plasmas/particlesbc.h \

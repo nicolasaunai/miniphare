@@ -36,6 +36,7 @@ SOURCES += ../../src/Plasmas/particles.cpp \
 
 HEADERS += ../../src/Plasmas/particles.h \
            ../../src/Interpolator/interpolator.h \
+           ../../src/Interpolator/interpolatefields.h \
            ../../src/IndexesAndWeights/indexesandweights.h \
            ../../src/IndexesAndWeights/indexesandweightso1.h \
            ../../src/IndexesAndWeights/indexesandweightso2.h \
@@ -55,7 +56,6 @@ HEADERS += ../../src/Plasmas/particles.h \
            ../../src/Field/field.h \
            ../../src/types.h \
            ../../src/constants.h \
-           ../../src/helper.h \
            ../../src/utility.h \
            test_commons.h \
            test_interpolate1d.h
