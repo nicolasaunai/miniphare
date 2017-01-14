@@ -25,4 +25,7 @@ add_executable(Plasma ${SOURCES})
 target_link_libraries(Plasma gtest gtest_main)
 target_link_libraries(Plasma gmock gmock_main)
 add_test(NAME test-Plasmas  COMMAND Plasma)
+add_custom_command(TARGET Gridlayout
+                   POST_BUILD
+                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/gridlayouttest.py ${CMAKE_CURRENT_BINARY_DIR})
 
