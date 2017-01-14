@@ -99,3 +99,11 @@ tests/Faraday/backup
 tests/IndexesAndWeights/*.txt
 tests/Pusher/*.txt
 
+
+# CMAKE files
+# -----------
+CMakeLists.txt.user
+Makefile
+CMakeFiles
+*.cmake
+
