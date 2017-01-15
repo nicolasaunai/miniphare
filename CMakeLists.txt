@@ -15,6 +15,10 @@ include_directories("src")
 add_subdirectory(src)
 
 
+#file (GLOB_RECURSE ALL_SOURCES . *.cpp)
+
+
+
 
 option(test "Build all tests." ON) # Makes boolean 'test' available.
 
@@ -35,6 +39,6 @@ if (test)
   ##############
   add_subdirectory(tests/Faraday)
   add_subdirectory(tests/GridLayout)
-  add_subdirectory(tests/Plasma)
+  #add_subdirectory(tests/Plasma)
 
 endif()
