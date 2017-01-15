@@ -61,7 +61,7 @@ public:
     virtual uint32 ghostStartIndex(Field const& field, Direction direction) const override;
     virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const override;
 
-    void deriv1D(Field const& operand, Field& derivative) const;
+    void deriv1D(Field const& operand, Field& derivative) const override;
 
     virtual AllocSizeT allocSize( HybridQuantity qtyType ) const override ;
 

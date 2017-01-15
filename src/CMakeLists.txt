@@ -2,17 +2,11 @@ cmake_minimum_required (VERSION 2.6)
 project (miniphare)
 
 find_package(MPI)
-file(GLOB_RECURSE SOURCES src *.cpp)
+file(GLOB_RECURSE SOURCES src *.cpp *.h)
 
 
 add_executable(miniphare ${SOURCES})
 
-
-
-
-#add_custom_command(TARGET Gridlayout
-#                   POST_BUILD
-#                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/gridlayouttest.py ${CMAKE_CURRENT_BINARY_DIR})
 
 
 find_program(CPPCHECK cppcheck)

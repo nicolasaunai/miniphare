@@ -4,7 +4,7 @@ project (miniphare)
 set (Tutorial_VERSION_MAJOR 1)
 set (Tutorial_VERSION_MINOR 0)
 
-add_compile_options(-std=c++11 -stdlib=libc++)
+add_compile_options(-std=c++11 -Wall)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
@@ -14,8 +14,6 @@ endif(NOT CMAKE_BUILD_TYPE)
 include_directories("src")
 add_subdirectory(src)
 
-
-#file (GLOB_RECURSE ALL_SOURCES . *.cpp)
 
 
 
@@ -39,6 +37,7 @@ if (test)
   ##############
   add_subdirectory(tests/Faraday)
   add_subdirectory(tests/GridLayout)
+  add_subdirectory(tests/Pusher)
   #add_subdirectory(tests/Plasma)
 
 endif()
