@@ -34,7 +34,7 @@ Solver::Solver( GridLayout const& layout, double dt,
                    layout.allocSize(HybridQuantity::By ),
                    layout.allocSize(HybridQuantity::Bz )  }}, "_avg" },
       faraday_{dt, layout},
-      fieldsBoundaryConditions_{}
+      boundaryConditions_{}
 {
 
     uint32 size = static_cast<uint32> ( solverInitializer->interpolationOrders.size() ) ;
@@ -84,7 +84,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     faraday_(E, B, Bpred);
 
     // BC Fields --> Apply boundary conditions on the electric field
-    fieldsBoundaryConditions_.applyMagneticBC( Bpred ) ;
+    boundaryConditions_.applyMagneticBC( Bpred ) ;
 
     // --> MOMENTS (n^n, u^n) at time n have
     // --> already been computed, or are known just after initialization
@@ -95,7 +95,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // ohm(Bpred, Ne, Ve, Pe, Epred);
 
     // BC Fields --> Apply boundary conditions on the electric field
-    fieldsBoundaryConditions_.applyElectricBC( Epred ) ;
+    boundaryConditions_.applyElectricBC( Epred ) ;
 
     // --> Get time averaged prediction (E,B)_(n+1/2) pred1
     // --> using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred1
@@ -112,7 +112,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     faraday_(Eavg, B, Bpred);
 
     // BC Fields --> Apply boundary conditions on the electric field
-    fieldsBoundaryConditions_.applyMagneticBC( Bpred ) ;
+    boundaryConditions_.applyMagneticBC( Bpred ) ;
 
     // --> DEPOSIT PREDICTED MOMENTS (n^{n+1}, u^{n+1}) AT TIME n+1
     // --> get ion and electron moments at time n+1 (pred 1)
@@ -130,7 +130,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // ohm(Bpred, Ne, Ve, Pe, Epred);
 
     // BC Fields --> Apply boundary conditions on the electric field
-    fieldsBoundaryConditions_.applyElectricBC( Epred ) ;
+    boundaryConditions_.applyElectricBC( Epred ) ;
 
     // --> Get time averaged prediction (E^(n+1/2),B^(n+1/2)) pred2
     // --> using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred2
@@ -145,7 +145,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
 
     // --> Get CORRECTED B^{n+1} from E^{n+1/2} pred2
     faraday_(Eavg, B, B);
-    fieldsBoundaryConditions_.applyMagneticBC( B ) ;
+    boundaryConditions_.applyMagneticBC( B ) ;
 
     // --> DEPOSIT CORRECTED MOMENTS (n^{n+1}, u^{n+1})
     // --> Get ion and electron moments at time n+1
@@ -163,7 +163,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // ohm(B, Ne, Ve, Pe, E);
 
     // BC Fields --> Apply boundary conditions on the electric field
-    fieldsBoundaryConditions_.applyElectricBC( E ) ;
+    boundaryConditions_.applyElectricBC( E ) ;
 
 }
 

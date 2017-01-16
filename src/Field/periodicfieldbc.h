@@ -2,22 +2,23 @@
 #define PERIODICFIELDBC_H
 
 
-#include "Field/fieldbctype.h"
+#include "Field/fieldbc.h"
 
 
 
-class PeriodicFieldBC : public FieldBCType
+class PeriodicFieldBC : public FieldBC
 {
 private:
 
 
 public:
 
-    PeriodicFieldBC( std::string const & BCType,
-                     GridLayout const & layout )
-        : FieldBCType(BCType, layout) {}
+    PeriodicFieldBC( std::string const & condition,
+                     GridLayout const & layout,
+                     Edge const &  edge  )
+        : FieldBC(condition, layout, edge) {}
 
-    virtual ~PeriodicFieldBC() {}
+    virtual ~PeriodicFieldBC() = default ;
 
     virtual void applyElectricBC( VecField & E ) override ;
 

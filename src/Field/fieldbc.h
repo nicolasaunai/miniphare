@@ -5,9 +5,8 @@
 
 #include "types.h"
 
+#include "grid/gridlayout.h"
 #include "vecfield/vecfield.h"
-#include "Field/fieldbctype.h"
-
 
 
 
@@ -15,15 +14,19 @@ class FieldBC
 {
 protected:
 
-    // Bridge pattern for FieldBC
-    // FieldBCType might be periodic ...
-    std::unique_ptr<FieldBCType> impl_ ;
+    std::string  condition_ ;
+    GridLayout  layout_ ;
 
     Edge edge_ ;
 
+    double dx_ ;
+    uint32 nbrCellx_ ;
+
+
 public:
-    FieldBC( std::unique_ptr<FieldBCType> && impl, Edge edge  )
-        : impl_{std::move(impl) }, edge_{edge} {}
+    FieldBC( std::string const & condition, GridLayout const & layout,
+             Edge const & edge  )
+        : condition_{condition}, layout_{layout}, edge_{edge} {}
 
     FieldBC(FieldBC const& source) = delete;
     FieldBC& operator=(FieldBC const& source) = delete;
@@ -31,17 +34,11 @@ public:
     FieldBC(FieldBC&& toMove)      = default;
     FieldBC& operator=(FieldBC&& source) = default;
 
-    ~FieldBC() = default ;
+    virtual ~FieldBC() = default ;
 
-    void applyElectricBC( VecField & E )
-    {
-        impl_->applyElectricBC( E ) ;
-    }
+    virtual void applyElectricBC( VecField & E ) = 0 ;
 
-    void applyMagneticBC( VecField & B )
-    {
-        impl_->applyMagneticBC( B ) ;
-    }
+    virtual void applyMagneticBC( VecField & B ) = 0 ;
 
 };
 

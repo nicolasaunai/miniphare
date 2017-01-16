@@ -9,7 +9,6 @@
 
 #include "Field/fieldbc.h"
 
-#include "Field/fieldbctype.h"
 #include "Field/periodicfieldbc.h"
 
 
@@ -23,21 +22,21 @@ public:
     createFieldBC( GridLayout const & layout,
                    std::pair< Edge, std::string> edgeAndCondition )
     {
-        std::unique_ptr<FieldBCType> impl  ;
         std::unique_ptr<FieldBC> fieldBC ;
+
+        Edge  edge = std::get<0>(edgeAndCondition) ;
+        std::string condition = std::get<1>(edgeAndCondition) ;
 
         if( condition == "periodic" )
         {
-            impl = std::unique_ptr<PeriodicFieldBC>( new PeriodicFieldBC( condition, layout ) ) ;
-            // update
+            fieldBC = std::unique_ptr<PeriodicFieldBC>(
+                        new PeriodicFieldBC( condition, layout, edge ) ) ;
         }
         else
         {
             throw std::runtime_error("Error : FieldBCFactory - available boundary conditions are :\
                                      - periodic ");
         }
-
-        fieldBC = std::unique_ptr<FieldBC>( new FieldBC( std::move(impl), edge ) ) ;
 
         return  fieldBC ;
     }

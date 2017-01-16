@@ -56,7 +56,7 @@ private:
     Faraday faraday_;
     // ohm object
 
-    CollectionOfBoundaryConditions fieldsBoundaryConditions_ ;
+    CollectionOfBoundaryConditions boundaryConditions_ ;
 
     std::array< std::unique_ptr<ParticlesBC>, 6> particlesBoundaryConditions_ ;
 

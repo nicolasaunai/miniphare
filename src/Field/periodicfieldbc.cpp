@@ -21,7 +21,8 @@ void PeriodicFieldBC::applyElectricBC( VecField & E )
     {
         Field const & field = ExyzFields[ifield] ;
 
-//        auto centering = layout.fieldCentering( field, Direction::X ) ;
+//        auto centering = layout_.fieldCentering( field, Direction::X ) ;
+
 
     }
 

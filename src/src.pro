@@ -102,7 +102,6 @@ HEADERS += \
     Initializer/solverinitializer.h \
     Field/fieldbc.h \
     Plasmas/particlesbc.h \
-    Field/fieldbctype.h \
     Field/fieldbcfactory.h \
     Field/periodicfieldbc.h \
     Field/fieldbc3dcollection.h
