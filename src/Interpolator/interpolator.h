@@ -35,7 +35,7 @@ public:
     // a primal or a dual mesh
     std::tuple<std::vector<uint32>, std::vector<double>>
     getIndexesAndWeights( Particle const & particle, \
-                          Direction dir, QtyCentering centering ) ;
+                          Direction dir, QtyCentering centering ) const ;
 
 };
 

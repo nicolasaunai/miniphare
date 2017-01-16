@@ -3,10 +3,10 @@
 
 
 
-void compute1DFieldsAtParticles( Interpolator & interp,
-                                 Particle & part,
-                                 GridLayout const & layout,
-                                 VecField const & E , VecField const & B )
+void fieldAtParticle1D(Interpolator const& interp,
+                       VecField const & E , VecField const & B,
+                       GridLayout const & layout,
+                       std::vector<Particle>& particles)
 {
     uint32 idirX = static_cast<uint32>(Direction::X) ;
     uint32 idirY = static_cast<uint32>(Direction::Y) ;
@@ -23,34 +23,60 @@ void compute1DFieldsAtParticles( Interpolator & interp,
     std::vector<std::reference_wrapper<Field const>> ExyzBxyzFields \
             = {Ex, Ey, Ez, Bx, By, Bz} ;
 
-
-    part.Ex = 0. ; part.Ey = 0. ; part.Ez = 0. ;
-    part.Bx = 0. ; part.By = 0. ; part.Bz = 0. ;
-
-    std::vector<std::reference_wrapper<double>> partFields = \
-    {part.Ex, part.Ey, part.Ez, part.Bx, part.By, part.Bz} ;
-
-    for(uint32 ifield=0 ; ifield<partFields.size() ; ++ifield )
+    for (uint32 iPart=0; iPart < particles.size(); ++iPart)
     {
-        double & particleField = partFields[ifield] ;
+        Particle& part = particles[iPart];
 
-        Field const & meshField = ExyzBxyzFields[ifield] ;
+        part.Ex = 0. ; part.Ey = 0. ; part.Ez = 0. ;
+        part.Bx = 0. ; part.By = 0. ; part.Bz = 0. ;
 
-        auto centering = layout.fieldCentering( meshField, Direction::X ) ;
+        std::vector<std::reference_wrapper<double>> partFields = \
+        {part.Ex, part.Ey, part.Ez, part.Bx, part.By, part.Bz} ;
 
-        auto indexesAndWeights = \
-                interp.getIndexesAndWeights( part, Direction::X, centering ) ;
-
-        std::vector<uint32> indexes = std::get<0>(indexesAndWeights) ;
-        std::vector<double> weights = std::get<1>(indexesAndWeights) ;
-
-        for(uint32 ik=0 ; ik<indexes.size() ; ++ik)
+        for(uint32 ifield=0 ; ifield<partFields.size() ; ++ifield )
         {
-            particleField += meshField(indexes[ik]) * weights[ik] ;
-        }
-    }
+            double & particleField = partFields[ifield] ;
 
+            Field const& meshField = ExyzBxyzFields[ifield] ;
+
+            auto centering = layout.fieldCentering( meshField, Direction::X ) ;
+
+            auto indexesAndWeights = \
+                    interp.getIndexesAndWeights( part, Direction::X, centering ) ;
+
+            std::vector<uint32> indexes = std::get<0>(indexesAndWeights) ;
+            std::vector<double> weights = std::get<1>(indexesAndWeights) ;
+
+            for(uint32 ik=0 ; ik<indexes.size() ; ++ik)
+            {
+                particleField += meshField(indexes[ik]) * weights[ik] ;
+            }
+        }// end loop on fields
+    }// end loop on particles
+}
+
+
+
+void fieldAtParticle2D(Interpolator const& interp,
+                       VecField const & E , VecField const & B,
+                       GridLayout const & layout,
+                       std::vector<Particle>& particles)
+{
 
 }
+
+
+void fieldAtParticle3D(Interpolator const& interp,
+                       VecField const & E , VecField const & B,
+                       GridLayout const & layout,
+                       std::vector<Particle>& particles)
+{
+
+}
+
+
+
+
+
 
 

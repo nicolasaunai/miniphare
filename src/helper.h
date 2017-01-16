@@ -8,10 +8,29 @@
 #include "Interpolator/interpolator.h"
 
 
-void compute1DFieldsAtParticles( Interpolator & interp,
-                                 Particle & part,
-                                 GridLayout const & layout,
-                                 VecField const & E , VecField const & B );
+
+
+
+void fieldAtParticle1D(Interpolator const& interp,
+                       VecField const & E , VecField const & B,
+                       GridLayout const & layout,
+                       std::vector<Particle>& particles);
+
+
+void fieldAtParticle2D(Interpolator const& interp,
+                       VecField const & E , VecField const & B,
+                       GridLayout const & layout,
+                       std::vector<Particle>& particles);
+
+
+void fieldAtParticle3D(Interpolator const& interp,
+                       VecField const & E , VecField const & B,
+                       GridLayout const & layout,
+                       std::vector<Particle>& particles);
+
+
+
+
 
 
 

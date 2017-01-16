@@ -86,7 +86,8 @@ GridLayout::GridLayout(GridLayout const& source)
 
 
 GridLayout::GridLayout(GridLayout&& source)
-    :  dx_{ std::move(source.dx_) },  dy_{std::move(source.dy_) }, dz_{std::move(source.dz_) },
+    : nbDims_{std::move(source.nbDims_)},
+      dx_{ std::move(source.dx_) },  dy_{std::move(source.dy_) }, dz_{std::move(source.dz_) },
       odx_{ std::move(source.odx_)}, ody_{std::move(source.ody_)}, odz_{std::move(source.odz_)},
       nbrCellx_{std::move(source.nbrCellx_)},
       nbrCelly_{std::move(source.nbrCelly_)},

@@ -2,51 +2,35 @@
 #define MODIFIEDBORIS_H
 
 #include "pusher/pushertype.h"
-
+#include "pusher.h"
 #include "Interpolator/interpolator.h"
 
 
-class ModifiedBoris : public PusherType
+class ModifiedBoris : public Pusher
 {
 private:
-    void prePush1D( Particle & particleIn,
-                    Particle & particleOut,
-                    double dto2dx ) ;
+    void prePush_(std::vector<Particle> const& particleIn,
+                  std::vector<Particle> & particleOut, double dt) ;
 
-    void pushVelocity1D( Particle & particleIn,
-                         Particle & particleOut,
-                         double dt, double m ) ;
+    void pushVelocity_(std::vector<Particle> const& particleIn,
+                       std::vector<Particle> & particleOut, double m, double dt ) ;
 
-    void corPush1D( Particle & particleIn,
-                    Particle & particleOut,
-                    double dto2dx ) ;
+    void corPush_(std::vector<Particle> const& particleIn,
+                  std::vector<Particle> & particleOut, double dt) ;
 
 public:
-    ModifiedBoris( const std::string & pusherName, const GridLayout & layout )
-        : PusherType(pusherName, layout) {}
+    //ModifiedBoris( const std::string & pusherName, const GridLayout & layout ) {}
+    ModifiedBoris(GridLayout layout):
+        Pusher(std::move(layout)) {}
 
     virtual ~ModifiedBoris() {}
 
-    virtual void move1D( std::vector<Particle> & partIn ,
-                         std::vector<Particle> & partOut,
-                         double dt, double m,
-                         VecField const & E ,
-                         VecField const & B ,
-                         Interpolator & interpolator ) override ;
-
-    virtual void move2D( std::vector<Particle> & partIn ,
-                         std::vector<Particle> & partOut,
-                         double dt, double m,
-                         VecField const & E ,
-                         VecField const & B ,
-                         Interpolator & interpolator ) override ;
-
-    virtual void move3D( std::vector<Particle> & partIn ,
-                         std::vector<Particle> & partOut,
-                         double dt, double m,
-                         VecField const & E ,
-                         VecField const & B ,
-                         Interpolator & interpolator ) override ;
+    virtual void move( std::vector<Particle> const& partIn ,
+                       std::vector<Particle> & partOut,
+                       double dt, double m,
+                       VecField const & E ,
+                       VecField const & B ,
+                       Interpolator const& interpolator ) override ;
 
 };
 

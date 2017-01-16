@@ -36,7 +36,7 @@ Interpolator::Interpolator(uint32 order)
 std::tuple<std::vector<uint32>, std::vector<double>>
 Interpolator::getIndexesAndWeights( Particle const & particle, \
                                     Direction dir, \
-                                    QtyCentering centering )
+                                    QtyCentering centering ) const
 {
 
     uint32 idir = static_cast<uint32>( dir ) ;

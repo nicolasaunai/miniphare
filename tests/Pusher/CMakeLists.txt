@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.6)
 project (test-Pusher)
 
 set(SOURCES
- 	 ../../src/Plasmas/particles.cpp
+     ../../src/Plasmas/particles.cpp
      ../../src/Interpolator/interpolator.cpp
      ../../src/IndexesAndWeights/indexesandweights.cpp
      ../../src/IndexesAndWeights/indexesandweightso1.cpp
@@ -10,7 +10,6 @@ set(SOURCES
      ../../src/IndexesAndWeights/indexesandweightso3.cpp
      ../../src/IndexesAndWeights/indexesandweightso4.cpp
      ../../src/pusher/modifiedboris.cpp
-     ../../src/pusher/pusher1d.cpp
      ../../src/grid/gridlayout.cpp
      ../../src/grid/gridlayoutimplyee.cpp
      ../../src/grid/gridlayoutimplinternals.cpp
