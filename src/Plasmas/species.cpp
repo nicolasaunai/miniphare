@@ -1,5 +1,4 @@
 #include "grid/gridlayoutdefs.h"
-
 #include "species.h"
 
 
@@ -31,7 +30,7 @@ void Species::loadParticles()
 }
 
 
-void Species::compute1DChargeDensityAndFlux( Interpolator & interp   )
+void Species::compute1DChargeDensityAndFlux( Interpolator & project   )
 {
     uint32 idirX = static_cast<uint32>(Direction::X) ;
     uint32 idirY = static_cast<uint32>(Direction::Y) ;
@@ -55,21 +54,23 @@ void Species::compute1DChargeDensityAndFlux( Interpolator & interp   )
         double aux_vz = aux_flux * part.v[2] ;
 
         auto indexesAndWeights = \
-        interp.getIndexesAndWeights(part, Direction::X ) ;
+        project.getIndexesAndWeights(part, Direction::X ) ;
 
-        std::vector<uint32> ISx    = std::get<0>(indexesAndWeights) ;
-        std::vector<double> PondSx = std::get<1>(indexesAndWeights) ;
+        std::vector<uint32> indexes    = std::get<0>(indexesAndWeights) ;
+        std::vector<double> weights = std::get<1>(indexesAndWeights) ;
 
-        for( uint32 ik=0 ; ik<ISx.size() ; ++ik )
+        for( uint32 ik=0 ; ik<indexes.size() ; ++ik )
         {
-            rho_( ISx[ik] ) += aux_rh * PondSx[ik] ;
+            rho_( indexes[ik] ) += aux_rh * weights[ik] ;
 
-            vx( ISx[ik] ) += aux_vx * PondSx[ik] ;
-            vy( ISx[ik] ) += aux_vy * PondSx[ik] ;
-            vz( ISx[ik] ) += aux_vz * PondSx[ik] ;
+            vx( indexes[ik] ) += aux_vx * weights[ik] ;
+            vy( indexes[ik] ) += aux_vy * weights[ik] ;
+            vz( indexes[ik] ) += aux_vz * weights[ik] ;
         }
     }
 
 }
+
+
 
 
