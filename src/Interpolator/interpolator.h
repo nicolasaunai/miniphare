@@ -39,4 +39,28 @@ public:
 
 
 
+
+
+
+void fieldAtParticle1D(Interpolator const& interp,
+                       VecField const & E , VecField const & B,
+                       GridLayout const & layout,
+                       std::vector<Particle>& particles);
+
+
+void fieldAtParticle2D(Interpolator const& interp,
+                       VecField const & E , VecField const & B,
+                       GridLayout const & layout,
+                       std::vector<Particle>& particles);
+
+
+void fieldAtParticle3D(Interpolator const& interp,
+                       VecField const & E , VecField const & B,
+                       GridLayout const & layout,
+                       std::vector<Particle>& particles);
+
+
+
+
+
 #endif // INTERPOLATOR_H
