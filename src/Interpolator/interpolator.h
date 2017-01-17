@@ -25,10 +25,6 @@ private:
 
 public:
 
-    // Dont't forget =default HERE
-    // or move operations won't be generated
-    virtual ~Interpolator() = default ;
-
     Interpolator(uint32 order);
 
     // we might interpolate a field from
