@@ -7,7 +7,7 @@
 #include "Plasmas/particles.h"
 #include "Initializer/particleinitializer.h"
 
-#include "Projector/projector.h"
+//#include "Projector/projector.h"
 #include "Interpolator/interpolator.h"
 
 
@@ -34,7 +34,7 @@ public:
 
     Species(GridLayout const& layout, double mass,
             std::unique_ptr<ParticleInitializer> particleInitializer,
-            std::string const& name);   
+            std::string const& name);
 
     Species(Species const& source) = delete;
     Species& operator=(Species const& source)=delete;
@@ -55,7 +55,7 @@ public:
 
     void loadParticles();
 
-    void compute1DChargeDensityAndFlux( Projector & project );
+    void compute1DChargeDensityAndFlux(Interpolator & project );
 
 };
 

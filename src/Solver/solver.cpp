@@ -40,7 +40,7 @@ Solver::Solver( GridLayout const& layout, double dt,
     {
         uint32 order = solverInitializer->interpolationOrders[ik] ;
         interpolator_.push_back( std::unique_ptr<Interpolator>(new Interpolator(order)) ) ;
-        projector_.push_back( std::unique_ptr<Projector>(new Projector(order)) ) ;
+        //projector_.push_back( std::unique_ptr<Projector>(new Projector(order)) ) ;
     }
 
     const std::string pusherType = solverInitializer->pusherType ;

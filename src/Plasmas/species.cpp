@@ -31,7 +31,7 @@ void Species::loadParticles()
 }
 
 
-void Species::compute1DChargeDensityAndFlux( Projector & project   )
+void Species::compute1DChargeDensityAndFlux( Interpolator & interp   )
 {
     uint32 idirX = static_cast<uint32>(Direction::X) ;
     uint32 idirY = static_cast<uint32>(Direction::Y) ;
@@ -55,7 +55,7 @@ void Species::compute1DChargeDensityAndFlux( Projector & project   )
         double aux_vz = aux_flux * part.v[2] ;
 
         auto indexesAndWeights = \
-        project.getIndexesAndWeights( part, Direction::X ) ;
+        interp.getIndexesAndWeights(part, Direction::X ) ;
 
         std::vector<uint32> ISx    = std::get<0>(indexesAndWeights) ;
         std::vector<double> PondSx = std::get<1>(indexesAndWeights) ;

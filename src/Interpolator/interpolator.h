@@ -37,6 +37,8 @@ public:
     getIndexesAndWeights( Particle const & particle, \
                           Direction dir, QtyCentering centering ) const ;
 
+    std::tuple<std::vector<uint32>, std::vector<double>>
+    getIndexesAndWeights( Particle const & particle, Direction dir ) const;
 };
 
 
