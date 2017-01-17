@@ -1,10 +1,10 @@
 #ifndef PUSHER_H
 #define PUSHER_H
 
-#include "pusher/pushertype.h"
+#include "grid/gridlayout.h"
 #include "Plasmas/particles.h"
 #include "vecfield/vecfield.h"
-#include <array>
+#include "Interpolator/interpolator.h"
 
 class Pusher
 {
@@ -14,16 +14,7 @@ protected:
     GridLayout layout_;
 
 
-
-    // Bridge pattern for Pusher
-    // PusherType might be Boris pusher,
-    // modified Boris, Vay pusher ...
-   // std::unique_ptr<PusherType> impl_ ;
-
-
 public:
-    //Pusher( std::unique_ptr<PusherType> && impl )
-        //: impl_{std::move(impl) } {}
 
     Pusher(GridLayout layout):
         nbdims_{layout.nbDimensions()},

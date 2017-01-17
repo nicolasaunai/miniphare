@@ -1,7 +1,6 @@
 #ifndef MODIFIEDBORIS_H
 #define MODIFIEDBORIS_H
 
-#include "pusher/pushertype.h"
 #include "pusher.h"
 #include "Interpolator/interpolator.h"
 

@@ -6,8 +6,6 @@
 
 #include "grid/gridlayout.h"
 #include "pusher/pusher.h"
-
-#include "pusher/pushertype.h"
 #include "pusher/modifiedboris.h"
 
 
