@@ -32,7 +32,7 @@ void IndexesAndWeightsO3::computeWeights( double reducedCoord )
 
     weightList_[0] = (4./3.)* coef1 * coef1 * coef1;
 
-    weightList_[1] = 2./3. - coef2_sq  - 0.5*coef2*coef2*coef2;
+    weightList_[1] = 2./3. - coef2_sq  - 0.5*coef2_cub;
 
     weightList_[2] = 2./3. - coef3_sq + 0.5*coef3_cub;
 

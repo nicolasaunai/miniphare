@@ -18,16 +18,13 @@ public:
     static std::unique_ptr<Pusher>
     createPusher( const GridLayout & layout, const std::string & pusherType )
     {
-        //uint32 nbDim = layout.nbDimensions() ;
-
-        //std::unique_ptr<PusherType> impl  ;
         std::unique_ptr<Pusher> pusher ;
 
 
         if( pusherType == "modifiedBoris" )
         {
         //    impl = std::unique_ptr<ModifiedBoris>( new ModifiedBoris( pusherType, layout ) ) ;
-            return std::unique_ptr<Pusher> ( new ModifiedBoris(layout) );
+            pusher =  std::unique_ptr<Pusher> ( new ModifiedBoris(layout) );
         }
         else
         {
@@ -35,6 +32,7 @@ public:
                                      - modifiedBoris ");
         }
 
+        return pusher;
     }
 };
 
