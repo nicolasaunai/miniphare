@@ -10,6 +10,7 @@ class PeriodicFieldBC : public FieldBC
 {
 private:
 
+    void makeFieldPeriodic_( std::vector<std::reference_wrapper<Field>> Fxyz) ;
 
 public:
 

@@ -1,4 +1,6 @@
 
+#include <memory>
+
 #include "Solver/solver.h"
 
 #include "Interpolator/interpolator.h"
@@ -55,6 +57,7 @@ Solver::Solver( GridLayout const& layout, double dt,
         collectionOfBC.push_back( FieldBCFactory::createFieldBC( layout, edgeAndCondition ) ) ;
     }
 
+    boundaryConditions_ = std::move( collectionOfBC ) ;
 
 
     // TODO need to initialize OHM object

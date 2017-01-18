@@ -11,13 +11,13 @@
 class CollectionOfBoundaryConditions
 {
 private:
-    std::vector< std::unique_ptr<FieldBC> > allFieldsBoundaryConditions_ ;
+    std::vector< std::unique_ptr<FieldBC> > edgesBoundaryConditions_ ;
 
 public:
     CollectionOfBoundaryConditions() {}
 
     CollectionOfBoundaryConditions( std::vector<std::unique_ptr<FieldBC>> && collectionOfFieldsBC )
-        : allFieldsBoundaryConditions_{std::move(collectionOfFieldsBC)} {}
+        : edgesBoundaryConditions_{std::move(collectionOfFieldsBC)} {}
 
     CollectionOfBoundaryConditions(CollectionOfBoundaryConditions&& toMove)      = default;
     CollectionOfBoundaryConditions& operator=(CollectionOfBoundaryConditions&& source) = default;
