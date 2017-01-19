@@ -93,9 +93,20 @@ doc/html
 # UNIT TEST FILES
 # ---------------
 build*
-tests/GridLayout/*.txt
-tests/Faraday/*.txt
-tests/Faraday/backup
-tests/IndexesAndWeights/*.txt
-tests/Pusher/*.txt
+tests/GridLayout/fieldCoords_*.txt
+tests/GridLayout/deriv1D_*.txt
+tests/GridLayout/centeredCoords_*.txt
+tests/GridLayout/alloc*.txt
+tests/Faraday/faraday1D_*.txt
+tests/IndexesAndWeights/indexes_*.txt
+tests/Pusher/odepush_*.txt
+
+
+# CMAKE files
+# -----------
+CMakeLists.txt.user
+Makefile
+CMakeFiles
+*.cmake
+*.cbp
 

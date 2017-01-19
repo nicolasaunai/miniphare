@@ -16,15 +16,27 @@
  */
 void IndexesAndWeightsO3::computeWeights( double reducedCoord )
 {
-    weightList_[0] = (4./3.)*std::pow(1. + 0.5*(static_cast<double>(indexList_[0]) - reducedCoord), 3.) ;
 
-    weightList_[1] = 2./3. - std::pow(static_cast<double>(indexList_[1]) - reducedCoord, 2.)
-        - 0.5*std::pow(static_cast<double>(indexList_[1]) - reducedCoord, 3.) ;
+    double coef1, coef2, coef3, coef4;
 
-    weightList_[2] = 2./3. - std::pow(static_cast<double>(indexList_[2]) - reducedCoord, 2.)
-        + 0.5*std::pow(static_cast<double>(indexList_[2]) - reducedCoord, 3.) ;
+    coef1 = 1. + 0.5*(static_cast<double>(indexList_[0]) - reducedCoord);
+    coef2 = static_cast<double>(indexList_[1]) - reducedCoord;
+    coef3 = static_cast<double>(indexList_[2]) - reducedCoord;
+    coef4 = 1. - 0.5*(static_cast<double>(indexList_[3]) - reducedCoord);
 
-    weightList_[3] = (4./3.)*std::pow(1. - 0.5*(static_cast<double>(indexList_[3]) - reducedCoord) , 3.) ;
+    double coef2_sq  = coef2*coef2;
+    double coef2_cub = coef2_sq*coef2;
+
+    double coef3_sq  = coef3*coef3;
+    double coef3_cub = coef3_sq*coef3;
+
+    weightList_[0] = (4./3.)* coef1 * coef1 * coef1;
+
+    weightList_[1] = 2./3. - coef2_sq  - 0.5*coef2_cub;
+
+    weightList_[2] = 2./3. - coef3_sq + 0.5*coef3_cub;
+
+    weightList_[3] = (4./3.)*coef4*coef4*coef4;
 
 }
 

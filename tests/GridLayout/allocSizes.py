@@ -11,8 +11,8 @@ import numpy as np
 #import math
 
 import sys
-sys.path.insert(0, '../')
 import os
+
 
 import gridlayout
 

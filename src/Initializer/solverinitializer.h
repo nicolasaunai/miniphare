@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "types.h"
+#include <string>
 
 /**
  * @brief SolverInitializer is needed for Solver construction

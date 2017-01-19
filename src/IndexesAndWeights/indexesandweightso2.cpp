@@ -16,11 +16,17 @@
  */
 void IndexesAndWeightsO2::computeWeights( double reducedCoord )
 {
-    weightList_[0] = 0.5*std::pow( 0.5 + (static_cast<double>(indexList_[1]) - reducedCoord), 2.) ;
+    double coef1, coef2, coef3;
 
-    weightList_[1] = 0.75 - std::pow( static_cast<double>(indexList_[1]) - reducedCoord, 2.) ;
+    coef1 = 0.5 + (static_cast<double>(indexList_[1]) - reducedCoord);
+    coef2 = static_cast<double>(indexList_[1]) - reducedCoord;
+    coef3 = 0.5 - (static_cast<double>(indexList_[1]) - reducedCoord);
 
-    weightList_[2] = 0.5*std::pow( 0.5 - (static_cast<double>(indexList_[1]) - reducedCoord), 2.) ;
+    weightList_[0] = 0.5 * coef1 * coef1;
+
+    weightList_[1] = 0.75 -coef2 * coef2;
+
+    weightList_[2] = 0.5 * coef3 * coef3;
 
 }
 

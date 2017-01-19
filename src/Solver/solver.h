@@ -18,7 +18,7 @@
 #include "Plasmas/particlesbc.h"
 
 #include "Interpolator/interpolator.h"
-#include "Projector/projector.h"
+//#include "Projector/projector.h"
 
 #include "pusher/pusher.h"
 
@@ -45,7 +45,6 @@ private:
     // those are Solver attribute because SOLVER decides where interp/project
     // work on the mesh.... a different solver may interp/project elsewhere
     std::vector< std::unique_ptr<Interpolator> > interpolators_ ;
-    std::vector< std::unique_ptr<Projector> > projectors_ ;
 
     Electromag EMFieldsPred_;
     Electromag EMFieldsAvg_;

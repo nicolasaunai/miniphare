@@ -2,15 +2,19 @@
 #include <cmath>
 
 #include "pusher/modifiedboris.h"
+#include "Interpolator/interpolator.h"
 
-
-
-#include "Interpolator/interpolatefields.h"
 
 
 
 /**
  * @brief ModifiedBoris::move1D
+ *
+ * STEP 1: pre-push coordinates
+ * STEP 2: compute fields at particles coordinates
+ * STEP 3: push velocities
+ * STEP 4: correction push for coordinates
+ *
  * @param partIn positions and velocities at time tn
  * @param partPred positions and velocities at time tpred
  * @param dt
@@ -18,161 +22,174 @@
  * @param E is given at tn+1/2
  * @param B is given at tn+1/2
  */
-void ModifiedBoris::move1D( std::vector<Particle> & partIn ,
-                            std::vector<Particle> & partOut,
-                            double dt, double m,
-                            VecField const & E , VecField const & B,
-                            Interpolator & interpolator )
+void ModifiedBoris::move(std::vector<Particle>const & partIn ,
+                         std::vector<Particle> & partOut,
+                         double dt, double m,
+                         VecField const& E , VecField const & B,
+                         Interpolator const& interpolator )
 {
-    double dto2dx = 0.5*dt/dx_ ;
-
     partOut = partIn ;
+    prePush_( partIn, partOut, dt) ;
 
-    for( uint32 ik=0 ; ik<partIn.size() ; ++ik )
+    switch (nbdims_)
     {
-        prePush1D( partIn[ik], partOut[ik], dto2dx ) ;
+        case 1:
+        fieldAtParticle1D(interpolator, E, B, layout_, partOut);
+        break;
+
+        case 2:
+        fieldAtParticle2D(interpolator, E, B, layout_, partOut);
+        break;
+
+        case 3:
+        fieldAtParticle3D(interpolator, E, B, layout_, partOut);
+        break;
+
+    default:
+        throw std::runtime_error("wrong dimensionality");
+
     }
 
-    for( uint32 ik=0 ; ik<partOut.size() ; ++ik )
+    pushVelocity_( partOut, partOut, m, dt);
+    corPush_( partOut, partOut, dt);
+}
+
+
+
+
+void ModifiedBoris::prePush_(std::vector<Particle> const& particleIn,
+                             std::vector<Particle> & particleOut, double dt)
+{
+    std::array<double,3> dto2dl;
+    dto2dl[0] = 0.5*dt/layout_.dx();
+    dto2dl[1] = 0.5*dt/layout_.dy();
+    dto2dl[2] = 0.5*dt/layout_.dz();
+
+
+    for (uint32 iPart=0; iPart < particleIn.size(); ++iPart)
     {
-        compute1DFieldsAtParticles( interpolator, partOut[ik],
-                                    layout_, E, B ) ;
+        Particle const& partIn = particleIn[iPart];
+        Particle& partOut = particleOut[iPart];
+
+        for (uint32 dim=0; dim < nbdims_;  ++dim)
+        {
+            // time decentering of the delta position at tn+1/2
+            float delta = partIn.delta[dim]
+                        + static_cast<float>( dto2dl[dim]* partIn.v[dim] ) ;
+
+            // check the validity of delta (0 <= delta <= 1)
+            // and do auto-correction
+            float iCell = std::floor(delta) ;
+            partOut.delta[dim] = delta - iCell ;
+
+            // update the logical node
+            partOut.icell[dim] += iCell;
+        }
+    }
+}
+
+
+
+
+void ModifiedBoris::pushVelocity_(std::vector<Particle> const& particleIn,
+                                  std::vector<Particle> & particleOut,
+                                  double m, double dt)
+{
+    double dto2 = 0.5*dt;
+
+    for (uint32 iPart=0; iPart < particleIn.size(); ++iPart)
+    {
+        Particle const& partIn = particleIn[iPart];
+        Particle& partOut      = particleOut[iPart];
+
+        double coef1 = partIn.charge * dto2/m ;
+
+        // We now apply the 3 steps of the BORIS PUSHER
+
+        // 1st half push of the electric field
+        double velx1 = partIn.v[0] + coef1*partIn.Ex ;
+        double vely1 = partIn.v[1] + coef1*partIn.Ey ;
+        double velz1 = partIn.v[2] + coef1*partIn.Ez ;
+
+
+        // preparing variables for magnetic rotation
+        double rx = coef1 *partIn.Bx ;
+        double ry = coef1 *partIn.By ;
+        double rz = coef1 *partIn.Bz ;
+
+        double rx2 = rx*rx ;
+        double ry2 = ry*ry ;
+        double rz2 = rz*rz ;
+        double rxry = rx*ry ;
+        double rxrz = rx*rz ;
+        double ryrz = ry*rz ;
+
+        double invDet = 1./(1. + rx2 + ry2 + rz2 ) ;
+
+        // preparing rotation matrix due to the magnetic field
+        // m = invDet*(I + r*r - r x I) - I where x denotes the cross product
+        double mxx = 1. + rx2 - ry2 - rz2 ;
+        double mxy = 2.*( rxry + rz ) ;
+        double mxz = 2.*( rxrz - ry ) ;
+
+        double myx = 2.*( rxry - rz ) ;
+        double myy = 1. + ry2 - rx2 - rz2 ;
+        double myz = 2.*( ryrz + rx ) ;
+
+        double mzx = 2.*( rxrz + ry ) ;
+        double mzy = 2.*( ryrz - rx ) ;
+        double mzz = 1. + rz2 - rx2 - ry2 ;
+
+        // magnetic rotation
+        double velx2 = ( mxx*velx1 + mxy*vely1 + mxz*velz1 )*invDet ;
+        double vely2 = ( myx*velx1 + myy*vely1 + myz*velz1 )*invDet ;
+        double velz2 = ( mzx*velx1 + mzy*vely1 + mzz*velz1 )*invDet ;
+
+
+        // 2nd half push of the electric field
+        velx1 = velx2 + coef1*partIn.Ex ;
+        vely1 = vely2 + coef1*partIn.Ey ;
+        velz1 = velz2 + coef1*partIn.Ez ;
+
+        // Update particle velocity
+        partOut.v[0] = velx1 ;
+        partOut.v[1] = vely1 ;
+        partOut.v[2] = velz1 ;
     }
 
-    for( uint32 ik=0 ; ik<partOut.size() ; ++ik )
+
+}
+
+
+void ModifiedBoris::corPush_(std::vector<Particle> const& particleIn,
+                             std::vector<Particle> & particleOut, double dt)
+{
+    std::array<double,3> dto2dl;
+    dto2dl[0] = 0.5*dt/layout_.dx();
+    dto2dl[1] = 0.5*dt/layout_.dy();
+    dto2dl[2] = 0.5*dt/layout_.dz();
+
+
+    for (uint32 iPart=0; iPart < particleIn.size(); ++iPart)
     {
-        pushVelocity1D( partOut[ik], partOut[ik], dt, m );
+        Particle const& partIn = particleIn[iPart];
+        Particle& partOut      = particleOut[iPart];
+
+        for (uint32 dim=0; dim < nbdims_;  ++dim)
+        {
+            // we update the delta position at tn+1
+            float delta = partIn.delta[dim]
+                        + static_cast<float>( dto2dl[dim] * partIn.v[dim] ) ;
+
+            // check the validity of delta (0 <= delta <= 1)
+            // and do auto-correction
+            float iCell = std::floor(delta) ;
+            partOut.delta[dim] = delta - iCell ;
+
+            // update the logical node
+            partOut.icell[dim] += iCell ;
+        }
     }
-
-
-    for( uint32 ik=0 ; ik<partOut.size() ; ++ik )
-    {
-        corPush1D( partOut[ik], partOut[ik], dto2dx );
-    }
-
-}
-
-
-
-void ModifiedBoris::move2D( std::vector<Particle> & partIn ,
-                            std::vector<Particle> & partOut,
-                            double dt, double m,
-                            VecField const & E ,
-                            VecField const & B ,
-                            Interpolator & interpolator )
-{
-
-}
-
-
-
-void ModifiedBoris::move3D( std::vector<Particle> & partIn ,
-                            std::vector<Particle> & partOut,
-                            double dt, double m,
-                            VecField const & E ,
-                            VecField const & B ,
-                            Interpolator & interpolator )
-{
-
-}
-
-
-
-void ModifiedBoris::prePush1D( Particle & part_tn,
-                               Particle & part_tpred,
-                               double dto2dx )
-{
-    // time decentering of the delta position at tn+1/2
-    float delta = part_tn.delta[0] + static_cast<float>( dto2dx * part_tn.v[0] ) ;
-
-    // check the validity of delta (0 <= delta <= 1)
-    // and do auto-correction
-    float iPart = std::floor(delta) ;
-    part_tpred.delta[0] = delta - iPart ;
-
-    // update the logical node
-    part_tpred.icell[0] += iPart ;
-}
-
-
-
-void ModifiedBoris::pushVelocity1D( Particle & part_tn,
-                                    Particle & part_tp,
-                                    double dt, double m )
-{
-    double dto2 = 0.5*dt ;
-
-    double coef1 = part_tn.charge * dto2/m ;
-
-    // We now apply the 3 steps of the BORIS PUSHER
-
-    // 1st half push of the electric field
-    double velx1 = part_tn.v[0] + coef1*part_tn.Ex ;
-    double vely1 = part_tn.v[1] + coef1*part_tn.Ey ;
-    double velz1 = part_tn.v[2] + coef1*part_tn.Ez ;
-
-
-    // preparing variables for magnetic rotation
-    double rx = coef1 *part_tn.Bx ;
-    double ry = coef1 *part_tn.By ;
-    double rz = coef1 *part_tn.Bz ;
-
-    double rx2 = rx*rx ;
-    double ry2 = ry*ry ;
-    double rz2 = rz*rz ;
-    double rxry = rx*ry ;
-    double rxrz = rx*rz ;
-    double ryrz = ry*rz ;
-
-    double invDet = 1./(1. + rx2 + ry2 + rz2 ) ;
-
-    // preparing rotation matrix due to the magnetic field
-    // m = invDet*(I + r*r - r x I) - I where x denotes the cross product
-    double mxx = 1. + rx2 - ry2 - rz2 ;
-    double mxy = 2.*( rxry + rz ) ;
-    double mxz = 2.*( rxrz - ry ) ;
-
-    double myx = 2.*( rxry - rz ) ;
-    double myy = 1. + ry2 - rx2 - rz2 ;
-    double myz = 2.*( ryrz + rx ) ;
-
-    double mzx = 2.*( rxrz + ry ) ;
-    double mzy = 2.*( ryrz - rx ) ;
-    double mzz = 1. + rz2 - rx2 - ry2 ;
-
-    // magnetic rotation
-    double velx2 = ( mxx*velx1 + mxy*vely1 + mxz*velz1 )*invDet ;
-    double vely2 = ( myx*velx1 + myy*vely1 + myz*velz1 )*invDet ;
-    double velz2 = ( mzx*velx1 + mzy*vely1 + mzz*velz1 )*invDet ;
-
-
-    // 2nd half push of the electric field
-    velx1 = velx2 + coef1*part_tn.Ex ;
-    vely1 = vely2 + coef1*part_tn.Ey ;
-    velz1 = velz2 + coef1*part_tn.Ez ;
-
-    // Update particle velocity
-    part_tp.v[0] = velx1 ;
-    part_tp.v[1] = vely1 ;
-    part_tp.v[2] = velz1 ;
-
-}
-
-
-void ModifiedBoris::corPush1D( Particle & part_tpred,
-                               Particle & part_tcor,
-                               double dto2dx )
-{
-    // we update the delta position at tn+1
-    float delta = part_tpred.delta[0] + static_cast<float>( dto2dx * part_tpred.v[0] ) ;
-
-    // check the validity of delta (0 <= delta <= 1)
-    // and do auto-correction
-    float iPart = std::floor(delta) ;
-    part_tcor.delta[0] = delta - iPart ;
-
-    // update the logical node
-    part_tcor.icell[0] += iPart ;
 }
 
 

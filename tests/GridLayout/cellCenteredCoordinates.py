@@ -13,7 +13,6 @@ it writes the following files:
 import numpy as np
 
 import sys
-sys.path.insert(0, '../')
 
 import gridlayout
 import os

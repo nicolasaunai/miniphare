@@ -9,7 +9,6 @@ quantities and for all interpolation orders (1,2,3,4), in 1D, 2D and 3D.
 import numpy as np
 
 import sys
-sys.path.insert(0, '../')
 
 import gridlayout
 import os

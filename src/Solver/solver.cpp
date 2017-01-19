@@ -2,15 +2,10 @@
 #include <memory>
 
 #include "Solver/solver.h"
-
 #include "Interpolator/interpolator.h"
-#include "Projector/projector.h"
-
 #include "Faraday/faradayfactory.h"
 #include "pusher/pusherfactory.h"
 #include "Field/fieldbcfactory.h"
-
-
 #include "Field/field.h"
 #include "Plasmas/ions.h"
 #include "Plasmas/electrons.h"
@@ -44,7 +39,6 @@ Solver::Solver( GridLayout const& layout, double dt,
     {
         uint32 order = solverInitializer->interpolationOrders[ik] ;
         interpolators_.push_back( std::unique_ptr<Interpolator>(new Interpolator(order)) ) ;
-        projectors_.push_back( std::unique_ptr<Projector>(new Projector(order)) ) ;
     }
 
     const std::string pusherType = solverInitializer->pusherType ;

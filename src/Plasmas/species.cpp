@@ -1,5 +1,4 @@
 #include "grid/gridlayoutdefs.h"
-
 #include "species.h"
 
 
@@ -31,7 +30,7 @@ void Species::loadParticles()
 }
 
 
-void Species::compute1DChargeDensityAndFlux( Projector & project   )
+void Species::compute1DChargeDensityAndFlux( Interpolator & project   )
 {
     uint32 idirX = static_cast<uint32>(Direction::X) ;
     uint32 idirY = static_cast<uint32>(Direction::Y) ;
@@ -55,7 +54,7 @@ void Species::compute1DChargeDensityAndFlux( Projector & project   )
         double aux_vz = aux_flux * part.v[2] ;
 
         auto indexesAndWeights = \
-        project.getIndexesAndWeights( part, Direction::X ) ;
+        project.getIndexesAndWeights(part, Direction::X ) ;
 
         std::vector<uint32> indexes    = std::get<0>(indexesAndWeights) ;
         std::vector<double> weights = std::get<1>(indexesAndWeights) ;
@@ -71,5 +70,7 @@ void Species::compute1DChargeDensityAndFlux( Projector & project   )
     }
 
 }
+
+
 
 

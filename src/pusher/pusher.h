@@ -1,26 +1,25 @@
 #ifndef PUSHER_H
 #define PUSHER_H
 
-#include "pusher/pushertype.h"
-
+#include "grid/gridlayout.h"
 #include "Plasmas/particles.h"
-
 #include "vecfield/vecfield.h"
-
+#include "Interpolator/interpolator.h"
 
 class Pusher
 {
-protected:
 
-    // Bridge pattern for Pusher
-    // PusherType might be Boris pusher,
-    // modified Boris, Vay pusher ...
-    std::unique_ptr<PusherType> impl_ ;
+protected:
+    uint32 nbdims_;
+    GridLayout layout_;
 
 
 public:
-    Pusher( std::unique_ptr<PusherType> && impl )
-        : impl_{std::move(impl) } {}
+
+    Pusher(GridLayout layout):
+        nbdims_{layout.nbDimensions()},
+        layout_{std::move(layout)}
+    {}
 
     Pusher(Pusher const& source) = delete;
     Pusher& operator=(Pusher const& source) = delete;
@@ -32,12 +31,12 @@ public:
     // or move operations won't be generated
     virtual ~Pusher() = default ;
 
-    virtual void move(std::vector<Particle> & partIn ,
+    virtual void move(std::vector<Particle> const& partIn ,
                       std::vector<Particle> & partOut,
                       double dt, double m,
                       VecField const & E ,
                       VecField const & B ,
-                      Interpolator & interpolator ) = 0 ;
+                      Interpolator const& interpolator ) = 0 ;
 
 };
 

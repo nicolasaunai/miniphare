@@ -25,19 +25,41 @@ private:
 
 public:
 
-    // Dont't forget =default HERE
-    // or move operations won't be generated
-    virtual ~Interpolator() = default ;
-
     Interpolator(uint32 order);
 
     // we might interpolate a field from
     // a primal or a dual mesh
     std::tuple<std::vector<uint32>, std::vector<double>>
     getIndexesAndWeights( Particle const & particle, \
-                          Direction dir, QtyCentering centering ) ;
+                          Direction dir, QtyCentering centering ) const ;
 
+    std::tuple<std::vector<uint32>, std::vector<double>>
+    getIndexesAndWeights( Particle const & particle, Direction dir ) const;
 };
+
+
+
+
+
+
+void fieldAtParticle1D(Interpolator const& interp,
+                       VecField const & E , VecField const & B,
+                       GridLayout const & layout,
+                       std::vector<Particle>& particles);
+
+
+void fieldAtParticle2D(Interpolator const& interp,
+                       VecField const & E , VecField const & B,
+                       GridLayout const & layout,
+                       std::vector<Particle>& particles);
+
+
+void fieldAtParticle3D(Interpolator const& interp,
+                       VecField const & E , VecField const & B,
+                       GridLayout const & layout,
+                       std::vector<Particle>& particles);
+
+
 
 
 
