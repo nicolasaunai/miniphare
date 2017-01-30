@@ -11,6 +11,7 @@
 #include "Plasmas/ions.h"
 #include "Plasmas/electrons.h"
 #include "Faraday/faraday.h"
+#include "Ampere/ampere.h"
 #include "Electromag/electromag.h"
 #include "grid/gridlayout.h"
 
@@ -53,6 +54,8 @@ private:
     std::unique_ptr<Pusher> pusher_ ;
 
     Faraday faraday_;
+    Ampere  ampere_;
+
     // ohm object
 
     CollectionOfBoundaryConditions boundaryConditions_ ;

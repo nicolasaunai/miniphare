@@ -31,6 +31,7 @@ Solver::Solver( GridLayout const& layout, double dt,
                    layout.allocSize(HybridQuantity::By ),
                    layout.allocSize(HybridQuantity::Bz )  }}, "_avg" },
       faraday_{dt, layout},
+      ampere_{dt, layout},
       boundaryConditions_{}
 {
 
