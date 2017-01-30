@@ -19,7 +19,6 @@
 #include "Plasmas/particlesbc.h"
 
 #include "Interpolator/interpolator.h"
-//#include "Projector/projector.h"
 
 #include "pusher/pusher.h"
 
@@ -47,8 +46,11 @@ private:
     // work on the mesh.... a different solver may interp/project elsewhere
     std::vector< std::unique_ptr<Interpolator> > interpolators_ ;
 
-    Electromag EMFieldsPred_;
-    Electromag EMFieldsAvg_;
+    Electromag EMFieldsPred_ ;
+    Electromag EMFieldsAvg_ ;
+
+    VecField Jtot_ ;
+
     // vector <particle> part2_;  // vector of vector ou assign.
 
     std::unique_ptr<Pusher> pusher_ ;

@@ -30,6 +30,13 @@ Solver::Solver( GridLayout const& layout, double dt,
                    { {layout.allocSize(HybridQuantity::Bx ),
                    layout.allocSize(HybridQuantity::By ),
                    layout.allocSize(HybridQuantity::Bz )  }}, "_avg" },
+
+      Jtot_{ layout.allocSize(HybridQuantity::Ex),
+             layout.allocSize(HybridQuantity::Ey),
+             layout.allocSize(HybridQuantity::Ez),
+             { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+             "Jtot" },
+
       faraday_{dt, layout},
       ampere_{dt, layout},
       boundaryConditions_{}
@@ -84,6 +91,9 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // BC Fields --> Apply boundary conditions on the electric field
     boundaryConditions_.applyMagneticBC( Bpred ) ;
 
+    // Compute J
+    ampere_(Bpred, Jtot_) ;
+
     // --> MOMENTS (n^n, u^n) at time n have
     // --> already been computed, or are known just after initialization
     // --> Get ion and electron moments at time n
@@ -109,8 +119,11 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // --> Get B^{n+1} pred2 from E^{n+1/2} pred1
     faraday_(Eavg, B, Bpred);
 
-    // BC Fields --> Apply boundary conditions on the electric field
+    // BC Fields --> Apply boundary conditions
     boundaryConditions_.applyMagneticBC( Bpred ) ;
+
+    // Compute J
+    ampere_(Bpred, Jtot_) ;
 
     // --> DEPOSIT PREDICTED MOMENTS (n^{n+1}, u^{n+1}) AT TIME n+1
     // --> get ion and electron moments at time n+1 (pred 1)
@@ -143,7 +156,12 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
 
     // --> Get CORRECTED B^{n+1} from E^{n+1/2} pred2
     faraday_(Eavg, B, B);
+
+    // BC Fields --> Apply boundary conditions
     boundaryConditions_.applyMagneticBC( B ) ;
+
+    // Compute J
+    ampere_(B, Jtot_) ;
 
     // --> DEPOSIT CORRECTED MOMENTS (n^{n+1}, u^{n+1})
     // --> Get ion and electron moments at time n+1
