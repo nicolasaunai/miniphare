@@ -24,6 +24,8 @@ public:
     FaradayImpl1D(FaradayImpl1D&& source)            = default;
     FaradayImpl1D& operator=(FaradayImpl1D&& source) = default;
 
+    ~FaradayImpl1D() = default;
+
     virtual void operator()(VecField const& E, VecField const& B, VecField& Bnew) override;
 };
 

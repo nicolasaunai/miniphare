@@ -22,18 +22,3 @@ void Faraday::operator()(VecField const& E, VecField const& B, VecField& Bnew)
 }
 
 
-FaradayImpl::~FaradayImpl(){} // why here
-
-
-
-
-
-
-
-
-
-
-
-
-
-
