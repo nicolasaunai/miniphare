@@ -14,8 +14,8 @@ class FieldBC
 {
 protected:
 
-    const uint32 EDGE_MIN_ = -1 ;
-    const uint32 EDGE_MAX_ =  1 ;
+    const uint32 EDGE_MIN_ = 0 ;
+    const uint32 EDGE_MAX_ = 1 ;
 
     std::string  condition_ ;
     GridLayout  layout_ ;
@@ -58,6 +58,8 @@ public:
     virtual void applyElectricBC( VecField & E ) = 0 ;
 
     virtual void applyMagneticBC( VecField & B ) = 0 ;
+
+    virtual void applyMomentsBC( VecField & moment ) = 0 ;
 
 };
 

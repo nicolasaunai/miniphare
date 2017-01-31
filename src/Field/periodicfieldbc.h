@@ -25,6 +25,8 @@ public:
 
     virtual void applyMagneticBC( VecField & B ) override ;
 
+    virtual void applyMomentsBC( VecField & moment ) override ;
+
 };
 
 

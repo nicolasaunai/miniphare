@@ -39,6 +39,29 @@ void PeriodicFieldBC::applyMagneticBC( VecField & B )
 
 
 
+void PeriodicFieldBC::applyMomentsBC( VecField & moment )
+{
+    uint32 idirX = static_cast<uint32>(Direction::X) ;
+    uint32 idirY = static_cast<uint32>(Direction::Y) ;
+    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
+
+    Field & Mx = moment.component(idirX) ;
+    Field & My = moment.component(idirY) ;
+    Field & Mz = moment.component(idirZ) ;
+
+    std::vector<std::reference_wrapper<Field>> Mxyz = {Mx, My, Mz} ;
+
+    // WARNING
+    // we shall apply boundary conditions to the computed
+    // Jx, Jy, Jz fields
+    // but Jx, Jy, Jz are not members of enum class HybridQuantity
+    // this must be clarified
+//    makeFieldPeriodic_( Mxyz ) ;
+
+}
+
+
+
 void PeriodicFieldBC::makeFieldPeriodic_( std::vector<std::reference_wrapper<Field>> Fxyz )
 {
 

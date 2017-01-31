@@ -12,6 +12,7 @@ void CollectionOfBoundaryConditions::applyElectricBC( VecField & E )
 
 }
 
+
 void CollectionOfBoundaryConditions::applyMagneticBC( VecField & B )
 {
 
@@ -22,4 +23,14 @@ void CollectionOfBoundaryConditions::applyMagneticBC( VecField & B )
 
 }
 
+
+void CollectionOfBoundaryConditions::applyCurrentBC( VecField & J )
+{
+
+    for( auto & ptr : edgesBoundaryConditions_ )
+    {
+        ptr->applyMomentsBC( J ) ;
+    }
+
+}
 

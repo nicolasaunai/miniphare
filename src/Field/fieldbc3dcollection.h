@@ -26,6 +26,7 @@ public:
 
     void applyElectricBC( VecField & E ) ;
     void applyMagneticBC( VecField & B ) ;
+    void applyCurrentBC ( VecField & J ) ;
 
 };
 

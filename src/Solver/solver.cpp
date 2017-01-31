@@ -87,12 +87,13 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
 
     // --> Get B_{n+1} pred1 from E^n
     faraday_(E, B, Bpred);
-
     // BC Fields --> Apply boundary conditions on the electric field
     boundaryConditions_.applyMagneticBC( Bpred ) ;
 
     // Compute J
     ampere_(Bpred, Jtot_) ;
+    // BC on the current
+    boundaryConditions_.applyCurrentBC( Jtot_ ) ;
 
     // --> MOMENTS (n^n, u^n) at time n have
     // --> already been computed, or are known just after initialization
@@ -118,12 +119,13 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
 
     // --> Get B^{n+1} pred2 from E^{n+1/2} pred1
     faraday_(Eavg, B, Bpred);
-
     // BC Fields --> Apply boundary conditions
     boundaryConditions_.applyMagneticBC( Bpred ) ;
 
     // Compute J
     ampere_(Bpred, Jtot_) ;
+    // BC on the current
+    boundaryConditions_.applyCurrentBC( Jtot_ ) ;
 
     // --> DEPOSIT PREDICTED MOMENTS (n^{n+1}, u^{n+1}) AT TIME n+1
     // --> get ion and electron moments at time n+1 (pred 1)
@@ -156,12 +158,13 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
 
     // --> Get CORRECTED B^{n+1} from E^{n+1/2} pred2
     faraday_(Eavg, B, B);
-
     // BC Fields --> Apply boundary conditions
     boundaryConditions_.applyMagneticBC( B ) ;
 
     // Compute J
     ampere_(B, Jtot_) ;
+    // BC on the current
+    boundaryConditions_.applyCurrentBC( Jtot_ ) ;
 
     // --> DEPOSIT CORRECTED MOMENTS (n^{n+1}, u^{n+1})
     // --> Get ion and electron moments at time n+1
