@@ -59,6 +59,17 @@ void GridLayoutImplYee::initLayoutCentering_( const gridDataT & data )
     hybridQtyCentering_[data.iEz ][data.idirX] = data.primal ;
     hybridQtyCentering_[data.iEz ][data.idirY] = data.primal ;
     hybridQtyCentering_[data.iEz ][data.idirZ] = data.dual   ;
+
+    hybridQtyCentering_[data.iJx ][data.idirX] = data.dual   ;
+    hybridQtyCentering_[data.iJx ][data.idirY] = data.primal ;
+    hybridQtyCentering_[data.iJx ][data.idirZ] = data.primal ;
+    hybridQtyCentering_[data.iJy ][data.idirX] = data.primal ;
+    hybridQtyCentering_[data.iJy ][data.idirY] = data.dual   ;
+    hybridQtyCentering_[data.iJy ][data.idirZ] = data.primal ;
+    hybridQtyCentering_[data.iJz ][data.idirX] = data.primal ;
+    hybridQtyCentering_[data.iJz ][data.idirY] = data.primal ;
+    hybridQtyCentering_[data.iJz ][data.idirZ] = data.dual   ;
+
     hybridQtyCentering_[data.irho][data.idirX] = data.primal ;
     hybridQtyCentering_[data.irho][data.idirY] = data.primal ;
     hybridQtyCentering_[data.irho][data.idirZ] = data.primal ;

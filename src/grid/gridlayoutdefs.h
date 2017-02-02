@@ -41,6 +41,10 @@ struct gridDataT
     uint32 iEy = static_cast<uint32>(HybridQuantity::Ey) ;
     uint32 iEz = static_cast<uint32>(HybridQuantity::Ez) ;
 
+    uint32 iJx = static_cast<uint32>(HybridQuantity::Jx) ;
+    uint32 iJy = static_cast<uint32>(HybridQuantity::Jy) ;
+    uint32 iJz = static_cast<uint32>(HybridQuantity::Jz) ;
+
     uint32 irho = static_cast<uint32>(HybridQuantity::rho) ;
     uint32 iV = static_cast<uint32>(HybridQuantity::V) ;
     uint32 iP = static_cast<uint32>(HybridQuantity::P) ;
