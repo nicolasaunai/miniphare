@@ -53,13 +53,15 @@ Solver::Solver( GridLayout const& layout, double dt,
 
     pusher_ =  PusherFactory::createPusher( layout, pusherType ) ;
 
-    std::vector< std::unique_ptr<FieldBC> > collectionOfBC ;
+    // boundaryConditions_.fieldBoundaryConditions() return type
+    // is std::vector< std::unique_ptr<FieldBC> >&, and it is a rvalue
+    // therefore
+    // collectionOfBC type is std::vector< std::unique_ptr<FieldBC> > &&
+    auto && collectionOfBC = boundaryConditions_.fieldBoundaryConditions() ;
     for( std::pair< Edge, std::string> & edgeAndCondition : solverInitializer->fieldBCType )
     {
         collectionOfBC.push_back( FieldBCFactory::createFieldBC( layout, edgeAndCondition ) ) ;
     }
-
-    boundaryConditions_ = std::move( collectionOfBC ) ;
 
 
     // TODO need to initialize OHM object

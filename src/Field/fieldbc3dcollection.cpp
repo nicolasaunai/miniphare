@@ -5,7 +5,7 @@
 void CollectionOfBoundaryConditions::applyElectricBC( VecField & E )
 {
 
-    for( auto & ptr : edgesBoundaryConditions_ )
+    for( auto & ptr : fieldBoundaryConditions_ )
     {
         ptr->applyElectricBC( E ) ;
     }
@@ -16,7 +16,7 @@ void CollectionOfBoundaryConditions::applyElectricBC( VecField & E )
 void CollectionOfBoundaryConditions::applyMagneticBC( VecField & B )
 {
 
-    for( auto & ptr : edgesBoundaryConditions_ )
+    for( auto & ptr : fieldBoundaryConditions_ )
     {
         ptr->applyMagneticBC( B ) ;
     }
@@ -27,7 +27,7 @@ void CollectionOfBoundaryConditions::applyMagneticBC( VecField & B )
 void CollectionOfBoundaryConditions::applyCurrentBC( VecField & J )
 {
 
-    for( auto & ptr : edgesBoundaryConditions_ )
+    for( auto & ptr : fieldBoundaryConditions_ )
     {
         ptr->applyMomentsBC( J ) ;
     }
