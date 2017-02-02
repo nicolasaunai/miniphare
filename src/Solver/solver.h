@@ -16,7 +16,6 @@
 #include "grid/gridlayout.h"
 
 #include "Field/fieldbc3dcollection.h"
-#include "Plasmas/particlesbc.h"
 
 #include "Interpolator/interpolator.h"
 
@@ -62,7 +61,7 @@ private:
 
     CollectionOfBoundaryConditions boundaryConditions_ ;
 
-    std::array< std::unique_ptr<ParticlesBC>, 6> particlesBoundaryConditions_ ;
+
 
 
 

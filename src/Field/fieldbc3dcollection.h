@@ -4,14 +4,19 @@
 #include <vector>
 #include <memory>
 
-#include "Field/fieldbc.h"
 #include "vecfield/vecfield.h"
+
+#include "Field/fieldbc.h"
+#include "Plasmas/particlesbc.h"
+
 
 
 class CollectionOfBoundaryConditions
 {
 private:
     std::vector< std::unique_ptr<FieldBC> > fieldBoundaryConditions_ ;
+
+    std::vector< std::unique_ptr<ParticlesBC> > particlesBoundaryConditions_ ;
 
 public:
     CollectionOfBoundaryConditions() {}

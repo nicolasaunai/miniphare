@@ -1,7 +1,6 @@
 #ifndef SOLVERINITIALIZER_H
 #define SOLVERINITIALIZER_H
 
-#include <array>
 #include <vector>
 
 #include "types.h"
@@ -23,9 +22,9 @@ struct SolverInitializer
 
     std::vector<uint32>  interpolationOrders ;
 
-    std::array< std::pair< Edge, std::string>, 6> fieldBCType ;
+    std::vector< std::pair<Edge, std::string> > fieldBCType ;
 
-    std::array<std::string, 6> particleBCType ;
+    std::vector< std::string > particleBCType ;
 };
 
 
