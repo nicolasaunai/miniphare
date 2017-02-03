@@ -27,10 +27,6 @@ void CollectionOfBoundaryConditions::applyMagneticBC( VecField & B )
 void CollectionOfBoundaryConditions::applyCurrentBC( VecField & J )
 {
 
-    for( auto & ptr : fieldBoundaryConditions_ )
-    {
-        ptr->applyMomentsBC( J ) ;
-    }
 
 }
 

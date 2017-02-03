@@ -38,18 +38,19 @@ void PeriodicFieldBC::applyMagneticBC( VecField & B )
 }
 
 
+// TODO: this is not a FieldBC method, move to Class MomentBC !
+// TODO: revise makeFieldPeriodic_ implementation in future Class PeriodicMomentBC
+//void PeriodicFieldBC::applyMomentsBC( VecField & moment )
+//{
+//    uint32 idirX = static_cast<uint32>(Direction::X) ;
+//    uint32 idirY = static_cast<uint32>(Direction::Y) ;
+//    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
 
-void PeriodicFieldBC::applyMomentsBC( VecField & moment )
-{
-    uint32 idirX = static_cast<uint32>(Direction::X) ;
-    uint32 idirY = static_cast<uint32>(Direction::Y) ;
-    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
+//    Field & Mx = moment.component(idirX) ;
+//    Field & My = moment.component(idirY) ;
+//    Field & Mz = moment.component(idirZ) ;
 
-    Field & Mx = moment.component(idirX) ;
-    Field & My = moment.component(idirY) ;
-    Field & Mz = moment.component(idirZ) ;
-
-    std::vector<std::reference_wrapper<Field>> Mxyz = {Mx, My, Mz} ;
+//    std::vector<std::reference_wrapper<Field>> Mxyz = {Mx, My, Mz} ;
 
     // WARNING
     // we shall apply boundary conditions to the computed
@@ -58,7 +59,7 @@ void PeriodicFieldBC::applyMomentsBC( VecField & moment )
     // this must be clarified
 //    makeFieldPeriodic_( Mxyz ) ;
 
-}
+//}
 
 
 

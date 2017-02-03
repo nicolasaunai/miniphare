@@ -59,7 +59,8 @@ public:
 
     virtual void applyMagneticBC( VecField & B ) = 0 ;
 
-    virtual void applyMomentsBC( VecField & moment ) = 0 ;
+    // TODO: this is not a FieldBC method, move to Class MomentBC !
+//    virtual void applyMomentsBC( VecField & moment ) = 0 ;
 
 };
 
