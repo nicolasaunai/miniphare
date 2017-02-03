@@ -93,6 +93,7 @@ doc/html
 # UNIT TEST FILES
 # ---------------
 build*
+tests/GridLayout/gridIndexing.txt
 tests/GridLayout/fieldCoords_*.txt
 tests/GridLayout/deriv1D_*.txt
 tests/GridLayout/centeredCoords_*.txt

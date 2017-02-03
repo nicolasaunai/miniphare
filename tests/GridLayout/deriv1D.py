@@ -70,7 +70,7 @@ def main(path='./'):
     
     # corresponding hybrid quantities on the Yee lattice
     # rho, Bz
-    derivedQty_l=[6]*4 + [2]*4
+    derivedQty_l=[9]*4 + [2]*4
 
     #    Corresponding HybridQuantity for centering 
     #    after derivation along X direction :

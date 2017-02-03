@@ -46,7 +46,7 @@ def main(path='./'):
     interpOrder_l= [1]*len(Qty_l) + [2]*len(Qty_l) \
                  + [3]*len(Qty_l) + [4]*len(Qty_l)
 
-    quantities_l = [0, 1, 2, 3, 4, 5, 6, 7, 8]*nbrOrder
+    quantities_l = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]*nbrOrder
 
     nbrCellX_l = [40]*nbrTestCases
     nbrCellY_l = [ 0]*nbrTestCases
