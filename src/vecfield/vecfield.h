@@ -7,6 +7,8 @@
 #include <memory>
 #include <iostream>
 #include <array>
+#include <vector>
+#include <functional>
 
 #include "constants.h"
 #include "types.h"
@@ -60,11 +62,11 @@ public:
     void zero() {xComponent_.zero(); yComponent_.zero(); zComponent_.zero();}
 
     Field& component(uint32 iComp);
-
     const Field& component(uint32 iComp) const;
 
     void dotProduct(VecField const& v1, VecField const& v2, Field& v1dotv2);
 
+    std::vector<std::reference_wrapper<Field>> components();
 
 
 

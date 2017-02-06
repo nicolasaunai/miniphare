@@ -85,6 +85,15 @@ const Field& VecField::component(uint32 iComp) const
 }
 
 
+
+std::vector<std::reference_wrapper<Field>> VecField::components()
+{
+    return {xComponent_, yComponent_, zComponent_} ;
+}
+
+
+
+
 #if 0
 void avg(Vecfield const& VF1, Vecfield const& VF2, Vecfield& Vavg)
 {
