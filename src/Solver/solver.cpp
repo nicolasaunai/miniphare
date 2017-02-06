@@ -5,7 +5,7 @@
 #include "Interpolator/interpolator.h"
 #include "Faraday/faradayfactory.h"
 #include "pusher/pusherfactory.h"
-#include "Field/fieldbcfactory.h"
+#include "BoundaryConditions/fieldbcfactory.h"
 #include "Field/field.h"
 #include "Plasmas/ions.h"
 #include "Plasmas/electrons.h"

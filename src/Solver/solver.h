@@ -7,18 +7,14 @@
 
 #include "types.h"
 #include "Initializer/solverinitializer.h"
-
 #include "Plasmas/ions.h"
 #include "Plasmas/electrons.h"
 #include "Faraday/faraday.h"
 #include "Ampere/ampere.h"
 #include "Electromag/electromag.h"
 #include "grid/gridlayout.h"
-
-#include "Field/fieldbc3dcollection.h"
-
+#include "BoundaryConditions/fieldbc3dcollection.h"
 #include "Interpolator/interpolator.h"
-
 #include "pusher/pusher.h"
 
 

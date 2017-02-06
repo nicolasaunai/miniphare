@@ -6,10 +6,8 @@
 #include <string>
 
 #include "grid/gridlayout.h"
-
-#include "Field/fieldbc.h"
-
-#include "Field/periodicfieldbc.h"
+#include "BoundaryConditions/fieldbc.h"
+#include "BoundaryConditions/periodicfieldbc.h"
 
 
 
