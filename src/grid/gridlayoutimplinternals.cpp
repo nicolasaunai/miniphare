@@ -444,8 +444,24 @@ Point GridLayoutImplInternals::cellCenteredCoordinates_(uint32 ix,
  */
 void GridLayoutImplInternals::computeNbrGhosts(uint32 ghostParameter)
 {
-    nbrPrimalGhosts_ = static_cast<uint32> ( std::floor( ghostParameter/2.    ) ) ;
-    nbrDualGhosts_   = static_cast<uint32> ( std::floor((ghostParameter +1)/2.) ) ;
+    /* for first order Interpolation, there is no primal ghost node neeeded
+       for particle/mesh interactions. However one ghost node is required
+       for calculating Laplacians so we add one.
+    */
+    if (ghostParameter == 1)
+    {
+        nbrPrimalGhosts_ = static_cast<uint32> ( std::floor( ghostParameter/2.    ) ) ;
+        nbrDualGhosts_   = static_cast<uint32> ( std::floor((ghostParameter +1)/2.) ) ;
+    }
+
+    /* for interpolation order larger than 1, there is at least 1 primal ghost
+       node so Laplacians can be calculated OK */
+    else if (ghostParameter >1)
+    {
+        nbrPrimalGhosts_ = static_cast<uint32> ( std::floor( ghostParameter/2.    ) ) ;
+        nbrDualGhosts_   = static_cast<uint32> ( std::floor((ghostParameter +1)/2.) ) ;
+    }
+
 }
 
 
