@@ -13,7 +13,7 @@
 #include "Ampere/ampere.h"
 #include "Electromag/electromag.h"
 #include "grid/gridlayout.h"
-#include "BoundaryConditions/fieldbc3dcollection.h"
+#include "BoundaryConditions/boundary_conditions.h"
 #include "Interpolator/interpolator.h"
 #include "pusher/pusher.h"
 
@@ -55,7 +55,7 @@ private:
 
     // ohm object
 
-    CollectionOfBoundaryConditions boundaryConditions_ ;
+    BoundaryConditions boundaryConditions_ ;
 
 
 

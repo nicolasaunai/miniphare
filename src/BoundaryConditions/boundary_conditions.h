@@ -11,23 +11,24 @@
 
 
 
-class CollectionOfBoundaryConditions
+class BoundaryConditions
 {
+
 private:
     std::vector< std::unique_ptr<FieldBC> > fieldBoundaryConditions_ ;
-
     std::vector< std::unique_ptr<ParticlesBC> > particlesBoundaryConditions_ ;
 
+
 public:
-    CollectionOfBoundaryConditions() {}
+    BoundaryConditions() {}
 
-    CollectionOfBoundaryConditions( std::vector<std::unique_ptr<FieldBC>> && collectionOfFieldsBC )
-        : fieldBoundaryConditions_{std::move(collectionOfFieldsBC)} {}
+    BoundaryConditions( std::vector<std::unique_ptr<FieldBC>> && fieldsBCs )
+        : fieldBoundaryConditions_{std::move(fieldsBCs)} {}
 
-    CollectionOfBoundaryConditions(CollectionOfBoundaryConditions&& toMove)      = default;
-    CollectionOfBoundaryConditions& operator=(CollectionOfBoundaryConditions&& source) = default;
+    BoundaryConditions(BoundaryConditions&& toMove)      = default;
+    BoundaryConditions& operator=(BoundaryConditions&& source) = default;
 
-    ~CollectionOfBoundaryConditions() = default ;
+    ~BoundaryConditions() = default ;
 
     std::vector< std::unique_ptr<FieldBC> > &
     fieldBoundaryConditions() { return fieldBoundaryConditions_ ; }
