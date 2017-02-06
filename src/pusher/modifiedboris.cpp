@@ -6,13 +6,14 @@
 
 
 
+
 /**
  * @brief ModifiedBoris::move1D
  *
-  STEP 1: pre-push coordinates
-  STEP 2: compute fields at particles coordinates
-  STEP 3: push velocities
-  STEP 4: correction push for coordinates
+ * STEP 1: pre-push coordinates
+ * STEP 2: compute fields at particles coordinates
+ * STEP 3: push velocities
+ * STEP 4: correction push for coordinates
  *
  * @param partIn positions and velocities at time tn
  * @param partPred positions and velocities at time tpred

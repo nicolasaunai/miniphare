@@ -13,9 +13,10 @@
  */
 class FaradayImpl
 {
-    public:
-        virtual void operator()(VecField const& E, VecField const& B, VecField& Bnew) = 0;
-        virtual ~FaradayImpl();
+public:
+    virtual ~FaradayImpl() = default;
+
+    virtual void operator()(VecField const& E, VecField const& B, VecField& Bnew) = 0;
 };
 
 

@@ -61,7 +61,7 @@ public:
     virtual uint32 ghostStartIndex(Field const& field, Direction direction) const override;
     virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const override;
 
-    void deriv1D(Field const& operand, Field& derivative) const override;
+    virtual void deriv1D(Field const& operand, Field& derivative) const override;
 
     virtual AllocSizeT allocSize( HybridQuantity qtyType ) const override ;
 
@@ -74,6 +74,8 @@ public:
     virtual Point cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz ) const override ;
 
     virtual QtyCentering fieldCentering(Field const & field, Direction dir) const override ;
+
+    virtual uint32 nbrGhostCells( QtyCentering centering ) const override ;
 };
 
 

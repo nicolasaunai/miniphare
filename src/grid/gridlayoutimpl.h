@@ -58,6 +58,8 @@ public:
 
     virtual QtyCentering fieldCentering(Field const & field, Direction dir) const = 0 ;
 
+    virtual uint32 nbrGhostCells( QtyCentering centering ) const = 0 ;
+
     virtual uint32 nbDimensions() const = 0;
 
     virtual ~GridLayoutImpl() = default;

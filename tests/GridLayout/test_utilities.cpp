@@ -11,15 +11,18 @@ HybridQuantity GetHybridQty(uint32 iqty)
 
     std::array<HybridQuantity, static_cast<uint32>(HybridQuantity::count) >  hybridQtyTable ;
 
-    hybridQtyTable[0] = HybridQuantity::Bx  ;
-    hybridQtyTable[1] = HybridQuantity::By  ;
-    hybridQtyTable[2] = HybridQuantity::Bz  ;
-    hybridQtyTable[3] = HybridQuantity::Ex  ;
-    hybridQtyTable[4] = HybridQuantity::Ey  ;
-    hybridQtyTable[5] = HybridQuantity::Ez  ;
-    hybridQtyTable[6] = HybridQuantity::rho ;
-    hybridQtyTable[7] = HybridQuantity::V   ;
-    hybridQtyTable[8] = HybridQuantity::P   ;
+    hybridQtyTable[0]  = HybridQuantity::Bx  ;
+    hybridQtyTable[1]  = HybridQuantity::By  ;
+    hybridQtyTable[2]  = HybridQuantity::Bz  ;
+    hybridQtyTable[3]  = HybridQuantity::Ex  ;
+    hybridQtyTable[4]  = HybridQuantity::Ey  ;
+    hybridQtyTable[5]  = HybridQuantity::Ez  ;
+    hybridQtyTable[6]  = HybridQuantity::Jx  ;
+    hybridQtyTable[7]  = HybridQuantity::Jy  ;
+    hybridQtyTable[8]  = HybridQuantity::Jz  ;
+    hybridQtyTable[9]  = HybridQuantity::rho ;
+    hybridQtyTable[10] = HybridQuantity::V   ;
+    hybridQtyTable[11] = HybridQuantity::P   ;
 
     if( iqty < static_cast<uint32>(HybridQuantity::count) )
     {
@@ -39,15 +42,18 @@ std::string GetHybridQtyName(uint32 iqty)
 
     std::array<std::string, static_cast<uint32>(HybridQuantity::count) >  hybridQtyNames ;
 
-    hybridQtyNames[0] = "Bx"  ;
-    hybridQtyNames[1] = "By"  ;
-    hybridQtyNames[2] = "Bz"  ;
-    hybridQtyNames[3] = "Ex"  ;
-    hybridQtyNames[4] = "Ey"  ;
-    hybridQtyNames[5] = "Ez"  ;
-    hybridQtyNames[6] = "rho" ;
-    hybridQtyNames[7] = "V"   ;
-    hybridQtyNames[8] = "P"   ;
+    hybridQtyNames[0]  = "Bx"  ;
+    hybridQtyNames[1]  = "By"  ;
+    hybridQtyNames[2]  = "Bz"  ;
+    hybridQtyNames[3]  = "Ex"  ;
+    hybridQtyNames[4]  = "Ey"  ;
+    hybridQtyNames[5]  = "Ez"  ;
+    hybridQtyNames[6]  = "Jx"  ;
+    hybridQtyNames[7]  = "Jy"  ;
+    hybridQtyNames[8]  = "Jz"  ;
+    hybridQtyNames[9]  = "rho" ;
+    hybridQtyNames[10] = "V"   ;
+    hybridQtyNames[11] = "P"   ;
 
     if( iqty < static_cast<uint32>(HybridQuantity::count) )
     {

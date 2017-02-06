@@ -5,7 +5,7 @@
 
 #define NBR_COMPO 3
 
-#define NBR_HYBRID_QTY 9
+#define NBR_HYBRID_QTY 12
 
 
 #endif // CONSTANTS_H

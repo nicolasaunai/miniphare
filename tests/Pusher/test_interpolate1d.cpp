@@ -299,7 +299,6 @@ void readFieldsOnTheMesh(InterpPushParams const & inputs,
         uint32 ix0 = layout.physicalStartIndex( field, Direction::X ) ;
         uint32 ix1 = layout.physicalEndIndex  ( field, Direction::X ) ;
 
-        uint32 sizeX = field.shape()[0] ;
         // Reading the field on the whole mesh
         for(uint32 ix=ix0 ; ix<= ix1 ; ++ix) ifsFields >> field(ix) ;
     }

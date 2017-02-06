@@ -20,21 +20,30 @@ class GridLayout(object):
     def __init__(self):
         self.Direction_l = [(0,'X'), (1,'Y'), (2,'Z')]
 
-        self.Qty_l=[(0,'Bx'), (1,'By'), (2,'Bz'), (3,'Ex'), (4,'Ey'), (5,'Ez'), (6,'rho'), (7,'V'), (8,'P')]
+        self.Qty_l=[(0,'Bx'), (1,'By'), (2,'Bz'), \
+                    (3,'Ex'), (4,'Ey'), (5,'Ez'), \
+                    (6,'Jx'), (7,'Jy'), (8,'Jz'), \
+                    (9,'rho'), (10,'V'), (11,'P')]
 
-        self.QtyDict = {'Bx':0, 'By':1, 'Bz':2, 'Ex':3, 'Ey':4, 'Ez':5, 'rho':6, 'V':7, 'P':8}
+        self.QtyDict = {'Bx':0, 'By':1, 'Bz':2, \
+                        'Ex':3, 'Ey':4, 'Ez':5, \
+                        'Jx':6, 'Jy':7, 'Jz':8, \
+                        'rho':9, 'V':10, 'P':11}
 
 
         self.CenterX = {'Bx':'primal' , 'By':'dual'  , 'Bz':'dual'  ,
                         'Ex':'dual'   , 'Ey':'primal', 'Ez':'primal',
+                        'Jx':'dual'   , 'Jy':'primal', 'Jz':'primal',
                         'rho':'primal', 'V':'primal' , 'P':'primal' }
 
         self.CenterY = {'Bx':'dual'   , 'By':'primal', 'Bz':'dual'  ,
                         'Ex':'primal' , 'Ey':'dual'  , 'Ez':'primal',
+                        'Jx':'primal' , 'Jy':'dual'  , 'Jz':'primal',
                         'rho':'primal', 'V':'primal' , 'P':'primal' }
 
         self.CenterZ = {'Bx':'dual'   , 'By':'dual'  , 'Bz':'primal',
                         'Ex':'primal' , 'Ey':'primal', 'Ez':'dual'  ,
+                        'Jx':'primal' , 'Jy':'primal', 'Jz':'dual'  ,
                         'rho':'primal', 'V':'primal' , 'P':'primal' }
 
 

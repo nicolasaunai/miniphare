@@ -2,6 +2,7 @@
 #define SOLVER_H
 
 #include <memory>
+#include <array>
 #include <vector>
 
 #include "types.h"
@@ -10,11 +11,13 @@
 #include "Plasmas/ions.h"
 #include "Plasmas/electrons.h"
 #include "Faraday/faraday.h"
+#include "Ampere/ampere.h"
 #include "Electromag/electromag.h"
 #include "grid/gridlayout.h"
 
+#include "Field/fieldbc3dcollection.h"
+
 #include "Interpolator/interpolator.h"
-//#include "Projector/projector.h"
 
 #include "pusher/pusher.h"
 
@@ -42,16 +45,25 @@ private:
     // work on the mesh.... a different solver may interp/project elsewhere
     std::vector< std::unique_ptr<Interpolator> > interpolators_ ;
 
-    Electromag EMFieldsPred_;
-    Electromag EMFieldsAvg_;
+    Electromag EMFieldsPred_ ;
+    Electromag EMFieldsAvg_ ;
+
+    VecField Jtot_ ;
+
     // vector <particle> part2_;  // vector of vector ou assign.
 
     std::unique_ptr<Pusher> pusher_ ;
 
     Faraday faraday_;
+    Ampere  ampere_;
+
     // ohm object
 
-    // BoundaryCondition bc_;
+    CollectionOfBoundaryConditions boundaryConditions_ ;
+
+
+
+
 
     /*
     move_(ions)
