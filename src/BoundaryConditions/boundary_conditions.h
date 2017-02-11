@@ -6,11 +6,18 @@
 
 #include "vecfield/vecfield.h"
 
-#include "BoundaryConditions/fieldbc.h"
-#include "Plasmas/particlesbc.h"
+
+class BoundaryCondition
+{
+public:
+    virtual void applyMagneticBC(VecField& B) const = 0;
+    virtual void applyElectricBC(VecField& E) const = 0;
+    virtual void applyCurrentBC(VecField& J)  const = 0;
+};
 
 
 
+/*
 class BoundaryConditions
 {
 
@@ -37,7 +44,7 @@ public:
     void applyMagneticBC( VecField & B ) ;
     void applyCurrentBC ( VecField & J ) ;
 
-};
+};*/
 
 
 

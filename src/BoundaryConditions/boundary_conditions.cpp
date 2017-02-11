@@ -1,7 +1,7 @@
 
 #include "BoundaryConditions/boundary_conditions.h"
 
-
+#if 0
 void BoundaryConditions::applyElectricBC(VecField& E)
 {
 
@@ -29,4 +29,4 @@ void BoundaryConditions::applyCurrentBC(VecField& J)
 
 
 }
-
+#endif

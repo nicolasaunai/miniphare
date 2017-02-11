@@ -1,60 +1,43 @@
-
-#include "BoundaryConditions/periodicfieldbc.h"
-#include "vecfield/vecfield.h"
+#include "periodicdomainboundary.h"
 
 
-void PeriodicFieldBC::applyElectricBC( VecField & E )
+
+
+void PeriodicDomainBoundary::applyMagneticBC(VecField& B, GridLayout const& layout) const
 {
-    makeFieldPeriodic_(E);
+    makeFieldPeriodic_(B, layout);
 }
 
 
 
-void PeriodicFieldBC::applyMagneticBC( VecField & B )
+void PeriodicDomainBoundary::applyElectricBC(VecField& E, GridLayout const& layout) const
 {
-    makeFieldPeriodic_(B) ;
+    makeFieldPeriodic_(E, layout);
 }
 
 
-// TODO: this is not a FieldBC method, move to Class MomentBC !
-// TODO: revise makeFieldPeriodic_ implementation in future Class PeriodicMomentBC
-//void PeriodicFieldBC::applyMomentsBC( VecField & moment )
-//{
-//    uint32 idirX = static_cast<uint32>(Direction::X) ;
-//    uint32 idirY = static_cast<uint32>(Direction::Y) ;
-//    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
-
-//    Field & Mx = moment.component(idirX) ;
-//    Field & My = moment.component(idirY) ;
-//    Field & Mz = moment.component(idirZ) ;
-
-//    std::vector<std::reference_wrapper<Field>> Mxyz = {Mx, My, Mz} ;
-
-    // WARNING
-    // we shall apply boundary conditions to the computed
-    // Jx, Jy, Jz fields
-    // but Jx, Jy, Jz are not members of enum class HybridQuantity
-    // this must be clarified
-//    makeFieldPeriodic_( Mxyz ) ;
-
-//}
-
-
-
-void PeriodicFieldBC::makeFieldPeriodic_(VecField& vecField)
+void PeriodicDomainBoundary::applyCurrentBC(VecField& J, GridLayout const& layout) const
 {
-    switch (layout_.nbDimensions())
+    makeFieldPeriodic_(J, layout);
+}
+
+
+
+
+void PeriodicDomainBoundary::makeFieldPeriodic_(VecField& vecField, GridLayout const& layout) const
+{
+    switch (layout.nbDimensions())
     {
         case 1:
-        makeFieldPeriodic1D_(vecField);
+        makeFieldPeriodic1D_(vecField, layout);
         break;
 
         case 2:
-        makeFieldPeriodic2D_(vecField);
+        makeFieldPeriodic2D_(vecField, layout);
         break;
 
         case 3:
-        makeFieldPeriodic3D_(vecField);
+        makeFieldPeriodic3D_(vecField, layout);
         break;
     }
 }
@@ -63,15 +46,16 @@ void PeriodicFieldBC::makeFieldPeriodic_(VecField& vecField)
 
 
 
-void PeriodicFieldBC::makeFieldPeriodic1D_(VecField& vecField)
+
+void PeriodicDomainBoundary::makeFieldPeriodic1D_(VecField& vecField, GridLayout const& layout) const
 {
 
     /* periodic boundary condition is special in the sense that they
        are applied to 2 edges in the same direction instead of one.
        rather than looping over one edge only, we loop over */
+#if 0
     if( edge_ == Edge::Xmin)
     {
-#if 0
         for (Field& field : vecField.components())
         {
             /* for each component, we apply periodic BCs only to those
@@ -98,8 +82,8 @@ void PeriodicFieldBC::makeFieldPeriodic1D_(VecField& vecField)
         {
 
         }
-#endif
     } // end if at Min boundary
+#endif
 }
 
 
@@ -107,19 +91,16 @@ void PeriodicFieldBC::makeFieldPeriodic1D_(VecField& vecField)
 
 
 
-void PeriodicFieldBC::makeFieldPeriodic2D_(VecField& vecField)
+void PeriodicDomainBoundary::makeFieldPeriodic2D_(VecField& vecField, GridLayout const& layout) const
 {
     throw std::runtime_error("Not Implemented");
 }
 
 
-void PeriodicFieldBC::makeFieldPeriodic3D_(VecField& vecField)
+void PeriodicDomainBoundary::makeFieldPeriodic3D_(VecField& vecField, GridLayout const& layout) const
 {
     throw std::runtime_error("Not Implemented");
 }
-
-
-
 
 
 

@@ -5,7 +5,7 @@
 #include "Interpolator/interpolator.h"
 #include "Faraday/faradayfactory.h"
 #include "pusher/pusherfactory.h"
-#include "BoundaryConditions/fieldbcfactory.h"
+//#include "BoundaryConditions/fieldbcfactory.h"
 #include "Field/field.h"
 #include "Plasmas/ions.h"
 #include "Plasmas/electrons.h"
@@ -38,8 +38,9 @@ Solver::Solver( GridLayout const& layout, double dt,
              "Jtot" },
 
       faraday_{dt, layout},
-      ampere_{dt, layout},
-      boundaryConditions_{}
+      ampere_{dt, layout}
+    //,
+     // boundaryConditions_{}
 {
 
     uint32 size = static_cast<uint32> ( solverInitializer->interpolationOrders.size() ) ;
@@ -57,12 +58,13 @@ Solver::Solver( GridLayout const& layout, double dt,
     // is std::vector< std::unique_ptr<FieldBC> >&, and it is a rvalue
     // therefore
     // collectionOfBC type is std::vector< std::unique_ptr<FieldBC> > &&
+#if 0
     auto && collectionOfBC = boundaryConditions_.fieldBoundaryConditions() ;
     for( std::pair< Edge, std::string> & edgeAndCondition : solverInitializer->fieldBCType )
     {
         collectionOfBC.push_back( FieldBCFactory::createFieldBC( layout, edgeAndCondition ) ) ;
     }
-
+#endif
 
     // TODO need to initialize OHM object
     // TODO and vector (?) of particles (n+1)
@@ -90,12 +92,12 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // --> Get B_{n+1} pred1 from E^n
     faraday_(E, B, Bpred);
     // BC Fields --> Apply boundary conditions on the electric field
-    boundaryConditions_.applyMagneticBC( Bpred ) ;
+    //boundaryConditions_.applyMagneticBC( Bpred ) ;
 
     // Compute J
     ampere_(Bpred, Jtot_) ;
     // BC on the current
-    boundaryConditions_.applyCurrentBC( Jtot_ ) ;
+   // boundaryConditions_.applyCurrentBC( Jtot_ ) ;
 
     // --> MOMENTS (n^n, u^n) at time n have
     // --> already been computed, or are known just after initialization
@@ -106,7 +108,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // ohm(Bpred, Ne, Ve, Pe, Epred);
 
     // BC Fields --> Apply boundary conditions on the electric field
-    boundaryConditions_.applyElectricBC( Epred ) ;
+    //boundaryConditions_.applyElectricBC( Epred ) ;
 
     // --> Get time averaged prediction (E,B)_(n+1/2) pred1
     // --> using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred1
@@ -122,12 +124,12 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // --> Get B^{n+1} pred2 from E^{n+1/2} pred1
     faraday_(Eavg, B, Bpred);
     // BC Fields --> Apply boundary conditions
-    boundaryConditions_.applyMagneticBC( Bpred ) ;
+    //boundaryConditions_.applyMagneticBC( Bpred ) ;
 
     // Compute J
     ampere_(Bpred, Jtot_) ;
     // BC on the current
-    boundaryConditions_.applyCurrentBC( Jtot_ ) ;
+    //boundaryConditions_.applyCurrentBC( Jtot_ ) ;
 
     // --> DEPOSIT PREDICTED MOMENTS (n^{n+1}, u^{n+1}) AT TIME n+1
     // --> get ion and electron moments at time n+1 (pred 1)
@@ -145,7 +147,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // ohm(Bpred, Ne, Ve, Pe, Epred);
 
     // BC Fields --> Apply boundary conditions on the electric field
-    boundaryConditions_.applyElectricBC( Epred ) ;
+   // boundaryConditions_.applyElectricBC( Epred ) ;
 
     // --> Get time averaged prediction (E^(n+1/2),B^(n+1/2)) pred2
     // --> using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred2
@@ -161,12 +163,12 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // --> Get CORRECTED B^{n+1} from E^{n+1/2} pred2
     faraday_(Eavg, B, B);
     // BC Fields --> Apply boundary conditions
-    boundaryConditions_.applyMagneticBC( B ) ;
+    //boundaryConditions_.applyMagneticBC( B ) ;
 
     // Compute J
     ampere_(B, Jtot_) ;
     // BC on the current
-    boundaryConditions_.applyCurrentBC( Jtot_ ) ;
+    //boundaryConditions_.applyCurrentBC( Jtot_ ) ;
 
     // --> DEPOSIT CORRECTED MOMENTS (n^{n+1}, u^{n+1})
     // --> Get ion and electron moments at time n+1
@@ -184,7 +186,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
     // ohm(B, Ne, Ve, Pe, E);
 
     // BC Fields --> Apply boundary conditions on the electric field
-    boundaryConditions_.applyElectricBC( E ) ;
+    //boundaryConditions_.applyElectricBC( E ) ;
 
 }
 

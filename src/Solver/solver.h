@@ -55,7 +55,7 @@ private:
 
     // ohm object
 
-    BoundaryConditions boundaryConditions_ ;
+    //BoundaryConditions boundaryConditions_ ;
 
 
 
