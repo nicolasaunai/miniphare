@@ -43,17 +43,13 @@ void PeriodicDomainBoundary::makeFieldPeriodic_(VecField& vecField, GridLayout c
 }
 
 
-
-
-
-
 void PeriodicDomainBoundary::makeFieldPeriodic1D_(VecField& vecField, GridLayout const& layout) const
 {
 
     /* periodic boundary condition is special in the sense that they
        are applied to 2 edges in the same direction instead of one.
        rather than looping over one edge only, we loop over */
-#if 0
+#if 1
     if( edge_ == Edge::Xmin)
     {
         for (Field& field : vecField.components())
@@ -62,24 +58,20 @@ void PeriodicDomainBoundary::makeFieldPeriodic1D_(VecField& vecField, GridLayout
                which are DUAL. Primal components should have been
                **calculated** correctly
             */
-            auto centering = layout_.fieldCentering( field, direction_) ;
+            auto centering = layout.fieldCentering( field, Direction::X) ;
             if (centering == QtyCentering::dual)
             {
-                uint32 physStart = layout_.physicalStartIndex( field, direction_ ) ;
-                uint32 physEnd   = layout_.physicalEndIndex  ( field, direction_ ) ;
+                uint32 physStart = layout.physicalStartIndex( field, Direction::X) ;
+                uint32 physEnd   = layout.physicalEndIndex  ( field, Direction::X) ;
 
                 /* for each ghost node */
-                uint32 nbrGhosts = layout_.nbrGhostCells( centering ) ;
+                uint32 nbrGhosts = layout.nbrGhostCells( centering ) ;
                 for( uint32 ig=1 ; ig<nbrGhosts+1 ; ++ig )
                 {
                     field( physStart-ig ) = field( physEnd-ig ) ;
                     field( physEnd+ig ) = field( physStart+ig ) ;
                 }
             }
-
-        }
-        for( uint32 ifield=0 ; ifield<Fxyz.size() ; ++ifield )
-        {
 
         }
     } // end if at Min boundary
