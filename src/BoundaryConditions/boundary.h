@@ -4,7 +4,9 @@
 #include "vecfield/vecfield.h"
 #include "grid/gridlayout.h"
 
-
+/**
+ * @brief The Boundary class is an interface for applying boundary conditions in solveStep
+ */
 class Boundary
 {
 public:

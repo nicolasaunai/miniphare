@@ -9,6 +9,10 @@
 #include "grid/gridlayout.h"
 
 
+/**
+ * @brief The DomainBoundaryCondition class is a special type of BoundaryCondition
+ * that applies only to the physical domain (root patch)
+ */
 class DomainBoundaryCondition : public BoundaryCondition
 {
 private:
