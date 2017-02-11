@@ -58,7 +58,10 @@ class GridLayout(object):
 
     def nbrGhosts(self,interpOrder, centering):
         if centering == 'primal':
-            return math.floor( interpOrder/2 )
+            if interpOrder == 1:
+                return math.floor((interpOrder+1)/2)
+            else:
+                return math.floor( interpOrder/2 )
         else:
             return math.floor( (interpOrder +1)/2 )
 
