@@ -450,8 +450,8 @@ void GridLayoutImplInternals::computeNbrGhosts(uint32 ghostParameter)
     */
     if (ghostParameter == 1)
     {
-        nbrPrimalGhosts_ = static_cast<uint32> ( std::floor( ghostParameter/2.    ) ) ;
-        nbrDualGhosts_   = static_cast<uint32> ( std::floor((ghostParameter +1)/2.) ) ;
+        nbrPrimalGhosts_ = static_cast<uint32> ( std::floor((ghostParameter + 1)/2.) ) ;
+        nbrDualGhosts_   = static_cast<uint32> ( std::floor((ghostParameter + 1)/2.) ) ;
     }
 
     /* for interpolation order larger than 1, there is at least 1 primal ghost
