@@ -10,7 +10,10 @@ class PeriodicFieldBC : public FieldBC
 {
 private:
 
-    void makeFieldPeriodic_( std::vector<std::reference_wrapper<Field>> Fxyz) ;
+    void makeFieldPeriodic_(VecField& vecField) ;
+    void makeFieldPeriodic1D_(VecField& vecField) ;
+    void makeFieldPeriodic2D_(VecField& vecField) ;
+    void makeFieldPeriodic3D_(VecField& vecField) ;
 
 public:
 

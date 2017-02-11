@@ -1,40 +1,18 @@
 
 #include "BoundaryConditions/periodicfieldbc.h"
-
+#include "vecfield/vecfield.h"
 
 
 void PeriodicFieldBC::applyElectricBC( VecField & E )
 {
-    uint32 idirX = static_cast<uint32>(Direction::X) ;
-    uint32 idirY = static_cast<uint32>(Direction::Y) ;
-    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
-
-    Field & Ex = E.component(idirX) ;
-    Field & Ey = E.component(idirY) ;
-    Field & Ez = E.component(idirZ) ;
-
-    std::vector<std::reference_wrapper<Field>> Exyz = {Ex, Ey, Ez} ;
-
-    makeFieldPeriodic_( Exyz ) ;
-
+    makeFieldPeriodic_(E);
 }
 
 
 
 void PeriodicFieldBC::applyMagneticBC( VecField & B )
 {
-    uint32 idirX = static_cast<uint32>(Direction::X) ;
-    uint32 idirY = static_cast<uint32>(Direction::Y) ;
-    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
-
-    Field & Bx = B.component(idirX) ;
-    Field & By = B.component(idirY) ;
-    Field & Bz = B.component(idirZ) ;
-
-    std::vector<std::reference_wrapper<Field>> Bxyz = {Bx, By, Bz} ;
-
-    makeFieldPeriodic_( Bxyz ) ;
-
+    makeFieldPeriodic_(B) ;
 }
 
 
@@ -63,42 +41,85 @@ void PeriodicFieldBC::applyMagneticBC( VecField & B )
 
 
 
-void PeriodicFieldBC::makeFieldPeriodic_( std::vector<std::reference_wrapper<Field>> Fxyz )
+void PeriodicFieldBC::makeFieldPeriodic_(VecField& vecField)
+{
+    switch (layout_.nbDimensions())
+    {
+        case 1:
+        makeFieldPeriodic1D_(vecField);
+        break;
+
+        case 2:
+        makeFieldPeriodic2D_(vecField);
+        break;
+
+        case 3:
+        makeFieldPeriodic3D_(vecField);
+        break;
+    }
+}
+
+
+
+
+
+void PeriodicFieldBC::makeFieldPeriodic1D_(VecField& vecField)
 {
 
-    uint32  computedEdge = EDGE_MAX_ ;
-
-    if( edge_ == Edge::Xmin || edge_ == Edge::Ymin || edge_ == Edge::Zmin )
+    /* periodic boundary condition is special in the sense that they
+       are applied to 2 edges in the same direction instead of one.
+       rather than looping over one edge only, we loop over */
+    if( edge_ == Edge::Xmin)
     {
-        computedEdge = EDGE_MIN_ ;
-    }
-
-    // We apply periodic boundary conditions only once
-    // when we handle an EDGE_MIN_
-    if( computedEdge == EDGE_MIN_ )
-    {
-        for( uint32 ifield=0 ; ifield<Fxyz.size() ; ++ifield )
+#if 0
+        for (Field& field : vecField.components())
         {
-            Field & field = Fxyz[ifield] ;
-
-            uint32 physStart = layout_.physicalStartIndex( field, direction_ ) ;
-            uint32 physEnd   = layout_.physicalEndIndex  ( field, direction_ ) ;
-
-            auto centering = layout_.fieldCentering( field, Direction::X ) ;
-
-            uint32 nbrGhosts = layout_.nbrGhostCells( centering ) ;
-
-            for( uint32 ig=1 ; ig<nbrGhosts+1 ; ++ig )
+            /* for each component, we apply periodic BCs only to those
+               which are DUAL. Primal components should have been
+               **calculated** correctly
+            */
+            auto centering = layout_.fieldCentering( field, direction_) ;
+            if (centering == QtyCentering::dual)
             {
-                field( physStart-ig ) = field( physEnd-ig ) ;
+                uint32 physStart = layout_.physicalStartIndex( field, direction_ ) ;
+                uint32 physEnd   = layout_.physicalEndIndex  ( field, direction_ ) ;
 
-                field( physEnd+ig ) = field( physStart+ig ) ;
+                /* for each ghost node */
+                uint32 nbrGhosts = layout_.nbrGhostCells( centering ) ;
+                for( uint32 ig=1 ; ig<nbrGhosts+1 ; ++ig )
+                {
+                    field( physStart-ig ) = field( physEnd-ig ) ;
+                    field( physEnd+ig ) = field( physStart+ig ) ;
+                }
             }
 
         }
-    }
+        for( uint32 ifield=0 ; ifield<Fxyz.size() ; ++ifield )
+        {
 
+        }
+#endif
+    } // end if at Min boundary
 }
+
+
+
+
+
+
+void PeriodicFieldBC::makeFieldPeriodic2D_(VecField& vecField)
+{
+    throw std::runtime_error("Not Implemented");
+}
+
+
+void PeriodicFieldBC::makeFieldPeriodic3D_(VecField& vecField)
+{
+    throw std::runtime_error("Not Implemented");
+}
+
+
+
 
 
 
