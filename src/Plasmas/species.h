@@ -51,6 +51,8 @@ public:
     std::vector<Particle>& particles() {return particleArray_;}
     std::vector<Particle> const& particles() const {return particleArray_;}
 
+    double mass() const {return mass_;}
+
     void loadParticles();
 
     void compute1DChargeDensityAndFlux(Interpolator & project );

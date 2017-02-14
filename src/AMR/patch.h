@@ -5,6 +5,9 @@
 // data structure Tree
 
 #include "AMR/patchdata.h"
+#include "Plasmas/ions.h"
+#include "utility.h"
+
 
 /**
  * @brief Represents a "node" in the patch Hierarchy.
@@ -24,6 +27,7 @@ class Patch
 
 private:
 
+    Box coordinates_;
     PatchData data_;
     // parent pointer
     // vector of children
@@ -31,9 +35,7 @@ private:
 
 public:
 
-
     explicit Patch(PatchData&& patchData):data_{std::move(patchData)}{}
-
 
     Patch(Patch&& source) = default;
     Patch& operator=(Patch&& source) = default;
@@ -42,9 +44,17 @@ public:
     Patch(Patch const& source) = delete;
     Patch& operator=(Patch& source) = delete;
 
-    void init() {     std::cout << "init Patch" << std::endl; data_.init(); }
+    void init() { std::cout << "init Patch" << std::endl; data_.init(); }
 
+    Ions const& ions(){ return data_.ions(); } const;
+
+    Box coordinates() const { return coordinates_; }
 
 };
 
 #endif // PATCH_H
+
+
+
+
+

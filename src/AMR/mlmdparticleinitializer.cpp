@@ -1,6 +1,13 @@
 #include "mlmdparticleinitializer.h"
 
-MLMDParticleInitializer::MLMDParticleInitializer()
+
+void MLMDParticleInitializer::loadParticles(std::vector<Particle>& particle) const
+{
+
+}
+
+
+MLMDParticleInitializer::~MLMDParticleInitializer()
 {
 
 }

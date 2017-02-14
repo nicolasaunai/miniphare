@@ -9,7 +9,6 @@
 #include "Electromag/electromag.h"
 #include "grid/gridlayout.h"
 #include "Initializer/initializerfactory.h"
-
 #include "types.h"
 
 
@@ -42,6 +41,8 @@ public:
     PatchData& operator=(PatchData&& source) = default;
 
     void init();
+
+    Ions const& ions() const {return ions_;}
 
     //void advance(){solver_.solveStep(EMfields_, ions_, electrons_);}
 

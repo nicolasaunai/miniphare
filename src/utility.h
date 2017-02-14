@@ -28,7 +28,9 @@ struct Box
 
 class ParticleSelector
 {
+public:
     virtual bool operator()(Particle const& particle) const = 0;
+    virtual ~ParticleSelector(){};
 };
 
 
@@ -49,6 +51,7 @@ public:
         //return true if the particle is in the box
         return false;
     }
+    virtual ~isInBox(){}
 };
 
 
