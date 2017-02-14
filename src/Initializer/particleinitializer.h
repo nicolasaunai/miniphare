@@ -26,22 +26,7 @@ enum class ParticleInitializerType {Fluid, Kinetic, count};
 class ParticleInitializer
 {
 
-private:
-    //std::unique_ptr< ParticleInitializerImpl > implPtr_;
-
-    //virtual ParticleInitializer* cloneImpl() const = 0;
-
 public:
-
-
-
-    // TODO deal with copy/move Ctors
-    //ParticleInitializer() = default;
-
-    //ParticleInitializer(GridLayout const& layout/*, ParticleInitializerType type*/);
-    //ParticleInitializer(ParticleInitializer const& source);
-
-    //std::unique_ptr<ParticleInitializer> clone() const ;
 
     virtual void loadParticles(std::vector<Particle>& particles) const = 0;
 

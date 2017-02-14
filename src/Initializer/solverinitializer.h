@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include <string>
+#include "BoundaryConditions/boundary_conditions.h"
 
 /**
  * @brief SolverInitializer is needed for Solver construction
@@ -17,14 +18,9 @@
  */
 struct SolverInitializer
 {
-    uint32 nbrSpecies ;
     std::string  pusherType ;
-
     std::vector<uint32>  interpolationOrders ;
-
-    std::vector< std::pair<Edge, std::string> > fieldBCType ;
-
-    std::vector< std::string > particleBCType ;
+    std::unique_ptr<BoundaryCondition> boundaryCondition_;
 };
 
 
