@@ -28,3 +28,22 @@ void DomainBoundaryCondition::applyCurrentBC(VecField& J) const
 }
 
 
+
+void DomainBoundaryCondition::applyDensityBC(Field& Ni) const
+{
+    for (auto&& bc : boundaries_)
+    {
+        bc->applyDensityBC(Ni, layout_);
+    }
+}
+
+
+
+
+void DomainBoundaryCondition::applyBulkBC(VecField& Vi) const
+{
+    for (auto&& bc : boundaries_)
+    {
+        bc->applyBulkBC(Vi, layout_);
+    }
+}

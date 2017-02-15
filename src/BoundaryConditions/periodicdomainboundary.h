@@ -12,10 +12,11 @@ class PeriodicDomainBoundary : public Boundary
 private:
     Edge edge_;
 
-    void makeFieldPeriodic_(VecField& vecField  , GridLayout const& layout) const;
-    void makeFieldPeriodic1D_(VecField& vecField, GridLayout const& layout) const;
-    void makeFieldPeriodic2D_(VecField& vecField, GridLayout const& layout) const;
-    void makeFieldPeriodic3D_(VecField& vecField, GridLayout const& layout) const;
+    void makeFieldPeriodic_(Field&   field, GridLayout const& layout) const;
+    void makeFieldPeriodic1D_(Field& field, GridLayout const& layout) const;
+    void makeFieldPeriodic2D_(Field& field, GridLayout const& layout) const;
+    void makeFieldPeriodic3D_(Field& field, GridLayout const& layout) const;
+
 
 public:
 
@@ -30,12 +31,14 @@ public:
 
     virtual ~PeriodicDomainBoundary() = default ;
 
-    virtual void applyElectricBC(VecField & E, GridLayout const& layout) const override ;
-    virtual void applyMagneticBC(VecField & B, GridLayout const& layout) const override ;
-    virtual void applyCurrentBC( VecField & J, GridLayout const& layout) const override ;
+    virtual void applyElectricBC(VecField& E, GridLayout const& layout) const override ;
+    virtual void applyMagneticBC(VecField& B, GridLayout const& layout) const override ;
+    virtual void applyCurrentBC( VecField& J, GridLayout const& layout) const override ;
+    virtual void applyDensityBC( Field& J,    GridLayout const& layout) const override ;
+    virtual void applyBulkBC( VecField& Vi,   GridLayout const& layout) const override ;
 
     // TODO: this is not a FieldBC method, move to Class MomentBC !
-//    virtual void applyMomentsBC( VecField & moment ) override ;
+    // virtual void applyMomentsBC( VecField & moment ) override ;
 
 };
 
