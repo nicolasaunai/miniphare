@@ -16,6 +16,7 @@
 #include "BoundaryConditions/boundary_conditions.h"
 #include "Interpolator/interpolator.h"
 #include "pusher/pusher.h"
+#include "BoundaryConditions/boundary_conditions.h"
 
 
 class Solver
@@ -37,28 +38,22 @@ public:
 
 private:
 
-    // those are Solver attribute because SOLVER decides where interp/project
-    // work on the mesh.... a different solver may interp/project elsewhere
-    std::vector< std::unique_ptr<Interpolator> > interpolators_ ;
-
+    // quantities used in the solver
+    // these are temporary quantities to use within a time step
     Electromag EMFieldsPred_ ;
     Electromag EMFieldsAvg_ ;
-
     VecField Jtot_ ;
 
-    // vector <particle> part2_;  // vector of vector ou assign.
-
-    std::unique_ptr<Pusher> pusher_ ;
-
+    // algorithms
     Faraday faraday_;
     Ampere  ampere_;
+    std::unique_ptr<BoundaryCondition> boundaryCondition_ ;
+    std::vector< std::unique_ptr<Interpolator> > interpolators_ ;
+    std::unique_ptr<Pusher> pusher_ ;
 
+
+    // vector <particle> part2_;  // vector of vector ou assign.
     // ohm object
-
-    //BoundaryConditions boundaryConditions_ ;
-
-
-
 
 
     /*

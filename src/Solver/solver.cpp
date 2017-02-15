@@ -1,15 +1,17 @@
 
 #include <memory>
 
-#include "Solver/solver.h"
-#include "Interpolator/interpolator.h"
-#include "Faraday/faradayfactory.h"
-#include "pusher/pusherfactory.h"
-//#include "BoundaryConditions/fieldbcfactory.h"
 #include "Field/field.h"
 #include "Plasmas/ions.h"
-#include "Plasmas/electrons.h"
+#include "Solver/solver.h"
 #include "grid/gridlayout.h"
+#include "Plasmas/electrons.h"
+#include "pusher/pusherfactory.h"
+#include "Faraday/faradayfactory.h"
+#include "Interpolator/interpolator.h"
+
+
+
 
 
 
@@ -38,9 +40,8 @@ Solver::Solver( GridLayout const& layout, double dt,
              "Jtot" },
 
       faraday_{dt, layout},
-      ampere_{dt, layout}
-    //,
-     // boundaryConditions_{}
+      ampere_{dt, layout},
+      boundaryCondition_{std::move(solverInitializer->boundaryCondition_)}
 {
 
     uint32 size = static_cast<uint32> ( solverInitializer->interpolationOrders.size() ) ;
@@ -51,27 +52,16 @@ Solver::Solver( GridLayout const& layout, double dt,
     }
 
     const std::string pusherType = solverInitializer->pusherType ;
-
     pusher_ =  PusherFactory::createPusher( layout, pusherType ) ;
-
-    // boundaryConditions_.fieldBoundaryConditions() return type
-    // is std::vector< std::unique_ptr<FieldBC> >&, and it is a rvalue
-    // therefore
-    // collectionOfBC type is std::vector< std::unique_ptr<FieldBC> > &&
-#if 0
-    auto && collectionOfBC = boundaryConditions_.fieldBoundaryConditions() ;
-    for( std::pair< Edge, std::string> & edgeAndCondition : solverInitializer->fieldBCType )
-    {
-        collectionOfBC.push_back( FieldBCFactory::createFieldBC( layout, edgeAndCondition ) ) ;
-    }
-#endif
 
     // TODO need to initialize OHM object
     // TODO and vector (?) of particles (n+1)
-    // TODO boundary conditions (?)
-    // TODO projections/interpolations
-
 }
+
+
+
+
+
 
 
 
