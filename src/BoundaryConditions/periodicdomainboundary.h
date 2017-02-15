@@ -12,10 +12,15 @@ class PeriodicDomainBoundary : public Boundary
 private:
     Edge edge_;
 
-    void makeFieldPeriodic_(Field&   field, GridLayout const& layout) const;
-    void makeFieldPeriodic1D_(Field& field, GridLayout const& layout) const;
-    void makeFieldPeriodic2D_(Field& field, GridLayout const& layout) const;
-    void makeFieldPeriodic3D_(Field& field, GridLayout const& layout) const;
+    void makeFieldPeriodic_(VecField& vecField  , GridLayout const& layout) const;
+    void makeFieldPeriodic1D_(VecField& vecField, GridLayout const& layout) const;
+    void makeFieldPeriodic2D_(VecField& vecField, GridLayout const& layout) const;
+    void makeFieldPeriodic3D_(VecField& vecField, GridLayout const& layout) const;
+
+    void makeMomentPeriodic_(Field& Ni, GridLayout const& layout) const;
+    void makeMomentPeriodic1D_(Field& Ni, GridLayout const& layout) const;
+    void makeMomentPeriodic2D_(Field& Ni, GridLayout const& layout) const;
+    void makeMomentPeriodic3D_(Field& Ni, GridLayout const& layout) const;
 
 
 public:
