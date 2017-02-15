@@ -13,6 +13,8 @@ public:
     virtual void applyMagneticBC(VecField& B) const = 0;
     virtual void applyElectricBC(VecField& E) const = 0;
     virtual void applyCurrentBC(VecField& J)  const = 0;
+
+    virtual ~BoundaryCondition() = 0;
 };
 
 

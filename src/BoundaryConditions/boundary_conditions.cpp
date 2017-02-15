@@ -1,6 +1,12 @@
 
 #include "BoundaryConditions/boundary_conditions.h"
 
+BoundaryCondition::~BoundaryCondition()
+{
+
+}
+
+
 #if 0
 void BoundaryConditions::applyElectricBC(VecField& E)
 {

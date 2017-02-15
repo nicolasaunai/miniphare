@@ -15,3 +15,32 @@ PatchBoundaryCondition::PatchBoundaryCondition(std::unique_ptr<InitializerFactor
 {
 
 }
+
+
+
+PatchBoundaryCondition::~PatchBoundaryCondition()
+{
+
+}
+
+
+
+void PatchBoundaryCondition::applyMagneticBC(VecField& B) const
+{
+
+}
+
+
+
+void PatchBoundaryCondition::applyElectricBC(VecField& E) const
+{
+
+}
+
+
+
+
+void PatchBoundaryCondition::applyCurrentBC(VecField& J)  const
+{
+
+}
