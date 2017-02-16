@@ -46,7 +46,7 @@ public:
 
     void init() { std::cout << "init Patch" << std::endl; data_.init(); }
 
-    Ions const& ions(){ return data_.ions(); } const;
+    Ions const& ions() const { return data_.ions(); }
 
     Box coordinates() const { return coordinates_; }
 
