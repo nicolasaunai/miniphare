@@ -33,7 +33,8 @@ public:
     Solver(Solver&& toMove)      = default;
     Solver& operator=(Solver&& source) = default;
 
-    void solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons);
+    void solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons,
+                   BoundaryCondition const* boundaryCondition);
 
 
 private:
@@ -47,7 +48,7 @@ private:
     // algorithms
     Faraday faraday_;
     Ampere  ampere_;
-    std::unique_ptr<BoundaryCondition> boundaryCondition_ ;
+   // std::unique_ptr<BoundaryCondition> boundaryCondition_ ;
     std::vector< std::unique_ptr<Interpolator> > interpolators_ ;
     std::unique_ptr<Pusher> pusher_ ;
 

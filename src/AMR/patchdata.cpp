@@ -20,7 +20,8 @@ PatchData::PatchData(std::unique_ptr<InitializerFactory> initFactory)
       solver_{ initFactory->gridLayout(), initFactory->timeStep(),
                initFactory->createSolverInitializer() },
 
-      ions_{ initFactory->gridLayout(), initFactory->createIonsInitializer() }
+      ions_{ initFactory->gridLayout(), initFactory->createIonsInitializer() },
+      boundaryCondition_{std::move(initFactory->createBoundaryCondition())}
 {
 
 }

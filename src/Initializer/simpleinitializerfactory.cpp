@@ -1,5 +1,7 @@
 #include "simpleinitializerfactory.h"
 #include "Initializer/fluidparticleinitializer.h"
+#include <BoundaryConditions/domainboundarycondition.h>
+#include <BoundaryConditions/periodicdomainboundary.h>
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
@@ -174,6 +176,17 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
 #endif
     return  solverInitPtr;
 }
+
+
+
+std::unique_ptr<BoundaryCondition>SimpleInitializerFactory::createBoundaryCondition() const
+{
+    // return hard coded domain periodict boundary condition
+    return nullptr;
+}
+
+
+
 
 
 std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectromagInitializer() const

@@ -40,8 +40,7 @@ Solver::Solver( GridLayout const& layout, double dt,
              "Jtot" },
 
       faraday_{dt, layout},
-      ampere_{dt, layout},
-      boundaryCondition_{std::move(solverInitializer->boundaryCondition_)}
+      ampere_{dt, layout}
 {
 
     uint32 size = static_cast<uint32> ( solverInitializer->interpolationOrders.size() ) ;
@@ -66,7 +65,9 @@ Solver::Solver( GridLayout const& layout, double dt,
 
 
 
-void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons)
+void Solver::solveStep(Electromag& EMFields, Ions& ions,
+                       Electrons& electrons,
+                       BoundaryCondition const* boundaryCondition )
 {
     VecField &B      = EMFields.getB();
     VecField &E      = EMFields.getE();

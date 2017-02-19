@@ -20,7 +20,6 @@ struct SolverInitializer
 {
     std::string  pusherType ;
     std::vector<uint32>  interpolationOrders ;
-    std::unique_ptr<BoundaryCondition> boundaryCondition_;
 };
 
 
