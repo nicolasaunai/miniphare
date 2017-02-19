@@ -7,6 +7,8 @@
 #include "vecfield/vecfield.h"
 #include "Field/field.h"
 
+enum class BoundaryType{ Periodic };
+
 
 class BoundaryCondition
 {

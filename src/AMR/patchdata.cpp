@@ -21,7 +21,7 @@ PatchData::PatchData(std::unique_ptr<InitializerFactory> initFactory)
                initFactory->createSolverInitializer() },
 
       ions_{ initFactory->gridLayout(), initFactory->createIonsInitializer() },
-      boundaryCondition_{std::move(initFactory->createBoundaryCondition())}
+      boundaryCondition_{initFactory->createBoundaryCondition()}
 {
 
 }

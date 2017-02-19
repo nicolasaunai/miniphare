@@ -1,4 +1,18 @@
+
 #include "domainboundarycondition.h"
+#include "domainboundaryfactory.h"
+
+
+DomainBoundaryCondition::DomainBoundaryCondition(GridLayout layout, std::vector<BoundaryInfo> boundaryInfos)
+: layout_{std::move(layout)}
+{
+    //for (uint32 iBoundary=0; iBoundary<boundaries.size(); ++iBoundary)
+    for (BoundaryInfo boundary : boundaryInfos)
+    {
+        boundaries_.push_back(DomainBoundaryFactory::makeBoundary(boundary));
+    }
+}
+
 
 
 void DomainBoundaryCondition::applyMagneticBC(VecField& B) const

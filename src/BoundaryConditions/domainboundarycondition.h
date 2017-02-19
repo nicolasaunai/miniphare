@@ -20,7 +20,9 @@ private:
     GridLayout layout_;
 
 public:
-    DomainBoundaryCondition(GridLayout layout) : layout_{std::move(layout)}{}
+    using BoundaryInfo  = std::pair<Edge, BoundaryType>;
+    DomainBoundaryCondition(GridLayout layout, std::vector<BoundaryInfo> boundaryInfos);
+
 
     virtual void applyMagneticBC(VecField& B) const override;
     virtual void applyElectricBC(VecField& E) const override;

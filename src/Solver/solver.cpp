@@ -83,7 +83,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     // --> Get B_{n+1} pred1 from E^n
     faraday_(E, B, Bpred);
     // BC Fields --> Apply boundary conditions on the electric field
-    //boundaryConditions_.applyMagneticBC( Bpred ) ;
+    boundaryCondition->applyMagneticBC( Bpred ) ;
 
     // Compute J
     ampere_(Bpred, Jtot_) ;
