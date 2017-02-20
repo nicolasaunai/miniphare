@@ -40,16 +40,10 @@ MLMDInitializerFactory::createElectromagInitializer() const
 }
 
 
-
-
 std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializer() const
 {
     return nullptr;
 }
-
-
-
-
 
 
 std::unique_ptr<OhmInitializer> MLMDInitializerFactory::createOhmInitializer() const
@@ -58,6 +52,11 @@ std::unique_ptr<OhmInitializer> MLMDInitializerFactory::createOhmInitializer() c
 }
 
 
+std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryCondition() const
+{
+
+    return nullptr;
+}
 
 
 

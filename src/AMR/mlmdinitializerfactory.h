@@ -30,10 +30,11 @@ private:
 public:
     MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch) : parentPatch_{parentPatch}{}
 
-    virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const;
-    virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const ;
-    virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const ;
-    virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const;
+    virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
+    virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const  override;
+    virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const  override;
+    virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
+    virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
 
 };
 
