@@ -199,8 +199,9 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         }
     }
 
+    // the temporary buffer must be big enough to hold the max
+    // number of particles
     particleArrayPred_.reserve(nbrParticlesMax);
-
 
 
 
