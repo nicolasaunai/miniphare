@@ -16,7 +16,7 @@ class PusherFactory
 public:
 
     static std::unique_ptr<Pusher>
-    createPusher( const GridLayout & layout, const std::string & pusherType )
+    createPusher( const GridLayout & layout, const std::string & pusherType, double dt)
     {
         std::unique_ptr<Pusher> pusher ;
 
@@ -24,7 +24,7 @@ public:
         if( pusherType == "modifiedBoris" )
         {
         //    impl = std::unique_ptr<ModifiedBoris>( new ModifiedBoris( pusherType, layout ) ) ;
-            pusher =  std::unique_ptr<Pusher> ( new ModifiedBoris(layout) );
+            pusher =  std::unique_ptr<Pusher> ( new ModifiedBoris(layout, dt) );
         }
         else
         {
