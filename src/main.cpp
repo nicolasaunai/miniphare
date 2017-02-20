@@ -28,6 +28,18 @@ int main(int argc, char *argv[])
 
     mlmdManager.initializeRootLevel();
 
+    // evolve fields and particle for a time step
+    mlmdManager.evolveHierarchy();
+
+    // Here, AMR patches will say whether they need refinement
+    // the ouput of this method is used by updateHierarchy()
+    mlmdManager.evaluateHierarchy();
+
+    // new patches are created here if necessary
+    // it depends on evaluateHierarchy()
+    mlmdManager.updateHierarchy();
+
+
 
 
 }
