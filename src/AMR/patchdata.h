@@ -25,7 +25,7 @@ private:
     Electromag EMfields_;
     Solver     solver_;
     Ions ions_;
-    std::shared_ptr<BoundaryCondition> boundaryCondition_;
+    std::unique_ptr<BoundaryCondition> boundaryCondition_;
     //Electrons electrons_;
 
 
