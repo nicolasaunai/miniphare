@@ -25,12 +25,41 @@ void MLMD::initializeRootLevel()
 }
 
 
+/**
+ * @brief MLMD::evolveHierarchy
+ *
+ * evolve fields and particle for a time step
+ *
+ */
 void MLMD::evolveHierarchy()
 {
+
+    std::vector< std::vector< std::shared_ptr<Patch> > >
+            patchArray = patchHierarchy_.patchTable() ;
+
+    uint32 nbrLevels = static_cast<uint32>(patchArray.size()) ;
+
+    for( uint32 iLevel=0 ; iLevel<nbrLevels ; iLevel++ )
+    {
+        auto & patchesAtLevel = patchArray[iLevel] ;
+
+        for( std::shared_ptr<Patch> patch: patchesAtLevel)
+        {
+            patch->evolve() ;
+        }
+
+    }
 
 }
 
 
+/**
+ * @brief MLMD::evaluateHierarchy
+ *
+ * Here, AMR patches will say whether they need refinement
+ * the ouput of this method is used by updateHierarchy()
+ *
+ */
 void MLMD::evaluateHierarchy()
 {
 
@@ -56,6 +85,13 @@ void MLMD::evaluateHierarchy()
 }
 
 
+/**
+ * @brief MLMD::updateHierarchy
+ *
+ * new patches are created here if necessary
+ * it depends on evaluateHierarchy()
+ *
+ */
 void MLMD::updateHierarchy()
 {
 
