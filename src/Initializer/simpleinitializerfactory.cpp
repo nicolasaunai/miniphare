@@ -66,8 +66,8 @@ void bulkVelocityProton1(double x, double y, double z, std::array<double,3> vec)
     (void) y;
     (void) z;
     vec[0] = 0.;
-    vec[0] = 0.;
-    vec[0] = 0.;
+    vec[1] = 0.;
+    vec[2] = 0.;
 }
 
 void bulkVelocityProton2(double x, double y, double z, std::array<double,3> vec)
@@ -76,8 +76,8 @@ void bulkVelocityProton2(double x, double y, double z, std::array<double,3> vec)
     (void) y;
     (void) z;
     vec[0] = 0.;
-    vec[0] = 0.;
-    vec[0] = 0.;
+    vec[1] = 0.;
+    vec[2] = 0.;
 }
 
 
@@ -87,8 +87,8 @@ void magneticField(double x, double y, double z, std::array<double,3> vec)
     (void) y;
     (void) z;
     vec[0] = 0.;
-    vec[0] = 0.;
-    vec[0] = 0.;
+    vec[1] = 0.;
+    vec[2] = 0.;
 }
 
 
@@ -98,8 +98,8 @@ void electricField(double x, double y, double z, std::array<double,3> vec)
     (void) y;
     (void) z;
     vec[0] = 0.;
-    vec[0] = 0.;
-    vec[0] = 0.;
+    vec[1] = 0.;
+    vec[2] = 0.;
 }
 /* -------------------------- end of hard coded functions --------------------- */
 
