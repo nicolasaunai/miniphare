@@ -218,15 +218,14 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         // particleArrayPred_ has a capacity that is large enough for all
         // particle arrays for all species.
         particleArrayPred_.resize(particles.size());
-#if 0
-
-
         boundaryCondition->applyParticleBC(particleArrayPred_);
         computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
-#endif
     }
     ions.computeChargeDensity();
     ions.computeBulkVelocity();
+
+    boundaryCondition->applyDensityBC(ions.rho());
+    boundaryCondition->applyBulkBC(ions.bulkVel());
 }
 
 

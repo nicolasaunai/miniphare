@@ -61,6 +61,8 @@ public:
     Field& bulkVel(uint32 iComponent) {return bulkVel_.component(iComponent);}
     Field const& bulkVel(uint32 iComponent) const {return bulkVel_.component(iComponent);}
 
+    VecField& bulkVel() {return bulkVel_;}
+
     void loadParticles();
 
 
