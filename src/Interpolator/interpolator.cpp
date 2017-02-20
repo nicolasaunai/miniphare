@@ -83,6 +83,25 @@ Interpolator::getIndexesAndWeights( Particle const & particle, Direction dir ) c
 
 
 
+void fieldsAtParticles(Interpolator const& interp,
+                       VecField const& E, VecField const& B,
+                       GridLayout const& layout,
+                       std::vector<Particle>& particles)
+{
+    switch (layout.nbDimensions())
+    {
+    case 1:
+        fieldAtParticle1D(interp, E, B, layout, particles);
+        break;
+    case 2:
+        fieldAtParticle2D(interp, E, B, layout, particles);
+        break;
+    case 3:
+        fieldAtParticle3D(interp, E, B, layout, particles);
+    default:
+        throw std::runtime_error("wrong dimensionality");
+    }
+}
 
 
 

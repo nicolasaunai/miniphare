@@ -40,6 +40,10 @@ public:
 
 
 
+void fieldsAtParticles(Interpolator const& interp,
+                       VecField const& E, VecField const& B,
+                       GridLayout const& layout,
+                       std::vector<Particle>& particles);
 
 
 void fieldAtParticle1D(Interpolator const& interp,

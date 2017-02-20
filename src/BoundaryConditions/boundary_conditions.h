@@ -18,6 +18,7 @@ public:
     virtual void applyCurrentBC(VecField& J)  const = 0;
     virtual void applyDensityBC(Field& N)     const = 0;
     virtual void applyBulkBC(VecField& Vi)    const = 0;
+    //virtual void applyParticleBC()            const = 0;
 
     virtual ~BoundaryCondition() = 0;
 };

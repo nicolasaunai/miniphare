@@ -30,26 +30,7 @@ void ModifiedBoris::move(std::vector<Particle>const & partIn ,
 {
     partOut = partIn ;
     prePush_( partIn, partOut, dt) ;
-
-    switch (nbdims_)
-    {
-        case 1:
-        fieldAtParticle1D(interpolator, E, B, layout_, partOut);
-        break;
-
-        case 2:
-        fieldAtParticle2D(interpolator, E, B, layout_, partOut);
-        break;
-
-        case 3:
-        fieldAtParticle3D(interpolator, E, B, layout_, partOut);
-        break;
-
-    default:
-        throw std::runtime_error("wrong dimensionality");
-
-    }
-
+    fieldsAtParticles(interpolator, E, B, layout_, partOut);
     pushVelocity_( partOut, partOut, m, dt);
     corPush_( partOut, partOut, dt);
 }
