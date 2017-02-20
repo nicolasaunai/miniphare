@@ -36,22 +36,27 @@ public:
     void solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons,
                    BoundaryCondition const* boundaryCondition);
 
-
 private:
+
+    GridLayout layout_;
 
     // quantities used in the solver
     // these are temporary quantities to use within a time step
     Electromag EMFieldsPred_ ;
     Electromag EMFieldsAvg_ ;
     VecField Jtot_ ;
+    std::vector<Particle> particleArrayPred_;// TODO build this
 
     // algorithms
     Faraday faraday_;
     Ampere  ampere_;
-   // std::unique_ptr<BoundaryCondition> boundaryCondition_ ;
     std::vector< std::unique_ptr<Interpolator> > interpolators_ ;
     std::unique_ptr<Pusher> pusher_ ;
 
+
+    // methods
+    void moveIons_(VecField const& E, VecField const& B, Ions& ions,
+                   BoundaryCondition const* boundaryConditon);
 
     // vector <particle> part2_;  // vector of vector ou assign.
     // ohm object

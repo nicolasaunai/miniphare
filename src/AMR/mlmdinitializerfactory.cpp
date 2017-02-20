@@ -12,13 +12,11 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
 
     for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
     {
-
         Species const& species = parentIons.species(ispe);
         Box  patchCoordinates  = parentPatch_->coordinates();
         std::unique_ptr<ParticleSelector> selector{ new isInBox{patchCoordinates} };
         std::unique_ptr<ParticleInitializer> particleInit{new MLMDParticleInitializer{species,
                                                     std::move(selector) }};
-
         ionInitPtr->masses.push_back( parentIons.species(ispe).mass() );
         ionInitPtr->particleInitializers.push_back( std::move(particleInit) );
     }

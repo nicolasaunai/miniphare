@@ -17,7 +17,8 @@
 
 Solver::Solver( GridLayout const& layout, double dt,
                 std::unique_ptr<SolverInitializer> solverInitializer )
-    : EMFieldsPred_{{ {layout.allocSize(HybridQuantity::Ex ),
+    :layout_{layout},
+      EMFieldsPred_{{ {layout.allocSize(HybridQuantity::Ex ),
                     layout.allocSize(HybridQuantity::Ey ),
                     layout.allocSize(HybridQuantity::Ez )  }},
 
@@ -40,7 +41,7 @@ Solver::Solver( GridLayout const& layout, double dt,
              "Jtot" },
 
       faraday_{dt, layout},
-      ampere_{dt, layout}
+      ampere_{layout}
 {
 
     uint32 size = static_cast<uint32> ( solverInitializer->interpolationOrders.size() ) ;
@@ -51,7 +52,7 @@ Solver::Solver( GridLayout const& layout, double dt,
     }
 
     const std::string pusherType = solverInitializer->pusherType ;
-    pusher_ =  PusherFactory::createPusher( layout, pusherType ) ;
+    pusher_ =  PusherFactory::createPusher( layout, pusherType, dt) ;
 
     // TODO need to initialize OHM object
     // TODO and vector (?) of particles (n+1)
@@ -183,7 +184,19 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
 
 
+void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
+                       BoundaryCondition const* boundaryCondition)
+{
+    for (uint32 ispe=0; ispe < ions.nbrSpecies(); ++ispe)
+    {
+        Species& species = ions.species(ispe);
+        std::vector<Particle>& particles = species.particles();
+        Interpolator& interpolator = *interpolators_[ispe];
 
+        pusher_->move(particles, particleArrayPred_, species.mass(), E, B, interpolator);
+        computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
+    }
+}
 
 
 
