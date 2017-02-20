@@ -32,7 +32,7 @@ private:
 public:
 
 
-    explicit Ampere(double dt, GridLayout const& layout);
+    explicit Ampere(GridLayout const& layout);
 
     // Ampere is a move-only object.
     Ampere(Ampere const& source) = delete;

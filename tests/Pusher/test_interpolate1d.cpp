@@ -137,7 +137,9 @@ public:
         VecField Efields(allocEx, allocEy, allocEz,
            { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} }, "E" ) ;
 
-        std::unique_ptr<Pusher> pusher = PusherFactory::createPusher( layout, "modifiedBoris" ) ;
+        double dt = (inputs.tend - inputs.tbegin)/inputs.nstep ;
+
+        std::unique_ptr<Pusher> pusher = PusherFactory::createPusher( layout, "modifiedBoris", dt) ;
 
         // Initialize the Particle to be pushed
         double weight = 1. ;
@@ -160,7 +162,6 @@ public:
         actual_vz_part.push_back( partic.v[2] ) ;
 
         // we compute the time step
-        double dt = (inputs.tend - inputs.tbegin)/inputs.nstep ;
 
         // We need an interpolator
         std::unique_ptr<Interpolator> interpolator{ new Interpolator{layout.order()} } ;
@@ -177,7 +178,7 @@ public:
             readFieldsOnTheMesh( inputs, layout, Efields, ik ) ;
 
             pusher->move( particArray, particArray,
-                          dt, mass, Efields, Bfields,
+                          mass, Efields, Bfields,
                           *interpolator ) ;
 
             Particle const & iPart = particArray[0] ;

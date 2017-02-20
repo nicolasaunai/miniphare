@@ -12,13 +12,15 @@ class Pusher
 protected:
     uint32 nbdims_;
     GridLayout layout_;
+    double dt_;
 
 
 public:
 
-    Pusher(GridLayout layout):
+    Pusher(GridLayout layout, double dt):
         nbdims_{layout.nbDimensions()},
-        layout_{std::move(layout)}
+        layout_{std::move(layout)},
+        dt_{dt}
     {}
 
     Pusher(Pusher const& source) = delete;
@@ -33,7 +35,7 @@ public:
 
     virtual void move(std::vector<Particle> const& partIn ,
                       std::vector<Particle> & partOut,
-                      double dt, double m,
+                      double m,
                       VecField const & E ,
                       VecField const & B ,
                       Interpolator const& interpolator ) = 0 ;

@@ -11,8 +11,8 @@
  * @param dt
  * @param layout
  */
-AmpereImpl1D::AmpereImpl1D(double dt, GridLayout const& layout)
-    :AmpereImplInternals(dt, layout),
+AmpereImpl1D::AmpereImpl1D(GridLayout const& layout)
+    :AmpereImplInternals(layout),
       dxBz_( layout.allocSizeDerived(HybridQuantity::Bz, Direction::X), HybridQuantity::Ey, "dxBz"),
       dxBy_( layout.allocSizeDerived(HybridQuantity::By, Direction::X), HybridQuantity::Ez, "dxBy")
 {

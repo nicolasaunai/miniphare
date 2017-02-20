@@ -17,7 +17,8 @@
 
 Solver::Solver( GridLayout const& layout, double dt,
                 std::unique_ptr<SolverInitializer> solverInitializer )
-    : EMFieldsPred_{{ {layout.allocSize(HybridQuantity::Ex ),
+    :layout_{layout},
+      EMFieldsPred_{{ {layout.allocSize(HybridQuantity::Ex ),
                     layout.allocSize(HybridQuantity::Ey ),
                     layout.allocSize(HybridQuantity::Ez )  }},
 
@@ -40,7 +41,7 @@ Solver::Solver( GridLayout const& layout, double dt,
              "Jtot" },
 
       faraday_{dt, layout},
-      ampere_{dt, layout}
+      ampere_{layout}
 {
 
     uint32 size = static_cast<uint32> ( solverInitializer->interpolationOrders.size() ) ;
@@ -51,7 +52,7 @@ Solver::Solver( GridLayout const& layout, double dt,
     }
 
     const std::string pusherType = solverInitializer->pusherType ;
-    pusher_ =  PusherFactory::createPusher( layout, pusherType ) ;
+    pusher_ =  PusherFactory::createPusher( layout, pusherType, dt) ;
 
     // TODO need to initialize OHM object
     // TODO and vector (?) of particles (n+1)
@@ -180,6 +181,62 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     //boundaryConditions_.applyElectricBC( E ) ;
 
 }
+
+
+
+void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
+                       BoundaryCondition const* boundaryCondition)
+{
+    // find the largest particles number accross all species
+    auto nbrParticlesMax = ions.species(0).particles().size();
+
+    // un peu degueulasse...
+    for (uint32 ispe=0; ispe < ions.nbrSpecies(); ++ispe)
+    {
+        if (nbrParticlesMax < ions.species(ispe).particles().size())
+        {
+            nbrParticlesMax = ions.species(ispe).particles().size();
+        }
+    }
+
+    // the temporary buffer must be big enough to hold the max
+    // number of particles
+    particleArrayPred_.reserve(nbrParticlesMax);
+
+
+
+    for (uint32 ispe=0; ispe < ions.nbrSpecies(); ++ispe)
+    {
+        Species& species                 = ions.species(ispe);
+        std::vector<Particle>& particles = species.particles();
+        Interpolator& interpolator       = *interpolators_[ispe];
+
+
+        // move all particles of that species from n to n+1
+        // and put the advanced particles in the predictor buffer 'particleArrayPred_'
+        pusher_->move(particles, particleArrayPred_, species.mass(), E, B, interpolator);
+
+        // resize the buffer so that charge density and fluxes use
+        // no more than the right number of particles
+        // particleArrayPred_ has a capacity that is large enough for all
+        // particle arrays for all species.
+        particleArrayPred_.resize(particles.size());
+
+        boundaryCondition->applyParticleBC(particleArrayPred_);
+        computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
+
+    } // end loop on species
+
+
+    ions.computeChargeDensity();
+    ions.computeBulkVelocity();
+
+    boundaryCondition->applyDensityBC(ions.rho());
+    boundaryCondition->applyBulkBC(ions.bulkVel());
+}
+
+
+
 
 
 

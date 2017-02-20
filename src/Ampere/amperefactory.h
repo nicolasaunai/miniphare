@@ -16,14 +16,14 @@ class AmpereImplFactory
 {
 public:
     static std::unique_ptr<AmpereImpl>
-    createAmpereImpl(double dt, GridLayout const& layout)
+    createAmpereImpl(GridLayout const& layout)
     {
         std::unique_ptr<AmpereImpl> ampere ;
 
         switch (layout.nbDimensions())
         {
         case 1:
-            ampere = std::unique_ptr<AmpereImpl> ( new AmpereImpl1D(dt, layout));
+            ampere = std::unique_ptr<AmpereImpl> ( new AmpereImpl1D(layout));
             break;
 
         default:

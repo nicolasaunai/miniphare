@@ -24,7 +24,7 @@
  *
  */
 class Ions
-{    
+{
 
 private:
 
@@ -52,6 +52,7 @@ public:
     uint32 nbrSpecies() const {return static_cast<uint32>(speciesArray_.size()) ;}
     Species& species(uint32 index);
     Species const& species(uint32 index) const;
+    //std::vector<Species>& species() {return speciesArray_;}
 
 
     Field& rho() {return rho_;}
@@ -59,6 +60,8 @@ public:
 
     Field& bulkVel(uint32 iComponent) {return bulkVel_.component(iComponent);}
     Field const& bulkVel(uint32 iComponent) const {return bulkVel_.component(iComponent);}
+
+    VecField& bulkVel() {return bulkVel_;}
 
     void loadParticles();
 

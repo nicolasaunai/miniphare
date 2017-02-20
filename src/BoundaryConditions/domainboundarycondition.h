@@ -7,6 +7,8 @@
 #include "BoundaryConditions/boundary.h"
 #include "vecfield/vecfield.h"
 #include "grid/gridlayout.h"
+#include "Plasmas/particles.h"
+
 
 
 /**
@@ -29,6 +31,7 @@ public:
     virtual void applyCurrentBC(VecField& J)  const override;
     virtual void applyDensityBC(Field& N)     const override;
     virtual void applyBulkBC(VecField& Vi)    const override;
+    virtual void applyParticleBC(std::vector<Particle>& particleArray)  const override;
 };
 
 

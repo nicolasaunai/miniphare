@@ -1,6 +1,5 @@
 
 #include "grid/gridlayoutdefs.h"
-
 #include "Interpolator/interpolator.h"
 #include "IndexesAndWeights/indexesandweightso1.h"
 #include "IndexesAndWeights/indexesandweightso2.h"
@@ -84,6 +83,14 @@ Interpolator::getIndexesAndWeights( Particle const & particle, Direction dir ) c
 
 
 
+/* ----------------------------------------------------------------------------
+
+                      Field interpolations at particles
+
+   ---------------------------------------------------------------------------- */
+
+
+
 
 
 void fieldAtParticle1D(Interpolator const& interp,
@@ -156,5 +163,141 @@ void fieldAtParticle3D(Interpolator const& interp,
 {
 
 }
+
+
+
+
+
+void fieldsAtParticles(Interpolator const& interp,
+                       VecField const& E, VecField const& B,
+                       GridLayout const& layout,
+                       std::vector<Particle>& particles)
+{
+    switch (layout.nbDimensions())
+    {
+    case 1:
+        fieldAtParticle1D(interp, E, B, layout, particles);
+        break;
+    case 2:
+        fieldAtParticle2D(interp, E, B, layout, particles);
+        break;
+    case 3:
+        fieldAtParticle3D(interp, E, B, layout, particles);
+    default:
+        throw std::runtime_error("wrong dimensionality");
+    }
+}
+
+
+
+
+
+/* ----------------------------------------------------------------------------
+
+                      Interpolations from particles to moments
+
+   ---------------------------------------------------------------------------- */
+
+
+
+
+
+
+
+
+
+void compute1DChargeDensityAndFlux(Interpolator& interpolator,
+                                  Species& species,
+                                  GridLayout const& layout,
+                                  std::vector<Particle>& particles)
+{
+    uint32 idirX = static_cast<uint32>(Direction::X) ;
+    uint32 idirY = static_cast<uint32>(Direction::Y) ;
+    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
+
+    Field& fx  = species.flux(idirX) ;
+    Field& fy  = species.flux(idirY) ;
+    Field& fz  = species.flux(idirZ) ;
+    Field& rho = species.rho();
+
+    species.resetMoments() ;
+
+    for( const Particle & part : particles)
+    {
+
+        double aux_rh   = part.weight * part.charge * layout.odx() ;
+        double aux_flux = part.weight * layout.odx() ;
+
+        double aux_vx = aux_flux * part.v[0] ;
+        double aux_vy = aux_flux * part.v[1] ;
+        double aux_vz = aux_flux * part.v[2] ;
+
+        auto indexesAndWeights = \
+        interpolator.getIndexesAndWeights(part, Direction::X ) ;
+
+        std::vector<uint32> indexes = std::get<0>(indexesAndWeights) ;
+        std::vector<double> weights = std::get<1>(indexesAndWeights) ;
+
+        for( uint32 ik=0 ; ik<indexes.size() ; ++ik )
+        {
+            rho( indexes[ik] ) += aux_rh * weights[ik] ;
+
+            fx( indexes[ik] ) += aux_vx * weights[ik] ;
+            fy( indexes[ik] ) += aux_vy * weights[ik] ;
+            fz( indexes[ik] ) += aux_vz * weights[ik] ;
+        }
+    }
+
+}
+
+
+
+
+
+void compute2DChargeDensityAndFlux(Interpolator& interpolator,
+                                  Species& species,
+                                  GridLayout const& layout,
+                                  std::vector<Particle>& particles)
+{
+
+}
+
+
+void compute3DChargeDensityAndFlux(Interpolator& interpolator,
+                                  Species& species,
+                                  GridLayout const& layout,
+                                  std::vector<Particle>& particles)
+{
+
+}
+
+
+void computeChargeDensityAndFlux(Interpolator& interpolator,
+                                 Species& species,
+                                 GridLayout const& layout,
+                                 std::vector<Particle>& particles)
+{
+    switch (layout.nbDimensions())
+    {
+    case 1:
+        compute1DChargeDensityAndFlux(interpolator, species, layout, particles);
+        break;
+    case 2:
+        compute2DChargeDensityAndFlux(interpolator, species, layout, particles);
+        break;
+    case 3:
+        compute3DChargeDensityAndFlux(interpolator, species, layout, particles);
+    default:
+        throw std::runtime_error("wrong dimensionality");
+    }
+}
+
+
+
+
+
+
+
+
 
 

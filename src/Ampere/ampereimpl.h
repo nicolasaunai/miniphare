@@ -32,10 +32,9 @@ public:
 class AmpereImplInternals
 {
 public:
-    AmpereImplInternals(double dt, GridLayout const& layout):dt_{dt},layout_{layout}{}
+    AmpereImplInternals(GridLayout const& layout):layout_{layout}{}
 
 protected:
-    double dt_;
     GridLayout layout_;
 };
 

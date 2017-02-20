@@ -24,46 +24,27 @@
  */
 void ModifiedBoris::move(std::vector<Particle>const & partIn ,
                          std::vector<Particle> & partOut,
-                         double dt, double m,
+                         double m,
                          VecField const& E , VecField const & B,
                          Interpolator const& interpolator )
 {
     partOut = partIn ;
-    prePush_( partIn, partOut, dt) ;
-
-    switch (nbdims_)
-    {
-        case 1:
-        fieldAtParticle1D(interpolator, E, B, layout_, partOut);
-        break;
-
-        case 2:
-        fieldAtParticle2D(interpolator, E, B, layout_, partOut);
-        break;
-
-        case 3:
-        fieldAtParticle3D(interpolator, E, B, layout_, partOut);
-        break;
-
-    default:
-        throw std::runtime_error("wrong dimensionality");
-
-    }
-
-    pushVelocity_( partOut, partOut, m, dt);
-    corPush_( partOut, partOut, dt);
+    prePush_( partIn, partOut) ;
+    fieldsAtParticles(interpolator, E, B, layout_, partOut);
+    pushVelocity_( partOut, partOut, m);
+    corPush_( partOut, partOut);
 }
 
 
 
 
 void ModifiedBoris::prePush_(std::vector<Particle> const& particleIn,
-                             std::vector<Particle> & particleOut, double dt)
+                             std::vector<Particle> & particleOut)
 {
     std::array<double,3> dto2dl;
-    dto2dl[0] = 0.5*dt/layout_.dx();
-    dto2dl[1] = 0.5*dt/layout_.dy();
-    dto2dl[2] = 0.5*dt/layout_.dz();
+    dto2dl[0] = 0.5*dt_/layout_.dx();
+    dto2dl[1] = 0.5*dt_/layout_.dy();
+    dto2dl[2] = 0.5*dt_/layout_.dz();
 
 
     for (uint32 iPart=0; iPart < particleIn.size(); ++iPart)
@@ -93,9 +74,9 @@ void ModifiedBoris::prePush_(std::vector<Particle> const& particleIn,
 
 void ModifiedBoris::pushVelocity_(std::vector<Particle> const& particleIn,
                                   std::vector<Particle> & particleOut,
-                                  double m, double dt)
+                                  double m)
 {
-    double dto2 = 0.5*dt;
+    double dto2 = 0.5*dt_;
 
     for (uint32 iPart=0; iPart < particleIn.size(); ++iPart)
     {
@@ -162,12 +143,12 @@ void ModifiedBoris::pushVelocity_(std::vector<Particle> const& particleIn,
 
 
 void ModifiedBoris::corPush_(std::vector<Particle> const& particleIn,
-                             std::vector<Particle> & particleOut, double dt)
+                             std::vector<Particle> & particleOut)
 {
     std::array<double,3> dto2dl;
-    dto2dl[0] = 0.5*dt/layout_.dx();
-    dto2dl[1] = 0.5*dt/layout_.dy();
-    dto2dl[2] = 0.5*dt/layout_.dz();
+    dto2dl[0] = 0.5*dt_/layout_.dx();
+    dto2dl[1] = 0.5*dt_/layout_.dy();
+    dto2dl[2] = 0.5*dt_/layout_.dz();
 
 
     for (uint32 iPart=0; iPart < particleIn.size(); ++iPart)

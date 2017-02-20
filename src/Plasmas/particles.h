@@ -18,6 +18,7 @@ public:
     double Ex, Ey, Ez ;             // electric field at the particle position
     double Bx, By, Bz ;             // magnetic field at the particle position
 
+    Particle() = default;
 
     Particle( double weight, double charge,
               std::array<uint32, 3> icell,

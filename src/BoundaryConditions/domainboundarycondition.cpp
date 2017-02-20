@@ -60,3 +60,12 @@ void DomainBoundaryCondition::applyBulkBC(VecField& Vi) const
         bc->applyBulkBC(Vi, layout_);
     }
 }
+
+
+
+void DomainBoundaryCondition::applyParticleBC(std::vector<Particle>& particleArray) const
+{
+
+}
+
+
