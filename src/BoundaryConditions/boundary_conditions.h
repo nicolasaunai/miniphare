@@ -4,8 +4,9 @@
 #include <vector>
 #include <memory>
 
-#include "vecfield/vecfield.h"
 #include "Field/field.h"
+#include "vecfield/vecfield.h"
+#include "Plasmas/particles.h"
 
 enum class BoundaryType{ Periodic };
 
@@ -18,7 +19,7 @@ public:
     virtual void applyCurrentBC(VecField& J)  const = 0;
     virtual void applyDensityBC(Field& N)     const = 0;
     virtual void applyBulkBC(VecField& Vi)    const = 0;
-    //virtual void applyParticleBC()            const = 0;
+    virtual void applyParticleBC(std::vector<Particle>& particleArray) const = 0;
 
     virtual ~BoundaryCondition() = 0;
 };

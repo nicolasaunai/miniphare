@@ -171,3 +171,11 @@ void PeriodicDomainBoundary::makeMomentPeriodic3D_(Field& moment, GridLayout con
 
 }
 
+
+
+
+void PeriodicDomainBoundary::applyParticleBC(std::vector<Particle>& particleArray) const
+{
+
+}
+

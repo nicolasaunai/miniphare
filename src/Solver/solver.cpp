@@ -187,16 +187,54 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
                        BoundaryCondition const* boundaryCondition)
 {
+    // find the largest particles number accross all species
+    auto nbrParticlesMax = ions.species(0).particles().size();
+
+    // un peu degueulasse...
     for (uint32 ispe=0; ispe < ions.nbrSpecies(); ++ispe)
     {
-        Species& species = ions.species(ispe);
-        std::vector<Particle>& particles = species.particles();
-        Interpolator& interpolator = *interpolators_[ispe];
-
-        pusher_->move(particles, particleArrayPred_, species.mass(), E, B, interpolator);
-        computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
+        if (nbrParticlesMax < ions.species(ispe).particles().size())
+        {
+            nbrParticlesMax = ions.species(ispe).particles().size();
+        }
     }
+
+    particleArrayPred_.reserve(nbrParticlesMax);
+
+
+
+
+    for (uint32 ispe=0; ispe < ions.nbrSpecies(); ++ispe)
+    {
+        Species& species                 = ions.species(ispe);
+        std::vector<Particle>& particles = species.particles();
+        Interpolator& interpolator       = *interpolators_[ispe];
+        // move all particles of that species from n to n+1
+        // and put the advanced particles in the predictor buffer 'particleArrayPred_'
+        pusher_->move(particles, particleArrayPred_, species.mass(), E, B, interpolator);
+
+        // resize the buffer so that charge density and fluxes use
+        // no more than the right number of particles
+        // particleArrayPred_ has a capacity that is large enough for all
+        // particle arrays for all species.
+        particleArrayPred_.resize(particles.size());
+#if 0
+
+
+        boundaryCondition->applyParticleBC(particleArrayPred_);
+        computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
+#endif
+    }
+    ions.computeChargeDensity();
+    ions.computeBulkVelocity();
 }
+
+
+
+
+
+
+
 
 
 
