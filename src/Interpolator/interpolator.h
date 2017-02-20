@@ -4,14 +4,11 @@
 #include <memory>
 
 #include "types.h"
-
-
-#include "grid/gridlayout.h"
-#include "grid/gridlayoutdefs.h"
-
 #include "Field/field.h"
+#include "Plasmas/species.h"
+#include "grid/gridlayout.h"
 #include "Plasmas/particles.h"
-
+#include "grid/gridlayoutdefs.h"
 #include "IndexesAndWeights/indexesandweights.h"
 
 
@@ -39,6 +36,11 @@ public:
 
 
 
+/* ----------------------------------------------------------------------------
+
+                      Field interpolations at particles
+
+   ---------------------------------------------------------------------------- */
 
 void fieldsAtParticles(Interpolator const& interp,
                        VecField const& E, VecField const& B,
@@ -46,22 +48,17 @@ void fieldsAtParticles(Interpolator const& interp,
                        std::vector<Particle>& particles);
 
 
-void fieldAtParticle1D(Interpolator const& interp,
-                       VecField const & E , VecField const & B,
-                       GridLayout const & layout,
-                       std::vector<Particle>& particles);
 
+/* ----------------------------------------------------------------------------
 
-void fieldAtParticle2D(Interpolator const& interp,
-                       VecField const & E , VecField const & B,
-                       GridLayout const & layout,
-                       std::vector<Particle>& particles);
+                      Interpolations from particles to moments
 
+   ---------------------------------------------------------------------------- */
 
-void fieldAtParticle3D(Interpolator const& interp,
-                       VecField const & E , VecField const & B,
-                       GridLayout const & layout,
-                       std::vector<Particle>& particles);
+void computeChargeDensityAndFlux(Interpolator& interpolator,
+                                 Species& species,
+                                 GridLayout const& layout,
+                                 std::vector<Particle>& particles);
 
 
 

@@ -6,7 +6,7 @@
 #include "grid/gridlayout.h"
 #include "Plasmas/particles.h"
 #include "Initializer/particleinitializer.h"
-#include "Interpolator/interpolator.h"
+//#include "Interpolator/interpolator.h"
 
 
 /**
@@ -55,7 +55,7 @@ public:
 
     void loadParticles();
 
-    void compute1DChargeDensityAndFlux(Interpolator & project );
+    //void compute1DChargeDensityAndFlux(Interpolator & project );
 
 };
 
