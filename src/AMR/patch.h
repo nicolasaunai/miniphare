@@ -7,6 +7,8 @@
 #include "AMR/patchdata.h"
 #include "Plasmas/ions.h"
 #include "utility.h"
+#include "AMR/refinmentanalyser.h"
+
 
 
 /**
@@ -29,22 +31,29 @@ private:
 
     Box coordinates_;
     PatchData data_;
-    // parent pointer
-    // vector of children
-    //
+
+    std::shared_ptr<Patch> parent_ ;
+    std::vector<std::shared_ptr<Patch> > children_ ;
+
 
 public:
 
-    explicit Patch(PatchData&& patchData):data_{std::move(patchData)}{}
+    explicit Patch(PatchData&& patchData)
+        :data_{std::move(patchData)},
+          parent_{nullptr}, children_{}
+    {}
 
     Patch(Patch&& source) = default;
     Patch& operator=(Patch&& source) = default;
 
-
     Patch(Patch const& source) = delete;
     Patch& operator=(Patch& source) = delete;
 
+    ~Patch() = default;
+
     void init() { std::cout << "init Patch" << std::endl; data_.init(); }
+
+    void checkRefinment( RefinementAnalyser const & analyser ) const ;
 
     Ions const& ions() const { return data_.ions(); }
 
