@@ -57,24 +57,6 @@ private:
     // methods
     void moveIons_(VecField const& E, VecField const& B, Ions& ions,
                    BoundaryCondition const* boundaryConditon);
-
-    // vector <particle> part2_;  // vector of vector ou assign.
-    // ohm object
-
-
-    /*
-    move_(ions)
-    {
-        for (int iSpecies=0; iSpecies < ions.nbSpecies(); ++iSpecies)
-        {
-            vector<Particle>const& part1 = spe.particles();
-            moveParticle(part1, part2_);
-            projector_[iSpecies](part2_, ions.species(iSpecies));
-        }
-
-    }*/
-
-
 };
 
 #endif // SOLVER_H

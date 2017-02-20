@@ -209,6 +209,8 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         Species& species                 = ions.species(ispe);
         std::vector<Particle>& particles = species.particles();
         Interpolator& interpolator       = *interpolators_[ispe];
+
+
         // move all particles of that species from n to n+1
         // and put the advanced particles in the predictor buffer 'particleArrayPred_'
         pusher_->move(particles, particleArrayPred_, species.mass(), E, B, interpolator);
@@ -218,9 +220,13 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         // particleArrayPred_ has a capacity that is large enough for all
         // particle arrays for all species.
         particleArrayPred_.resize(particles.size());
+
         boundaryCondition->applyParticleBC(particleArrayPred_);
         computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
-    }
+
+    } // end loop on species
+
+
     ions.computeChargeDensity();
     ions.computeBulkVelocity();
 
