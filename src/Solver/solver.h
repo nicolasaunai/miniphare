@@ -6,16 +6,16 @@
 #include <vector>
 
 #include "types.h"
-#include "Initializer/solverinitializer.h"
 #include "Plasmas/ions.h"
-#include "Plasmas/electrons.h"
-#include "Faraday/faraday.h"
 #include "Ampere/ampere.h"
-#include "Electromag/electromag.h"
-#include "grid/gridlayout.h"
-#include "BoundaryConditions/boundary_conditions.h"
-#include "Interpolator/interpolator.h"
 #include "pusher/pusher.h"
+#include "grid/gridlayout.h"
+#include "Faraday/faraday.h"
+#include "Plasmas/electrons.h"
+#include "Electromag/electromag.h"
+#include "Interpolator/interpolator.h"
+#include "Initializer/solverinitializer.h"
+#include "BoundaryConditions/boundary_conditions.h"
 #include "BoundaryConditions/boundary_conditions.h"
 
 
