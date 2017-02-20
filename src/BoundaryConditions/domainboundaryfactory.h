@@ -6,13 +6,18 @@
 #include "domainboundarycondition.h"
 
 
+
 class DomainBoundaryFactory
 {
 public:
     DomainBoundaryFactory() = delete;
-    static std::unique_ptr<Boundary> makeBoundary(DomainBoundaryCondition::BoundaryInfo)
+    static std::unique_ptr<Boundary> makeBoundary(DomainBoundaryCondition::BoundaryInfo info)
     {
-        return nullptr;
+        if (info.second == BoundaryType::Periodic)
+        {
+            std::unique_ptr<Boundary> bc{ new PeriodicDomainBoundary{info.first} };
+            return bc;
+        }
     }
 
 };

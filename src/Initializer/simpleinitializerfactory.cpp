@@ -163,20 +163,11 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
 
     const std::vector<uint32>  interpolationOrders = {2, 2} ;
 
-
     std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
 
-    //solverInitPtr->nbrSpecies = nbrSpecies ;
     solverInitPtr->pusherType = pusher ;
     solverInitPtr->interpolationOrders = interpolationOrders ;
-#if 0
-    std::pair< Edge, std::string > XminBC = std::make_pair(Edge::Xmin, "periodic");
-    std::pair< Edge, std::string > XmaxBC = std::make_pair(Edge::Xmax, "periodic");
 
-    solverInitPtr->fieldBCType = {XminBC, XmaxBC} ;
-
-    solverInitPtr->particleBCType = { "periodic", "periodic" } ;
-#endif
     return  solverInitPtr;
 }
 
@@ -185,9 +176,19 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
 std::unique_ptr<BoundaryCondition>SimpleInitializerFactory::createBoundaryCondition() const
 {
     // return hard coded domain periodic boundary condition
+    std::vector<DomainBoundaryCondition::BoundaryInfo> boundaries(2);
 
-    //std::unique_ptr<BoundaryCondition> bc{ new DomainBoundaryCondition(layout_) };
-    return nullptr;
+    // "first" is the edge coordinate
+    boundaries[0].first = Edge::Xmin;
+    boundaries[1].first = Edge::Xmax;
+
+    // "second" is the type of boundary, here periodic
+    boundaries[0].second = BoundaryType::Periodic;
+    boundaries[1].second = BoundaryType::Periodic;
+
+    std::unique_ptr<BoundaryCondition> bc {new DomainBoundaryCondition{layout_, boundaries}};
+
+    return bc;
 }
 
 
