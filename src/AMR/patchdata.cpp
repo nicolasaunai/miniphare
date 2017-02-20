@@ -34,3 +34,11 @@ void PatchData::init()
     ions_.loadParticles();
     //EMfields_.init();
 }
+
+
+void PatchData::solveStep()
+{
+    solver_.solveStep(EMfields_, ions_, electrons_, boundaryCondition_);
+}
+
+

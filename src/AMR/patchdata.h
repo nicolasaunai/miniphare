@@ -26,7 +26,7 @@ private:
     Solver     solver_;
     Ions ions_;
     std::unique_ptr<BoundaryCondition> boundaryCondition_;
-    //Electrons electrons_;
+    Electrons electrons_;
 
 
 public:
@@ -43,9 +43,12 @@ public:
 
     void init();
 
+    Solver const& solver() const {return solver_;}
+
     Ions const& ions() const {return ions_;}
 
-    //void advance(){solver_.solveStep(EMfields_, ions_, electrons_);}
+    void solveStep() ;
+    
 
 };
 

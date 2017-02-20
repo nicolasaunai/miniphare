@@ -55,6 +55,10 @@ public:
 
     void checkRefinment( RefinementAnalyser const & analyser ) const ;
 
+    void evolve() ;
+
+    Solver const& solver() const { return data_.solver(); }
+
     Ions const& ions() const { return data_.ions(); }
 
     Box coordinates() const { return coordinates_; }
