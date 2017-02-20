@@ -24,6 +24,13 @@ public:
 
     void initializeRootLevel();
 
+    void evolveHierarchy() ;
+    void evaluateHierarchy() ;
+    void updateHierarchy() ;
+
+    Hierarchy & hierarchy() { return patchHierarchy_ ; }
+    Hierarchy const & hierarchy() const { return patchHierarchy_ ; }
+
 
 private:
     uint32 refinementRatio_ {2};

@@ -1,5 +1,6 @@
 
 #include "mlmd.h"
+#include "hierarchy.h"
 #include "patch.h"
 #include "patchdata.h"
 #include "Solver/solver.h"
@@ -22,3 +23,43 @@ void MLMD::initializeRootLevel()
     rootLevel.init();
 
 }
+
+
+void MLMD::evolveHierarchy()
+{
+
+}
+
+
+void MLMD::evaluateHierarchy()
+{
+
+    std::vector< std::vector< std::shared_ptr<Patch> > >
+            patchArray = patchHierarchy_.patchTable() ;
+
+    uint32 nbrLevels = static_cast<uint32>(patchArray.size()) ;
+
+    for( uint32 iLevel=0 ; iLevel<nbrLevels ; iLevel++ )
+    {
+        auto & patchesAtLevel = patchArray[iLevel] ;
+
+        for( std::shared_ptr<Patch> patch: patchesAtLevel)
+        {
+            RefinementAnalyser analyser{} ;
+
+            patch->checkRefinment( analyser ) ;
+        }
+
+    }
+
+
+}
+
+
+void MLMD::updateHierarchy()
+{
+
+
+}
+
+
