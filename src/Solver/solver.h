@@ -34,7 +34,7 @@ public:
     Solver& operator=(Solver&& source) = default;
 
     void solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons,
-                   BoundaryCondition const* boundaryCondition);
+                   std::unique_ptr<BoundaryCondition> & boundaryCondition);
 
 private:
 
@@ -56,7 +56,7 @@ private:
 
     // methods
     void moveIons_(VecField const& E, VecField const& B, Ions& ions,
-                   BoundaryCondition const* boundaryConditon);
+                   std::unique_ptr<BoundaryCondition> & boundaryConditon);
 };
 
 #endif // SOLVER_H
