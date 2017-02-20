@@ -8,8 +8,8 @@
  * @param dt : time step
  * @param layout : GridLayout
  */
-Ampere::Ampere(double dt, GridLayout const& layout)
-    : implPtr_{AmpereImplFactory::createAmpereImpl(dt, layout)}
+Ampere::Ampere(GridLayout const& layout)
+    : implPtr_{AmpereImplFactory::createAmpereImpl(layout)}
 {
 }
 

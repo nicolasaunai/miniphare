@@ -15,7 +15,7 @@ private:
 
 
 public:
-    AmpereImpl1D(double dt, GridLayout const& layout);
+    AmpereImpl1D(GridLayout const& layout);
 
     AmpereImpl1D(AmpereImpl1D const& source) = delete;
     AmpereImpl1D& operator=(AmpereImpl1D const& source) = delete;
