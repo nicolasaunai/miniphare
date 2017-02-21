@@ -45,7 +45,7 @@ void maxwellianVelocity(std::array<double, 3> V, double Vth,
 
 void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles) const
 {
-    std::cout << "1D particle loader\n";
+    std::cout << "FluidParticleInitializer : loading particles for 1D run... ";
     double dx;
     dx = layout_.dx();
 
@@ -103,6 +103,7 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
             particles.push_back(std::move(tmpParticle));
         }
     }
+    std::cout << " OK!" << std::endl;
 }
 
 

@@ -20,7 +20,17 @@ int main(int argc, char *argv[])
 {
 
 
-    std::cout << "Welcome to MINIPHARE" << std::endl;
+    std::cout << "Welcome to : " << std::endl;
+
+    std::cout <<R"(
+                 __  __ _____ _   _ _____ _____  _    _          _____  ______
+                |  \/  |_   _| \ | |_   _|  __ \| |  | |   /\   |  __ \|  ____|
+                | \  / | | | |  \| | | | | |__) | |__| |  /  \  | |__) | |__
+                | |\/| | | | | . ` | | | |  ___/|  __  | / /\ \ |  _  /|  __|
+                | |  | |_| |_| |\  |_| |_| |    | |  | |/ ____ \| | \ \| |____
+                |_|  |_|_____|_| \_|_____|_|    |_|  |_/_/    \_\_|  \_\______| v1.0)"
+             << std::endl << std::endl;
+
 
     std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv);
 

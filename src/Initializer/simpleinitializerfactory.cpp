@@ -210,6 +210,7 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
                     electricField,
                     magneticField} };
 
+    std::cout << "creating Simple ElectromagInitializer" << std::endl;
     Point origin{0,0,0};
 
     for (uint32 iComponent=0; iComponent < 3; ++iComponent)

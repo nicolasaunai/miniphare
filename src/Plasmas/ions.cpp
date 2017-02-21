@@ -32,7 +32,8 @@
                   "_bulkVelTot" }
  {
      uint32 nbrSpecies = ionInitializer->nbrSpecies;
-     std::cout << "Ion Constructor : " << nbrSpecies << std::endl;
+     std::cout << "Building Ions with " << nbrSpecies << " species" << std::endl;
+
      speciesArray_.reserve( nbrSpecies );
 
 
@@ -68,10 +69,10 @@
   */
  void Ions::loadParticles()
  {
-     std::cout << "ion load particles" << std::endl;
+     std::cout << "Ions > loading particles..." << std::endl;
      for (Species& species : speciesArray_)
      {
-        std::cout << "init a species" << std::endl;
+        std::cout << "... species : " << species.name() << std::endl;
         species.loadParticles();
      }
  }
@@ -94,7 +95,7 @@
 
         Field const& rhoSpe = spe.rho();
         std::transform (rho_.begin(), rho_.end(), rhoSpe.begin(), rho_.begin(), std::plus<double>());
-     }     
+     }
  }
 
 
