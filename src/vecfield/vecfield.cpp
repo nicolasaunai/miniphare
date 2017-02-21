@@ -92,11 +92,10 @@ std::vector<std::reference_wrapper<Field>> VecField::components()
 }
 
 
-
-
-#if 0
-void avg(Vecfield const& VF1, Vecfield const& VF2, Vecfield& Vavg)
+std::vector<std::reference_wrapper<Field const>> VecField::components() const
 {
-
+    return {xComponent_, yComponent_, zComponent_} ;
 }
-#endif
+
+
+
