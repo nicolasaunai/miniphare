@@ -221,7 +221,7 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
         uint32 iStart = layout_.ghostStartIndex(Ei, Direction::X);
         uint32 iEnd   = layout_.ghostEndIndex(  Ei, Direction::X);
 
-        for (uint32 ix=iStart; ix < iEnd; ++ix)
+        for (uint32 ix=iStart; ix <= iEnd; ++ix)
         {
             Point coord = layout_.fieldNodeCoordinates(Ei, origin, ix, 0, 0);
             std::array<double,3> E = electricField(coord.x_, origin.y_, origin.z_);
@@ -229,11 +229,11 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
         }
 
         // MEGNETIC FIELD ----------------
-        Field& Bi = eminit->E_.component(iComponent);
+        Field& Bi = eminit->B_.component(iComponent);
         iStart = layout_.ghostStartIndex(Bi, Direction::X);
         iEnd   = layout_.ghostEndIndex(  Bi, Direction::X);
 
-        for (uint32 ix=iStart; ix < iEnd; ++ix)
+        for (uint32 ix=iStart; ix <= iEnd; ++ix)
         {
             Point coord = layout_.fieldNodeCoordinates(Bi, origin, ix, 0, 0);
             std::array<double,3> B = magneticField(coord.x_, origin.y_, origin.z_);
