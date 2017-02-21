@@ -20,24 +20,15 @@ int main(int argc, char *argv[])
 {
 
 
-    std::cout << "Welcome to MINIPHARE" << std::endl;
+    std::cout << "Welcome to MINIPHARE" << std::endl ;
 
-    std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv);
+    std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv) ;
 
-    MLMD mlmdManager{ std::move(initFactory) };
+    MLMD mlmdManager{ std::move(initFactory) } ;
 
-    mlmdManager.initializeRootLevel();
+    mlmdManager.initializeRootLevel() ;
 
-    // evolve fields and particle for a time step
-    mlmdManager.evolveHierarchy();
-
-    // Here, AMR patches will say whether they need refinement
-    // the ouput of this method is used by updateHierarchy()
-    mlmdManager.evaluateHierarchy();
-
-    // new patches are created here if necessary
-    // it depends on evaluateHierarchy()
-    mlmdManager.updateHierarchy();
+    mlmdManager.evolveFullDomain() ;
 
 
 

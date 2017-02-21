@@ -25,75 +25,19 @@ void MLMD::initializeRootLevel()
 }
 
 
-/**
- * @brief MLMD::evolveHierarchy
- *
- * evolve fields and particle for a time step
- *
- */
-void MLMD::evolveHierarchy()
+void MLMD::evolveFullDomain()
 {
 
-    std::vector< std::vector< std::shared_ptr<Patch> > >
-            patchArray = patchHierarchy_.patchTable() ;
+    // evolve fields and particle for a time step
+    patchHierarchy_.evolveHierarchy() ;
 
-    uint32 nbrLevels = static_cast<uint32>(patchArray.size()) ;
+    // Here, AMR patches will say whether they need refinement
+    // the ouput of this method is used by updateHierarchy()
+    patchHierarchy_.evaluateHierarchy() ;
 
-    for( uint32 iLevel=0 ; iLevel<nbrLevels ; iLevel++ )
-    {
-        auto & patchesAtLevel = patchArray[iLevel] ;
-
-        for( std::shared_ptr<Patch> patch: patchesAtLevel)
-        {
-            patch->evolve() ;
-        }
-
-    }
-
-}
-
-
-/**
- * @brief MLMD::evaluateHierarchy
- *
- * Here, AMR patches will say whether they need refinement
- * the ouput of this method is used by updateHierarchy()
- *
- */
-void MLMD::evaluateHierarchy()
-{
-
-    std::vector< std::vector< std::shared_ptr<Patch> > >
-            patchArray = patchHierarchy_.patchTable() ;
-
-    uint32 nbrLevels = static_cast<uint32>(patchArray.size()) ;
-
-    for( uint32 iLevel=0 ; iLevel<nbrLevels ; iLevel++ )
-    {
-        auto & patchesAtLevel = patchArray[iLevel] ;
-
-        for( std::shared_ptr<Patch> patch: patchesAtLevel)
-        {
-            RefinementAnalyser analyser{} ;
-
-            patch->checkRefinment( analyser ) ;
-        }
-
-    }
-
-
-}
-
-
-/**
- * @brief MLMD::updateHierarchy
- *
- * new patches are created here if necessary
- * it depends on evaluateHierarchy()
- *
- */
-void MLMD::updateHierarchy()
-{
+    // new patches are created here if necessary
+    // it depends on evaluateHierarchy()
+    patchHierarchy_.updateHierarchy() ;
 
 
 }

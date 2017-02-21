@@ -41,6 +41,9 @@ public:
 
     void addNewPatch( Patch const & parent, Box & position, uint32 level ) ;
 
+    void evolveHierarchy() ;
+    void evaluateHierarchy() ;
+    void updateHierarchy() ;
 
 };
 

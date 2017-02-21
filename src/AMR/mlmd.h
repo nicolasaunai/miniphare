@@ -24,9 +24,8 @@ public:
 
     void initializeRootLevel();
 
-    void evolveHierarchy() ;
-    void evaluateHierarchy() ;
-    void updateHierarchy() ;
+    void evolveFullDomain();
+
 
     Hierarchy & hierarchy() { return patchHierarchy_ ; }
     Hierarchy const & hierarchy() const { return patchHierarchy_ ; }
