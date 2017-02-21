@@ -43,8 +43,6 @@ public:
 
     void init();
 
-    Solver const& solver() const {return solver_;}
-
     Ions const& ions() const {return ions_;}
 
     void solveStep() ;
