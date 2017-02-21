@@ -4,10 +4,10 @@
 
 #include <string>
 
-#include "constants.h"
 #include "types.h"
+#include "constants.h"
 #include "vecfield/vecfield.h"
-
+#include "Initializer/electromaginitializer.h"
 
 
 class Electromag
@@ -22,6 +22,9 @@ public:
     Field& getBi(uint32 component) {return B_.component(component);}
     VecField& getE(){return E_;}
     VecField& getB(){return B_;}
+
+
+    void init(ElectromagInitializer* const initializer);
 
 
 private:

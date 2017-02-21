@@ -60,46 +60,54 @@ double thermalSpeedProton2(double x, double y, double z)
 }
 
 
-void bulkVelocityProton1(double x, double y, double z, std::array<double,3> vec)
+std::array<double,3> bulkVelocityProton1(double x, double y, double z)
 {
+    std::array<double,3> vec;
     (void) x;
     (void) y;
     (void) z;
     vec[0] = 0.;
     vec[1] = 0.;
     vec[2] = 0.;
+    return vec;
 }
 
-void bulkVelocityProton2(double x, double y, double z, std::array<double,3> vec)
+std::array<double,3> bulkVelocityProton2(double x, double y, double z)
 {
+    std::array<double,3> vec;
     (void) x;
     (void) y;
     (void) z;
     vec[0] = 0.;
     vec[1] = 0.;
     vec[2] = 0.;
-}
-
-
-void magneticField(double x, double y, double z, std::array<double,3> vec)
-{
-    (void) x;
-    (void) y;
-    (void) z;
-    vec[0] = 0.;
-    vec[1] = 0.;
-    vec[2] = 0.;
+    return vec;
 }
 
 
-void electricField(double x, double y, double z, std::array<double,3> vec)
+std::array<double,3>  magneticField(double x, double y, double z)
 {
+    std::array<double,3> vec;
+    (void) x;
+    (void) y;
+    (void) z;
+    vec[0] = 1.;
+    vec[1] = 0.;
+    vec[2] = 0.;
+    return vec;
+}
+
+
+std::array<double,3> electricField(double x, double y, double z)
+{
+    std::array<double,3> vec;
     (void) x;
     (void) y;
     (void) z;
     vec[0] = 0.;
     vec[1] = 0.;
     vec[2] = 0.;
+    return vec;
 }
 /* -------------------------- end of hard coded functions --------------------- */
 
@@ -155,7 +163,10 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
 
 
 
-
+/**
+ * @brief SimpleInitializerFactory::createSolverInitializer creates a SolverInitializer for simpled 1D simulation with 2 species with 2nd order interpolation and modified Boris pushers
+ * @return
+ */
 std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitializer() const
 {
     const uint32 nbrSpecies = 2;
@@ -173,6 +184,10 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
 
 
 
+/**
+ * @brief SimpleInitializerFactory::createBoundaryCondition creates a BoundaryCondition that is a simple periodic domain boundary condition for 1D run.
+ * @return
+ */
 std::unique_ptr<BoundaryCondition>SimpleInitializerFactory::createBoundaryCondition() const
 {
     // return hard coded domain periodic boundary condition
@@ -194,10 +209,50 @@ std::unique_ptr<BoundaryCondition>SimpleInitializerFactory::createBoundaryCondit
 
 
 
-
+/**
+ * @brief SimpleInitializerFactory::createElectromagInitializer return a ElectromagInitializer for 1D periodic simulation. Bx=1, By=Bz=Ex=Ey=Ez=0.
+ * @return
+ */
 std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectromagInitializer() const
 {
-    return nullptr;
+
+    std::unique_ptr<ElectromagInitializer> eminit {new ElectromagInitializer{layout_,
+                    electricField,
+                    magneticField} };
+
+    std::cout << "creating Simple ElectromagInitializer" << std::endl;
+    Point origin{0,0,0};
+
+    for (uint32 iComponent=0; iComponent < 3; ++iComponent)
+    {
+
+        // ELECTRIC FIELD ----------------
+        Field& Ei = eminit->E_.component(iComponent);
+        uint32 iStart = layout_.ghostStartIndex(Ei, Direction::X);
+        uint32 iEnd   = layout_.ghostEndIndex(  Ei, Direction::X);
+
+        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+        {
+            Point coord = layout_.fieldNodeCoordinates(Ei, origin, ix, 0, 0);
+            std::array<double,3> E = electricField(coord.x_, origin.y_, origin.z_);
+            Ei(ix) = E[iComponent];
+        }
+
+        // MEGNETIC FIELD ----------------
+        Field& Bi = eminit->B_.component(iComponent);
+        iStart = layout_.ghostStartIndex(Bi, Direction::X);
+        iEnd   = layout_.ghostEndIndex(  Bi, Direction::X);
+
+        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+        {
+            Point coord = layout_.fieldNodeCoordinates(Bi, origin, ix, 0, 0);
+            std::array<double,3> B = magneticField(coord.x_, origin.y_, origin.z_);
+            Bi(ix) = B[iComponent];
+        }
+
+    }
+
+    return eminit;
 }
 
 

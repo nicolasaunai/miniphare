@@ -1,6 +1,7 @@
 
-#include "constants.h"
+#include <utility>
 
+#include "constants.h"
 #include "electromag.h"
 #include "vecfield/vecfield.h"
 
@@ -22,3 +23,12 @@ Electromag::Electromag( std::array<AllocSizeT, NBR_COMPO> E_AllocSizes,
 
 
 
+void Electromag::init(ElectromagInitializer * const initializer)
+{
+    // we swap the VecFields with those of the initializer
+    // the original initializer has been MOVED to this function
+    // and that one dies at the end of the function so the swapped
+    // data is deallocated.
+    std::swap(E_, initializer->E_);
+    std::swap(B_, initializer->B_);
+}

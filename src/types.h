@@ -11,7 +11,7 @@ using int64  = std::int64_t;
 
 
 using ScalarFunction = double (*) (double x, double y, double z);
-using VectorFunction = void   (*) (double x, double y, double z, std::array<double,3> vec);
+using VectorFunction =  std::array<double,3> (*) (double x, double y, double z);
 
 
 enum class Edge{ Xmin, Xmax, Ymin, Ymax, Zmin, Zmax } ;

@@ -183,26 +183,36 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 }
 
 
+std::vector<Particle>::size_type maxNbrParticles(Ions const& ions)
+{
+    // find the largest particles number accross all species
+    auto nbrParticlesMax = ions.species(0).nbrParticles();
+    auto nbrSpecies = ions.nbrSpecies();
+
+    for (uint32 ispe=0; ispe < nbrSpecies; ++ispe)
+    {
+        Species const& species = ions.species(ispe);
+        auto nbrParticles = species.nbrParticles();
+
+        if (nbrParticlesMax < nbrParticles)
+        {
+            nbrParticlesMax = nbrParticles;
+        }
+    }
+
+    return nbrParticlesMax;
+}
+
 
 void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
                        BoundaryCondition const * const boundaryCondition)
 {
-    // find the largest particles number accross all species
-    auto nbrParticlesMax = ions.species(0).particles().size();
 
-    // un peu degueulasse...
-    for (uint32 ispe=0; ispe < ions.nbrSpecies(); ++ispe)
-    {
-        if (nbrParticlesMax < ions.species(ispe).particles().size())
-        {
-            nbrParticlesMax = ions.species(ispe).particles().size();
-        }
-    }
 
     // the temporary buffer must be big enough to hold the max
     // number of particles
+    auto nbrParticlesMax = maxNbrParticles(ions);
     particleArrayPred_.reserve(nbrParticlesMax);
-
 
 
     for (uint32 ispe=0; ispe < ions.nbrSpecies(); ++ispe)

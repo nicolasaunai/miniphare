@@ -51,7 +51,7 @@ public:
 
     ~Patch() = default;
 
-    void init() { std::cout << "init Patch" << std::endl; data_.init(); }
+    void init() { std::cout << "init Patch...";  data_.init(); std::cout << " patch initialized OK\n";}
 
     void checkRefinment( RefinementAnalyser const & analyser ) const ;
 

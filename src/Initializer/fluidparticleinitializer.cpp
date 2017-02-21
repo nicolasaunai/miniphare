@@ -45,7 +45,7 @@ void maxwellianVelocity(std::array<double, 3> V, double Vth,
 
 void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles) const
 {
-    std::cout << "1D particle loader\n";
+    std::cout << "FluidParticleInitializer : loading particles for 1D run... ";
     double dx;
     dx = layout_.dx();
 
@@ -82,7 +82,7 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
 
         // now get density, velocity and thermal speed values
         n      = density(x, origin.y_, origin.z_);
-        bulkVelocity(x, origin.y_, origin.z_, V);
+        V = bulkVelocity(x, origin.y_, origin.z_);
         Vth    = thermalSpeed(x, origin.y_, origin.z_);
 
         cellWeight = n*cellVolume / nbrParticlePerCell_;
@@ -103,6 +103,7 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
             particles.push_back(std::move(tmpParticle));
         }
     }
+    std::cout << " OK!" << std::endl;
 }
 
 
@@ -155,7 +156,7 @@ void FluidParticleInitializer::loadParticles2D_(std::vector<Particle>& particles
 
             // now get density, velocity and thermal speed values
             n      = density(x, y, origin.z_);
-            bulkVelocity(x, y, origin.z_, V);
+            V = bulkVelocity(x, y, origin.z_);
             Vth    = thermalSpeed(x, y, origin.z_);
 
             cellWeight = n*cellVolume / nbrParticlePerCell_;
@@ -236,7 +237,7 @@ void FluidParticleInitializer::loadParticles3D_(std::vector<Particle>& particles
 
                 // now get density, velocity and thermal speed values
                 n      = density(x, y, z);
-                bulkVelocity(x, y, z, V);
+                V = bulkVelocity(x, y, z);
                 Vth    = thermalSpeed(x, y, z);
                 cellWeight = n * cellVolume / nbrParticlePerCell_;
 

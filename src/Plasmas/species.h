@@ -52,6 +52,8 @@ public:
     std::vector<Particle> const& particles() const {return particleArray_;}
 
     double mass() const {return mass_;}
+    std::string name() const {return name_;}
+    std::vector<Particle>::size_type nbrParticles() const {return particleArray_.size();}
 
     void loadParticles();
 

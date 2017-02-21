@@ -18,8 +18,9 @@ MLMD::MLMD(std::unique_ptr<InitializerFactory> initFactory)
 
 void MLMD::initializeRootLevel()
 {
+    std::cout << "building root level...";
     Patch& rootLevel = patchHierarchy_.root();
-    std::cout << "root level OK" << std::endl;
+    std::cout << " OK" << std::endl;
     rootLevel.init();
 
 }
