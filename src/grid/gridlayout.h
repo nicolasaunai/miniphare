@@ -8,7 +8,7 @@
 #include "types.h"
 #include "hybridenums.h"
 
-#include "Electromag/electromag.h"
+//#include "Electromag/electromag.h"
 #include "Field/field.h"
 #include "gridlayoutimpl.h"
 #include "utility.h"

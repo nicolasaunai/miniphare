@@ -205,7 +205,43 @@ std::unique_ptr<BoundaryCondition>SimpleInitializerFactory::createBoundaryCondit
 
 std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectromagInitializer() const
 {
-    return nullptr;
+
+    std::unique_ptr<ElectromagInitializer> eminit {new ElectromagInitializer{layout_,
+                    electricField,
+                    magneticField} };
+
+    Point origin{0,0,0};
+
+    for (uint32 iComponent=0; iComponent < 3; ++iComponent)
+    {
+
+        // ELECTRIC FIELD ----------------
+        Field& Ei = eminit->E_.component(iComponent);
+        uint32 iStart = layout_.ghostStartIndex(Ei, Direction::X);
+        uint32 iEnd   = layout_.ghostEndIndex(  Ei, Direction::X);
+
+        for (uint32 ix=iStart; ix < iEnd; ++ix)
+        {
+            Point coord = layout_.fieldNodeCoordinates(Ei, origin, ix, 0, 0);
+            std::array<double,3> E = electricField(coord.x_, origin.y_, origin.z_);
+            Ei(ix) = E[iComponent];
+        }
+
+        // MEGNETIC FIELD ----------------
+        Field& Bi = eminit->E_.component(iComponent);
+        iStart = layout_.ghostStartIndex(Bi, Direction::X);
+        iEnd   = layout_.ghostEndIndex(  Bi, Direction::X);
+
+        for (uint32 ix=iStart; ix < iEnd; ++ix)
+        {
+            Point coord = layout_.fieldNodeCoordinates(Bi, origin, ix, 0, 0);
+            std::array<double,3> B = magneticField(coord.x_, origin.y_, origin.z_);
+            Bi(ix) = B[iComponent];
+        }
+
+    }
+
+    return eminit;
 }
 
 

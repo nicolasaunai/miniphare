@@ -27,7 +27,6 @@ public:
     // virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() = 0;
     // virtual std::unique_ptr<GridLayoutInitializer> createGridLayoutInitializer() = 0;
 
-
 private:
 
     GridLayout layout_;

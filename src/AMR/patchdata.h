@@ -3,13 +3,13 @@
 
 
 
-#include "Solver/solver.h"
+#include "types.h"
 #include "Plasmas/ions.h"
+#include "Solver/solver.h"
+#include "grid/gridlayout.h"
 #include "Plasmas/electrons.h"
 #include "Electromag/electromag.h"
-#include "grid/gridlayout.h"
 #include "Initializer/initializerfactory.h"
-#include "types.h"
 
 
 /**
