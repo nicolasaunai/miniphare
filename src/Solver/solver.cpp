@@ -68,7 +68,7 @@ Solver::Solver( GridLayout const& layout, double dt,
 
 void Solver::solveStep(Electromag& EMFields, Ions& ions,
                        Electrons& electrons,
-                       std::unique_ptr<BoundaryCondition> & boundaryCondition )
+                       BoundaryCondition const * const boundaryCondition )
 {
     VecField &B      = EMFields.getB();
     VecField &E      = EMFields.getE();
@@ -185,7 +185,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
 
 void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
-                       std::unique_ptr<BoundaryCondition> & boundaryCondition)
+                       BoundaryCondition const * const boundaryCondition)
 {
     // find the largest particles number accross all species
     auto nbrParticlesMax = ions.species(0).particles().size();

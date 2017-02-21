@@ -38,7 +38,7 @@ void PatchData::init()
 
 void PatchData::solveStep()
 {
-    solver_.solveStep(EMfields_, ions_, electrons_, boundaryCondition_);
+    solver_.solveStep(EMfields_, ions_, electrons_, boundaryCondition_.get());
 }
 
 
