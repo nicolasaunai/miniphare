@@ -163,7 +163,10 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
 
 
 
-
+/**
+ * @brief SimpleInitializerFactory::createSolverInitializer creates a SolverInitializer for simpled 1D simulation with 2 species with 2nd order interpolation and modified Boris pushers
+ * @return
+ */
 std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitializer() const
 {
     const uint32 nbrSpecies = 2;
@@ -181,6 +184,10 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
 
 
 
+/**
+ * @brief SimpleInitializerFactory::createBoundaryCondition creates a BoundaryCondition that is a simple periodic domain boundary condition for 1D run.
+ * @return
+ */
 std::unique_ptr<BoundaryCondition>SimpleInitializerFactory::createBoundaryCondition() const
 {
     // return hard coded domain periodic boundary condition
@@ -202,7 +209,10 @@ std::unique_ptr<BoundaryCondition>SimpleInitializerFactory::createBoundaryCondit
 
 
 
-
+/**
+ * @brief SimpleInitializerFactory::createElectromagInitializer return a ElectromagInitializer for 1D periodic simulation. Bx=1, By=Bz=Ex=Ey=Ez=0.
+ * @return
+ */
 std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectromagInitializer() const
 {
 
