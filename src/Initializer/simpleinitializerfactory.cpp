@@ -60,46 +60,54 @@ double thermalSpeedProton2(double x, double y, double z)
 }
 
 
-void bulkVelocityProton1(double x, double y, double z, std::array<double,3> vec)
+std::array<double,3> bulkVelocityProton1(double x, double y, double z)
 {
+    std::array<double,3> vec;
     (void) x;
     (void) y;
     (void) z;
     vec[0] = 0.;
     vec[1] = 0.;
     vec[2] = 0.;
+    return vec;
 }
 
-void bulkVelocityProton2(double x, double y, double z, std::array<double,3> vec)
+std::array<double,3> bulkVelocityProton2(double x, double y, double z)
 {
+    std::array<double,3> vec;
     (void) x;
     (void) y;
     (void) z;
     vec[0] = 0.;
     vec[1] = 0.;
     vec[2] = 0.;
-}
-
-
-void magneticField(double x, double y, double z, std::array<double,3> vec)
-{
-    (void) x;
-    (void) y;
-    (void) z;
-    vec[0] = 0.;
-    vec[1] = 0.;
-    vec[2] = 0.;
+    return vec;
 }
 
 
-void electricField(double x, double y, double z, std::array<double,3> vec)
+std::array<double,3>  magneticField(double x, double y, double z)
 {
+    std::array<double,3> vec;
+    (void) x;
+    (void) y;
+    (void) z;
+    vec[0] = 1.;
+    vec[1] = 0.;
+    vec[2] = 0.;
+    return vec;
+}
+
+
+std::array<double,3> electricField(double x, double y, double z)
+{
+    std::array<double,3> vec;
     (void) x;
     (void) y;
     (void) z;
     vec[0] = 0.;
     vec[1] = 0.;
     vec[2] = 0.;
+    return vec;
 }
 /* -------------------------- end of hard coded functions --------------------- */
 
