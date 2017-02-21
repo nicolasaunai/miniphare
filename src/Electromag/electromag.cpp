@@ -23,7 +23,7 @@ Electromag::Electromag( std::array<AllocSizeT, NBR_COMPO> E_AllocSizes,
 
 
 
-void Electromag::init(std::unique_ptr<ElectromagInitializer> initializer)
+void Electromag::init(ElectromagInitializer * const initializer)
 {
     // we swap the VecFields with those of the initializer
     // the original initializer has been MOVED to this function

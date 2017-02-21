@@ -21,7 +21,8 @@ PatchData::PatchData(std::unique_ptr<InitializerFactory> initFactory)
                initFactory->createSolverInitializer() },
 
       ions_{ initFactory->gridLayout(), initFactory->createIonsInitializer() },
-      boundaryCondition_{initFactory->createBoundaryCondition()}
+      boundaryCondition_{initFactory->createBoundaryCondition()},
+      EMInitializer_{initFactory->createElectromagInitializer()}
 {
 
 }
@@ -32,5 +33,5 @@ void PatchData::init()
     std::cout << "init patch data" << std::endl;
 
     ions_.loadParticles();
-    //EMfields_.init();
+    EMfields_.init(EMInitializer_.get());
 }

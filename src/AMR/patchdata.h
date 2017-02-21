@@ -26,6 +26,7 @@ private:
     Solver     solver_;
     Ions ions_;
     std::unique_ptr<BoundaryCondition> boundaryCondition_;
+    std::unique_ptr<ElectromagInitializer> EMInitializer_;
     //Electrons electrons_;
 
 

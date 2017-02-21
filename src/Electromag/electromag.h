@@ -24,7 +24,7 @@ public:
     VecField& getB(){return B_;}
 
 
-    void init(std::unique_ptr<ElectromagInitializer> initializer);
+    void init(ElectromagInitializer* const initializer);
 
 
 private:
