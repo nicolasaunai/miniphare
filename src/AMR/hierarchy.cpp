@@ -2,7 +2,7 @@
 
 #include "AMR/patch.h"
 
-#include "utility.h"
+#include "utilityphare.h"
 
 
 void Hierarchy::addNewPatch( Patch const & parent,

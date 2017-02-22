@@ -1,7 +1,7 @@
 
 #include "mlmdinitializerfactory.h"
 #include "mlmdparticleinitializer.h"
-#include "utility.h"
+#include "utilityphare.h"
 
 
 std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer() const

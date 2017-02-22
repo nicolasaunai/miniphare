@@ -6,7 +6,7 @@
 #include "gmock/gmock.h"
 
 #include "types.h"
-#include "utility.h"
+#include "utilityphare.h"
 
 #include "grid/gridlayout.h"
 #include "grid/gridlayoutimplfactory.h"

@@ -6,7 +6,7 @@
 
 #include "AMR/patchdata.h"
 #include "Plasmas/ions.h"
-#include "utility.h"
+#include "utilityphare.h"
 #include "AMR/refinmentanalyser.h"
 
 

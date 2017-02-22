@@ -1,5 +1,5 @@
-#ifndef UTILITY_H
-#define UTILITY_H
+#ifndef UTILITYPHARE_H
+#define UTILITYPHARE_H
 
 #include <limits>
 #include <cmath>
@@ -59,4 +59,4 @@ public:
 
 
 
-#endif // UTILITY_H
+#endif // UTILITYPHARE_H
