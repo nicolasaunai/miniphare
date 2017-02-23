@@ -30,6 +30,9 @@ class Patch
 private:
 
     Box coordinates_;
+
+    GridLayout layout_;
+
     PatchData data_;
 
     std::shared_ptr<Patch> parent_ ;
@@ -38,8 +41,10 @@ private:
 
 public:
 
-    explicit Patch(Box coordinates, PatchData&& patchData)
+    explicit Patch(Box coordinates, GridLayout const & layout,
+                   PatchData&& patchData)
         : coordinates_{coordinates},
+          layout_{layout},
           data_{std::move(patchData)},
           parent_{nullptr}, children_{}
     {}
@@ -61,6 +66,8 @@ public:
     Ions const& ions() const { return data_.ions(); }
 
     Box coordinates() const { return coordinates_; }
+
+    GridLayout const & layout() const { return layout_; }
 
 };
 
