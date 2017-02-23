@@ -7,7 +7,7 @@
 
 
 MLMD::MLMD(std::unique_ptr<InitializerFactory> initFactory)
-    : patchHierarchy_{ Patch { PatchData{ std::move(initFactory) }  } }
+    : patchHierarchy_{ Patch { initFactory->getBox(), PatchData{ std::move(initFactory) }  } }
 {
     // will probably have to change the way objects are initialized.
     // if we want, at some point, start from an already existing hierarchy

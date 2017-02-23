@@ -3,7 +3,7 @@
 #include "simpleinitializerfactory.h"
 
 
-InitializerFactory::~InitializerFactory() {}
+
 
 
 /**

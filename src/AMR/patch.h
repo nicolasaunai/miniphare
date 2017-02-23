@@ -38,8 +38,9 @@ private:
 
 public:
 
-    explicit Patch(PatchData&& patchData)
-        :data_{std::move(patchData)},
+    explicit Patch(Box coordinates, PatchData&& patchData)
+        : coordinates_{coordinates},
+          data_{std::move(patchData)},
           parent_{nullptr}, children_{}
     {}
 

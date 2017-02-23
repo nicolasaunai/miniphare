@@ -40,8 +40,10 @@ public:
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const = 0;
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const = 0;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const = 0;
-    virtual GridLayout const& gridLayout() const = 0;
-    virtual double timeStep() const = 0;
+
+    virtual Box getBox() const = 0;
+    virtual GridLayout const& gridLayout() const = 0 ;
+    virtual double timeStep() const = 0 ;
 
     // virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() = 0;
     // virtual std::unique_ptr<GridLayoutInitializer> createGridLayoutInitializer() = 0;
@@ -49,7 +51,7 @@ public:
     // TODO add HiearchyInitializer and MLMDInitializer ?
 
 
-    virtual ~InitializerFactory() = 0;
+    virtual ~InitializerFactory() = default;
 
 };
 

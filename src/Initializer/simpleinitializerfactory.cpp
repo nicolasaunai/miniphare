@@ -272,6 +272,11 @@ GridLayout const& SimpleInitializerFactory::gridLayout() const
 }
 
 
+Box SimpleInitializerFactory::getBox() const
+{
+    return layout_.getBox() ;
+}
+
 
 double SimpleInitializerFactory::timeStep() const
 {
