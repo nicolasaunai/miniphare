@@ -13,8 +13,11 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
     for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
     {
         Species const& species = parentIons.species(ispe);
-        Box  patchCoordinates  = parentPatch_->coordinates();
-        std::unique_ptr<ParticleSelector> selector{ new isInBox{patchCoordinates} };
+        Box  parentCoordinates  = parentPatch_->coordinates();
+        std::unique_ptr<ParticleSelector> selector{
+            new isInBox{parentCoordinates, newPatchCoords_,
+                        layout_.dxdydz()} };
+
         std::unique_ptr<ParticleInitializer> particleInit{new MLMDParticleInitializer{species,
                                                     std::move(selector) }};
         ionInitPtr->masses.push_back( parentIons.species(ispe).mass() );
@@ -54,6 +57,25 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 {
 
     return nullptr;
+}
+
+
+
+GridLayout const& MLMDInitializerFactory::gridLayout() const
+{
+    return layout_;
+}
+
+
+Box MLMDInitializerFactory::getBox() const
+{
+    return layout_.getBox() ;
+}
+
+
+double MLMDInitializerFactory::timeStep() const
+{
+    return dt_;
 }
 
 

@@ -28,9 +28,15 @@ private:
     std::shared_ptr<Patch> parentPatch_;
     Box newPatchCoords_ ;
 
+    GridLayout layout_;
+    double dt_;
+
 public:
-    MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch, Box newPatchCoords)
-        : parentPatch_{parentPatch}, newPatchCoords_{newPatchCoords} {}
+    MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch,
+                           Box newPatchCoords, uint32 refinement )
+        : parentPatch_{parentPatch}, newPatchCoords_{newPatchCoords},
+          layout_{ parentPatch->layout().subLayout(newPatchCoords, refinement) }
+    { }
 
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const  override;
@@ -38,6 +44,9 @@ public:
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
 
+    virtual Box getBox() const override;
+    virtual GridLayout const& gridLayout() const override;
+    virtual double timeStep() const override;
 };
 
 #endif // MLMDINITIALIZERFACTORY_H
