@@ -39,11 +39,12 @@ public:
 
     hierarchyType & patchTable() { return patchTable_; }
 
-    void addNewPatch( Patch const & parent, Box & position, uint32 level ) ;
+    void addNewPatch( std::shared_ptr<Patch> parent, Box & position,
+                      uint32 refinement, uint32 level ) ;
 
     void evolveHierarchy() ;
     void evaluateHierarchy() ;
-    void updateHierarchy() ;
+    void updateHierarchy( uint32 refinementRatio ) ;
 
 };
 
