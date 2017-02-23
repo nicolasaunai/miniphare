@@ -42,6 +42,7 @@ GridLayout::GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCell
       nbrCellx_{nbrCells[0]}, nbrCelly_{nbrCells[1]}, nbrCellz_{nbrCells[2]},
       origin_{origin},
       interpOrder_{ghostParameter},
+      layoutName_{layoutName},
       implPtr_{ GridLayoutImplFactory::createGridLayoutImpl(
                     nbDims, origin, ghostParameter, layoutName, nbrCells, dxdydz ) }
 {
@@ -112,6 +113,35 @@ Box GridLayout::getBox() const
 
 
     return Box{x0, x1, y0, y1, z0, z1} ;
+}
+
+
+
+
+GridLayout GridLayout::subLayout( Box const & newPatch,
+                                  uint32 refinement ) const
+{
+    // compute nbrCellx, nbrCelly, nbrCellz according to the new patch Box
+    uint32 nbrCellx = static_cast<uint32>( std::ceil( (newPatch.x1 - newPatch.x0)/dx_ ) ) ;
+    uint32 nbrCelly = static_cast<uint32>( std::ceil( (newPatch.y1 - newPatch.y0)/dy_ ) ) ;
+    uint32 nbrCellz = static_cast<uint32>( std::ceil( (newPatch.z1 - newPatch.z0)/dz_ ) ) ;
+
+    // take into account refinement factor
+    nbrCellx *= refinement ;
+    nbrCelly *= refinement ;
+    nbrCellz *= refinement ;
+
+    // compute new dx, dy, dz depending on the refinement factor
+    double dx = dx_/refinement ;
+    double dy = dy_/refinement ;
+    double dz = dz_/refinement ;
+
+    // Build new GridLayout
+    GridLayout subLayout( {{dx, dy, dz}}, {{nbrCellx, nbrCelly, nbrCellz}},
+                          nbDims_, layoutName_,
+                          origin_, interpOrder_ );
+
+    return subLayout ;
 }
 
 

@@ -53,9 +53,9 @@ private:
     uint32 nbrCellz_  ;
 
     Point origin_;      // origin of the grid
-    uint32 interpOrder_ ;                            // TODO find a better name.
+    uint32 interpOrder_ ;
 
-                                                        // If interpOrder is the best so be it.
+    std::string layoutName_ ;
 
     std::unique_ptr<GridLayoutImpl> implPtr_;           // abstract private implementation
 
@@ -81,7 +81,7 @@ public:
     GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
                uint32 nbDims      , std::string layoutName,
                Point origin,
-               uint32 ghostParameter ); // TODO see if better name
+               uint32 ghostParameter );
 
     GridLayout(GridLayout const& source);
     GridLayout(GridLayout&& source);
@@ -94,6 +94,8 @@ public:
     double dx() const {return dx_;}
     double dy() const {return dy_;}
     double dz() const {return dz_;}
+
+    std::array<double, 3> dxdydz() const { return {{dx_, dy_, dz_}}; }
 
     double odx()const { return dx_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
     double ody()const { return dy_ == 0. ? throw error(errorInverseMesh +" dy() (dy==0)"): ody_;}
@@ -131,6 +133,8 @@ public:
     uint32 nbrGhostCells( QtyCentering const& centering ) const;
 
     Box  getBox() const;
+
+    GridLayout subLayout( Box const & newPatch, uint32 refinement ) const;
 
 
 };
