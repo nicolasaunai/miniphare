@@ -24,6 +24,14 @@ namespace utils
 struct Box
 {
     double x0, x1, y0, y1, z0, z1;
+
+    Box( double xmin, double xmax,
+         double ymin, double ymax,
+         double zmin, double zmax )
+        : x0{xmin}, x1{xmax},
+          y0{ymin}, y1{ymax},
+          z0{zmin}, z1{zmax} {}
+
 };
 
 

@@ -130,6 +130,8 @@ public:
 
     uint32 nbrGhostCells( QtyCentering const& centering ) const;
 
+    Box  getBox() const;
+
 
 };
 

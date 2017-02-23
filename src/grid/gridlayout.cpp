@@ -100,6 +100,20 @@ GridLayout::GridLayout(GridLayout&& source)
 
 
 
+Box GridLayout::getBox() const
+{
+    double x0 = origin_.x_ ;
+    double y0 = origin_.y_ ;
+    double z0 = origin_.z_ ;
+
+    double x1 = x0 + nbrCellx_ * dx_ ;
+    double y1 = y0 + nbrCelly_ * dy_ ;
+    double z1 = z0 + nbrCellz_ * dz_ ;
+
+
+    return Box{x0, x1, y0, y1, z0, z1} ;
+}
+
 
 
 /**
