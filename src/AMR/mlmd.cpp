@@ -6,10 +6,10 @@
 #include "Solver/solver.h"
 
 
+
 MLMD::MLMD(std::unique_ptr<InitializerFactory> initFactory)
-    : patchHierarchy_{ Patch { initFactory->getBox(),
-                       GridLayout{ initFactory->gridLayout() },
-                       PatchData{ std::move(initFactory) }  } }
+    : patchHierarchy_{ Patch{ initFactory->getBox(), PatchData{std::move(initFactory)}  } },
+      baseLayout_{ GridLayout{initFactory->gridLayout()} }
 {
     // will probably have to change the way objects are initialized.
     // if we want, at some point, start from an already existing hierarchy
@@ -40,7 +40,7 @@ void MLMD::evolveFullDomain()
 
     // new patches are created here if necessary
     // it depends on evaluateHierarchy()
-    patchHierarchy_.updateHierarchy( refinementRatio_ ) ;
+    patchHierarchy_.updateHierarchy( baseLayout_, refinementRatio_ ) ;
 
 
 }
