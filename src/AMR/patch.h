@@ -31,7 +31,7 @@ private:
 
     Box coordinates_;
 
-    GridLayout layout_;
+//    GridLayout layout_;
 
     PatchData data_;
 
@@ -41,13 +41,13 @@ private:
 
 public:
 
-    explicit Patch(Box coordinates, GridLayout const & layout,
+    explicit Patch(Box coordinates, // GridLayout const & layout,
                    PatchData&& patchData)
         : coordinates_{coordinates},
-          layout_{layout},
           data_{std::move(patchData)},
           parent_{nullptr}, children_{}
-    {}
+        // layout_{layout}
+        {}
 
     Patch(Patch&& source) = default;
     Patch& operator=(Patch&& source) = default;
@@ -59,7 +59,7 @@ public:
 
     void init() { std::cout << "init Patch...";  data_.init(); std::cout << " patch initialized OK\n";}
 
-    void checkRefinment( RefinementAnalyser const & analyser ) const ;
+    bool checkRefinment( RefinementAnalyser const & analyser ) const ;
 
     void evolve() ;
 
@@ -67,7 +67,11 @@ public:
 
     Box coordinates() const { return coordinates_; }
 
-    GridLayout const & layout() const { return layout_; }
+//    GridLayout const & layout() const { return layout_; }
+
+    std::shared_ptr<Patch> parent() const { return parent_; }
+
+    void updateChildren( std::shared_ptr<Patch> newChild ) ;
 
 };
 

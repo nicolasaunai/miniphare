@@ -105,9 +105,14 @@ public:
     uint32 nbrCelly() const {return nbrCelly_;}
     uint32 nbrCellz() const {return nbrCellz_;}
 
+    std::array<uint32, 3> nbrCellxyz() const
+    { return {{nbrCellx_, nbrCelly_, nbrCellz_}}; }
+
     uint32 nbDimensions() const { return nbDims_ ; }
 
     uint32 order() const { return interpOrder_ ; }
+
+    std::string layoutName() const { return layoutName_ ; }
 
     uint32 physicalStartIndex(Field const& field, Direction direction) const;
     uint32 physicalEndIndex  (Field const& field, Direction direction) const;
