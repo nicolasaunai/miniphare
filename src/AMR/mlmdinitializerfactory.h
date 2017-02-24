@@ -33,9 +33,11 @@ private:
 
 public:
     MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch,
-                           Box newPatchCoords, uint32 refinement )
+                           Box newPatchCoords,
+                           GridLayout newLayout ) // uint32 refinement
         : parentPatch_{parentPatch}, newPatchCoords_{newPatchCoords},
-          layout_{ parentPatch->layout().subLayout(newPatchCoords, refinement) }
+          layout_{ newLayout }
+          // layout_{ parentPatch->layout().subLayout(newPatchCoords, refinement) }
     { }
 
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;

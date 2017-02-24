@@ -6,6 +6,13 @@
 #include <memory>
 
 
+
+using refineInfo = std::tuple< std::shared_ptr<Patch>, Box, uint32 > ;
+
+GridLayout  buildNewLayout( refineInfo const & info, GridLayout const & layoutL0,
+                            uint32 refinement ) ;
+
+
 /**
  * @brief The Hierarchy class describes the hierarchy of Patches.
  * It ignores what's in Patches, just knows how to go from one patch to its
@@ -15,8 +22,9 @@ class Hierarchy
 {
 
 private:
-
     Patch root_;
+
+    std::vector< refineInfo > patchToBeRefined_ ;
 
     std::vector< std::vector< std::shared_ptr<Patch> > > patchTable_ ;
 
@@ -39,12 +47,13 @@ public:
 
     hierarchyType & patchTable() { return patchTable_; }
 
-    void addNewPatch( std::shared_ptr<Patch> parent, Box & position,
-                      uint32 refinement, uint32 level ) ;
+    void addNewPatch( refineInfo const & info, GridLayout const & layoutL0,
+                      uint32 const & refinement ) ;
 
     void evolveHierarchy() ;
     void evaluateHierarchy() ;
-    void updateHierarchy( uint32 refinementRatio ) ;
+    void updateHierarchy( GridLayout const & layoutL0,
+                          uint32 const & refinementRatio ) ;
 
 };
 

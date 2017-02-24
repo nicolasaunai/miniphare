@@ -3,13 +3,36 @@
 
 #include "vecfield/vecfield.h"
 
+#include "utilityphare.h"
+
+
+
 
 class RefinementAnalyser
 {
+private:
+    // it tells where the mesh should be refined
+    Box refinedArea_ ;
 
 public:
+
+    RefinementAnalyser()
+        : refinedArea_{ 0, 10, 0, 10, 0, 10} {}
+
     bool operator()(VecField const& vecfield) const
-    { return true ; }
+    {
+        bool result = false ;
+
+        // analyze vecfield
+
+
+        // if needed, build the refine box
+
+
+        return result ;
+    }
+
+    Box refinedArea() { return refinedArea_; }
 };
 
 
