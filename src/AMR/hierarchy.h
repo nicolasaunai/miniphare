@@ -23,9 +23,6 @@ struct RefinementInfo
 };
 
 
-GridLayout  buildNewLayout( RefinementInfo const & info, GridLayout const & layoutL0,
-                            uint32 refinement ) ;
-
 
 /**
  * @brief The Hierarchy class describes the hierarchy of Patches.
@@ -38,7 +35,7 @@ class Hierarchy
 private:
     Patch root_;
 
-    std::vector< RefinementInfo > patchToBeRefined_ ;
+//    std::vector< RefinementInfo > patchToBeRefined_ ;
 
     std::vector< std::vector< std::shared_ptr<Patch> > > patchTable_ ;
 
@@ -61,13 +58,15 @@ public:
 
     hierarchyType & patchTable() { return patchTable_; }
 
-    void addNewPatch( RefinementInfo const & info, GridLayout const & layoutL0,
-                      uint32 const & refinement ) ;
-
     void evolveHierarchy() ;
-    void evaluateHierarchy() ;
-    void updateHierarchy( GridLayout const & layoutL0,
-                          uint32 const & refinementRatio ) ;
+
+    std::vector<RefinementInfo> evaluateHierarchy() ;
+
+    void updateHierarchy( std::vector<GridLayout> const & newLayouts,
+                          std::vector<RefinementInfo> const & refineInfo ) ;
+
+    void addNewPatch( GridLayout const & layout,
+                      RefinementInfo const & info ) ;
 
 };
 

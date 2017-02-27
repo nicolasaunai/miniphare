@@ -37,13 +37,46 @@ void MLMD::evolveFullDomain()
     // Here, AMR patches will say whether they need refinement
     // the ouput of this method is used by updateHierarchy()
     // Note for later: will probably not be called every time step.
-    patchHierarchy_.evaluateHierarchy() ;
+    std::vector<RefinementInfo> patchesToBeCreated
+            = patchHierarchy_.evaluateHierarchy() ;
+
+    std::vector<GridLayout>  newLayouts
+            = buildLayouts( patchesToBeCreated ) ;
 
     // new patches are created here if necessary
     // it depends on evaluateHierarchy()
-    patchHierarchy_.updateHierarchy( baseLayout_, refinementRatio_ ) ;
+    patchHierarchy_.updateHierarchy( newLayouts, patchesToBeCreated ) ;
 
 
 }
+
+
+
+
+std::vector<GridLayout>
+MLMD::buildLayouts( std::vector<RefinementInfo> const & infoVector )
+{
+    std::vector<GridLayout>  newLayouts{} ;
+
+    // short notation
+    GridLayout const & L0 = baseLayout_ ;
+
+    for( RefinementInfo const & info: infoVector )
+    {
+        Box newBox = info.box ;
+        uint32 level = info.level ;
+
+        // TODO: return the adequate GridLayout given newBox information
+
+        // fake GridLayout identical to L0 base layout
+        // added for now
+        newLayouts.push_back( GridLayout(L0.dxdydz(), L0.nbrCellxyz(),
+                                         L0.nbDimensions(), L0.layoutName(),
+                                         L0.origin(), L0.order() ) ) ;
+    }
+
+    return newLayouts ;
+}
+
 
 
