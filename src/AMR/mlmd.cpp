@@ -36,6 +36,7 @@ void MLMD::evolveFullDomain()
 
     // Here, AMR patches will say whether they need refinement
     // the ouput of this method is used by updateHierarchy()
+    // Note for later: will probably not be called every time step.
     patchHierarchy_.evaluateHierarchy() ;
 
     // new patches are created here if necessary

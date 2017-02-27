@@ -23,6 +23,9 @@ void Hierarchy::evolveHierarchy()
 {
     uint32 nbrLevels = static_cast<uint32>(patchTable_.size());
 
+    // TODO need to include all interactions with children
+    // https://hephaistos.lpp.polytechnique.fr/redmine/projects/hyb-par/wiki/BoundaryConditions#MLMD-time-integration
+
     for( uint32 iLevel=0 ; iLevel<nbrLevels ; iLevel++ )
     {
         uint32 nbrPatches = static_cast<uint32>(patchTable_[iLevel].size());
