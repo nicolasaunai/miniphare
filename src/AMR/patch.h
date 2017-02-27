@@ -59,8 +59,6 @@ public:
 
     void init() { std::cout << "init Patch...";  data_.init(); std::cout << " patch initialized OK\n";}
 
-    bool checkRefinment( RefinementAnalyser const & analyser ) const ;
-
     void evolve() ;
 
     Ions const& ions() const { return data_.ions(); }
@@ -70,6 +68,8 @@ public:
 //    GridLayout const & layout() const { return layout_; }
 
     std::shared_ptr<Patch> parent() const { return parent_; }
+
+    PatchData const & data() const { return data_; }
 
     void updateChildren( std::shared_ptr<Patch> newChild ) ;
 

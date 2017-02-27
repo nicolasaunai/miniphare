@@ -1,13 +1,5 @@
 #include "patch.h"
 
-bool Patch::checkRefinment( RefinementAnalyser const & analyser ) const
-{
-    bool result = false ;
-
-
-
-    return result;
-}
 
 
 void Patch::evolve()
