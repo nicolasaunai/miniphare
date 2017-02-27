@@ -38,12 +38,14 @@ public:
     static const uint32 VecY = 1;
     static const uint32 VecZ = 2;
 
+    VecField() = default;
 
     VecField(AllocSizeT xComponent,
              AllocSizeT yComponent,
              AllocSizeT zComponent,
              std::array<HybridQuantity, NBR_COMPO> componentTypes,
              std::string name);
+
 
 
     // Deprecated Constructor

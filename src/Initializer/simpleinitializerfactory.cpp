@@ -8,7 +8,8 @@
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : layout_{ {0.1,0.,0.}, {42, 0, 0}, 1, "yee", Point{0.,0.,0.}, 2}, // hard-coded... will come from input somehow
+    : layout_{ {0.1,0.,0.}, {42, 0, 0}, 1, "yee", Point{0.,0.,0.}, 2},
+      // hard-coded... will come from input somehow
       dt_{0.1}
 {
 
@@ -20,9 +21,7 @@ SimpleInitializerFactory::SimpleInitializerFactory()
    these functions are intended to be passed to the fluid initializer
    we have to imagin that in reality these functions would come from other
    modules. For instance, the PythonIntializerFactory would read these functions
-   from python scripts..
-*/
-
+   from python scripts.. */
 double densityProton1(double x, double y, double z)
 {
     (void) x;
@@ -218,7 +217,7 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
 
     std::unique_ptr<ElectromagInitializer> eminit {new ElectromagInitializer{layout_,
                     electricField,
-                    magneticField} };
+                    magneticField, "_EMField", "_EMFields"} };
 
     std::cout << "creating Simple ElectromagInitializer" << std::endl;
     Point origin{0,0,0};
@@ -249,7 +248,6 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
             std::array<double,3> B = magneticField(coord.x_, origin.y_, origin.z_);
             Bi(ix) = B[iComponent];
         }
-
     }
 
     return eminit;

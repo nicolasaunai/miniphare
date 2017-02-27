@@ -21,9 +21,6 @@ VecField::VecField(AllocSizeT xComponentSizes,
 
 
 
-
-
-
 #if 0
 bool sameShape(const VecField &v1, const VecField &v2)
 {
