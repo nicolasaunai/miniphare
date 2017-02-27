@@ -21,20 +21,17 @@
  */
 void Hierarchy::evolveHierarchy()
 {
-
-    uint32 nbrLevels = static_cast<uint32>(patchTable_.size()) ;
+    uint32 nbrLevels = static_cast<uint32>(patchTable_.size());
 
     for( uint32 iLevel=0 ; iLevel<nbrLevels ; iLevel++ )
     {
-        auto & patchesAtLevel = patchTable_[iLevel] ;
+        uint32 nbrPatches = static_cast<uint32>(patchTable_[iLevel].size());
 
-        for( std::shared_ptr<Patch> patch: patchesAtLevel)
+        for (uint32 iPatch=0; iPatch < nbrPatches; ++iPatch)
         {
-            patch->evolve() ;
+            patchTable_[iLevel][iPatch]->evolve();
         }
-
-    }
-
+    } // end loop on levels
 }
 
 
