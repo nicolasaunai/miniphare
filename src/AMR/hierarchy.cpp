@@ -64,9 +64,9 @@ void Hierarchy::evaluateHierarchy()
             {
                 Box refineBox = analyser.refinedArea() ;
 
-                auto refineInfo = std::make_tuple( patch, refineBox, iLevel+1 ) ;
+                struct RefinementInfo refine{ patch, refineBox, iLevel+1 } ;
 
-                patchToBeRefined_.push_back( refineInfo ) ;
+                patchToBeRefined_.push_back( refine ) ;
             }
         }
 
@@ -92,12 +92,15 @@ void Hierarchy::updateHierarchy( GridLayout const & layoutL0, uint32 const & ref
 
     // Go through the structure, to look where refinement
     // is needed
-    for( refineInfo const & info: patchToBeRefined_ )
+    for( RefinementInfo const & info: patchToBeRefined_ )
     {
         // Whenever refinement is needed,
         // trigger refinement
         addNewPatch( info, layoutL0,
                      refinement ) ;
+
+        // TODO: call patch.init
+
 
     }
 
@@ -108,12 +111,12 @@ void Hierarchy::updateHierarchy( GridLayout const & layoutL0, uint32 const & ref
 
 
 
-void Hierarchy::addNewPatch( refineInfo const & info, GridLayout const & layoutL0,
+void Hierarchy::addNewPatch( RefinementInfo const & info, GridLayout const & layoutL0,
                              uint32 const & refinement )
 {
 
-    std::shared_ptr<Patch> parent = std::get<0>(info) ;
-    Box newBox = std::get<1>(info) ;
+    std::shared_ptr<Patch> parent = info.parentPatch ;
+    Box newBox = info.box ;
 
     // Build new GridLayout
     GridLayout newLayout{ buildNewLayout(info, layoutL0, refinement) } ;
@@ -131,11 +134,11 @@ void Hierarchy::addNewPatch( refineInfo const & info, GridLayout const & layoutL
 }
 
 
-GridLayout  buildNewLayout( refineInfo const & info, GridLayout const & layoutL0,
+GridLayout  buildNewLayout( RefinementInfo const & info, GridLayout const & layoutL0,
                             uint32 refinement )
 {
-    Box newBox = std::get<1>(info) ;
-    uint32 level = std::get<2>(info) ;
+    Box newBox = info.box ;
+    uint32 level = info.level ;
 
     // TODO: return the adequate GridLayout given newBox information
 

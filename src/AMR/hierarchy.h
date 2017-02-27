@@ -7,9 +7,23 @@
 
 
 
-using refineInfo = std::tuple< std::shared_ptr<Patch>, Box, uint32 > ;
 
-GridLayout  buildNewLayout( refineInfo const & info, GridLayout const & layoutL0,
+
+struct RefinementInfo
+{
+    std::shared_ptr<Patch> parentPatch;
+    Box box;
+    uint32 level;
+
+    RefinementInfo( std::shared_ptr<Patch> parentInfo, Box boxInfo,
+                    uint32 levelInfo):
+        parentPatch{parentInfo}, box{boxInfo},
+        level{levelInfo} {}
+
+};
+
+
+GridLayout  buildNewLayout( RefinementInfo const & info, GridLayout const & layoutL0,
                             uint32 refinement ) ;
 
 
@@ -24,7 +38,7 @@ class Hierarchy
 private:
     Patch root_;
 
-    std::vector< refineInfo > patchToBeRefined_ ;
+    std::vector< RefinementInfo > patchToBeRefined_ ;
 
     std::vector< std::vector< std::shared_ptr<Patch> > > patchTable_ ;
 
@@ -47,7 +61,7 @@ public:
 
     hierarchyType & patchTable() { return patchTable_; }
 
-    void addNewPatch( refineInfo const & info, GridLayout const & layoutL0,
+    void addNewPatch( RefinementInfo const & info, GridLayout const & layoutL0,
                       uint32 const & refinement ) ;
 
     void evolveHierarchy() ;
