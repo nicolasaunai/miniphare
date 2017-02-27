@@ -28,11 +28,12 @@ void ModifiedBoris::move(std::vector<Particle>const & partIn ,
                          VecField const& E , VecField const & B,
                          Interpolator const& interpolator )
 {
-    partOut = partIn ;
+   // partOut = partIn ;
     prePush_( partIn, partOut) ;
     fieldsAtParticles(interpolator, E, B, layout_, partOut);
     pushVelocity_( partOut, partOut, m);
     corPush_( partOut, partOut);
+
 }
 
 
@@ -64,7 +65,7 @@ void ModifiedBoris::prePush_(std::vector<Particle> const& particleIn,
             partOut.delta[dim] = delta - iCell ;
 
             // update the logical node
-            partOut.icell[dim] += iCell;
+            partOut.icell[dim] =  static_cast<uint32>(iCell) + partIn.icell[dim];
         }
     }
 }
