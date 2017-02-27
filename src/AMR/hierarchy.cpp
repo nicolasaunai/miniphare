@@ -61,9 +61,11 @@ Hierarchy::evaluateHierarchy()
         {
             RefinementAnalyser analyser{} ;
 
+            analyser( patch->data() ) ;
+
             // if the patch has to be refined we store a reference
             // for further use
-            if( patch->checkRefinment( analyser ) )
+            if( analyser.hasNoEmptyBox() )
             {
                 Box refineBox = analyser.refinedArea() ;
 
