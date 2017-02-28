@@ -24,6 +24,10 @@ public:
 
     Interpolator(uint32 order);
 
+    std::tuple<std::vector<uint32>, std::vector<double>>
+    getIndexesAndWeights( double reducedCoord, \
+                          QtyCentering centering ) const ;
+
     // we might interpolate a field from
     // a primal or a dual mesh
     std::tuple<std::vector<uint32>, std::vector<double>>
@@ -47,7 +51,18 @@ void fieldsAtParticles(Interpolator const& interp,
                        GridLayout const& layout,
                        std::vector<Particle>& particles);
 
+/* ----------------------------------------------------------------------------
 
+                      Interpolation from a coarse patch
+                      to a refined patch
+
+   ---------------------------------------------------------------------------- */
+
+void fieldAtRefinedNodes1D(Interpolator const& interp,
+                           GridLayout const & parentLayout,
+                           VecField const & Eparent , VecField const & Bparent,
+                           GridLayout const & newLayout,
+                           VecField & newE , VecField & newB);
 
 /* ----------------------------------------------------------------------------
 

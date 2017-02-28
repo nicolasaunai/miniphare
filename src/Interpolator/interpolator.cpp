@@ -31,6 +31,25 @@ Interpolator::Interpolator(uint32 order)
 }
 
 
+std::tuple<std::vector<uint32>, std::vector<double>>
+Interpolator::getIndexesAndWeights( double reducedCoord, \
+                                    QtyCentering centering ) const
+{
+
+    if(centering == QtyCentering::dual){
+        reducedCoord += 0.5 ;
+    }
+
+    impl_->computeIndexes( reducedCoord ) ;
+    impl_->computeWeights( reducedCoord ) ;
+
+    std::vector<uint32> indexList  = impl_->indexList () ;
+    std::vector<double> weightList = impl_->weightList() ;
+
+    return std::make_tuple( indexList, weightList ) ;
+}
+
+
 
 std::tuple<std::vector<uint32>, std::vector<double>>
 Interpolator::getIndexesAndWeights( Particle const & particle, \
@@ -131,7 +150,7 @@ void fieldAtParticle1D(Interpolator const& interp,
 
             auto centering = layout.fieldCentering( meshField, Direction::X ) ;
 
-            auto indexesAndWeights = \
+            auto indexesAndWeights =
                     interp.getIndexesAndWeights( part, Direction::X, centering ) ;
 
             std::vector<uint32> indexes = std::get<0>(indexesAndWeights) ;
@@ -190,6 +209,91 @@ void fieldsAtParticles(Interpolator const& interp,
 
 
 
+void fieldAtRefinedNodes1D(Interpolator const& interp,
+                           GridLayout const & parentLayout,
+                           VecField const & Eparent , VecField const & Bparent,
+                           GridLayout const & newLayout,
+                           VecField & newE , VecField & newB)
+{
+    uint32 idirX = static_cast<uint32>(Direction::X) ;
+    uint32 idirY = static_cast<uint32>(Direction::Y) ;
+    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
+
+    Field const & Ex = Eparent.component(idirX) ;
+    Field const & Ey = Eparent.component(idirY) ;
+    Field const & Ez = Eparent.component(idirZ) ;
+
+    Field const & Bx = Bparent.component(idirX) ;
+    Field const & By = Bparent.component(idirY) ;
+    Field const & Bz = Bparent.component(idirZ) ;
+
+    std::vector<std::reference_wrapper<Field const>>
+            ExyzBxyzParent = {Ex, Ey, Ez, Bx, By, Bz} ;
+
+
+    Field & ExNew = newE.component(idirX) ;
+    Field & EyNew = newE.component(idirY) ;
+    Field & EzNew = newE.component(idirZ) ;
+
+    Field & BxNew = newB.component(idirX) ;
+    Field & ByNew = newB.component(idirY) ;
+    Field & BzNew = newB.component(idirZ) ;
+
+    std::vector<std::reference_wrapper<Field>>
+            ExyzBxyzNew = {ExNew, EyNew, EzNew, BxNew, ByNew, BzNew} ;
+
+
+    double newOriginReducedOnCoarse =
+            newLayout.origin().x_ / parentLayout.dx() ;
+
+    // loop on Electric field components
+    for( uint32 ifield=0 ; ifield < ExyzBxyzParent.size() ; ++ifield )
+    {
+        Field const & parentField = ExyzBxyzParent[ifield] ;
+        Field       & newField    = ExyzBxyzNew[ifield] ;
+
+        uint32 iStart = newLayout.physicalStartIndex(newField, Direction::X);
+        uint32 iEnd   = newLayout.physicalEndIndex  (newField, Direction::X);
+
+        // The parent field centering DOES matter
+        auto centering = parentLayout.fieldCentering( parentField, Direction::X ) ;
+
+        // Initialize new field
+        for( uint32 ix=iStart ; ix<=iEnd ; ++ix )
+            newField(ix) = 0. ;
+
+        // loop on new field indexes
+        for( uint32 ix=iStart ; ix<=iEnd ; ++ix )
+        {
+            // compute the reduced coordinate
+            // on the parent GridLayout
+            double delta = ix * newLayout.dx() / parentLayout.dx() ;
+
+            double coord = newOriginReducedOnCoarse + delta ;
+
+            // WARNING: coord is a reduced coordinate
+            // on the parent GridLayout
+            auto indexesAndWeights = interp.getIndexesAndWeights( coord, centering ) ;
+
+            std::vector<uint32> indexes = std::get<0>(indexesAndWeights) ;
+            std::vector<double> weights = std::get<1>(indexesAndWeights) ;
+
+            // nodes (stored in indexes) from the parent layout now contribute
+            // to the node: ix, located on the new layout
+            //
+            // newField(ix) can be seen as a Particle
+            for(uint32 ik=0 ; ik<indexes.size() ; ++ik)
+            {
+                newField(ix) += parentField(indexes[ik]) * weights[ik] ;
+            }
+        }
+    }
+
+
+}
+
+
+
 
 
 /* ----------------------------------------------------------------------------
@@ -197,14 +301,6 @@ void fieldsAtParticles(Interpolator const& interp,
                       Interpolations from particles to moments
 
    ---------------------------------------------------------------------------- */
-
-
-
-
-
-
-
-
 
 void compute1DChargeDensityAndFlux(Interpolator& interpolator,
                                   Species& species,
