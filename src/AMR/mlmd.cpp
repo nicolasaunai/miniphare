@@ -1,4 +1,6 @@
 
+#include <cmath>
+
 #include "mlmd.h"
 #include "hierarchy.h"
 #include "patch.h"
@@ -50,9 +52,16 @@ void MLMD::evolveFullDomain()
 
 }
 
-
-
-
+/**
+ * @brief MLMD::buildLayouts is in charge of creating GridLayout
+ * objects using RefinementInfo objects
+ *
+ * The GridLayout objects will be used by updateHierarchy(...) to
+ * build the new patches and add them to the patch hierarchy
+ *
+ * @param infoVector
+ * @return
+ */
 std::vector<GridLayout>
 MLMD::buildLayouts( std::vector<RefinementInfo> const & infoVector )
 {
@@ -67,12 +76,21 @@ MLMD::buildLayouts( std::vector<RefinementInfo> const & infoVector )
         uint32 level = info.level ;
 
         // TODO: return the adequate GridLayout given newBox information
+        // new spatial step sizes
+        double dx = L0.dx()/std::pow( refinementRatio_, level ) ;
+        double dy = L0.dy()/std::pow( refinementRatio_, level ) ;
+        double dz = L0.dz()/std::pow( refinementRatio_, level ) ;
 
-        // fake GridLayout identical to L0 base layout
-        // added for now
-        newLayouts.push_back( GridLayout(L0.dxdydz(), L0.nbrCellxyz(),
+        // cell numbers
+        uint32 nbx = static_cast<uint32>( std::ceil( (newBox.x1 - newBox.x0)/dx ) ) ;
+        uint32 nby = static_cast<uint32>( std::ceil( (newBox.y1 - newBox.y0)/dy ) ) ;
+        uint32 nbz = static_cast<uint32>( std::ceil( (newBox.z1 - newBox.z0)/dz ) ) ;
+
+        // we create the layout of a new patch
+        // and store it
+        newLayouts.push_back( GridLayout({{dx, dy, dz}}, {{nbx, nby, nbz}},
                                          L0.nbDimensions(), L0.layoutName(),
-                                         L0.origin(), L0.order() ) ) ;
+                                         Point{newBox.x0, newBox.y0, newBox.z0}, L0.order() ) ) ;
     }
 
     return newLayouts ;
