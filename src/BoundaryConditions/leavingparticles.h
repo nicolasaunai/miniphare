@@ -29,7 +29,6 @@ public:
         : particleIndicesAtMin(layout.nbDimensions() ),
           particleIndicesAtMax(layout.nbDimensions() )
     {
-#if 1
         startEndIndices[0].firstCellIndex = layout.physicalStartIndex(QtyCentering::primal,
                                                                        Direction::X);
         startEndIndices[0].lastCellIndex = layout.physicalEndIndex(QtyCentering::primal,
@@ -52,7 +51,6 @@ public:
             startEndIndices[3].lastCellIndex  = layout.physicalEndIndex(QtyCentering::primal,
                                                                          Direction::Z)-1;
         }
-#endif
     }
 
 
