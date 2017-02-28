@@ -4,6 +4,8 @@
 
 #include "initializerfactory.h"
 
+
+
 /**
  * @brief The SimpleInitializerFactory class is a concrete InitializerFactory
  * used to simply initialize miniphare with hard-coded parameters. It is mainly
@@ -39,4 +41,8 @@ private:
 
 };
 
+
+
 #endif // SIMPLEINITIALIZERFACTORY_H
+
+
