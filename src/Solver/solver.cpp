@@ -1,4 +1,5 @@
 
+#include <cmath>
 #include <memory>
 
 #include "Field/field.h"
@@ -9,7 +10,6 @@
 #include "pusher/pusherfactory.h"
 #include "Faraday/faradayfactory.h"
 #include "Interpolator/interpolator.h"
-
 
 
 
@@ -39,7 +39,6 @@ Solver::Solver( GridLayout const& layout, double dt,
              layout.allocSize(HybridQuantity::Ez),
              { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
              "Jtot" },
-
       faraday_{dt, layout},
       ampere_{layout}
 {
@@ -57,9 +56,6 @@ Solver::Solver( GridLayout const& layout, double dt,
     // TODO need to initialize OHM object
     // TODO and vector (?) of particles (n+1)
 }
-
-
-
 
 
 
@@ -205,7 +201,8 @@ std::vector<Particle>::size_type maxNbrParticles(Ions const& ions)
 
 
 void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
-                       BoundaryCondition const* boundaryCondition)
+                       BoundaryCondition const* boundaryCondition,
+                       bool pred1)
 {
 
 
@@ -222,17 +219,30 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         Interpolator& interpolator       = *interpolators_[ispe];
 
 
-        // move all particles of that species from n to n+1
-        // and put the advanced particles in the predictor buffer 'particleArrayPred_'
-        pusher_->move(particles, particleArrayPred_, species.mass(), E, B, interpolator);
+        if (pred1)
+        {
+            // move all particles of that species from n to n+1
+            // and put the advanced particles in the predictor buffer 'particleArrayPred_'
+            pusher_->move(particles, particleArrayPred_, species.mass(), E, B, interpolator);
 
-        // resize the buffer so that charge density and fluxes use
-        // no more than the right number of particles
-        // particleArrayPred_ has a capacity that is large enough for all
-        // particle arrays for all species.
-        particleArrayPred_.resize(particles.size());
+            // resize the buffer so that charge density and fluxes use
+            // no more than the right number of particles
+            // particleArrayPred_ has a capacity that is large enough for all
+            // particle arrays for all species.
+            particleArrayPred_.resize(particles.size());
+            boundaryCondition->applyParticleBC(particleArrayPred_,
+                                               pusher_->getLeavingParticles());
+        }
 
-        boundaryCondition->applyParticleBC(particleArrayPred_);
+        else
+        {
+            // move all particles of that species from n to n+1
+            pusher_->move(particles, particles, species.mass(), E, B, interpolator);
+            boundaryCondition->applyParticleBC(particles,
+                                               pusher_->getLeavingParticles());
+        }
+
+
         computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
 
     } // end loop on species

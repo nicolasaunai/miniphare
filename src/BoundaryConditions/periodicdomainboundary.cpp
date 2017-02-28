@@ -144,16 +144,19 @@ void PeriodicDomainBoundary::applyBulkBC(VecField& Vi, GridLayout const& layout)
 
 void PeriodicDomainBoundary::makeMomentPeriodic1D_(Field& moment, GridLayout const& layout) const
 {
-    uint32 phyStart = layout.physicalStartIndex(moment, Direction::X);
-    uint32 physEnd   = layout.physicalEndIndex  (moment, Direction::X);
-    uint32 nbrGhosts = layout.nbrGhostCells(QtyCentering::primal);
-
-    for (uint32 ig=0; ig < nbrGhosts; ++ig)
+    // apply boundary conditions only once
+    if (edge_ == Edge::Xmin )
     {
-        moment(phyStart - ig) += moment(physEnd - ig);
-        moment(physEnd  + ig) += moment(phyStart + ig);
-    }
+        uint32 phyStart = layout.physicalStartIndex(moment, Direction::X);
+        uint32 physEnd   = layout.physicalEndIndex  (moment, Direction::X);
+        uint32 nbrGhosts = layout.nbrGhostCells(QtyCentering::primal);
 
+        for (uint32 ig=0; ig < nbrGhosts; ++ig)
+        {
+            moment(phyStart - ig) += moment(physEnd - ig);
+            moment(physEnd  + ig) += moment(phyStart + ig);
+        }
+    }
 }
 
 
@@ -174,8 +177,69 @@ void PeriodicDomainBoundary::makeMomentPeriodic3D_(Field& moment, GridLayout con
 
 
 
-void PeriodicDomainBoundary::applyParticleBC(std::vector<Particle>& particleArray) const
+
+
+void makeParticlesPeriodic1D(std::vector<Particle>& particleArray,
+                             LeavingParticles const& leavingParticles)
 {
 
 }
+
+
+
+
+void makeParticlesPeriodic2D(std::vector<Particle>& particleArray,
+                             LeavingParticles const& leavingParticles)
+{
+
+}
+
+void makeParticlesPeriodic3D(std::vector<Particle>& particleArray,
+                             LeavingParticles const& leavingParticles)
+{
+
+}
+
+
+void makeParticlesPeriodic(std::vector<Particle>& particleArray,
+                           LeavingParticles const& leavingParticles)
+{
+    // loop on dimensions of leavingParticles.particleIndicesAtMin/Max
+    uint32 nbDims = leavingParticles.particleIndicesAtMax.size();
+
+    for (uint32 dim=0; dim < nbDims; ++dim)
+    {
+        std::vector<uint32> const& leavingAtMin = leavingParticles.particleIndicesAtMin[dim];
+        std::vector<uint32> const& leavingAtMax = leavingParticles.particleIndicesAtMax[dim];
+
+        // loop on all particles leaving at Min
+        for (auto index : leavingAtMin)
+        {
+            particleArray[index].icell[dim] = leavingParticles.startEndIndices[dim].lastCellIndex;
+        }
+
+        // now at max
+        for (auto index : leavingAtMax)
+        {
+            particleArray[index].icell[dim] = leavingParticles.startEndIndices[dim].firstCellIndex;
+        }
+    }
+
+
+}
+
+
+
+void PeriodicDomainBoundary::applyParticleBC(std::vector<Particle>& particleArray,
+                                             LeavingParticles const& leavingParticles) const
+{
+    makeParticlesPeriodic(particleArray, leavingParticles);
+}
+
+
+
+
+
+
+
 

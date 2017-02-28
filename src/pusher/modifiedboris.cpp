@@ -170,6 +170,8 @@ void ModifiedBoris::corPush_(std::vector<Particle> const& particleIn,
 
             // update the logical node
             partOut.icell[dim] += iCell ;
+
+            leavingParticles_.storeIfLeaving(partOut.icell[dim], iPart, dim);
         }
     }
 }

@@ -33,8 +33,9 @@ public:
     virtual void applyMagneticBC(VecField& B, GridLayout const& layout) const override ;
     virtual void applyCurrentBC( VecField& J, GridLayout const& layout) const override ;
     virtual void applyDensityBC( Field& J,    GridLayout const& layout) const override ;
-    virtual void applyBulkBC( VecField& Vi,   GridLayout const& layout) const override ;
-    virtual void applyParticleBC(std::vector<Particle>& particleArray)  const override ;
+    virtual void applyBulkBC(    VecField& Vi,GridLayout const& layout) const override ;
+    virtual void applyParticleBC(std::vector<Particle>& particleArray,
+                                 LeavingParticles const& leavingParticles)  const override ;
 
 };
 

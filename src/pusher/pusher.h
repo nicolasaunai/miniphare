@@ -5,6 +5,7 @@
 #include "Plasmas/particles.h"
 #include "vecfield/vecfield.h"
 #include "Interpolator/interpolator.h"
+#include "BoundaryConditions/leavingparticles.h"
 
 class Pusher
 {
@@ -13,14 +14,15 @@ protected:
     uint32 nbdims_;
     GridLayout layout_;
     double dt_;
-
+    LeavingParticles leavingParticles_;
 
 public:
 
     Pusher(GridLayout layout, double dt):
         nbdims_{layout.nbDimensions()},
         layout_{std::move(layout)},
-        dt_{dt}
+        dt_{dt},
+        leavingParticles_{layout_}
     {}
 
     Pusher(Pusher const& source) = delete;
@@ -39,6 +41,8 @@ public:
                       VecField const & E ,
                       VecField const & B ,
                       Interpolator const& interpolator ) = 0 ;
+
+    LeavingParticles const& getLeavingParticles() const {return leavingParticles_;}
 
 };
 
