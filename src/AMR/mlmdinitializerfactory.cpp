@@ -1,7 +1,15 @@
 
-#include "mlmdinitializerfactory.h"
-#include "mlmdparticleinitializer.h"
+#include "AMR/mlmdinitializerfactory.h"
+#include "AMR/mlmdparticleinitializer.h"
+#include "Electromag/electromag.h"
+#include "Interpolator/interpolator.h"
+
 #include "utilityphare.h"
+
+
+
+
+
 
 
 std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer() const
@@ -15,19 +23,17 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
         Species const& species = parentIons.species(ispe);
         Box  parentCoordinates  = parentPatch_->coordinates();
         std::unique_ptr<ParticleSelector> selector{
-            new isInBox{parentCoordinates, newPatchCoords_,
-                        layout_.dxdydz()} };
+            new isInBox{parentCoordinates, newPatchCoords_, layout_.dxdydz()} };
 
-        std::unique_ptr<ParticleInitializer> particleInit{new MLMDParticleInitializer{species,
-                                                    std::move(selector) }};
+        std::unique_ptr<ParticleInitializer>
+                particleInit{new MLMDParticleInitializer{species, std::move(selector) }};
+
         ionInitPtr->masses.push_back( parentIons.species(ispe).mass() );
         ionInitPtr->particleInitializers.push_back( std::move(particleInit) );
     }
 
 
-
-
-    return nullptr;
+    return ionInitPtr;
 }
 
 
@@ -37,8 +43,50 @@ std::unique_ptr<ElectromagInitializer>
 MLMDInitializerFactory::createElectromagInitializer() const
 {
 
-    return nullptr;
+    Electromag const & parentElectromag = parentPatch_->data().EMfields() ;
+
+    Interpolator interpolator(interpolationOrder_) ;
+
+    // electricField and magneticField will not be used
+    std::unique_ptr<ElectromagInitializer> eminit {
+        new ElectromagInitializer{layout_, electricField, magneticField} };
+
+    std::cout << "creating MLMD ElectromagInitializer" << std::endl;
+//    Point origin{0,0,0};
+
+    for (uint32 iComponent=0; iComponent < 3; ++iComponent)
+    {
+
+        // ELECTRIC FIELD ----------------
+        Field& Ei = eminit->E_.component(iComponent);
+        uint32 iStart = layout_.ghostStartIndex(Ei, Direction::X);
+        uint32 iEnd   = layout_.ghostEndIndex(  Ei, Direction::X);
+
+//        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+//        {
+//            Point coord = layout_.fieldNodeCoordinates(Ei, origin, ix, 0, 0);
+//            std::array<double,3> E = electricField(coord.x_, origin.y_, origin.z_);
+//            Ei(ix) = E[iComponent];
+//        }
+
+        // MAGNETIC FIELD ----------------
+        Field& Bi = eminit->B_.component(iComponent);
+        iStart = layout_.ghostStartIndex(Bi, Direction::X);
+        iEnd   = layout_.ghostEndIndex(  Bi, Direction::X);
+
+//        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+//        {
+//            Point coord = layout_.fieldNodeCoordinates(Bi, origin, ix, 0, 0);
+//            std::array<double,3> B = magneticField(coord.x_, origin.y_, origin.z_);
+//            Bi(ix) = B[iComponent];
+//        }
+
+    }
+
+    return eminit;
 }
+
+
 
 
 std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializer() const

@@ -45,6 +45,8 @@ public:
 
     void init();
 
+    Electromag const& EMfields() const {return EMfields_;}
+
     Ions const& ions() const {return ions_;}
 
     void solveStep() ;

@@ -6,7 +6,7 @@
 #include "Initializer/ohminitializer.h"
 #include "Initializer/solverinitializer.h"
 #include "Initializer/initializerfactory.h"
-#include "Plasmas/particles.h"
+
 #include "AMR/patch.h"
 
 
@@ -31,12 +31,16 @@ private:
     GridLayout layout_;
     double dt_;
 
+    // this interpolator is used to initialize fields
+    // on a refined patch
+    uint32 interpolationOrder_;
+
 public:
     MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch,
                            Box newPatchCoords,
                            GridLayout newLayout ) // uint32 refinement
         : parentPatch_{parentPatch}, newPatchCoords_{newPatchCoords},
-          layout_{ newLayout }
+          layout_{ newLayout }, interpolationOrder_{2}
           // layout_{ parentPatch->layout().subLayout(newPatchCoords, refinement) }
     { }
 
