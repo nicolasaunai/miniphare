@@ -216,7 +216,10 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
     // the temporary buffer must be big enough to hold the max
     // number of particles
     auto nbrParticlesMax = maxNbrParticles(ions);
-    particleArrayPred_.reserve(nbrParticlesMax);
+    if (particleArrayPred_.size() < nbrParticlesMax)
+    {
+        particleArrayPred_.resize(nbrParticlesMax);
+    }
 
 
     for (uint32 ispe=0; ispe < ions.nbrSpecies(); ++ispe)
@@ -243,6 +246,8 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
             particleArrayPred_.resize(particles.size());
             boundaryCondition->applyParticleBC(particleArrayPred_,
                                                pusher_->getLeavingParticles());
+
+            computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
         }
 
         // we're at pred2, so we can update particles in place as we won't
@@ -253,10 +258,10 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
             pusher_->move(particles, particles, species.mass(), E, B, interpolator);
             boundaryCondition->applyParticleBC(particles,
                                                pusher_->getLeavingParticles());
+            computeChargeDensityAndFlux(interpolator, species, layout_, particles);
         }
 
 
-        computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
 
     } // end loop on species
 
