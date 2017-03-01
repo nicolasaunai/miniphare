@@ -6,7 +6,12 @@
 #include "vecfield/vecfield.h"
 
 
-
+/**
+ * @brief The PeriodicDomainBoundary class is a kind of Boundary for DomainBoundaryCondition
+ *
+ * The class defines pure virtual methods of the interface Boundary so that fields
+ * moments and particles are periodic at the domain boundary.
+ */
 class PeriodicDomainBoundary : public Boundary
 {
 private:

@@ -2,7 +2,11 @@
 
 
 
-
+/* ----------------------------------------------------------------------------
+ *
+ *                        FIELD BOUNDARY CONDITIONS
+ *
+   ---------------------------------------------------------------------------- */
 void PeriodicDomainBoundary::applyMagneticBC(VecField& B, GridLayout const& layout) const
 {
     makeFieldPeriodic_(B, layout);
@@ -49,7 +53,6 @@ void PeriodicDomainBoundary::makeFieldPeriodic1D_(VecField& vecField, GridLayout
     /* periodic boundary condition is special in the sense that they
        are applied to 2 edges in the same direction instead of one.
        rather than looping over one edge only, we loop over */
-#if 1
     if( edge_ == Edge::Xmin)
     {
         for (Field& field : vecField.components())
@@ -72,10 +75,8 @@ void PeriodicDomainBoundary::makeFieldPeriodic1D_(VecField& vecField, GridLayout
                 }
 
             }
-
         }
     } // end if at Min boundary
-#endif
 }
 
 
@@ -95,12 +96,19 @@ void PeriodicDomainBoundary::makeFieldPeriodic3D_(VecField& vecField, GridLayout
 
 
 
+/* ----------------------------------------------------------------------------
+ *
+ *                        MOMENTS BOUNDARY CONDITIONS
+ *
+   ---------------------------------------------------------------------------- */
 
 
 
 
-
-
+// moments have to have their own method (makeMomentPeriodic_) and cannot use
+// makeFieldPeriodic_ because the treatment of moments is slightly different from
+// the one done for fields. They are defined on primal, all components need to be
+// treated, and that includes physicalStartIndex and physicalEndIndex.
 void PeriodicDomainBoundary::makeMomentPeriodic_(Field& moment, GridLayout const& layout) const
 {
     switch (layout.nbDimensions())
@@ -175,6 +183,13 @@ void PeriodicDomainBoundary::makeMomentPeriodic3D_(Field& moment, GridLayout con
 }
 
 
+
+
+/* ----------------------------------------------------------------------------
+ *
+ *                        PARTICLE BOUNDARY CONDITIONS
+ *
+   ---------------------------------------------------------------------------- */
 
 
 

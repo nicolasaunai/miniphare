@@ -7,6 +7,12 @@
 #include "Interpolator/interpolator.h"
 #include "BoundaryConditions/leavingparticles.h"
 
+/**
+ * @brief Abstract interface for Pushers.
+ *
+ * Specific pushers will need to define the move method.
+ * LeavingParticles object is put here because needed by all pushers.
+ */
 class Pusher
 {
 

@@ -6,7 +6,12 @@
 #include "domainboundarycondition.h"
 
 
-
+/**
+ * @brief The DomainBoundaryFactory class is in charge of creating specific Boundary
+ *
+ * The Factory is used by the constructor of DomainBoundaryCondition to create each
+ * of the boundaries for the patch.
+ */
 class DomainBoundaryFactory
 {
 public:

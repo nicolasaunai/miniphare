@@ -11,7 +11,13 @@
 
 enum class BoundaryType{ Periodic };
 
-
+/**
+ * @brief The BoundaryCondition class is the interface used in the Solver
+ *
+ * This class is an abstract interface used in the Solver. It can be either
+ * a DomainBoundaryCondition or a PatchBoundaryCondition depending on whether
+ * the current Patch is the root patch or a refined one.
+ */
 class BoundaryCondition
 {
 public:

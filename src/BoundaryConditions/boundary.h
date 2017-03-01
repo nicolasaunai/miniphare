@@ -7,7 +7,10 @@
 #include "leavingparticles.h"
 
 /**
- * @brief The Boundary class is an interface for applying boundary conditions in solveStep
+ * @brief defines a boundary. There are 2, 4 and 8 boundaries in 1D, 2D and 3D
+ *
+ * DomainBoundaryCondition and PatchBoundaryCondition have a collection of these
+ * abstract Boundary objects. These boundaries can be periodic, conducting, etc.
  */
 class Boundary
 {

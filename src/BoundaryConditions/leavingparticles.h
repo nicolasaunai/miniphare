@@ -15,14 +15,29 @@ struct StartEndIndices
 };
 
 
+
+/**
+ * @brief The LeavingParticles class is used to detect and store leaving particles
+ *
+ * This class is intended to be used in the Pusher. Right at the end of the move
+ * phase, the pusher must call storeIfLeaving. This function will detect if the
+ * particle is leaving the patch and if yes store its index. The particle index
+ * is stored in a vector associated to the boundary through which the particle is
+ * leaving. Boundary conditions will later loop on these vectors and apply a specific
+ * boundary condition.
+ */
 class LeavingParticles
 {
 private:
     static const uint32 nbDirections = 3;
 
 public:
+
+    //! store start and end cells index in each direction
     std::array<StartEndIndices, nbDirections> startEndIndices;
+    //! for each direction store the index of particles leaving at min edge
     std::vector< std::vector<uint32> > particleIndicesAtMin;
+    //! for each direction store the index of particles leaving at the max edge
     std::vector< std::vector<uint32> > particleIndicesAtMax;
 
     LeavingParticles(GridLayout const& layout)
@@ -54,6 +69,7 @@ public:
     }
 
 
+    //! this should be used at the begining of the move phase
     void cleanBuffers()
     {
         // loop on all directions

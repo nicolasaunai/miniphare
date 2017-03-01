@@ -4,7 +4,9 @@
 #include "pusher.h"
 #include "Interpolator/interpolator.h"
 
-
+/**
+ * @brief Boris pusher used in Kunz et al. 2014 http://dx.doi.org/10.1016/j.jcp.2013.11.035
+ */
 class ModifiedBoris : public Pusher
 {
 private:
@@ -18,7 +20,6 @@ private:
                   std::vector<Particle> & particleOut) ;
 
 public:
-    //ModifiedBoris( const std::string & pusherName, const GridLayout & layout ) {}
     ModifiedBoris(GridLayout layout, double dt):
         Pusher(std::move(layout), dt) {}
 
