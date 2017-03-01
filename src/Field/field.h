@@ -19,6 +19,7 @@ private:
     HybridQuantity qtyType_ ;
     std::vector<uint32> shape_;
     std::vector<double> data_;
+    uint32 size_;
 
 public:
 
@@ -54,6 +55,8 @@ public:
     std::vector<double>::const_iterator end() const {return data_.end();}
 
     std::vector<uint32> shape() const {return shape_;}
+
+    uint32 size()const { return size_;}
 
     HybridQuantity hybridQty() const {return qtyType_;}
 
