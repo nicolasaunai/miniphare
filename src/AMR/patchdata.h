@@ -28,7 +28,7 @@ private:
     Electrons electrons_;
     std::unique_ptr<BoundaryCondition> boundaryCondition_;
 
-    std::unique_ptr<ElectromagInitializer> EMInitializer_;
+
 
 
 public:
@@ -50,7 +50,7 @@ public:
     Ions const& ions() const {return ions_;}
 
     void solveStep() ;
-    
+
 
 };
 

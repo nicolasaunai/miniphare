@@ -4,9 +4,44 @@
 #include "Electromag/electromag.h"
 #include "Interpolator/interpolator.h"
 
-#include "utilityphare.h"
 
 
+
+
+
+
+/* below are just stupid functions to make this initializer work
+   these functions are intended to be passed to the fluid initializer
+   we have to imagin that in reality these functions would come from other
+   modules. For instance, the PythonIntializerFactory would read these functions
+   from python scripts..
+*/
+
+std::array<double,3>  zeroMagneticField(double x, double y, double z)
+{
+    std::array<double,3> vec;
+    (void) x;
+    (void) y;
+    (void) z;
+    vec[0] = 1.;
+    vec[1] = 0.;
+    vec[2] = 0.;
+    return vec;
+}
+
+
+std::array<double,3> zeroElectricField(double x, double y, double z)
+{
+    std::array<double,3> vec;
+    (void) x;
+    (void) y;
+    (void) z;
+    vec[0] = 0.;
+    vec[1] = 0.;
+    vec[2] = 0.;
+    return vec;
+}
+/* -------------------------- end of hard coded functions --------------------- */
 
 
 
@@ -49,7 +84,9 @@ MLMDInitializerFactory::createElectromagInitializer() const
 
     // electricField and magneticField will not be used
     std::unique_ptr<ElectromagInitializer> eminit {
-        new ElectromagInitializer{layout_, electricField, magneticField} };
+        new ElectromagInitializer{layout_,
+                    zeroElectricField,
+                    zeroMagneticField, "_EMField", "_EMFields"} };
 
     std::cout << "creating MLMD ElectromagInitializer" << std::endl;
 //    Point origin{0,0,0};

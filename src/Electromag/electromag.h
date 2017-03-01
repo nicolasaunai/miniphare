@@ -18,13 +18,15 @@ public:
                std::array<AllocSizeT, NBR_COMPO> B_AllocSizes,
                std::string name="");
 
+    Electromag(std::unique_ptr<ElectromagInitializer> initializer);
+
     Field& getEi(uint32 component) {return E_.component(component);}
     Field& getBi(uint32 component) {return B_.component(component);}
     VecField& getE(){return E_;}
     VecField& getB(){return B_;}
 
 
-    void init(ElectromagInitializer* const initializer);
+   // void init(ElectromagInitializer* const initializer);
 
 
 private:

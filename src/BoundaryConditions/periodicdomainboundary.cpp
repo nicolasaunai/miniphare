@@ -2,7 +2,11 @@
 
 
 
-
+/* ----------------------------------------------------------------------------
+ *
+ *                        FIELD BOUNDARY CONDITIONS
+ *
+   ---------------------------------------------------------------------------- */
 void PeriodicDomainBoundary::applyMagneticBC(VecField& B, GridLayout const& layout) const
 {
     makeFieldPeriodic_(B, layout);
@@ -49,7 +53,6 @@ void PeriodicDomainBoundary::makeFieldPeriodic1D_(VecField& vecField, GridLayout
     /* periodic boundary condition is special in the sense that they
        are applied to 2 edges in the same direction instead of one.
        rather than looping over one edge only, we loop over */
-#if 1
     if( edge_ == Edge::Xmin)
     {
         for (Field& field : vecField.components())
@@ -72,10 +75,8 @@ void PeriodicDomainBoundary::makeFieldPeriodic1D_(VecField& vecField, GridLayout
                 }
 
             }
-
         }
     } // end if at Min boundary
-#endif
 }
 
 
@@ -95,12 +96,19 @@ void PeriodicDomainBoundary::makeFieldPeriodic3D_(VecField& vecField, GridLayout
 
 
 
+/* ----------------------------------------------------------------------------
+ *
+ *                        MOMENTS BOUNDARY CONDITIONS
+ *
+   ---------------------------------------------------------------------------- */
 
 
 
 
-
-
+// moments have to have their own method (makeMomentPeriodic_) and cannot use
+// makeFieldPeriodic_ because the treatment of moments is slightly different from
+// the one done for fields. They are defined on primal, all components need to be
+// treated, and that includes physicalStartIndex and physicalEndIndex.
 void PeriodicDomainBoundary::makeMomentPeriodic_(Field& moment, GridLayout const& layout) const
 {
     switch (layout.nbDimensions())
@@ -144,16 +152,19 @@ void PeriodicDomainBoundary::applyBulkBC(VecField& Vi, GridLayout const& layout)
 
 void PeriodicDomainBoundary::makeMomentPeriodic1D_(Field& moment, GridLayout const& layout) const
 {
-    uint32 phyStart = layout.physicalStartIndex(moment, Direction::X);
-    uint32 physEnd   = layout.physicalEndIndex  (moment, Direction::X);
-    uint32 nbrGhosts = layout.nbrGhostCells(QtyCentering::primal);
-
-    for (uint32 ig=0; ig < nbrGhosts; ++ig)
+    // apply boundary conditions only once
+    if (edge_ == Edge::Xmin )
     {
-        moment(phyStart - ig) += moment(physEnd - ig);
-        moment(physEnd  + ig) += moment(phyStart + ig);
-    }
+        uint32 phyStart = layout.physicalStartIndex(moment, Direction::X);
+        uint32 physEnd   = layout.physicalEndIndex  (moment, Direction::X);
+        uint32 nbrGhosts = layout.nbrGhostCells(QtyCentering::primal);
 
+        for (uint32 ig=0; ig < nbrGhosts; ++ig)
+        {
+            moment(phyStart - ig) += moment(physEnd - ig);
+            moment(physEnd  + ig) += moment(phyStart + ig);
+        }
+    }
 }
 
 
@@ -174,8 +185,76 @@ void PeriodicDomainBoundary::makeMomentPeriodic3D_(Field& moment, GridLayout con
 
 
 
-void PeriodicDomainBoundary::applyParticleBC(std::vector<Particle>& particleArray) const
+/* ----------------------------------------------------------------------------
+ *
+ *                        PARTICLE BOUNDARY CONDITIONS
+ *
+   ---------------------------------------------------------------------------- */
+
+
+
+
+void makeParticlesPeriodic1D(std::vector<Particle>& particleArray,
+                             LeavingParticles const& leavingParticles)
 {
 
 }
+
+
+
+
+void makeParticlesPeriodic2D(std::vector<Particle>& particleArray,
+                             LeavingParticles const& leavingParticles)
+{
+
+}
+
+void makeParticlesPeriodic3D(std::vector<Particle>& particleArray,
+                             LeavingParticles const& leavingParticles)
+{
+
+}
+
+
+void makeParticlesPeriodic(std::vector<Particle>& particleArray,
+                           LeavingParticles const& leavingParticles)
+{
+    // loop on dimensions of leavingParticles.particleIndicesAtMin/Max
+    uint32 nbDims = leavingParticles.particleIndicesAtMax.size();
+
+    for (uint32 dim=0; dim < nbDims; ++dim)
+    {
+        std::vector<uint32> const& leavingAtMin = leavingParticles.particleIndicesAtMin[dim];
+        std::vector<uint32> const& leavingAtMax = leavingParticles.particleIndicesAtMax[dim];
+
+        // loop on all particles leaving at Min
+        for (auto index : leavingAtMin)
+        {
+            particleArray[index].icell[dim] = leavingParticles.startEndIndices[dim].lastCellIndex;
+        }
+
+        // now at max
+        for (auto index : leavingAtMax)
+        {
+            particleArray[index].icell[dim] = leavingParticles.startEndIndices[dim].firstCellIndex;
+        }
+    }
+
+
+}
+
+
+
+void PeriodicDomainBoundary::applyParticleBC(std::vector<Particle>& particleArray,
+                                             LeavingParticles const& leavingParticles) const
+{
+    makeParticlesPeriodic(particleArray, leavingParticles);
+}
+
+
+
+
+
+
+
 

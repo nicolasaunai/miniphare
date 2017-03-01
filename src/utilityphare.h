@@ -10,20 +10,6 @@
 
 
 
-double densityProton1(double x, double y, double z) ;
-double densityProton2(double x, double y, double z) ;
-
-double thermalSpeedProton1(double x, double y, double z) ;
-double thermalSpeedProton2(double x, double y, double z) ;
-
-std::array<double,3> bulkVelocityProton1(double x, double y, double z) ;
-std::array<double,3> bulkVelocityProton2(double x, double y, double z) ;
-
-std::array<double,3>  magneticField(double x, double y, double z) ;
-std::array<double,3> electricField(double x, double y, double z) ;
-
-
-
 namespace utils
 {
     inline bool isEqual(double value1, double value2,

@@ -11,6 +11,9 @@
 
 
 
+std::array<double,3>  zeroMagneticField(double x, double y, double z) ;
+
+std::array<double,3>  zeroElectricField(double x, double y, double z) ;
 
 
 /**

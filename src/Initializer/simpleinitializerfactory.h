@@ -6,6 +6,19 @@
 
 
 
+double densityProton1(double x, double y, double z) ;
+double densityProton2(double x, double y, double z) ;
+
+double thermalSpeedProton1(double x, double y, double z) ;
+double thermalSpeedProton2(double x, double y, double z) ;
+
+std::array<double,3> bulkVelocityProton1(double x, double y, double z) ;
+std::array<double,3> bulkVelocityProton2(double x, double y, double z) ;
+
+std::array<double,3>  magneticField(double x, double y, double z) ;
+std::array<double,3> electricField(double x, double y, double z) ;
+
+
 /**
  * @brief The SimpleInitializerFactory class is a concrete InitializerFactory
  * used to simply initialize miniphare with hard-coded parameters. It is mainly

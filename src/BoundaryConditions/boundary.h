@@ -4,9 +4,13 @@
 #include "vecfield/vecfield.h"
 #include "grid/gridlayout.h"
 #include "Plasmas/particles.h"
+#include "leavingparticles.h"
 
 /**
- * @brief The Boundary class is an interface for applying boundary conditions in solveStep
+ * @brief defines a boundary. There are 2, 4 and 8 boundaries in 1D, 2D and 3D
+ *
+ * DomainBoundaryCondition and PatchBoundaryCondition have a collection of these
+ * abstract Boundary objects. These boundaries can be periodic, conducting, etc.
  */
 class Boundary
 {
@@ -16,7 +20,8 @@ public:
     virtual void applyCurrentBC(VecField& J,  GridLayout const& layout) const = 0;
     virtual void applyDensityBC(Field& J,     GridLayout const& layout) const = 0;
     virtual void applyBulkBC(VecField& Vi,    GridLayout const& layout) const = 0;
-    virtual void applyParticleBC(std::vector<Particle>& particleArray)  const = 0;
+    virtual void applyParticleBC(std::vector<Particle>& particleArray,
+                                 LeavingParticles const& leavingParticles)  const = 0;
 };
 
 #endif // BOUNDARY_H

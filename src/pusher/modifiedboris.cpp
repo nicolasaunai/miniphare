@@ -28,11 +28,15 @@ void ModifiedBoris::move(std::vector<Particle>const & partIn ,
                          VecField const& E , VecField const & B,
                          Interpolator const& interpolator )
 {
-    partOut = partIn ;
     prePush_( partIn, partOut) ;
     fieldsAtParticles(interpolator, E, B, layout_, partOut);
     pushVelocity_( partOut, partOut, m);
+
+    // must clean the leaving particles buffer before the last step
+    // since newly leaving particles will be added to it.
+    leavingParticles_.cleanBuffers();
     corPush_( partOut, partOut);
+
 }
 
 
@@ -42,6 +46,8 @@ void ModifiedBoris::prePush_(std::vector<Particle> const& particleIn,
                              std::vector<Particle> & particleOut)
 {
     std::array<double,3> dto2dl;
+    // here dy and dz might be zero (1D, 2D) so dfo2dl[1,2] might be Inf
+    // but that's ok because we loop on nbdims_
     dto2dl[0] = 0.5*dt_/layout_.dx();
     dto2dl[1] = 0.5*dt_/layout_.dy();
     dto2dl[2] = 0.5*dt_/layout_.dz();
@@ -64,7 +70,7 @@ void ModifiedBoris::prePush_(std::vector<Particle> const& particleIn,
             partOut.delta[dim] = delta - iCell ;
 
             // update the logical node
-            partOut.icell[dim] += iCell;
+            partOut.icell[dim] =  static_cast<uint32>(iCell) + partIn.icell[dim];
         }
     }
 }
@@ -169,6 +175,10 @@ void ModifiedBoris::corPush_(std::vector<Particle> const& particleIn,
 
             // update the logical node
             partOut.icell[dim] += iCell ;
+
+            // check if the particle is now leaving the patch
+            // and if it does, store it in the leavingParticles buffers
+            leavingParticles_.storeIfLeaving(partOut.icell[dim], iPart, dim);
         }
     }
 }

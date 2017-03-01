@@ -16,7 +16,6 @@
 #include "Interpolator/interpolator.h"
 #include "Initializer/solverinitializer.h"
 #include "BoundaryConditions/boundary_conditions.h"
-#include "BoundaryConditions/boundary_conditions.h"
 
 
 class Solver
@@ -45,7 +44,10 @@ private:
     Electromag EMFieldsPred_ ;
     Electromag EMFieldsAvg_ ;
     VecField Jtot_ ;
-    std::vector<Particle> particleArrayPred_;// TODO build this
+    std::vector<Particle> particleArrayPred_;
+
+
+
 
     // algorithms
     Faraday faraday_;
@@ -53,10 +55,10 @@ private:
     std::vector< std::unique_ptr<Interpolator> > interpolators_ ;
     std::unique_ptr<Pusher> pusher_ ;
 
-
-    // methods
     void moveIons_(VecField const& E, VecField const& B, Ions& ions,
-                   BoundaryCondition const * const boundaryConditon);
+                   BoundaryCondition const * const boundaryConditon,
+                   bool pred1);
+
 };
 
 

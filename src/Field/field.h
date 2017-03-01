@@ -13,16 +13,21 @@
 class Field
 {
 
+private:
+
+    std::string name_;
+    HybridQuantity qtyType_ ;
+    std::vector<uint32> shape_;
+    std::vector<double> data_;
+
 public:
 
-
     Field(AllocSizeT const& allocSize, HybridQuantity qtyType, std::string name);
-
-    Field(Field&& source) = default;
-    Field& operator=(Field&& source) = default;
-
-    Field(Field const& source) = default;
-    Field& operator=(Field const& source) = default;
+    Field()                                 = default;
+    Field(Field&& source)                   = default;
+    Field& operator=(Field&& source)        = default;
+    Field(Field const& source)              = default;
+    Field& operator=(Field const& source)   = default;
 
     void zero() {for (double& x : data_) x=0;}
 
@@ -52,14 +57,6 @@ public:
 
     HybridQuantity hybridQty() const {return qtyType_;}
 
-private:
-
-    std::string name_;
-    HybridQuantity qtyType_ ;
-
-    std::vector<uint32> shape_;
-
-    std::vector<double> data_;
 
 
 };

@@ -19,13 +19,13 @@ private:
 public:
     VecField E_;
     VecField B_;
+    std::string nameE, nameB;
 
     ElectromagInitializer(GridLayout const& layout,
                           VectorFunction electricField,
-                          VectorFunction magneticField);
-
-
-
+                          VectorFunction magneticField,
+                          std::string electricName,
+                          std::string magneticName);
 
 };
 

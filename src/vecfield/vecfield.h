@@ -38,6 +38,7 @@ public:
     static const uint32 VecY = 1;
     static const uint32 VecZ = 2;
 
+    VecField() = default;
 
     VecField(AllocSizeT xComponent,
              AllocSizeT yComponent,
