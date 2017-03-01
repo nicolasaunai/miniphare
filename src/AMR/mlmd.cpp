@@ -35,6 +35,7 @@ void MLMD::evolveFullDomain()
     // evolve fields and particle for a time step
     patchHierarchy_.evolveHierarchy() ;
 
+#if 0
     // Here, AMR patches will say whether they need refinement
     // the ouput of this method is used by updateHierarchy()
     // Note for later: will probably not be called every time step.
@@ -47,7 +48,7 @@ void MLMD::evolveFullDomain()
     // new patches are created here if necessary
     // it depends on evaluateHierarchy()
     patchHierarchy_.updateHierarchy( newLayouts, patchesToBeCreated ) ;
-
+#endif
 
 }
 

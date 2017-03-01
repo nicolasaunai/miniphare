@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
     mlmdManager.initializeRootLevel() ;
 
-   // mlmdManager.evolveFullDomain() ;
+    mlmdManager.evolveFullDomain() ;
 
 
 
