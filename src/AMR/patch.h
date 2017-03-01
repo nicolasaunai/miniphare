@@ -6,7 +6,9 @@
 
 #include "AMR/patchdata.h"
 #include "Plasmas/ions.h"
-#include "utility.h"
+#include "utilityphare.h"
+#include "AMR/refinmentanalyser.h"
+
 
 
 /**
@@ -28,27 +30,48 @@ class Patch
 private:
 
     Box coordinates_;
+
+//    GridLayout layout_;
+
     PatchData data_;
-    // parent pointer
-    // vector of children
-    //
+
+    std::shared_ptr<Patch> parent_ ;
+    std::vector<std::shared_ptr<Patch> > children_ ;
+
 
 public:
 
-    explicit Patch(PatchData&& patchData):data_{std::move(patchData)}{}
+    explicit Patch(Box coordinates, // GridLayout const & layout,
+                   PatchData&& patchData)
+        : coordinates_{coordinates},
+          data_{std::move(patchData)},
+          parent_{nullptr}, children_{}
+        // layout_{layout}
+        {}
 
     Patch(Patch&& source) = default;
     Patch& operator=(Patch&& source) = default;
 
-
     Patch(Patch const& source) = delete;
     Patch& operator=(Patch& source) = delete;
 
+    ~Patch() = default;
+
     void init() { std::cout << "init Patch...";  data_.init(); std::cout << " patch initialized OK\n";}
+
+    void evolve() ;
 
     Ions const& ions() const { return data_.ions(); }
 
     Box coordinates() const { return coordinates_; }
+
+//    GridLayout const & layout() const { return layout_; }
+
+    std::shared_ptr<Patch> parent() const { return parent_; }
+
+    PatchData const & data() const { return data_; }
+
+    void updateChildren( std::shared_ptr<Patch> newChild ) ;
 
 };
 

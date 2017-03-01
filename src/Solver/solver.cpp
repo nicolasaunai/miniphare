@@ -11,7 +11,7 @@
 #include "Faraday/faradayfactory.h"
 #include "Interpolator/interpolator.h"
 
-
+#include "vecfield/vecfieldoperations.h"
 
 
 
@@ -64,7 +64,7 @@ Solver::Solver( GridLayout const& layout, double dt,
 
 void Solver::solveStep(Electromag& EMFields, Ions& ions,
                        Electrons& electrons,
-                       BoundaryCondition const* boundaryCondition )
+                       BoundaryCondition const * const boundaryCondition )
 {
     VecField &B      = EMFields.getB();
     VecField &E      = EMFields.getE();
@@ -101,11 +101,11 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     // --> Get time averaged prediction (E,B)_(n+1/2) pred1
     // --> using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred1
 
-    // VectorField::avg(E, Epred, Eavg);
-    // VectorField::avg(B, Bpred, Bavg);
+    average(E, Epred, Eavg, layout_ );
+    average(B, Bpred, Bavg, layout_ );
 
     // --> Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred 1
-    // moveIons(ions);
+    moveIons_(Eavg, Bavg, ions, boundaryCondition, true);
 
     // BC Parts --> Apply boundary conditions on particles
 
@@ -139,12 +139,12 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // --> Get time averaged prediction (E^(n+1/2),B^(n+1/2)) pred2
     // --> using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred2
-    // VectorField::avg(E, Epred, Eavg);
-    // VectorField::avg(B, Bpred, Bavg);
+    average( E, Epred, Eavg, layout_ );
+    average( B, Bpred, Bavg, layout_ );
 
     // --> Get the CORRECTED positions and velocities
     // --> Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred2
-    // moveIons(ions);
+    moveIons_(Eavg, Bavg, ions, boundaryCondition, false);
 
     // BC Parts --> Apply boundary conditions on particles
 
@@ -201,7 +201,7 @@ std::vector<Particle>::size_type maxNbrParticles(Ions const& ions)
 
 
 void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
-                       BoundaryCondition const* boundaryCondition,
+                       BoundaryCondition const * const boundaryCondition,
                        bool pred1)
 {
 
@@ -217,7 +217,6 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         Species& species                 = ions.species(ispe);
         std::vector<Particle>& particles = species.particles();
         Interpolator& interpolator       = *interpolators_[ispe];
-
 
         if (pred1)
         {
@@ -254,12 +253,6 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
     boundaryCondition->applyDensityBC(ions.rho());
     boundaryCondition->applyBulkBC(ions.bulkVel());
 }
-
-
-
-
-
-
 
 
 

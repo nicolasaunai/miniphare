@@ -1,7 +1,7 @@
 
 #include "mlmdinitializerfactory.h"
 #include "mlmdparticleinitializer.h"
-#include "utility.h"
+#include "utilityphare.h"
 
 
 std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer() const
@@ -13,8 +13,11 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
     for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
     {
         Species const& species = parentIons.species(ispe);
-        Box  patchCoordinates  = parentPatch_->coordinates();
-        std::unique_ptr<ParticleSelector> selector{ new isInBox{patchCoordinates} };
+        Box  parentCoordinates  = parentPatch_->coordinates();
+        std::unique_ptr<ParticleSelector> selector{
+            new isInBox{parentCoordinates, newPatchCoords_,
+                        layout_.dxdydz()} };
+
         std::unique_ptr<ParticleInitializer> particleInit{new MLMDParticleInitializer{species,
                                                     std::move(selector) }};
         ionInitPtr->masses.push_back( parentIons.species(ispe).mass() );
@@ -38,16 +41,10 @@ MLMDInitializerFactory::createElectromagInitializer() const
 }
 
 
-
-
 std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializer() const
 {
     return nullptr;
 }
-
-
-
-
 
 
 std::unique_ptr<OhmInitializer> MLMDInitializerFactory::createOhmInitializer() const
@@ -56,6 +53,30 @@ std::unique_ptr<OhmInitializer> MLMDInitializerFactory::createOhmInitializer() c
 }
 
 
+std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryCondition() const
+{
+
+    return nullptr;
+}
+
+
+
+GridLayout const& MLMDInitializerFactory::gridLayout() const
+{
+    return layout_;
+}
+
+
+Box MLMDInitializerFactory::getBox() const
+{
+    return layout_.getBox() ;
+}
+
+
+double MLMDInitializerFactory::timeStep() const
+{
+    return dt_;
+}
 
 
 

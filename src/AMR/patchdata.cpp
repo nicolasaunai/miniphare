@@ -26,3 +26,11 @@ void PatchData::init()
     //EMfields_.init(EMInitializer_.get());
     std::cout << "PatchData initialized!" << std::endl;
 }
+
+
+void PatchData::solveStep()
+{
+    solver_.solveStep(EMfields_, ions_, electrons_, boundaryCondition_.get());
+}
+
+

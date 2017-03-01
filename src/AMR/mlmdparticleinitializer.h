@@ -5,7 +5,7 @@
 
 #include "Initializer/particleinitializer.h"
 #include "Plasmas/species.h"
-#include "utility.h"
+#include "utilityphare.h"
 
 
 
@@ -22,8 +22,9 @@ public:
                         : selector_{std::move(selector)},
                           particleSource_{particleSource} {}
 
+    virtual ~MLMDParticleInitializer() = default;
+
     virtual void loadParticles(std::vector<Particle>& particles) const override;
-    virtual ~MLMDParticleInitializer();
 };
 
 

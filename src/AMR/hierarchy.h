@@ -2,6 +2,27 @@
 #define HIERARCHY_H
 
 #include "AMR/patch.h"
+#include <vector>
+#include <memory>
+
+
+
+
+
+struct RefinementInfo
+{
+    std::shared_ptr<Patch> parentPatch;
+    Box box;
+    uint32 level;
+
+    RefinementInfo( std::shared_ptr<Patch> parentInfo, Box boxInfo,
+                    uint32 levelInfo):
+        parentPatch{parentInfo}, box{boxInfo},
+        level{levelInfo} {}
+
+};
+
+
 
 /**
  * @brief The Hierarchy class describes the hierarchy of Patches.
@@ -12,20 +33,40 @@ class Hierarchy
 {
 
 private:
+    Patch root_;
 
-        Patch root_;
+//    std::vector< RefinementInfo > patchToBeRefined_ ;
+
+    std::vector< std::vector< std::shared_ptr<Patch> > > patchTable_ ;
 
 public:
 
+    using hierarchyType =
+    std::vector< std::vector< std::shared_ptr<Patch> > > ;
 
-    explicit Hierarchy(Patch&& root):root_{std::move(root)} { /*root_->parent = nullptr;*/}
-    //Hierarchy(Patch&& root):root_{}{}
+    explicit Hierarchy(Patch&& root):root_{std::move(root)}
+    {
+        std::shared_ptr<Patch> sharedRoot(&root_) ;
+        std::vector< std::shared_ptr<Patch> > rootVector{ sharedRoot } ;
+
+        patchTable_ =  hierarchyType
+        {1, std::vector< std::shared_ptr<Patch> > (rootVector) };
+    }
 
 
     Patch& root() { return root_; }
 
+    hierarchyType & patchTable() { return patchTable_; }
 
+    void evolveHierarchy() ;
 
+    std::vector<RefinementInfo> evaluateHierarchy() ;
+
+    void updateHierarchy( std::vector<GridLayout> const & newLayouts,
+                          std::vector<RefinementInfo> const & refineInfo ) ;
+
+    void addNewPatch( GridLayout const & layout,
+                      RefinementInfo const & info ) ;
 
 };
 

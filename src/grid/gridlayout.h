@@ -11,7 +11,7 @@
 //#include "Electromag/electromag.h"
 #include "Field/field.h"
 #include "gridlayoutimpl.h"
-#include "utility.h"
+#include "utilityphare.h"
 
 
 /**
@@ -53,9 +53,9 @@ private:
     uint32 nbrCellz_  ;
 
     Point origin_;      // origin of the grid
-    uint32 interpOrder_ ;                            // TODO find a better name.
+    uint32 interpOrder_ ;
 
-                                                        // If interpOrder is the best so be it.
+    std::string layoutName_ ;
 
     std::unique_ptr<GridLayoutImpl> implPtr_;           // abstract private implementation
 
@@ -81,7 +81,7 @@ public:
     GridLayout(std::array<double,3> dxdydz, std::array<uint32,3> nbrCells,
                uint32 nbDims      , std::string layoutName,
                Point origin,
-               uint32 ghostParameter ); // TODO see if better name
+               uint32 ghostParameter );
 
     GridLayout(GridLayout const& source);
     GridLayout(GridLayout&& source);
@@ -95,6 +95,8 @@ public:
     double dy() const {return dy_;}
     double dz() const {return dz_;}
 
+    std::array<double, 3> dxdydz() const { return {{dx_, dy_, dz_}}; }
+
     double odx()const { return dx_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
     double ody()const { return dy_ == 0. ? throw error(errorInverseMesh +" dy() (dy==0)"): ody_;}
     double odz()const { return dz_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
@@ -103,9 +105,14 @@ public:
     uint32 nbrCelly() const {return nbrCelly_;}
     uint32 nbrCellz() const {return nbrCellz_;}
 
+    std::array<uint32, 3> nbrCellxyz() const
+    { return {{nbrCellx_, nbrCelly_, nbrCellz_}}; }
+
     uint32 nbDimensions() const { return nbDims_ ; }
 
     uint32 order() const { return interpOrder_ ; }
+
+    std::string layoutName() const { return layoutName_ ; }
 
     uint32 physicalStartIndex(Field const& field, Direction direction) const;
     uint32 physicalEndIndex  (Field const& field, Direction direction) const;
@@ -129,6 +136,10 @@ public:
     QtyCentering fieldCentering(Field const& field, Direction dir) const;
 
     uint32 nbrGhostCells( QtyCentering const& centering ) const;
+
+    Box  getBox() const;
+
+    GridLayout subLayout( Box const & newPatch, uint32 refinement ) const;
 
 
 };

@@ -47,14 +47,6 @@ public:
              std::string name);
 
 
-
-    // Deprecated Constructor
-//    VecField(uint32 nx, uint32 ny, uint32 nz, std::string name):name_(name),
-//        xComponent_(nx, ny, nz, name.insert(1,"_x")),
-//        yComponent_(nx, ny, nz, name.insert(1,"_y")),
-//        zComponent_(nx, ny, nz, name.insert(1,"_z")) {}
-
-
     // I don't like calling 3 times shape()
     // what's the return type of shape?
     std::vector<uint32> shape() const{return xComponent_.shape();}
@@ -69,14 +61,9 @@ public:
     void dotProduct(VecField const& v1, VecField const& v2, Field& v1dotv2);
 
     std::vector<std::reference_wrapper<Field>> components();
-
-
+    std::vector<std::reference_wrapper<Field const>> components() const;
 
 };
-
-
-//void avg(Vecfield const& VF1, Vecfield const& VF2, Vecfield& Vavg);
-
 
 
 

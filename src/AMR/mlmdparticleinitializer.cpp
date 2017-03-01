@@ -7,7 +7,3 @@ void MLMDParticleInitializer::loadParticles(std::vector<Particle>& particle) con
 }
 
 
-MLMDParticleInitializer::~MLMDParticleInitializer()
-{
-
-}

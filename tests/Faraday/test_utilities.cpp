@@ -2,7 +2,7 @@
 #include <fstream>
 
 
-#include "test_faraday.h"
+#include "test_faraday1d.h"
 
 
 

@@ -7,7 +7,7 @@
 #include "Initializer/solverinitializer.h"
 #include "Initializer/initializerfactory.h"
 #include "Plasmas/particles.h"
-#include <AMR/patch.h>
+#include "AMR/patch.h"
 
 
 
@@ -26,15 +26,29 @@ class MLMDInitializerFactory : public InitializerFactory
 {
 private:
     std::shared_ptr<Patch> parentPatch_;
+    Box newPatchCoords_ ;
+
+    GridLayout layout_;
+    double dt_;
 
 public:
-    MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch) : parentPatch_{parentPatch}{}
+    MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch,
+                           Box newPatchCoords,
+                           GridLayout newLayout ) // uint32 refinement
+        : parentPatch_{parentPatch}, newPatchCoords_{newPatchCoords},
+          layout_{ newLayout }
+          // layout_{ parentPatch->layout().subLayout(newPatchCoords, refinement) }
+    { }
 
-    virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const;
-    virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const ;
-    virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const ;
-    virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const;
+    virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
+    virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const  override;
+    virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const  override;
+    virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
+    virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
 
+    virtual Box getBox() const override;
+    virtual GridLayout const& gridLayout() const override;
+    virtual double timeStep() const override;
 };
 
 #endif // MLMDINITIALIZERFACTORY_H

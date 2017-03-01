@@ -24,10 +24,20 @@ public:
 
     void initializeRootLevel();
 
+    void evolveFullDomain();
+
+    std::vector<GridLayout>
+    buildLayouts( std::vector<RefinementInfo> const & infoVector ) ;
+
+    Hierarchy & hierarchy() { return patchHierarchy_ ; }
+    Hierarchy const & hierarchy() const { return patchHierarchy_ ; }
+
 
 private:
     uint32 refinementRatio_ {2};
     Hierarchy patchHierarchy_;
+
+    GridLayout baseLayout_ ;
 
 
     // PRAwidthx,

@@ -5,7 +5,7 @@
 #include <fstream>
 #include <cmath>
 
-#include "test_faraday.h"
+#include "test_faraday1d.h"
 
 #include "Faraday/faraday.h"
 #include "Faraday/faradayimpl1d.h"

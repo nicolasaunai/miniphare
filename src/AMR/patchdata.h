@@ -25,9 +25,10 @@ private:
     Electromag EMfields_;
     Solver     solver_;
     Ions ions_;
+    Electrons electrons_;
     std::unique_ptr<BoundaryCondition> boundaryCondition_;
-    //std::unique_ptr<ElectromagInitializer> EMInitializer_;
-    //Electrons electrons_;
+
+
 
 
 public:
@@ -46,7 +47,8 @@ public:
 
     Ions const& ions() const {return ions_;}
 
-    //void advance(){solver_.solveStep(EMfields_, ions_, electrons_);}
+    void solveStep() ;
+
 
 };
 
