@@ -9,7 +9,7 @@
 
 MLMD::MLMD(std::unique_ptr<InitializerFactory> initFactory)
     : baseLayout_{ GridLayout{initFactory->gridLayout()} },
-      patchHierarchy_{ Patch{ initFactory->getBox(), PatchData{std::move(initFactory)}  } }
+      patchHierarchy_{ std::make_shared<Patch>( initFactory->getBox(),PatchData{std::move(initFactory)}  ) }
 
 {
     // will probably have to change the way objects are initialized.
@@ -23,8 +23,8 @@ void MLMD::initializeRootLevel()
 {
     std::cout << "building root level...";
     Patch& rootLevel = patchHierarchy_.root();
-    std::cout << " OK" << std::endl;
     rootLevel.init();
+    std::cout << " OK" << std::endl;
 
 }
 

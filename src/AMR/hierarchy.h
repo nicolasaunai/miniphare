@@ -33,7 +33,6 @@ class Hierarchy
 {
 
 private:
-    Patch root_;
 
 //    std::vector< RefinementInfo > patchToBeRefined_ ;
 
@@ -44,17 +43,13 @@ public:
     using hierarchyType =
     std::vector< std::vector< std::shared_ptr<Patch> > > ;
 
-    explicit Hierarchy(Patch&& root):root_{std::move(root)}
+    explicit Hierarchy(std::shared_ptr<Patch> root)
     {
-        std::shared_ptr<Patch> sharedRoot(&root_) ;
-        std::vector< std::shared_ptr<Patch> > rootVector{ sharedRoot } ;
-
-        patchTable_ =  hierarchyType
-        {1, std::vector< std::shared_ptr<Patch> > (rootVector) };
+        patchTable_.push_back(std::vector< std::shared_ptr<Patch> >{std::move(root)});
     }
 
 
-    Patch& root() { return root_; }
+    Patch& root() { return *patchTable_[0][0]; }
 
     hierarchyType & patchTable() { return patchTable_; }
 
