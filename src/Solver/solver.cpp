@@ -68,117 +68,106 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 {
     VecField &B      = EMFields.getB();
     VecField &E      = EMFields.getE();
-
     VecField &Bpred  = EMFieldsPred_.getB();
     VecField &Epred  = EMFieldsPred_.getE();
-
     VecField &Bavg   = EMFieldsAvg_.getB();
     VecField &Eavg   = EMFieldsAvg_.getE();
 
 
 
-    // --> Get B_{n+1} pred1 from E^n
+    // Get B^{n+1} pred1 from E^n
     faraday_(E, B, Bpred);
-    // BC Fields --> Apply boundary conditions on the electric field
+    boundaryCondition->applyMagneticBC( Bpred ) ;
+
+    // Compute J
+    ampere_(Bpred, Jtot_);
+    boundaryCondition->applyCurrentBC(Jtot_);
+
+
+    // --> Get ion and electron moments at time n
+    // --> Get electric field E_{n+1} pred1 from Ohm's law
+    // --> using (n^n, u^n) and B_{n+1}
+    // ohm(Bpred, Ne, Ve, Pe, Epred);
+    //boundaryConditions_.applyElectricBC( Epred ) ;
+
+
+    // Get time averaged prediction (E,B)^{n+1/2} pred1
+    // using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred1
+    average(E, Epred, Eavg, layout_ );
+    average(B, Bpred, Bavg, layout_ );
+
+
+    // Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred 1
+    // accumulate moments for each species and total ions.
+    // last argument is TRUE so that particles at n+1 are stored
+    // in a temporary buffer and particles at n are kept at n
+    moveIons_(Eavg, Bavg, ions, boundaryCondition, true);
+
+
+    // Get B^{n+1} pred2 from E^{n+1/2} pred1
+    faraday_(Eavg, B, Bpred);
     boundaryCondition->applyMagneticBC( Bpred ) ;
 
     // Compute J
     ampere_(Bpred, Jtot_) ;
-    // BC on the current
-   // boundaryConditions_.applyCurrentBC( Jtot_ ) ;
+    boundaryCondition->applyCurrentBC( Jtot_ ) ;
 
-    // --> MOMENTS (n^n, u^n) at time n have
-    // --> already been computed, or are known just after initialization
-    // --> Get ion and electron moments at time n
-
-    // --> Get electric field E_{n+1} pred1 from Ohm's law
-    // --> using (n^n, u^n) and B_{n+1}
-    // ohm(Bpred, Ne, Ve, Pe, Epred);
-
-    // BC Fields --> Apply boundary conditions on the electric field
-    //boundaryConditions_.applyElectricBC( Epred ) ;
-
-    // --> Get time averaged prediction (E,B)_(n+1/2) pred1
-    // --> using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred1
-
-    average(E, Epred, Eavg, layout_ );
-    average(B, Bpred, Bavg, layout_ );
-
-    // --> Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred 1
-    moveIons_(Eavg, Bavg, ions, boundaryCondition, true);
-
-    // BC Parts --> Apply boundary conditions on particles
-
-    // --> Get B^{n+1} pred2 from E^{n+1/2} pred1
-    faraday_(Eavg, B, Bpred);
-    // BC Fields --> Apply boundary conditions
-    //boundaryConditions_.applyMagneticBC( Bpred ) ;
-
-    // Compute J
-    ampere_(Bpred, Jtot_) ;
-    // BC on the current
-    //boundaryConditions_.applyCurrentBC( Jtot_ ) ;
-
-    // --> DEPOSIT PREDICTED MOMENTS (n^{n+1}, u^{n+1}) AT TIME n+1
     // --> get ion and electron moments at time n+1 (pred 1)
     // Field const& Ni = ions.chargeDensity();
     // VecField const& Vi = ions.bulkVelocity();
-
     // VecField const& Ve = electrons.bulkVelocity(B, Vi, Ni);
     // Field const& Ne  = electrons.chargeDensity();
     // --> Calculate the electron pressure tensor
     // --> from the electron closure
     // Field const& Pe = electrons.Pressure(/* Ni ? */ );
-
     // --> Get electric field E^{n+1} pred2 from Ohm's law
     // --> using (n^{n+1}, u^{n+1}) pred and B_{n+1} pred2
     // ohm(Bpred, Ne, Ve, Pe, Epred);
+    // boundaryConditions_.applyElectricBC( Epred ) ;
 
-    // BC Fields --> Apply boundary conditions on the electric field
-   // boundaryConditions_.applyElectricBC( Epred ) ;
 
     // --> Get time averaged prediction (E^(n+1/2),B^(n+1/2)) pred2
     // --> using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred2
     average( E, Epred, Eavg, layout_ );
     average( B, Bpred, Bavg, layout_ );
 
-    // --> Get the CORRECTED positions and velocities
-    // --> Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred2
+
+    // Get the CORRECTED positions and velocities
+    // Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred2
+    // Last argument here is FALSE because we want to
+    // update ions at n+1 in place, i.e. overwritting ions at n
     moveIons_(Eavg, Bavg, ions, boundaryCondition, false);
 
-    // BC Parts --> Apply boundary conditions on particles
 
-    // --> Get CORRECTED B^{n+1} from E^{n+1/2} pred2
+    // Get CORRECTED B^{n+1} from E^{n+1/2} pred2
     faraday_(Eavg, B, B);
-    // BC Fields --> Apply boundary conditions
-    //boundaryConditions_.applyMagneticBC( B ) ;
+    boundaryCondition->applyMagneticBC(B);
 
     // Compute J
     ampere_(B, Jtot_) ;
-    // BC on the current
-    //boundaryConditions_.applyCurrentBC( Jtot_ ) ;
+    boundaryCondition->applyCurrentBC(Jtot_) ;
 
     // --> DEPOSIT CORRECTED MOMENTS (n^{n+1}, u^{n+1})
     // --> Get ion and electron moments at time n+1
     // Field const& Ni = ions.chargeDensity();
     // VecField const& Vi = ions.bulkVelocity();
-
     // VecField const& Ve = electrons.bulkVelocity(B, Vi, Ni);
     // Field const& Ne  = electrons.chargeDensity();
     // --> Calculate the electron pressure tensor
     // --> from the electron closure
     // Field const& Pe = electrons.Pressure(/* Ni ? */ );
-
     // --> Get CORRECTED electric field E^{n+1} from Ohm's law
     // --> using (n^{n+1}, u^{n+1}) cor and B_{n+1} cor
     // ohm(B, Ne, Ve, Pe, E);
-
     // BC Fields --> Apply boundary conditions on the electric field
     //boundaryConditions_.applyElectricBC( E ) ;
 
 }
 
 
+
+// convenience function that counts the maximum number of particles over
+// all species. this is useful to allocated the temporary particle buffer
 std::vector<Particle>::size_type maxNbrParticles(Ions const& ions)
 {
     // find the largest particles number accross all species
@@ -195,11 +184,14 @@ std::vector<Particle>::size_type maxNbrParticles(Ions const& ions)
             nbrParticlesMax = nbrParticles;
         }
     }
-
     return nbrParticlesMax;
 }
 
 
+
+
+// this routine move the ions for all species, accumulate their moments
+// and compute the total ion moments.
 void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
                        BoundaryCondition const * const boundaryCondition,
                        bool pred1)
@@ -218,6 +210,11 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         std::vector<Particle>& particles = species.particles();
         Interpolator& interpolator       = *interpolators_[ispe];
 
+
+        // at the first predictor step we must not overwrite particles
+        // at t=n with particles at t=n+1 because time n will be used
+        // in the second push. we rather put particles at time n+1 in a
+        // temporary buffer particleArrayPred_
         if (pred1)
         {
             // move all particles of that species from n to n+1
@@ -233,6 +230,8 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
                                                pusher_->getLeavingParticles());
         }
 
+        // we're at pred2, so we can update particles in place as we won't
+        // need their properties at t=n anymore
         else
         {
             // move all particles of that species from n to n+1
