@@ -35,9 +35,9 @@ public:
 
 private:
     uint32 refinementRatio_ {2};
+    GridLayout baseLayout_ ;
     Hierarchy patchHierarchy_;
 
-    GridLayout baseLayout_ ;
 
 
     // PRAwidthx,
