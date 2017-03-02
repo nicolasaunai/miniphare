@@ -53,19 +53,6 @@ void fieldsAtParticles(Interpolator const& interp,
 
 /* ----------------------------------------------------------------------------
 
-                      Interpolation from a coarse patch
-                      to a refined patch
-
-   ---------------------------------------------------------------------------- */
-
-void fieldAtRefinedNodes1D(Interpolator const& interp,
-                           GridLayout const & parentLayout,
-                           VecField const & Eparent , VecField const & Bparent,
-                           GridLayout const & newLayout,
-                           VecField & newE , VecField & newB);
-
-/* ----------------------------------------------------------------------------
-
                       Interpolations from particles to moments
 
    ---------------------------------------------------------------------------- */
