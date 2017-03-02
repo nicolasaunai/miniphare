@@ -16,6 +16,18 @@ std::array<double,3>  zeroMagneticField(double x, double y, double z) ;
 std::array<double,3>  zeroElectricField(double x, double y, double z) ;
 
 
+/* ----------------------------------------------------------------------------
+                      Interpolation from a coarse patch
+                      to a refined patch
+   ---------------------------------------------------------------------------- */
+void fieldAtRefinedNodes1D(Interpolator const& interp,
+                           GridLayout const & parentLayout,
+                           VecField const & Eparent , VecField const & Bparent,
+                           GridLayout const & newLayout,
+                           VecField & newE , VecField & newB);
+
+
+
 /**
  * @brief The MLMDInitializerFactory class creates objects to initialize MLMD patches
  *
