@@ -75,6 +75,12 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
 
 
+    // -----------------------------------------------------------------------
+    //
+    //                              PREDICTOR 1
+    //
+    // -----------------------------------------------------------------------
+
     // Get B^{n+1} pred1 from E^n
     faraday_(E, B, Bpred);
     boundaryCondition->applyMagneticBC( Bpred ) ;
@@ -84,9 +90,11 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     boundaryCondition->applyCurrentBC(Jtot_);
 
 
-    // --> Get ion and electron moments at time n
+    // --> Get electron moments at time n
+    VecField const& Vepred1 = electrons.bulkVel(ions.bulkVel(), ions.rho(), Jtot_);
+    Field const&    PePred1 = electrons.pressure( ions.rho() );
+
     // --> Get electric field E_{n+1} pred1 from Ohm's law
-    // --> using (n^n, u^n) and B_{n+1}
     // ohm(Bpred, Ne, Ve, Pe, Epred);
     //boundaryConditions_.applyElectricBC( Epred ) ;
 
@@ -104,6 +112,13 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     moveIons_(Eavg, Bavg, ions, boundaryCondition, true);
 
 
+    // -----------------------------------------------------------------------
+    //
+    //                         PREDICTOR 2
+    //
+    // -----------------------------------------------------------------------
+
+
     // Get B^{n+1} pred2 from E^{n+1/2} pred1
     faraday_(Eavg, B, Bpred);
     boundaryCondition->applyMagneticBC( Bpred ) ;
@@ -112,14 +127,11 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     ampere_(Bpred, Jtot_) ;
     boundaryCondition->applyCurrentBC( Jtot_ ) ;
 
-    // --> get ion and electron moments at time n+1 (pred 1)
-    // Field const& Ni = ions.chargeDensity();
-    // VecField const& Vi = ions.bulkVelocity();
-    // VecField const& Ve = electrons.bulkVelocity(B, Vi, Ni);
-    // Field const& Ne  = electrons.chargeDensity();
-    // --> Calculate the electron pressure tensor
-    // --> from the electron closure
-    // Field const& Pe = electrons.Pressure(/* Ni ? */ );
+
+    // --> Get electron moments at time n with Pred1 ion moments
+    VecField const& Vepred2 = electrons.bulkVel(ions.bulkVel(), ions.rho(), Jtot_);
+    Field const&    PePred2 = electrons.pressure( ions.rho() );
+
     // --> Get electric field E^{n+1} pred2 from Ohm's law
     // --> using (n^{n+1}, u^{n+1}) pred and B_{n+1} pred2
     // ohm(Bpred, Ne, Ve, Pe, Epred);
@@ -139,6 +151,13 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     moveIons_(Eavg, Bavg, ions, boundaryCondition, false);
 
 
+    // -----------------------------------------------------------------------
+    //
+    //                           CORRECTOR
+    //
+    // -----------------------------------------------------------------------
+
+
     // Get CORRECTED B^{n+1} from E^{n+1/2} pred2
     faraday_(Eavg, B, B);
     boundaryCondition->applyMagneticBC(B);
@@ -147,15 +166,11 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     ampere_(B, Jtot_) ;
     boundaryCondition->applyCurrentBC(Jtot_) ;
 
-    // --> DEPOSIT CORRECTED MOMENTS (n^{n+1}, u^{n+1})
-    // --> Get ion and electron moments at time n+1
-    // Field const& Ni = ions.chargeDensity();
-    // VecField const& Vi = ions.bulkVelocity();
-    // VecField const& Ve = electrons.bulkVelocity(B, Vi, Ni);
-    // Field const& Ne  = electrons.chargeDensity();
-    // --> Calculate the electron pressure tensor
-    // --> from the electron closure
-    // Field const& Pe = electrons.Pressure(/* Ni ? */ );
+
+    // --> Get electron moments at time n with Pred2 ion moments
+    VecField const& Vecorr = electrons.bulkVel(ions.bulkVel(), ions.rho(), Jtot_);
+    Field const&    Pecorr = electrons.pressure( ions.rho() );
+
     // --> Get CORRECTED electric field E^{n+1} from Ohm's law
     // --> using (n^{n+1}, u^{n+1}) cor and B_{n+1} cor
     // ohm(B, Ne, Ve, Pe, E);
@@ -201,7 +216,10 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
     // the temporary buffer must be big enough to hold the max
     // number of particles
     auto nbrParticlesMax = maxNbrParticles(ions);
-    particleArrayPred_.reserve(nbrParticlesMax);
+    if (particleArrayPred_.size() < nbrParticlesMax)
+    {
+        particleArrayPred_.resize(nbrParticlesMax);
+    }
 
 
     for (uint32 ispe=0; ispe < ions.nbrSpecies(); ++ispe)
@@ -228,6 +246,8 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
             particleArrayPred_.resize(particles.size());
             boundaryCondition->applyParticleBC(particleArrayPred_,
                                                pusher_->getLeavingParticles());
+
+            computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
         }
 
         // we're at pred2, so we can update particles in place as we won't
@@ -238,10 +258,10 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
             pusher_->move(particles, particles, species.mass(), E, B, interpolator);
             boundaryCondition->applyParticleBC(particles,
                                                pusher_->getLeavingParticles());
+            computeChargeDensityAndFlux(interpolator, species, layout_, particles);
         }
 
 
-        computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
 
     } // end loop on species
 

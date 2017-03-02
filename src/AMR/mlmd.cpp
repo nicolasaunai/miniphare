@@ -10,8 +10,9 @@
 
 
 MLMD::MLMD(std::unique_ptr<InitializerFactory> initFactory)
-    : patchHierarchy_{ Patch{ initFactory->getBox(), PatchData{std::move(initFactory)}  } },
-      baseLayout_{ GridLayout{initFactory->gridLayout()} }
+    : baseLayout_{ GridLayout{initFactory->gridLayout()} },
+      patchHierarchy_{ std::make_shared<Patch>( initFactory->getBox(),PatchData{std::move(initFactory)}  ) }
+
 {
     // will probably have to change the way objects are initialized.
     // if we want, at some point, start from an already existing hierarchy
@@ -24,8 +25,8 @@ void MLMD::initializeRootLevel()
 {
     std::cout << "building root level...";
     Patch& rootLevel = patchHierarchy_.root();
-    std::cout << " OK" << std::endl;
     rootLevel.init();
+    std::cout << " OK" << std::endl;
 
 }
 
@@ -36,6 +37,7 @@ void MLMD::evolveFullDomain()
     // evolve fields and particle for a time step
     patchHierarchy_.evolveHierarchy() ;
 
+#if 0
     // Here, AMR patches will say whether they need refinement
     // the ouput of this method is used by updateHierarchy()
     // Note for later: will probably not be called every time step.
@@ -48,7 +50,7 @@ void MLMD::evolveFullDomain()
     // new patches are created here if necessary
     // it depends on evaluateHierarchy()
     patchHierarchy_.updateHierarchy( newLayouts, patchesToBeCreated ) ;
-
+#endif
 
 }
 

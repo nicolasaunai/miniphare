@@ -97,7 +97,7 @@ public:
 
     std::array<double, 3> dxdydz() const { return {{dx_, dy_, dz_}}; }
 
-    double odx()const { return dx_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
+    double odx()const { return dx_ == 0. ? throw error(errorInverseMesh +" dx() (dx==0)"): odx_;}
     double ody()const { return dy_ == 0. ? throw error(errorInverseMesh +" dy() (dy==0)"): ody_;}
     double odz()const { return dz_ == 0. ? throw error(errorInverseMesh +" dz() (dz==0)"): odz_;}
 

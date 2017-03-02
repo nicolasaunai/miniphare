@@ -28,7 +28,7 @@ FluidParticleInitializer::FluidParticleInitializer(GridLayout const& layout,
 
 void maxwellianVelocity(std::array<double, 3> V, double Vth,
                         std::mt19937_64 generator,
-                        std::array<double,3> partVelocity)
+                        std::array<double,3>& partVelocity)
 {
     std::normal_distribution<> maxwellX(V[0], Vth*Vth);
     std::normal_distribution<> maxwellY(V[1], Vth*Vth);
@@ -86,7 +86,7 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
         Vth    = thermalSpeed(x, origin.y_, origin.z_);
 
         cellWeight = n*cellVolume / nbrParticlePerCell_;
-        std::uniform_real_distribution<float> randPosX(-0.5*dx, 0.5*dx);
+        std::uniform_real_distribution<float> randPosX(0., dx);
 
         for (uint32 ipart=0; ipart < nbrParticlePerCell_; ++ipart)
         {
@@ -160,8 +160,8 @@ void FluidParticleInitializer::loadParticles2D_(std::vector<Particle>& particles
             Vth    = thermalSpeed(x, y, origin.z_);
 
             cellWeight = n*cellVolume / nbrParticlePerCell_;
-            std::uniform_real_distribution<float> randPosX(-0.5*dx, 0.5*dx);
-            std::uniform_real_distribution<float> randPosY(-0.5*dy, 0.5*dy);
+            std::uniform_real_distribution<float> randPosX(0., dx);
+            std::uniform_real_distribution<float> randPosY(0., dy);
 
             for (uint32 ipart=0; ipart < nbrParticlePerCell_; ++ipart)
             {
@@ -241,9 +241,9 @@ void FluidParticleInitializer::loadParticles3D_(std::vector<Particle>& particles
                 Vth    = thermalSpeed(x, y, z);
                 cellWeight = n * cellVolume / nbrParticlePerCell_;
 
-                std::uniform_real_distribution<float> randPosX(-0.5*dx, 0.5*dx);
-                std::uniform_real_distribution<float> randPosY(-0.5*dy, 0.5*dy);
-                std::uniform_real_distribution<float> randPosZ(-0.5*dz, 0.5*dz);
+                std::uniform_real_distribution<float> randPosX(0., dx);
+                std::uniform_real_distribution<float> randPosY(0., dy);
+                std::uniform_real_distribution<float> randPosZ(0., dz);
 
                 for (uint32 ipart=0; ipart < nbrParticlePerCell_; ++ipart)
                 {
