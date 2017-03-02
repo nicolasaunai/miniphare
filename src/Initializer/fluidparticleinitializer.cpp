@@ -28,7 +28,7 @@ FluidParticleInitializer::FluidParticleInitializer(GridLayout const& layout,
 
 void maxwellianVelocity(std::array<double, 3> V, double Vth,
                         std::mt19937_64 generator,
-                        std::array<double,3> partVelocity)
+                        std::array<double,3>& partVelocity)
 {
     std::normal_distribution<> maxwellX(V[0], Vth*Vth);
     std::normal_distribution<> maxwellY(V[1], Vth*Vth);
