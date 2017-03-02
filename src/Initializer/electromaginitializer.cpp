@@ -22,3 +22,29 @@ ElectromagInitializer::ElectromagInitializer(GridLayout const& layout,
 {
 
 }
+
+
+
+
+ElectromagInitializer::ElectromagInitializer(GridLayout const& layout,
+                                             std::string electricName,
+                                             std::string magneticName)
+    : electricField{nullptr},
+      magneticField{nullptr},
+      E_    { layout.allocSize(HybridQuantity::Ex),
+              layout.allocSize(HybridQuantity::Ey),
+              layout.allocSize(HybridQuantity::Ez),
+              { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+              electricName},
+      B_    { layout.allocSize(HybridQuantity::Bx),
+              layout.allocSize(HybridQuantity::By),
+              layout.allocSize(HybridQuantity::Bz),
+              { {HybridQuantity::Bx, HybridQuantity::By, HybridQuantity::Bz} },
+              magneticName}
+
+{
+
+}
+
+
+

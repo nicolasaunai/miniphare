@@ -10,36 +10,6 @@
 
 
 
-/* below are just stupid functions to make this initializer works */
-
-std::array<double,3>  zeroMagneticField(double x, double y, double z)
-{
-    std::array<double,3> vec;
-    (void) x;
-    (void) y;
-    (void) z;
-    vec[0] = 1.;
-    vec[1] = 0.;
-    vec[2] = 0.;
-    return vec;
-}
-
-
-std::array<double,3> zeroElectricField(double x, double y, double z)
-{
-    std::array<double,3> vec;
-    (void) x;
-    (void) y;
-    (void) z;
-    vec[0] = 0.;
-    vec[1] = 0.;
-    vec[2] = 0.;
-    return vec;
-}
-/* -------------------------- end of hard coded functions --------------------- */
-
-
-
 
 /**
  * @brief The fieldAtRefinedNodes1D method is used to interpolate the fields
@@ -186,11 +156,8 @@ MLMDInitializerFactory::createElectromagInitializer() const
 
     Interpolator interpolator(interpolationOrder_) ;
 
-    // electricField and magneticField will not be used
     std::unique_ptr<ElectromagInitializer> eminit {
-        new ElectromagInitializer{layout_,
-                    zeroElectricField,
-                    zeroMagneticField, "_EMField", "_EMFields"} };
+        new ElectromagInitializer{layout_, "_EMField", "_EMFields"} };
 
     std::cout << "creating MLMD ElectromagInitializer" << std::endl;
 //    Point origin{0,0,0};

@@ -27,6 +27,10 @@ public:
                           std::string electricName,
                           std::string magneticName);
 
+    ElectromagInitializer(GridLayout const& layout,
+                          std::string electricName,
+                          std::string magneticName);
+
 };
 
 #endif // ELECTROMAGINITIALIZER_H
