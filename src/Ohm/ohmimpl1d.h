@@ -6,7 +6,7 @@
 
 
 
-class OhmImpl1D : public OhmImpl , private OhmImplInternals
+class OhmImpl1D : public OhmImpl
 {
 private:
     // Field derivatives

@@ -6,7 +6,7 @@
 
 
 OhmImpl1D::OhmImpl1D(GridLayout const& layout)
-    :OhmImplInternals{ layout }
+    :OhmImpl{ layout }
 {
 }
 

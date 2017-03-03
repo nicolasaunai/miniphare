@@ -7,7 +7,7 @@
 
 
 
-OhmImplInternals::OhmImplInternals(GridLayout const& layout)
+OhmImpl::OhmImpl(GridLayout const& layout)
     : idealTerm_{   layout.allocSize(HybridQuantity::Ex),
                     layout.allocSize(HybridQuantity::Ey),
                     layout.allocSize(HybridQuantity::Ez),
@@ -19,6 +19,16 @@ OhmImplInternals::OhmImplInternals(GridLayout const& layout)
                     layout.allocSize(HybridQuantity::Ez),
                     { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
                     "_pressure" },
+      resistivityTerm_{layout.allocSize(HybridQuantity::Ex),
+                       layout.allocSize(HybridQuantity::Ey),
+                       layout.allocSize(HybridQuantity::Ez),
+                    { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+                    "_resistivity" },
+      hyperResistivityTerm_{layout.allocSize(HybridQuantity::Ex),
+                            layout.allocSize(HybridQuantity::Ey),
+                            layout.allocSize(HybridQuantity::Ez),
+                    { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+                    "_hyperresistivity" },
 
       layout_{ layout }
 {
