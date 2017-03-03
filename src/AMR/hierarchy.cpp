@@ -119,22 +119,22 @@ void Hierarchy::updateHierarchy( std::vector<GridLayout> const & newLayouts,
 
 
 
-void Hierarchy::addNewPatch( GridLayout const & newLayout,
+void Hierarchy::addNewPatch( GridLayout const & refinedLayout,
                              RefinementInfo const & info)
 {
 
-    std::shared_ptr<Patch> parent = info.parentPatch ;
-    Box newBox = info.box ;
+    std::shared_ptr<Patch> coarsePatch = info.parentPatch ;
+    Box refinedBox = info.box ;
 
     // we need to build a factory for PatchData to be built
     std::unique_ptr<InitializerFactory>
-            factory { new MLMDInitializerFactory(parent, newBox, newLayout) } ;
+            factory { new MLMDInitializerFactory(coarsePatch, refinedBox, refinedLayout) } ;
 
     // create the new patch, give it a PatchData to which we pass the factory
-    Patch theNewPatch{ newBox, PatchData{ std::move(factory) } };
+    Patch theNewPatch{ refinedBox, PatchData{ std::move(factory) } };
 
     // somehow attach this new patch to the hierarchy...
-    parent->updateChildren( std::make_shared<Patch>( std::move(theNewPatch) ) ) ;
+    coarsePatch->updateChildren( std::make_shared<Patch>( std::move(theNewPatch) ) ) ;
 
 }
 

@@ -17,11 +17,11 @@
                       Interpolation from a coarse patch
                       to a refined patch
    ---------------------------------------------------------------------------- */
-void fieldAtRefinedNodes1D(Interpolator const& interp,
-                           GridLayout const & parentLayout,
-                           VecField const & Eparent , VecField const & Bparent,
-                           GridLayout const & newLayout,
-                           VecField & newE , VecField & newB);
+void fieldAtRefinedNodes1D( Interpolator const& interp,
+                            GridLayout const & coarseLayout,
+                            VecField const & Ecoarse , VecField const & Bcoarse,
+                            GridLayout const & refinedLayout,
+                            VecField & Erefined , VecField & Brefined ) ;
 
 
 
@@ -40,7 +40,7 @@ private:
     std::shared_ptr<Patch> parentPatch_;
     Box newPatchCoords_ ;
 
-    GridLayout layout_;
+    GridLayout refinedLayout_;
     double dt_;
 
     // this interpolator is used to initialize fields
@@ -50,9 +50,9 @@ private:
 public:
     MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch,
                            Box newPatchCoords,
-                           GridLayout newLayout ) // uint32 refinement
+                           GridLayout refinedLayout ) // uint32 refinement
         : parentPatch_{parentPatch}, newPatchCoords_{newPatchCoords},
-          layout_{ newLayout }, interpolationOrder_{2}
+          refinedLayout_{ refinedLayout }, interpolationOrder_{2}
           // layout_{ parentPatch->layout().subLayout(newPatchCoords, refinement) }
     { }
 

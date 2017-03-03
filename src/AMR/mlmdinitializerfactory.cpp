@@ -132,7 +132,7 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
         Species const& species = parentIons.species(ispe);
         Box  parentCoordinates  = parentPatch_->coordinates();
         std::unique_ptr<ParticleSelector> selector{
-            new isInBox{parentCoordinates, newPatchCoords_, layout_.dxdydz()} };
+            new isInBox{parentCoordinates, newPatchCoords_, refinedLayout_.dxdydz()} };
 
         std::unique_ptr<ParticleInitializer>
                 particleInit{new MLMDParticleInitializer{species, std::move(selector) }};
@@ -157,18 +157,24 @@ MLMDInitializerFactory::createElectromagInitializer() const
     Interpolator interpolator(interpolationOrder_) ;
 
     std::unique_ptr<ElectromagInitializer> eminit {
-        new ElectromagInitializer{layout_, "_EMField", "_EMFields"} };
+        new ElectromagInitializer{refinedLayout_, "_EMField", "_EMFields"} };
 
     std::cout << "creating MLMD ElectromagInitializer" << std::endl;
 //    Point origin{0,0,0};
+
+//    fieldAtRefinedNodes1D( interpolator,
+//                           GridLayout const & coarseLayout,
+//                           VecField const & Ecoarse , VecField const & Bcoarse,
+//                           GridLayout const & refinedLayout,
+//                           VecField & Erefined , VecField & Brefined ) ;
 
     for (uint32 iComponent=0; iComponent < 3; ++iComponent)
     {
 
         // ELECTRIC FIELD ----------------
         Field& Ei = eminit->E_.component(iComponent);
-        uint32 iStart = layout_.ghostStartIndex(Ei, Direction::X);
-        uint32 iEnd   = layout_.ghostEndIndex(  Ei, Direction::X);
+        uint32 iStart = refinedLayout_.ghostStartIndex(Ei, Direction::X);
+        uint32 iEnd   = refinedLayout_.ghostEndIndex(  Ei, Direction::X);
 
 //        for (uint32 ix=iStart; ix <= iEnd; ++ix)
 //        {
@@ -179,8 +185,8 @@ MLMDInitializerFactory::createElectromagInitializer() const
 
         // MAGNETIC FIELD ----------------
         Field& Bi = eminit->B_.component(iComponent);
-        iStart = layout_.ghostStartIndex(Bi, Direction::X);
-        iEnd   = layout_.ghostEndIndex(  Bi, Direction::X);
+        iStart = refinedLayout_.ghostStartIndex(Bi, Direction::X);
+        iEnd   = refinedLayout_.ghostEndIndex(  Bi, Direction::X);
 
 //        for (uint32 ix=iStart; ix <= iEnd; ++ix)
 //        {
@@ -219,13 +225,13 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 
 GridLayout const& MLMDInitializerFactory::gridLayout() const
 {
-    return layout_;
+    return refinedLayout_;
 }
 
 
 Box MLMDInitializerFactory::getBox() const
 {
-    return layout_.getBox() ;
+    return refinedLayout_.getBox() ;
 }
 
 
