@@ -160,42 +160,12 @@ MLMDInitializerFactory::createElectromagInitializer() const
         new ElectromagInitializer{refinedLayout_, "_EMField", "_EMFields"} };
 
     std::cout << "creating MLMD ElectromagInitializer" << std::endl;
-//    Point origin{0,0,0};
 
-//    fieldAtRefinedNodes1D( interpolator,
-//                           GridLayout const & coarseLayout,
-//                           VecField const & Ecoarse , VecField const & Bcoarse,
-//                           GridLayout const & refinedLayout,
-//                           VecField & Erefined , VecField & Brefined ) ;
-
-    for (uint32 iComponent=0; iComponent < 3; ++iComponent)
-    {
-
-        // ELECTRIC FIELD ----------------
-        Field& Ei = eminit->E_.component(iComponent);
-        uint32 iStart = refinedLayout_.ghostStartIndex(Ei, Direction::X);
-        uint32 iEnd   = refinedLayout_.ghostEndIndex(  Ei, Direction::X);
-
-//        for (uint32 ix=iStart; ix <= iEnd; ++ix)
-//        {
-//            Point coord = layout_.fieldNodeCoordinates(Ei, origin, ix, 0, 0);
-//            std::array<double,3> E = electricField(coord.x_, origin.y_, origin.z_);
-//            Ei(ix) = E[iComponent];
-//        }
-
-        // MAGNETIC FIELD ----------------
-        Field& Bi = eminit->B_.component(iComponent);
-        iStart = refinedLayout_.ghostStartIndex(Bi, Direction::X);
-        iEnd   = refinedLayout_.ghostEndIndex(  Bi, Direction::X);
-
-//        for (uint32 ix=iStart; ix <= iEnd; ++ix)
-//        {
-//            Point coord = layout_.fieldNodeCoordinates(Bi, origin, ix, 0, 0);
-//            std::array<double,3> B = magneticField(coord.x_, origin.y_, origin.z_);
-//            Bi(ix) = B[iComponent];
-//        }
-
-    }
+    fieldAtRefinedNodes1D( interpolator,
+                           parentPatch_->layout(),
+                           parentElectromag.getE() , parentElectromag.getB(),
+                           refinedLayout_,
+                           eminit->E_ , eminit->B_ ) ;
 
     return eminit;
 }

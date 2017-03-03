@@ -22,9 +22,12 @@ public:
 
     Field& getEi(uint32 component) {return E_.component(component);}
     Field& getBi(uint32 component) {return B_.component(component);}
+
     VecField& getE(){return E_;}
     VecField& getB(){return B_;}
 
+    VecField const & getE() const {return E_;}
+    VecField const & getB() const {return B_;}
 
    // void init(ElectromagInitializer* const initializer);
 
