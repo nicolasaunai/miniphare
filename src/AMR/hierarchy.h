@@ -12,6 +12,7 @@
 struct RefinementInfo
 {
     std::shared_ptr<Patch> parentPatch;
+
     Box box;
     uint32 level;
 
@@ -34,8 +35,6 @@ class Hierarchy
 
 private:
 
-//    std::vector< RefinementInfo > patchToBeRefined_ ;
-
     std::vector< std::vector< std::shared_ptr<Patch> > > patchTable_ ;
 
 public:
@@ -55,10 +54,10 @@ public:
 
     void evolveHierarchy() ;
 
-    std::vector<RefinementInfo> evaluateHierarchy() ;
+    std::vector< std::vector<RefinementInfo> > evaluateHierarchy() ;
 
-    void updateHierarchy( std::vector<GridLayout> const & newLayouts,
-                          std::vector<RefinementInfo> const & refineInfo ) ;
+    void updateHierarchy( std::vector< std::vector<RefinementInfo> > const & refinementTable,
+                          std::vector< std::vector<GridLayout> > const & layoutTable ) ;
 
     void addNewPatch( GridLayout const & layout,
                       RefinementInfo const & info ) ;

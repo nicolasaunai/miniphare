@@ -45,17 +45,19 @@ void Hierarchy::evolveHierarchy()
  * the ouput of this method is used by updateHierarchy()
  *
  */
-std::vector<RefinementInfo>
+std::vector< std::vector<RefinementInfo> >
 Hierarchy::evaluateHierarchy()
 {
 
-    std::vector<RefinementInfo> patchToBeRefined{} ;
+    std::vector< std::vector<RefinementInfo> > refinementTable ;
 
     uint32 nbrLevels = static_cast<uint32>(patchTable_.size()) ;
 
     for( uint32 iLevel=0 ; iLevel<nbrLevels ; iLevel++ )
     {
         auto & patchesAtLevel = patchTable_[iLevel] ;
+
+        std::vector<RefinementInfo> refinementVector ;
 
         for( std::shared_ptr<Patch> patch: patchesAtLevel)
         {
@@ -71,49 +73,52 @@ Hierarchy::evaluateHierarchy()
 
                 struct RefinementInfo refine{ patch, refineBox, iLevel+1 } ;
 
-                patchToBeRefined.push_back( refine ) ;
+                refinementVector.push_back( refine ) ;
             }
         }
 
+        refinementTable.push_back( std::move(refinementVector) ) ;
     }
 
-    return patchToBeRefined ;
+    return refinementTable ;
 }
+
 
 
 /**
  * @brief Hierarchy::updateHierarchy
  *
- * new patches are created here if necessary
- * it depends on evaluateHierarchy()
+ * New patches are created here depending on the content
+ * of refinementTable (and layoutTable)
+ * These two tables have the same number of elements
  *
- * Calls addNewPatch if necessary
- *
+ * @param refinementTable
+ * @param layoutTable
  */
-// TODO: Add an argument
-// TODO: Use the structure returned by evaluateHierarchy()
-void Hierarchy::updateHierarchy( std::vector<GridLayout> const & newLayouts,
-                                 std::vector<RefinementInfo> const & refineInfo )
+void Hierarchy::updateHierarchy(
+        std::vector< std::vector<RefinementInfo> > const & refinementTable,
+        std::vector< std::vector<GridLayout> > const & layoutTable  )
 {
 
-    uint32 nbrPatches = static_cast<uint32>(newLayouts.size()) ;
+    uint32 nbrLevels = static_cast<uint32>(refinementTable.size()) ;
 
-    // Go through the new layouts,
-    // a patch is added when required
-    for( uint32 iPatch=0 ; iPatch<nbrPatches ; ++iPatch )
+    for( uint32 iLevel=0 ; iLevel<nbrLevels ; ++iLevel )
     {
-        GridLayout const & layout = newLayouts[iPatch] ;
-        RefinementInfo const & info = refineInfo[iPatch] ;
+        uint32 nbrPatches = static_cast<uint32>( refinementTable[iLevel].size() ) ;
 
-        // Whenever refinement is needed,
-        // trigger refinement
-        addNewPatch( layout, info ) ;
+        for( uint32 iPatch=0 ; iPatch<nbrPatches ; ++iPatch )
+        {
+            GridLayout const & layout = layoutTable[iLevel][iPatch] ;
+            RefinementInfo const & info = refinementTable[iLevel][iPatch] ;
 
-        // TODO: call patch.init to initialize patch content
+            // create new Patch and update Hierarchy
+            addNewPatch( layout, info ) ;
+
+            // TODO: call patch.init to initialize patch content
 
 
+        }
     }
-
 
 }
 
@@ -125,6 +130,7 @@ void Hierarchy::addNewPatch( GridLayout const & refinedLayout,
 
     std::shared_ptr<Patch> coarsePatch = info.parentPatch ;
     Box refinedBox = info.box ;
+    uint32 refinedLevel = info.level ;
 
     // we need to build a factory for PatchData to be built
     std::unique_ptr<InitializerFactory>
@@ -133,8 +139,13 @@ void Hierarchy::addNewPatch( GridLayout const & refinedLayout,
     // create the new patch, give it a PatchData to which we pass the factory
     Patch theNewPatch{ refinedBox, PatchData{ std::move(factory) } };
 
+    std::shared_ptr<Patch> patchPtr = std::make_shared<Patch>( std::move(theNewPatch) ) ;
+
     // somehow attach this new patch to the hierarchy...
-    coarsePatch->updateChildren( std::make_shared<Patch>( std::move(theNewPatch) ) ) ;
+    coarsePatch->updateChildren( patchPtr ) ;
+
+    // update the hierarchy
+    patchTable_[refinedLevel].push_back( patchPtr ) ;
 
 }
 

@@ -26,8 +26,8 @@ public:
 
     void evolveFullDomain();
 
-    std::vector<GridLayout>
-    buildLayouts( std::vector<RefinementInfo> const & infoVector ) ;
+    std::vector< std::vector<GridLayout> >
+    buildLayouts( std::vector< std::vector<RefinementInfo> > const & refinementTable ) ;
 
     Hierarchy & hierarchy() { return patchHierarchy_ ; }
     Hierarchy const & hierarchy() const { return patchHierarchy_ ; }

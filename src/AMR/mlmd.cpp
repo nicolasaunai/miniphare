@@ -41,15 +41,15 @@ void MLMD::evolveFullDomain()
     // Here, AMR patches will say whether they need refinement
     // the ouput of this method is used by updateHierarchy()
     // Note for later: will probably not be called every time step.
-    std::vector<RefinementInfo> patchesToBeCreated
+    std::vector< std::vector<RefinementInfo> > refinementTable
             = patchHierarchy_.evaluateHierarchy() ;
 
-    std::vector<GridLayout>  newLayouts
-            = buildLayouts( patchesToBeCreated ) ;
+    std::vector< std::vector<GridLayout> >  refinedLayouts
+            = buildLayouts( refinementTable ) ;
 
     // new patches are created here if necessary
     // it depends on evaluateHierarchy()
-    patchHierarchy_.updateHierarchy( newLayouts, patchesToBeCreated ) ;
+    patchHierarchy_.updateHierarchy( refinementTable, refinedLayouts ) ;
 #endif
 
 }
@@ -64,35 +64,47 @@ void MLMD::evolveFullDomain()
  * @param infoVector
  * @return
  */
-std::vector<GridLayout>
-MLMD::buildLayouts( std::vector<RefinementInfo> const & infoVector )
+std::vector< std::vector<GridLayout> >
+MLMD::buildLayouts( std::vector< std::vector<RefinementInfo> > const & refinementTable )
 {
-    std::vector<GridLayout>  newLayouts{} ;
+    GridLayout const & L0 = baseLayout_ ;   // short notation
 
-    // short notation
-    GridLayout const & L0 = baseLayout_ ;
+    std::vector< std::vector<GridLayout> > newLayouts ;
 
-    for( RefinementInfo const & info: infoVector )
+    uint32 nbrLevels = static_cast<uint32>(refinementTable.size()) ;
+
+    for( uint32 iLevel=0 ; iLevel<nbrLevels ; ++iLevel )
     {
-        Box newBox = info.box ;
-        uint32 level = info.level ;
+        uint32 nbrPatches = static_cast<uint32>(refinementTable[iLevel].size()) ;
 
-        // TODO: return the adequate GridLayout given newBox information
-        // new spatial step sizes
-        double dx = L0.dx()/std::pow( refinementRatio_, level ) ;
-        double dy = L0.dy()/std::pow( refinementRatio_, level ) ;
-        double dz = L0.dz()/std::pow( refinementRatio_, level ) ;
+        std::vector<GridLayout> layoutVector ;
 
-        // cell numbers
-        uint32 nbx = static_cast<uint32>( std::ceil( (newBox.x1 - newBox.x0)/dx ) ) ;
-        uint32 nby = static_cast<uint32>( std::ceil( (newBox.y1 - newBox.y0)/dy ) ) ;
-        uint32 nbz = static_cast<uint32>( std::ceil( (newBox.z1 - newBox.z0)/dz ) ) ;
+        for( uint32 iPatch=0 ; iPatch<nbrPatches ; ++iPatch )
+        {
+            RefinementInfo const & info = refinementTable[iLevel][iPatch];
 
-        // we create the layout of a new patch
-        // and store it
-        newLayouts.push_back( GridLayout({{dx, dy, dz}}, {{nbx, nby, nbz}},
-                                         L0.nbDimensions(), L0.layoutName(),
-                                         Point{newBox.x0, newBox.y0, newBox.z0}, L0.order() ) ) ;
+            Box newBox = info.box ;
+            uint32 level = info.level ;
+
+            // TODO: return the adequate GridLayout given newBox information
+            // new spatial step sizes
+            double dx = L0.dx()/std::pow( refinementRatio_, level ) ;
+            double dy = L0.dy()/std::pow( refinementRatio_, level ) ;
+            double dz = L0.dz()/std::pow( refinementRatio_, level ) ;
+
+            // cell numbers
+            uint32 nbx = static_cast<uint32>( std::ceil( (newBox.x1 - newBox.x0)/dx ) ) ;
+            uint32 nby = static_cast<uint32>( std::ceil( (newBox.y1 - newBox.y0)/dy ) ) ;
+            uint32 nbz = static_cast<uint32>( std::ceil( (newBox.z1 - newBox.z0)/dz ) ) ;
+
+            // we create the layout of a new patch
+            // and store it
+            layoutVector.push_back( GridLayout({{dx, dy, dz}}, {{nbx, nby, nbz}},
+                                               L0.nbDimensions(), L0.layoutName(),
+                                               Point{newBox.x0, newBox.y0, newBox.z0}, L0.order() ) ) ;
+        }
+
+        newLayouts.push_back( std::move(layoutVector) ) ;
     }
 
     return newLayouts ;
