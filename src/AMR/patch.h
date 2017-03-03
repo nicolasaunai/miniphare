@@ -31,7 +31,7 @@ private:
 
     Box coordinates_;
 
-//    GridLayout layout_;
+    GridLayout layout_;
 
     PatchData data_;
 
@@ -41,13 +41,12 @@ private:
 
 public:
 
-    explicit Patch(Box coordinates, // GridLayout const & layout,
+    explicit Patch(Box coordinates, GridLayout const & layout,
                    PatchData&& patchData)
         : coordinates_{coordinates},
+          layout_{layout},
           data_{std::move(patchData)},
-          parent_{nullptr}, children_{}
-        // layout_{layout}
-        {}
+          parent_{nullptr}, children_{}  {}
 
     Patch(Patch&& source) = default;
     Patch& operator=(Patch&& source) = default;
@@ -65,7 +64,7 @@ public:
 
     Box coordinates() const { return coordinates_; }
 
-//    GridLayout const & layout() const { return layout_; }
+    GridLayout const & layout() const { return layout_; }
 
     std::shared_ptr<Patch> parent() const { return parent_; }
 
