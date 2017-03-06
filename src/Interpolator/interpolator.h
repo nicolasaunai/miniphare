@@ -24,6 +24,8 @@ public:
 
     Interpolator(uint32 order);
 
+    uint32 order(){ return order_ ; }
+
     std::tuple<std::vector<uint32>, std::vector<double>>
     getIndexesAndWeights( double reducedCoord, \
                           QtyCentering centering ) const ;

@@ -62,6 +62,8 @@ public:
 
     Ions const& ions() const { return data_.ions(); }
 
+    Solver const& solver() const { return data_.solver(); }
+
     Box coordinates() const { return coordinates_; }
 
     GridLayout const & layout() const { return layout_; }

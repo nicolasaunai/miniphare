@@ -47,6 +47,8 @@ public:
 
     Electromag const& EMfields() const {return EMfields_;}
 
+    Solver const& solver() const {return solver_;}
+
     Ions const& ions() const {return ions_;}
 
     void solveStep() ;

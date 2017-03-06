@@ -19,14 +19,16 @@ class Pusher
 protected:
     uint32 nbdims_;
     GridLayout layout_;
+    std::string pusherType_;
     double dt_;
     LeavingParticles leavingParticles_;
 
 public:
 
-    Pusher(GridLayout layout, double dt):
+    Pusher(GridLayout layout, std::string pusherType, double dt):
         nbdims_{layout.nbDimensions()},
         layout_{std::move(layout)},
+        pusherType_{pusherType},
         dt_{dt},
         leavingParticles_{layout_}
     {}
@@ -47,6 +49,8 @@ public:
                       VecField const & E ,
                       VecField const & B ,
                       Interpolator const& interpolator ) = 0 ;
+
+    std::string const & pusherType() const { return pusherType_; }
 
     LeavingParticles const& getLeavingParticles() const {return leavingParticles_;}
 

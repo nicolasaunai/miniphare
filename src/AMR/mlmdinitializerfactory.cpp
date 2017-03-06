@@ -175,7 +175,20 @@ MLMDInitializerFactory::createElectromagInitializer() const
 
 std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializer() const
 {
-    return nullptr;
+
+    std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
+
+    const std::vector<uint32>  interpolationOrders
+    { parentPatch_->solver().getInterpolationOrders() } ;
+
+    const std::string  pusher
+    { parentPatch_->solver().getPusherType() } ;
+
+
+    solverInitPtr->pusherType = pusher ;
+    solverInitPtr->interpolationOrders = interpolationOrders ;
+
+    return  solverInitPtr;
 }
 
 

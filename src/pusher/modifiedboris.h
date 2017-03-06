@@ -20,8 +20,8 @@ private:
                   std::vector<Particle> & particleOut) ;
 
 public:
-    ModifiedBoris(GridLayout layout, double dt):
-        Pusher(std::move(layout), dt) {}
+    ModifiedBoris(GridLayout layout, std::string pusherType, double dt):
+        Pusher(std::move(layout), pusherType, dt) {}
 
     virtual ~ModifiedBoris() {}
 
