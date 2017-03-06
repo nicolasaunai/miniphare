@@ -36,6 +36,13 @@ struct Box
 };
 
 
+struct PRA
+{
+    Box  innerBox, outerBox;
+
+    PRA( Box inner, Box outer )
+        : innerBox{inner}, outerBox{outer} {}
+};
 
 
 class ParticleSelector

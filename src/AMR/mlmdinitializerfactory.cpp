@@ -1,4 +1,6 @@
 
+#include "BoundaryConditions/boundary_conditions.h"
+
 #include "AMR/mlmdinitializerfactory.h"
 #include "AMR/mlmdparticleinitializer.h"
 #include "Electromag/electromag.h"
@@ -7,6 +9,139 @@
 
 #include <cmath>
 
+
+
+
+
+std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer() const
+{
+    /* this routine creates an ion initializer with a Patch Choice function. */
+    std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
+    Ions const& parentIons = parentPatch_->ions();
+
+    for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
+    {
+        Species const& species = parentIons.species(ispe);
+        Box  parentCoordinates  = parentPatch_->coordinates();
+        std::unique_ptr<ParticleSelector> selector{
+            new isInBox{parentCoordinates, newPatchCoords_, refinedLayout_.dxdydz()} };
+
+        std::unique_ptr<ParticleInitializer>
+                particleInit{new MLMDParticleInitializer{species, std::move(selector) }};
+
+        ionInitPtr->masses.push_back( parentIons.species(ispe).mass() );
+        ionInitPtr->particleInitializers.push_back( std::move(particleInit) );
+    }
+
+
+    return ionInitPtr;
+}
+
+
+
+
+std::unique_ptr<ElectromagInitializer>
+MLMDInitializerFactory::createElectromagInitializer() const
+{
+
+    Electromag const & parentElectromag = parentPatch_->data().EMfields() ;
+
+    Interpolator interpolator(interpolationOrder_) ;
+
+    std::unique_ptr<ElectromagInitializer> eminit {
+        new ElectromagInitializer{refinedLayout_, "_EMField", "_EMFields"} };
+
+    std::cout << "creating MLMD ElectromagInitializer" << std::endl;
+
+    fieldAtRefinedNodes1D( interpolator,
+                           parentPatch_->layout(),
+                           parentElectromag.getE() , parentElectromag.getB(),
+                           refinedLayout_,
+                           eminit->E_ , eminit->B_ ) ;
+
+    return eminit;
+}
+
+
+
+
+std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializer() const
+{
+    std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
+
+
+    solverInitPtr->pusherType =
+           parentPatch_->solver().getPusherType() ;
+
+    solverInitPtr->interpolationOrders =
+            parentPatch_->solver().getInterpolationOrders() ;
+
+    return  solverInitPtr;
+}
+
+
+std::unique_ptr<OhmInitializer> MLMDInitializerFactory::createOhmInitializer() const
+{
+    return nullptr;
+}
+
+
+std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryCondition() const
+{
+
+
+    // First, build PatchBoundaryCondition object
+
+
+
+
+
+    // Second, next build all the PatchBoundary objects
+
+    // the following intializer factory might be used to build
+    // each PatchBoundary object
+//    std::unique_ptr<InitializerFactory>
+//            factory { new MLMDInitializerFactory(coarsePatch, refinedBox, refinedLayout) }
+
+
+
+
+
+
+    // return hard coded domain periodic boundary condition
+//    std::vector<DomainBoundaryCondition::BoundaryInfo> boundaries(2);
+
+    // "first" is the edge coordinate
+//    boundaries[0].first = Edge::Xmin;
+//    boundaries[1].first = Edge::Xmax;
+
+    // "second" is the type of boundary, here periodic
+//    boundaries[0].second = BoundaryType::Periodic;
+//    boundaries[1].second = BoundaryType::Periodic;
+
+//    std::unique_ptr<BoundaryCondition> bc {new DomainBoundaryCondition{layout_, boundaries}};
+
+    return nullptr;
+}
+
+
+
+GridLayout const& MLMDInitializerFactory::gridLayout() const
+{
+    return refinedLayout_;
+}
+
+
+Box MLMDInitializerFactory::getBox() const
+{
+    return refinedLayout_.getBox() ;
+}
+
+
+double MLMDInitializerFactory::timeStep() const
+{
+    return dt_;
+}
 
 
 
@@ -119,105 +254,6 @@ void fieldAtRefinedNodes1D(Interpolator const& interp,
 
 
 
-
-
-std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer() const
-{
-    /* this routine creates an ion initializer with a Patch Choice function. */
-    std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
-    Ions const& parentIons = parentPatch_->ions();
-
-    for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
-    {
-        Species const& species = parentIons.species(ispe);
-        Box  parentCoordinates  = parentPatch_->coordinates();
-        std::unique_ptr<ParticleSelector> selector{
-            new isInBox{parentCoordinates, newPatchCoords_, refinedLayout_.dxdydz()} };
-
-        std::unique_ptr<ParticleInitializer>
-                particleInit{new MLMDParticleInitializer{species, std::move(selector) }};
-
-        ionInitPtr->masses.push_back( parentIons.species(ispe).mass() );
-        ionInitPtr->particleInitializers.push_back( std::move(particleInit) );
-    }
-
-
-    return ionInitPtr;
-}
-
-
-
-
-std::unique_ptr<ElectromagInitializer>
-MLMDInitializerFactory::createElectromagInitializer() const
-{
-
-    Electromag const & parentElectromag = parentPatch_->data().EMfields() ;
-
-    Interpolator interpolator(interpolationOrder_) ;
-
-    std::unique_ptr<ElectromagInitializer> eminit {
-        new ElectromagInitializer{refinedLayout_, "_EMField", "_EMFields"} };
-
-    std::cout << "creating MLMD ElectromagInitializer" << std::endl;
-
-    fieldAtRefinedNodes1D( interpolator,
-                           parentPatch_->layout(),
-                           parentElectromag.getE() , parentElectromag.getB(),
-                           refinedLayout_,
-                           eminit->E_ , eminit->B_ ) ;
-
-    return eminit;
-}
-
-
-
-
-std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializer() const
-{
-    std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
-
-
-    solverInitPtr->pusherType =
-           parentPatch_->solver().getPusherType() ;
-
-    solverInitPtr->interpolationOrders =
-            parentPatch_->solver().getInterpolationOrders() ;
-
-    return  solverInitPtr;
-}
-
-
-std::unique_ptr<OhmInitializer> MLMDInitializerFactory::createOhmInitializer() const
-{
-    return nullptr;
-}
-
-
-std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryCondition() const
-{
-
-    return nullptr;
-}
-
-
-
-GridLayout const& MLMDInitializerFactory::gridLayout() const
-{
-    return refinedLayout_;
-}
-
-
-Box MLMDInitializerFactory::getBox() const
-{
-    return refinedLayout_.getBox() ;
-}
-
-
-double MLMDInitializerFactory::timeStep() const
-{
-    return dt_;
-}
 
 
 

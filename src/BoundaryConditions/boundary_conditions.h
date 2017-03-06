@@ -29,7 +29,7 @@ public:
     virtual void applyParticleBC(std::vector<Particle>& particleArray,
                                  LeavingParticles const& leavingParticles) const = 0;
 
-    virtual ~BoundaryCondition() = 0;
+    virtual ~BoundaryCondition() = default;
 };
 
 

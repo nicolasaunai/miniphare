@@ -1,7 +1,7 @@
 #ifndef PERIODICDOMAINBOUNDARY_H
 #define PERIODICDOMAINBOUNDARY_H
 
-#include "BoundaryConditions/periodicdomainboundary.h"
+
 #include "BoundaryConditions/boundary.h"
 #include "vecfield/vecfield.h"
 
