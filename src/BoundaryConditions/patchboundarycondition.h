@@ -29,17 +29,18 @@ class PatchBoundaryCondition : public BoundaryCondition
 private:
     PRA refinedPRA_;
     std::shared_ptr<Patch> parent_;
+    GridLayout coarseLayout_;
 
     // these boundaries know what they are : patchboundary
     std::vector<std::unique_ptr<Boundary>> boundaries_;
-    GridLayout layout_;
-
 
 public:
     PatchBoundaryCondition( PRA const & refinedPRA, std::shared_ptr<Patch> coarsePatch,
-                            GridLayout const & coarseLayout )
+                            GridLayout const & coarseLayout,
+                            std::vector<std::unique_ptr<Boundary>> boundaries )
         : refinedPRA_{refinedPRA}, parent_{coarsePatch},
-          boundaries_{}, layout_{coarseLayout} {}
+          coarseLayout_{coarseLayout},
+          boundaries_{std::move(boundaries)} {}
 
     virtual void applyMagneticBC(VecField& B) const override;
     virtual void applyElectricBC(VecField& E) const override;

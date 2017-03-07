@@ -59,8 +59,6 @@ public:
 
 
 
-
-
 class isInBox : public ParticleSelector
 {
 
@@ -99,6 +97,27 @@ public:
         return isIn;
     }
     virtual ~isInBox(){}
+};
+
+
+
+class isInPRA : public ParticleSelector
+{
+
+private:
+
+
+public:
+    isInPRA() {}
+
+    bool operator()(Particle const& particle) const override
+    {
+        bool isIn = false;
+
+
+        return isIn;
+    }
+    virtual ~isInPRA(){}
 };
 
 

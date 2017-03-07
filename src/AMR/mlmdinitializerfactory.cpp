@@ -1,6 +1,7 @@
 
 #include "BoundaryConditions/boundary_conditions.h"
 #include "BoundaryConditions/patchboundarycondition.h"
+#include "BoundaryConditions/patchboundary.h"
 
 #include "AMR/mlmdinitializerfactory.h"
 #include "AMR/mlmdparticleinitializer.h"
@@ -90,43 +91,68 @@ std::unique_ptr<OhmInitializer> MLMDInitializerFactory::createOhmInitializer() c
 std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryCondition() const
 {
 
-    GridLayout refineLayout{parentPatch_->layout()} ;
+    const std::array<uint32, 3> nbrBCTab{ {2, 4, 8} } ;
 
-    PRA refinedPRA{ buildPRA_(refineLayout) } ;
+    GridLayout coarseLayout{parentPatch_->layout()} ;
 
-    // First, build PatchBoundaryCondition object
-    std::unique_ptr<BoundaryCondition> bc
-    {new PatchBoundaryCondition{refinedPRA, parentPatch_, refineLayout}};
+    uint32 nbrBoundaries = nbrBCTab[coarseLayout.nbDimensions()-1] ;
+
+    PRA refinedPRA{ buildPRA_(refinedLayout_) } ;
+
+    std::vector<std::unique_ptr<Boundary>> boundaries{} ;
+
+    // FIRST, LOOP OVER all the boundaries
+    for(uint32 idim=0 ; idim<nbrBoundaries ; ++idim)
+    {
+
+        // TODO: get a sub Box from the PRA
+        // corresponding to the adequate boundary
+        Box subBox{} ;
+
+        /* this routine creates an ion initializer with a Patch Choice function. */
+        std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
+        Ions const& parentIons = parentPatch_->ions();
+
+        for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
+        {
+            Species const& species = parentIons.species(ispe);
+            // unused: Box  parentCoordinates  = parentPatch_->coordinates();
+
+            // TODO: define isInPRA particle selector
+            std::unique_ptr<ParticleSelector> selector{
+                new isInPRA{} };
+
+            std::unique_ptr<ParticleInitializer>
+                    particleInit{new MLMDParticleInitializer{species, std::move(selector) }};
+
+            ionInitPtr->masses.push_back( parentIons.species(ispe).mass() );
+            ionInitPtr->particleInitializers.push_back( std::move(particleInit) );
+        }
 
 
+        // WARNING: TODO: we need a sublayout of refinedLayout_
+        // corresponding to the sub Box
+        std::unique_ptr<ElectromagInitializer> emInitPtr {
+            new ElectromagInitializer{refinedLayout_, "_EMField", "_EMFields"} };
+
+        // For each boundary build the PatchBoundary object
+        std::unique_ptr<Boundary>
+                boundaryPtr{ new PatchBoundary{refinedLayout_, subBox,
+                        std::move(ionInitPtr), std::move(emInitPtr)} };
 
 
-    // Second, next build all the PatchBoundary objects
+        // For each boundary add this PatchBoundary to our temporary
+        // vector of std::unique_ptr<Boundary>
+        boundaries.push_back( std::move(boundaryPtr) ) ;
 
-    // the following intializer factory might be used to build
-    // each PatchBoundary object
-//    std::unique_ptr<InitializerFactory>
-//            factory { new MLMDInitializerFactory(coarsePatch, refinedBox, refinedLayout) }
+    }
+
+    // SECOND, build PatchBoundaryCondition object
+    std::unique_ptr<BoundaryCondition> boundaryCondition
+    {new PatchBoundaryCondition{refinedPRA, parentPatch_, coarseLayout, std::move(boundaries)}};
 
 
-
-
-
-
-    // return hard coded domain periodic boundary condition
-//    std::vector<DomainBoundaryCondition::BoundaryInfo> boundaries(2);
-
-    // "first" is the edge coordinate
-//    boundaries[0].first = Edge::Xmin;
-//    boundaries[1].first = Edge::Xmax;
-
-    // "second" is the type of boundary, here periodic
-//    boundaries[0].second = BoundaryType::Periodic;
-//    boundaries[1].second = BoundaryType::Periodic;
-
-//    std::unique_ptr<BoundaryCondition> bc {new DomainBoundaryCondition{layout_, boundaries}};
-
-    return nullptr;
+    return boundaryCondition;
 }
 
 
