@@ -211,6 +211,19 @@ uint32 GridLayout::ghostStartIndex(Field const& field, Direction direction) cons
 }
 
 
+/**
+ * @brief GridLayout::ghostStartIndex returns the index of the first ghost node
+ * of a 'field' in a given 'direction'
+ * @param centering is either QtyCentering::dual or QtyCentering::primal
+ * @param direction
+ * @return
+ */
+uint32 GridLayout::ghostStartIndex(QtyCentering centering, Direction direction) const
+{
+    // TODO should this not always be 0?
+    return implPtr_->ghostStartIndex(centering, direction);
+}
+
 
 
 /**
@@ -222,6 +235,17 @@ uint32 GridLayout::ghostEndIndex  (Field const& field, Direction direction) cons
     return implPtr_->ghostEndIndex(field, direction);
 }
 
+/**
+ * @brief GridLayout::ghostEndIndex returns the index of the last ghost node
+ * of a 'field' in a given 'direction'
+ * @param centering is either QtyCentering::dual or QtyCentering::primal
+ * @param direction
+ * @return
+ */
+uint32 GridLayout::ghostEndIndex  (QtyCentering centering, Direction direction) const
+{
+    return implPtr_->ghostEndIndex(centering, direction);
+}
 
 
 

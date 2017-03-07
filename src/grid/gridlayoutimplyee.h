@@ -55,11 +55,14 @@ public:
     virtual uint32 physicalStartIndex(Field const& field, Direction direction) const override;
     virtual uint32 physicalEndIndex  (Field const& field, Direction direction) const override;
 
-    virtual uint32 physicalStartIndex( QtyCentering centering, Direction direction ) const override ;
-    virtual uint32 physicalEndIndex ( QtyCentering centering, Direction direction  ) const override ;
+    virtual uint32 physicalStartIndex(QtyCentering centering, Direction direction ) const override ;
+    virtual uint32 physicalEndIndex  (QtyCentering centering, Direction direction ) const override ;
 
     virtual uint32 ghostStartIndex(Field const& field, Direction direction) const override;
     virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const override;
+
+    virtual uint32 ghostStartIndex(QtyCentering centering, Direction direction) const override;
+    virtual uint32 ghostEndIndex  (QtyCentering centering, Direction direction) const override;
 
     virtual void deriv1D(Field const& operand, Field& derivative) const override;
 

@@ -80,13 +80,16 @@ protected:
 
 
     uint32 physicalStartIndex_(Field const& field, Direction direction) const;
-    uint32 physicalStartIndex_(QtyCentering centering, Direction direction) const;
-
     uint32 physicalEndIndex_  (Field const& field, Direction direction) const;
+
+    uint32 physicalStartIndex_(QtyCentering centering, Direction direction) const;
     uint32 physicalEndIndex_  (QtyCentering centering, Direction direction) const;
 
     uint32 ghostStartIndex_   (Field const& field, Direction direction) const;
     uint32 ghostEndIndex_     (Field const& field, Direction direction) const;
+
+    uint32 ghostStartIndex_   (QtyCentering centering, Direction direction) const;
+    uint32 ghostEndIndex_     (QtyCentering centering, Direction direction) const;
 
     AllocSizeT allocSize_( HybridQuantity qty ) const;
     AllocSizeT allocSizeDerived_( HybridQuantity qty, Direction dir ) const;

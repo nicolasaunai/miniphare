@@ -1,5 +1,6 @@
 
 #include "BoundaryConditions/boundary_conditions.h"
+#include "BoundaryConditions/patchboundarycondition.h"
 
 #include "AMR/mlmdinitializerfactory.h"
 #include "AMR/mlmdparticleinitializer.h"
@@ -89,9 +90,13 @@ std::unique_ptr<OhmInitializer> MLMDInitializerFactory::createOhmInitializer() c
 std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryCondition() const
 {
 
+    GridLayout refineLayout{parentPatch_->layout()} ;
+
+    PRA refinedPRA{ buildPRA_(refineLayout) } ;
 
     // First, build PatchBoundaryCondition object
-
+    std::unique_ptr<BoundaryCondition> bc
+    {new PatchBoundaryCondition{refinedPRA, parentPatch_, refineLayout}};
 
 
 
@@ -122,6 +127,74 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 //    std::unique_ptr<BoundaryCondition> bc {new DomainBoundaryCondition{layout_, boundaries}};
 
     return nullptr;
+}
+
+
+
+PRA MLMDInitializerFactory::buildPRA_( GridLayout const & layout ) const
+{
+    PRA newPRA{} ;
+
+    switch (layout.nbDimensions())
+    {
+    case 1:
+        newPRA = buildPRA1D_( layout );
+        break;
+    case 2:
+        newPRA = buildPRA2D_( layout );
+        break;
+    case 3:
+        newPRA = buildPRA3D_( layout );
+    default:
+        throw std::runtime_error("wrong dimensionality");
+    }
+
+    return newPRA ;
+}
+
+
+PRA MLMDInitializerFactory::buildPRA1D_( GridLayout const & layout ) const
+{
+    uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
+                                   layout.nbrGhostCells(QtyCentering::dual) ) ;
+
+    uint32 ix0_in = layout.physicalStartIndex(QtyCentering::primal, Direction::X) + nbrMaxGhost ;
+    uint32 ix1_in = layout.physicalEndIndex  (QtyCentering::primal, Direction::X) - nbrMaxGhost ;
+
+    double x0_in = ix0_in*layout.dx() + layout.origin().x_ ;
+    double x1_in = ix1_in*layout.dx() + layout.origin().x_ ;
+    Box innerBox{ x0_in, x1_in, 0., 0., 0., 0.} ;
+
+
+    uint32 ix0_out = layout.ghostStartIndex(QtyCentering::primal, Direction::X);
+    uint32 ix1_out = layout.ghostEndIndex  (QtyCentering::primal, Direction::X) ;
+
+    double x0_out = ix0_out*layout.dx() + layout.origin().x_ ;
+    double x1_out = ix1_out*layout.dx() + layout.origin().x_ ;
+    Box outerBox{ x0_out, x1_out, 0., 0., 0., 0.} ;
+
+    return PRA{innerBox, outerBox} ;
+}
+
+
+
+PRA MLMDInitializerFactory::buildPRA2D_( GridLayout const & layout ) const
+{
+
+    Box innerBox{ 0., 0., 0., 0., 0., 0. } ;
+    Box outerBox{ 0., 0., 0., 0., 0., 0. } ;
+
+    return PRA{innerBox, outerBox} ;
+}
+
+
+PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
+{
+
+    Box innerBox{ 0., 0., 0., 0., 0., 0. } ;
+    Box outerBox{ 0., 0., 0., 0., 0., 0. } ;
+
+    return PRA{innerBox, outerBox} ;
 }
 
 

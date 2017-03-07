@@ -26,6 +26,7 @@ private:
     Solver     solver_;
     Ions ions_;
     Electrons electrons_;
+    // TODO: Private implementation to avoid a pointer here
     std::unique_ptr<BoundaryCondition> boundaryCondition_;
 
 

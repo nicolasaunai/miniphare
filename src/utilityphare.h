@@ -21,10 +21,13 @@ namespace utils
 }
 
 
-
 struct Box
 {
     double x0, x1, y0, y1, z0, z1;
+
+    Box(): x0{0.}, x1{0.},
+           y0{0.}, y1{0.},
+           z0{0.}, z1{0.} {}
 
     Box( double xmin, double xmax,
          double ymin, double ymax,
@@ -39,6 +42,8 @@ struct Box
 struct PRA
 {
     Box  innerBox, outerBox;
+
+    PRA(): innerBox{}, outerBox{} {}
 
     PRA( Box inner, Box outer )
         : innerBox{inner}, outerBox{outer} {}

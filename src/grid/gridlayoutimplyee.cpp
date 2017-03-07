@@ -152,7 +152,11 @@ uint32 GridLayoutImplYee::ghostStartIndex(Field const& field, Direction directio
 }
 
 
-
+uint32 GridLayoutImplYee::ghostStartIndex(QtyCentering centering, Direction direction) const
+{
+    // should we directly return 0 and remove ghostStartIndex_ ?
+    return ghostStartIndex_(centering, direction);
+}
 
 
 uint32 GridLayoutImplYee::ghostEndIndex(Field const& field, Direction direction) const
@@ -161,6 +165,10 @@ uint32 GridLayoutImplYee::ghostEndIndex(Field const& field, Direction direction)
 }
 
 
+uint32 GridLayoutImplYee::ghostEndIndex(QtyCentering centering, Direction direction) const
+{
+    return ghostEndIndex_(centering, direction);
+}
 
 
 

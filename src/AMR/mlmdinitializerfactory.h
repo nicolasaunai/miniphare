@@ -47,6 +47,11 @@ private:
     // on a refined patch
     uint32 interpolationOrder_;
 
+    PRA buildPRA_  ( GridLayout const & layout ) const ;
+    PRA buildPRA1D_( GridLayout const & layout ) const ;
+    PRA buildPRA2D_( GridLayout const & layout ) const ;
+    PRA buildPRA3D_( GridLayout const & layout ) const ;
+
 public:
     MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch,
                            Box newPatchCoords,

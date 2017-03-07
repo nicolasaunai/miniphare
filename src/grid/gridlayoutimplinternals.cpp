@@ -283,9 +283,6 @@ uint32 GridLayoutImplInternals::physicalEndIndex_(Field const& field, Direction 
 
 
 
-
-
-
 uint32 GridLayoutImplInternals::ghostStartIndex_(Field const& field, Direction direction) const
 {
     // ghostStartIndex is always the first node
@@ -293,6 +290,12 @@ uint32 GridLayoutImplInternals::ghostStartIndex_(Field const& field, Direction d
 }
 
 
+
+uint32 GridLayoutImplInternals::ghostStartIndex_(QtyCentering centering, Direction direction) const
+{
+    // ghostStartIndex is always the first node
+    return 0;
+}
 
 
 
@@ -306,6 +309,14 @@ uint32 GridLayoutImplInternals::ghostEndIndex_(Field const& field, Direction dir
 }
 
 
+
+uint32 GridLayoutImplInternals::ghostEndIndex_(QtyCentering centering, Direction direction) const
+{
+    uint32 iCentering = static_cast<uint32>(centering);
+    uint32 iDir = static_cast<uint32>(direction);
+
+    return ghostEndIndexTable_[iCentering][iDir];
+}
 
 
 

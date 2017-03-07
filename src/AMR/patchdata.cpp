@@ -13,8 +13,7 @@ PatchData::PatchData(std::unique_ptr<InitializerFactory> initFactory)
                initFactory->createSolverInitializer() },
       ions_{ initFactory->gridLayout(), initFactory->createIonsInitializer() },
       electrons_{initFactory->gridLayout(), 0.2},
-      boundaryCondition_{initFactory->createBoundaryCondition()}//,
-      //EMInitializer_{initFactory->createElectromagInitializer()}
+      boundaryCondition_{initFactory->createBoundaryCondition()}
 {
 
 }
