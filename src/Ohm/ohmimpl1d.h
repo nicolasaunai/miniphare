@@ -14,6 +14,8 @@ private:
     // pressureTerm
     // inertiaTerm
 
+    void ideal_(VecField const& Ve, VecField const& B);
+
 public:
 
     explicit OhmImpl1D(GridLayout const& layout);

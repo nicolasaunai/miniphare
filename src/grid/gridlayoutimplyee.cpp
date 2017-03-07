@@ -220,4 +220,53 @@ void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const
 
 
 
+LinearCombination const& GridLayoutImplYee::momentsToEx() const
+{
+    return momentToEx_;
+}
+
+
+LinearCombination const& GridLayoutImplYee::momentsToEy() const
+{
+    return momentToEy_;
+}
+
+
+LinearCombination const& GridLayoutImplYee::momentsToEz() const
+{
+    return momentToEz_;
+}
+
+LinearCombination const& GridLayoutImplYee::ByToEx() const
+{
+    return ByToEx_;
+}
+
+LinearCombination const& GridLayoutImplYee::ByToEz() const
+{
+    return ByToEy_;
+}
+
+LinearCombination const& GridLayoutImplYee::BxToEy() const
+{
+    return BxToEy_;
+}
+
+LinearCombination const& GridLayoutImplYee::BxToEz() const
+{
+    return BxToEz_;
+}
+
+LinearCombination const& GridLayoutImplYee::BzToEy() const
+{
+    return BzToEy_;
+}
+
+LinearCombination const& GridLayoutImplYee::BzToEx() const
+{
+    return BzToEx_;
+}
+
+
+
 

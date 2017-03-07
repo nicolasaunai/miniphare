@@ -14,6 +14,9 @@
 #include "utilityphare.h"
 
 
+
+
+
 /**
  * @brief Gridlayout is a class used to handle all operations related to
  * a specific grid layout, for instance the Yee layout.
@@ -140,6 +143,24 @@ public:
     Box  getBox() const;
 
     GridLayout subLayout( Box const & newPatch, uint32 refinement ) const;
+
+
+
+    // routines for projecting some quantities form one centering to another
+    // not all quantities re-centering need to be coded, we only write
+    // those needed for Ohm, namely those for vector product
+    LinearCombination const& momentsToEx() const {return implPtr_->momentsToEx();}
+    LinearCombination const& momentsToEy() const {return implPtr_->momentsToEy();}
+    LinearCombination const& momentsToEz() const {return implPtr_->momentsToEz();}
+
+    LinearCombination const& ByToEx() const {return implPtr_->ByToEx();}
+    LinearCombination const& ByToEz() const {return implPtr_->ByToEz();}
+
+    LinearCombination const& BxToEy() const {return implPtr_->BxToEy();}
+    LinearCombination const& BxToEz() const {return implPtr_->BxToEz();}
+
+    LinearCombination const& BzToEx() const {return implPtr_->BzToEx();}
+    LinearCombination const& BzToEy() const {return implPtr_->BzToEy();}
 
 
 };

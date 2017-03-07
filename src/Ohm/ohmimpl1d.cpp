@@ -67,4 +67,196 @@ void OhmImpl1D::operator()(VecField const& B, Field const& Ne,
 
 
 
-  OhmImpl1D::~OhmImpl1D(){}
+OhmImpl1D::~OhmImpl1D(){}
+
+
+
+
+
+void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
+{
+    // in the function we calculate the VexB term
+    // since we don't know which layout we're in
+    // we can't, here, put Ve on E, B on E and calculate VexB on E.
+
+    // We we will therefore write the cross product in the most general way
+    // where Ve and B are linear combinations of nodes
+    // linear combinations being given by the GridLayout
+
+
+    // this function is 1D therefore loop only in the X direction:
+
+    Field const& Vex = Ve.component(0);
+    Field const& Vey = Ve.component(1);
+    Field const& Vez = Ve.component(2);
+
+    Field const& Bx  = B.component(0);
+    Field const& By  = B.component(1);
+    Field const& Bz  = B.component(2);
+
+    Field& VexB_x = idealTerm_.component(0);
+    Field& VexB_y = idealTerm_.component(1);
+    Field& VexB_z = idealTerm_.component(2);
+
+
+    uint32 const iStart = layout_.physicalStartIndex(VexB_x, Direction::X);
+    uint32 const iEnd   = layout_.physicalEndIndex(VexB_x,  Direction::X);
+
+    // here we get the relative indices and weights to average the moments
+    // and the magnetic field components onto the electric field
+    LinearCombination const& avgPointsMomentsEx = layout_.momentsToEx();
+    LinearCombination const& avgPointsBzEx      = layout_.BzToEx();
+    LinearCombination const& avgPointsByEx      = layout_.ByToEx();
+
+    LinearCombination const& avgPointsMomentsEy = layout_.momentsToEy();
+    LinearCombination const& avgPointsBxEy      = layout_.BxToEy();
+    LinearCombination const& avgPointsBzEy      = layout_.BzToEy();
+
+    LinearCombination const& avgPointsMomentsEz = layout_.momentsToEz();
+    LinearCombination const& avgPointsBxEz      = layout_.BxToEz();
+    LinearCombination const& avgPointsByEz      = layout_.ByToEz();
+
+
+    // ------------------------------------------------------------------------
+    //
+    //                              Ve x B _ x
+    //                           -(VyBz - VzBy)
+    // ------------------------------------------------------------------------
+    for (uint32 ix=iStart; ix <= iEnd; ++ix)
+    {
+
+        // get Vz at 'ix'
+        // and Vy at 'ix'
+        double vyloc = 0;
+        double vzloc = 0;
+        for (WeightPoint const& wp : avgPointsMomentsEx)
+        {
+            vyloc += wp.coef * Vey(ix + wp.ix);
+            vzloc += wp.coef * Vez(ix + wp.ix);
+        }
+
+        // get Bz at 'ix'
+        double bzloc = 0;
+        for (WeightPoint const& wp : avgPointsBzEx)
+        {
+            bzloc += wp.coef * Bz(ix + wp.ix);
+        }
+
+        // get By at 'ix'
+        double byloc = 0;
+        for (WeightPoint const& wp : avgPointsByEx)
+        {
+            byloc += wp.coef * By(ix + wp.ix);
+        }
+
+        VexB_x(ix) = vzloc * byloc  -  vyloc * bzloc;
+    }
+
+
+
+    // ------------------------------------------------------------------------
+    //
+    //                              Ve x B _ y
+    //                           -(VzBx - VxBz)
+    // ------------------------------------------------------------------------
+    for (uint32 ix=iStart; ix <= iEnd; ++ix)
+    {
+        // get Vz at 'ix'
+        double vzloc = 0;
+        for (WeightPoint const& wp : avgPointsMomentsEy)
+        {
+            vzloc += wp.coef * Vez(ix + wp.ix);
+        }
+
+        // get Bx at 'ix'
+        double bxloc = 0;
+        for (WeightPoint const& wp : avgPointsBxEy)
+        {
+            bxloc += wp.coef * Bx(ix + wp.ix);
+        }
+
+        // get Vx at 'ix'
+        double vxloc = 0;
+        for (WeightPoint const& wp : avgPointsMomentsEy)
+        {
+            vxloc += wp.coef * Vex(ix + wp.ix);
+        }
+
+        // get Bz at 'ix'
+        double bzloc = 0;
+        for (WeightPoint const& wp : avgPointsBzEy)
+        {
+            bzloc += wp.coef * Bz(ix + wp.ix);
+        }
+
+        VexB_y(ix) = - vzloc * bxloc  +  vxloc * bzloc;
+    }
+
+
+
+    // ------------------------------------------------------------------------
+    //
+    //                              Ve x B _ z
+    //                           -(VxBy - VyBx)
+    // ------------------------------------------------------------------------
+    for (uint32 ix=iStart; ix <= iEnd; ++ix)
+    {
+        // get Vx at 'ix'
+        double vxloc = 0;
+        for (WeightPoint const& wp : avgPointsMomentsEz)
+        {
+            vxloc += wp.coef * Vex(ix + wp.ix);
+        }
+
+        // get By at 'ix'
+        double byloc = 0;
+        for (WeightPoint const& wp : avgPointsByEz)
+        {
+            byloc += wp.coef * By(ix + wp.ix);
+        }
+
+        // get Vy at 'ix'
+        double vyloc = 0;
+        for (WeightPoint const& wp : avgPointsMomentsEz)
+        {
+            vyloc += wp.coef * Vey(ix + wp.ix);
+        }
+
+        // get Bx at 'ix'
+        double bxloc = 0;
+        for (WeightPoint const& wp : avgPointsBxEz)
+        {
+            bxloc += wp.coef * Bx(ix + wp.ix);
+        }
+
+        VexB_z(ix) = vxloc * byloc  -  vyloc * bxloc;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
