@@ -231,7 +231,7 @@ GridLayout const& MLMDInitializerFactory::gridLayout() const
 }
 
 
-Box MLMDInitializerFactory::getBox() const
+Box MLMDInitializerFactory::getRefinedBox() const
 {
     return refinedLayout_.getBox() ;
 }

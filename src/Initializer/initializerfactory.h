@@ -41,7 +41,7 @@ public:
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const = 0;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const = 0;
 
-    virtual Box getBox() const = 0;
+    virtual Box getRefinedBox() const = 0;
     virtual GridLayout const& gridLayout() const = 0 ;
     virtual double timeStep() const = 0 ;
 

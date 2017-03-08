@@ -274,7 +274,7 @@ GridLayout const& SimpleInitializerFactory::gridLayout() const
 }
 
 
-Box SimpleInitializerFactory::getBox() const
+Box SimpleInitializerFactory::getRefinedBox() const
 {
     return layout_.getBox() ;
 }
