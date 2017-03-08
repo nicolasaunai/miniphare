@@ -12,7 +12,8 @@ OhmImpl1D::OhmImpl1D(GridLayout const& layout)
 
 
 void OhmImpl1D::operator()(VecField const& B, Field const& Ne,
-                           VecField const& Ve, Field const& Pe, VecField& E)
+                           VecField const& Ve, Field const& Pe,
+                           VecField const&J, VecField& E)
 {
 
     const Field& Bx  = B.component(VecField::VecX);

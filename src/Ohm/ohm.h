@@ -27,7 +27,8 @@ public:
 
     // ohm(Bpred, Ve, Pe, Epred);
         virtual void operator()(VecField const& B, Field const& Ne,
-                                VecField const& Ve, Field const& Pe, VecField& Enew) = 0;
+                                VecField const& Ve, Field const& Pe,
+                                VecField const&J, VecField& Enew) = 0;
 
     //        virtual void operator()(VecField const& B, VecField const& Ve, TensorField const& Pe, VecField& Enew) = 0;
 
@@ -65,7 +66,8 @@ public:
 
      //ohm(Bpred, Ve, Pe, Epred);//
     void operator()(VecField const& B, Field const& Ne, VecField const& Ve,
-                         Field const& Pe, VecField& Enew);
+                    Field const& Pe,
+                    VecField const&J, VecField& Enew);
 
 };
 

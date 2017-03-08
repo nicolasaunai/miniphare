@@ -48,9 +48,10 @@ OhmImpl::~OhmImpl()
 
 //ohm(Bpred, Ve, Pe, Epred);//
  void Ohm::operator()(VecField const& B,  Field const& Ne,
-                      VecField const& Ve, Field const& Pe, VecField& Enew)
+                      VecField const& Ve, Field const& Pe,
+                      VecField const&J, VecField& Enew)
 {
-    (*implPtr_)(B, Ne, Ve, Pe, Enew);
+    (*implPtr_)(B, Ne, Ve, Pe, J, Enew);
 }
 
 

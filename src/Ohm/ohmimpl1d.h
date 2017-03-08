@@ -22,7 +22,8 @@ public:
 
 
     virtual void operator()(VecField const& B, Field const& Ne,
-                            VecField const& Ve, Field const& Pe, VecField& Enew);
+                            VecField const& Ve, Field const& Pe,
+                            VecField const&J, VecField& Enew);
 
      ~OhmImpl1D();
 };
