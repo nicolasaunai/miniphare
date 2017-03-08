@@ -16,6 +16,7 @@ private:
 
     void ideal_(VecField const& Ve, VecField const& B);
     void resistive_(VecField const& J);
+    void pressure_(Field const& Pe);
 
 public:
 

@@ -288,7 +288,11 @@ void OhmImpl1D::resistive_(VecField const& J)
 
 
 
-
+void OhmImpl1D::pressure_(Field const& Pe)
+{
+    Field& gradPx = pressureTerm_.component(0);
+    layout_.deriv(Pe, Direction::X, gradPx);
+}
 
 
 
