@@ -74,6 +74,12 @@ OhmImpl1D::~OhmImpl1D(){}
 
 
 
+
+/**
+ * @brief calculate the -Ve x B term
+ * @param Ve is the electron bulk velocity field
+ * @param B is the magnetic field
+ */
 void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
 {
     // in the function we calculate the VexB term
@@ -245,7 +251,10 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
 
 
 
-
+/**
+ * @brief Calculates the resistive term eta*J of the Ohm's law assuming constant eta
+ * @param J is the total current density
+ */
 void OhmImpl1D::resistive_(VecField const& J)
 {
     Field const& Jx = J.component(0);
@@ -287,7 +296,10 @@ void OhmImpl1D::resistive_(VecField const& J)
 
 
 
-
+/**
+ * @brief calculates the pressure gradient in 1D
+ * @param Pe is the electron pressure field (scalar)
+ */
 void OhmImpl1D::pressure_(Field const& Pe)
 {
     Field& gradPx = pressureTerm_.component(0);
