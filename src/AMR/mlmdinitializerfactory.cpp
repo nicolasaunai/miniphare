@@ -199,7 +199,12 @@ PRA MLMDInitializerFactory::buildPRA1D_( GridLayout const & layout ) const
     double x1_out = ix1_out*layout.dx() + layout.origin().x_ ;
     Box outerBox{ x0_out, x1_out, 0., 0., 0., 0.} ;
 
-    return PRA{innerBox, outerBox} ;
+    std::vector<LogicalBox> boxes ;
+    // TODO: build decomposition into boxes
+
+
+
+    return PRA{innerBox, outerBox, boxes} ;
 }
 
 
@@ -209,8 +214,9 @@ PRA MLMDInitializerFactory::buildPRA2D_( GridLayout const & layout ) const
 
     Box innerBox{ 0., 0., 0., 0., 0., 0. } ;
     Box outerBox{ 0., 0., 0., 0., 0., 0. } ;
+    std::vector<LogicalBox> boxes ;
 
-    return PRA{innerBox, outerBox} ;
+    return PRA{innerBox, outerBox, boxes} ;
 }
 
 
@@ -219,8 +225,9 @@ PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
 
     Box innerBox{ 0., 0., 0., 0., 0., 0. } ;
     Box outerBox{ 0., 0., 0., 0., 0., 0. } ;
+    std::vector<LogicalBox> boxes ;
 
-    return PRA{innerBox, outerBox} ;
+    return PRA{innerBox, outerBox, boxes} ;
 }
 
 

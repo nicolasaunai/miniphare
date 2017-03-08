@@ -1,6 +1,7 @@
 #ifndef UTILITYPHARE_H
 #define UTILITYPHARE_H
 
+#include <vector>
 #include <limits>
 #include <cmath>
 
@@ -38,15 +39,57 @@ struct Box
 
 };
 
+/**
+ * @brief The LogicalBox struct only stores indexes
+ * Remember that indexes are relative to a
+ * given GridLayout (i.e. a given patch)
+ *
+ * We have no information about the patch position
+ * in the whole domain
+ *
+ */
+struct LogicalBox
+{
+    uint32 ix0, ix1, iy0, iy1, iz0, iz1;
+
+    LogicalBox():
+        ix0{1}, ix1{1},
+        iy0{1}, iy1{1},
+        iz0{1}, iz1{1} {}
+
+    LogicalBox(uint32 ix0, uint32 ix1):
+        ix0{ix0}, ix1{ix1},
+        iy0{1}, iy1{1},
+        iz0{1}, iz1{1} {}
+
+    LogicalBox(uint32 ix0, uint32 ix1,
+               uint32 iy0, uint32 iy1):
+        ix0{ix0}, ix1{ix1},
+        iy0{iy0}, iy1{iy1},
+        iz0{1}, iz1{1} {}
+
+    LogicalBox(uint32 ix0, uint32 ix1,
+               uint32 iy0, uint32 iy1,
+               uint32 iz0, uint32 iz1):
+        ix0{ix0}, ix1{ix1},
+        iy0{iy0}, iy1{iy1},
+        iz0{iz0}, iz1{iz1} {}
+
+};
+
 
 struct PRA
 {
     Box  innerBox, outerBox;
 
+    std::vector<LogicalBox> boxDecomposition;
+
     PRA(): innerBox{}, outerBox{} {}
 
-    PRA( Box inner, Box outer )
-        : innerBox{inner}, outerBox{outer} {}
+    PRA( Box inner, Box outer,
+         std::vector<LogicalBox> boxes )
+        : innerBox{inner}, outerBox{outer},
+          boxDecomposition{boxes} {}
 };
 
 

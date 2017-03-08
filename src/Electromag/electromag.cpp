@@ -22,19 +22,6 @@ Electromag::Electromag( std::array<AllocSizeT, NBR_COMPO> E_AllocSizes,
 }
 
 
-#if 0
-void Electromag::init(ElectromagInitializer * const initializer)
-{
-    // we swap the VecFields with those of the initializer
-    // the original initializer has been MOVED to this function
-    // and that one dies at the end of the function so the swapped
-    // data is deallocated.
-    // std::swap(E_, initializer->E_);
-    // std::swap(B_, initializer->B_);
-}
-#endif
-
-
 
 Electromag::Electromag(std::unique_ptr<ElectromagInitializer> initializer)
 {
