@@ -22,10 +22,187 @@ GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, Point origin, uint32 interpO
     initPhysicalStart( gridData ) ;
     initPhysicalEnd  ( gridData ) ;
     initGhostEnd  ( gridData ) ;
-
+    initLinearCombinations_();
 
 }
 
+
+void GridLayoutImplYee::initLinearCombinations_()
+{
+    // cf https://hephaistos.lpp.polytechnique.fr/redmine/projects/hyb-par/wiki/Ohm
+    // for how to calculate coefficients and shift indexes.
+
+    int dualToPrimal;
+    int primalTodual;
+
+    if (interpOrder_ == 1 || interpOrder_ ==2)
+    {
+        dualToPrimal = -1;
+        primalTodual = 1;
+    }
+    else if (interpOrder_ == 3 || interpOrder_ == 4)
+    {
+        dualToPrimal = 1;
+        primalTodual = -1;
+    }
+    else
+    {
+        throw std::runtime_error("GridLayout Yee cannot be initialized: wrong interpolation order");
+    }
+
+
+    WeightPoint P1;
+    WeightPoint P2;
+
+    // moment to Ex is Ppp to Dpp
+    // shift only in X
+    // the shift is -1 for interpolation orders 3 and 4
+    // it is 1 for interpolation orders 1 and 2
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = 0.5;
+    P2.ix = primalTodual;
+    P2.iy = 0;
+    P2.iz = 0;
+    P2.coef = 0.5;
+    momentsToEx_.push_back(P1);
+    momentsToEx_.push_back(P2);
+
+
+    // moment to Ey is pPp to pDp
+    // shift only in Y
+    // the average is done only for 2D and 3D simulation
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = (nbdims_ >= 2) ? 0.5 : 1.;
+    momentsToEy_.push_back(P1);
+
+    // in 2 and 3D, add another point and average
+    if (nbdims_ >= 2)
+    {
+        P2.ix = 0;
+        P2.iy = primalTodual;
+        P2.iz = 0;
+        P2.coef = 0.5;
+        momentsToEy_.push_back(P2);
+    }
+
+
+    // moment to Ez is ppP to ppD
+    // shift only in Z
+    // the average is done only for 3D simulation
+    // hence for 1D and 2D runs coef==1
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = (nbdims_ == 3) ? 0.5 : 1;
+    momentsToEz_.push_back(P1);
+
+    if (nbdims_ == 3)
+    {
+        P2.ix = 0;
+        P2.iy = 0;
+        P2.iz = primalTodual;
+        P2.coef = 0.5;
+        momentsToEz_.push_back(P2);
+    }
+
+
+
+
+    // Bx to Ey is pdD to pdP
+    // shift only in Z
+    // the average is done only for 3D simulations
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = (nbdims_ == 3) ? 0.5 : 1;
+    BxToEy_.push_back(P1);
+
+    if (nbdims_ == 3)
+    {
+        P2.ix = 0;
+        P2.iy = 0;
+        P2.iz = dualToPrimal;
+        P2.coef = 0.5;
+        BxToEy_.push_back(P2);
+    }
+
+
+
+    // Bx to Ez is pDd to pPd
+    // shift in the Y direction only
+    // the average is done for 2D and 3D simulations
+    // hence for 1D simulations coef is 1
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = (nbdims_ >= 2) ? 0.5 : 1;
+    BxToEz_.push_back(P1);
+
+    if (nbdims_ >= 2)
+    {
+        P2.ix = 0;
+        P2.iy = dualToPrimal;
+        P2.iz = 0;
+        P2.coef = 0.5;
+        BxToEz_.push_back(P2);
+    }
+
+
+    // By to Ex is dpD to dpP
+    // shift only in the Z direction
+    // averaging is done only for 3D simulations
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = (nbdims_ == 3) ? 0.5 : 1;
+    ByToEx_.push_back(P1);
+
+    if (nbdims_ == 3)
+    {
+        P2.ix = 0;
+        P2.iy = 0;
+        P2.iz = dualToPrimal;
+        P2.coef = 0.5;
+        ByToEx_.push_back(P2);
+    }
+
+    // By to Ez is Dpd to Ppd
+    // shift only in the X direction
+    // the averaging is done in all simulations
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = 0.5;
+    P2.ix = dualToPrimal;
+    P2.iy = 0;
+    P2.iz = 0;
+    P2.coef = 0.5;
+    ByToEz_.push_back(P1);
+    ByToEz_.push_back(P2);
+
+
+    // Bz to Ex is dDp to dPp
+    // shift only in the Y direction
+    // the averaging is done for 2D and 3D simulations
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = (nbdims_ >= 2) ? 0.: 1;
+    BzToEx_.push_back(P1);
+
+    if (nbdims_ >= 2)
+    {
+        P2.ix = 0;
+        P2.iy = dualToPrimal;
+        P2.iz = 0;
+        P2.coef = 0.5;
+        BzToEx_.push_back(P2);
+    }
+}
 
 
 
@@ -222,19 +399,19 @@ void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const
 
 LinearCombination const& GridLayoutImplYee::momentsToEx() const
 {
-    return momentToEx_;
+    return momentsToEx_;
 }
 
 
 LinearCombination const& GridLayoutImplYee::momentsToEy() const
 {
-    return momentToEy_;
+    return momentsToEy_;
 }
 
 
 LinearCombination const& GridLayoutImplYee::momentsToEz() const
 {
-    return momentToEz_;
+    return momentsToEz_;
 }
 
 LinearCombination const& GridLayoutImplYee::ByToEx() const
@@ -244,7 +421,7 @@ LinearCombination const& GridLayoutImplYee::ByToEx() const
 
 LinearCombination const& GridLayoutImplYee::ByToEz() const
 {
-    return ByToEy_;
+    return ByToEz_;
 }
 
 LinearCombination const& GridLayoutImplYee::BxToEy() const

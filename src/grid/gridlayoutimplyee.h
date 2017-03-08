@@ -34,13 +34,15 @@ class GridLayoutImplYee : public GridLayoutImpl, private GridLayoutImplInternals
 private:
 
     void initLayoutCentering_( const gridDataT & staticData ) ;
-    LinearCombination momentToEx_;
-    LinearCombination momentToEy_;
-    LinearCombination momentToEz_;
+    void initLinearCombinations_();
+
+    LinearCombination momentsToEx_;
+    LinearCombination momentsToEy_;
+    LinearCombination momentsToEz_;
     LinearCombination BxToEy_;
     LinearCombination BxToEz_;
     LinearCombination ByToEx_;
-    LinearCombination ByToEy_;
+    LinearCombination ByToEz_;
     LinearCombination BzToEx_;
     LinearCombination BzToEy_;
 

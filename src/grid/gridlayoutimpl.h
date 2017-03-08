@@ -13,7 +13,7 @@
 
 struct WeightPoint
 {
-    uint32 ix, iy, iz;
+    int32 ix, iy, iz;
     double coef;
 };
 

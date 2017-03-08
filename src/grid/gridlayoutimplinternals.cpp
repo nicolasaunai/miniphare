@@ -11,6 +11,7 @@ GridLayoutImplInternals::GridLayoutImplInternals(uint32 nbDims, Point origin,
                                                  std::array<uint32,3> nbrCellsXYZ ,
                                                  std::array<double,3> dxdydz      )
     : nbdims_{nbDims},
+      interpOrder_{ghostParameter},
       dx_{dxdydz[0]}, dy_{dxdydz[1]}, dz_{dxdydz[2]},
       origin_{origin},
       odxdydz_{ {1./dx_, 1./dy_, 1./dz_} },
