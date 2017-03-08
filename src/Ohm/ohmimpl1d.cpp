@@ -100,8 +100,7 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
     Field& VexB_z = idealTerm_.component(2);
 
 
-    uint32 const iStart = layout_.physicalStartIndex(VexB_x, Direction::X);
-    uint32 const iEnd   = layout_.physicalEndIndex(VexB_x,  Direction::X);
+
 
     // here we get the relative indices and weights to average the moments
     // and the magnetic field components onto the electric field
@@ -123,7 +122,10 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
     //                              Ve x B _ x
     //                           -(VyBz - VzBy)
     // ------------------------------------------------------------------------
-    for (uint32 ix=iStart; ix <= iEnd; ++ix)
+    uint32 const iStartx = layout_.physicalStartIndex(VexB_x, Direction::X);
+    uint32 const iEndx   = layout_.physicalEndIndex(VexB_x,  Direction::X);
+
+    for (uint32 ix=iStartx; ix <= iEndx; ++ix)
     {
 
         // get Vz at 'ix'
@@ -160,7 +162,10 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
     //                              Ve x B _ y
     //                           -(VzBx - VxBz)
     // ------------------------------------------------------------------------
-    for (uint32 ix=iStart; ix <= iEnd; ++ix)
+    uint32 const iStarty = layout_.physicalStartIndex(VexB_y, Direction::X);
+    uint32 const iEndy   = layout_.physicalEndIndex(VexB_y,  Direction::X);
+
+    for (uint32 ix=iStarty; ix <= iEndy; ++ix)
     {
         // get Vz at 'ix'
         double vzloc = 0;
@@ -200,7 +205,10 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
     //                              Ve x B _ z
     //                           -(VxBy - VyBx)
     // ------------------------------------------------------------------------
-    for (uint32 ix=iStart; ix <= iEnd; ++ix)
+    uint32 const iStartz = layout_.physicalStartIndex(VexB_z, Direction::X);
+    uint32 const iEndz   = layout_.physicalEndIndex(VexB_z,  Direction::X);
+
+    for (uint32 ix=iStartz; ix <= iEndz; ++ix)
     {
         // get Vx at 'ix'
         double vxloc = 0;
