@@ -20,20 +20,22 @@ protected:
     VecField resistivityTerm_;
     VecField hyperResistivityTerm_;
     GridLayout layout_;
+    double eta_;
+    double nu_;
 
 public:
 
-    OhmImpl(GridLayout const& layout);
+    OhmImpl(GridLayout const& layout, double eta, double nu);
 
-    // ohm(Bpred, Ve, Pe, Epred);
         virtual void operator()(VecField const& B, Field const& Ne,
                                 VecField const& Ve, Field const& Pe,
                                 VecField const&J, VecField& Enew) = 0;
 
-    //        virtual void operator()(VecField const& B, VecField const& Ve, TensorField const& Pe, VecField& Enew) = 0;
-
         virtual ~OhmImpl();
 };
+
+
+
 
 
 

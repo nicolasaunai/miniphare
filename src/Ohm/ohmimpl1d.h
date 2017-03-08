@@ -15,10 +15,11 @@ private:
     // inertiaTerm
 
     void ideal_(VecField const& Ve, VecField const& B);
+    void resistive_(VecField const& J);
 
 public:
 
-    explicit OhmImpl1D(GridLayout const& layout);
+    explicit OhmImpl1D(GridLayout const& layout, double eta, double nu);
 
 
     virtual void operator()(VecField const& B, Field const& Ne,

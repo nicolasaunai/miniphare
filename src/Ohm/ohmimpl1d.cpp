@@ -5,8 +5,8 @@
 
 
 
-OhmImpl1D::OhmImpl1D(GridLayout const& layout)
-    :OhmImpl{ layout }
+OhmImpl1D::OhmImpl1D(GridLayout const& layout, double eta, double nu)
+    :OhmImpl{ layout , eta, nu}
 {
 }
 
@@ -246,7 +246,43 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
 
 
 
+void OhmImpl1D::resistive_(VecField const& J)
+{
+    Field const& Jx = J.component(0);
+    Field const& Jy = J.component(1);
+    Field const& Jz = J.component(2);
 
+    Field& Rx = resistivityTerm_.component(0);
+    Field& Ry = resistivityTerm_.component(1);
+    Field& Rz = resistivityTerm_.component(2);
+
+    uint32 const iStartx = layout_.physicalStartIndex(Rx, Direction::X);
+    uint32 const iEndx   = layout_.physicalEndIndex(Rx,  Direction::X);
+
+    for (uint32 ix=iStartx; ix <= iEndx; ++ix)
+    {
+        Rx(ix) = Jx(ix)*eta_;
+    }
+
+
+    uint32 const iStarty = layout_.physicalStartIndex(Ry, Direction::X);
+    uint32 const iEndy   = layout_.physicalEndIndex(Ry,  Direction::X);
+
+    for (uint32 ix=iStarty; ix <= iEndy; ++ix)
+    {
+        Ry(ix) = Jy(ix)*eta_;
+    }
+
+    uint32 const iStartz = layout_.physicalStartIndex(Rz, Direction::X);
+    uint32 const iEndz   = layout_.physicalEndIndex(Rz,  Direction::X);
+
+    for (uint32 ix=iStartz; ix <= iEndz; ++ix)
+    {
+        Rz(ix) = Jz(ix)*eta_;
+    }
+
+
+}
 
 
 

@@ -7,32 +7,34 @@
 
 
 
-OhmImpl::OhmImpl(GridLayout const& layout)
-    : idealTerm_{   layout.allocSize(HybridQuantity::Ex),
-                    layout.allocSize(HybridQuantity::Ey),
-                    layout.allocSize(HybridQuantity::Ez),
-                    { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
-                    "_ideal"},
+OhmImpl::OhmImpl(GridLayout const& layout, double eta, double nu)
 
-      pressureTerm_{layout.allocSize(HybridQuantity::Ex),
-                    layout.allocSize(HybridQuantity::Ey),
-                    layout.allocSize(HybridQuantity::Ez),
-                    { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
-                    "_pressure" },
-      resistivityTerm_{layout.allocSize(HybridQuantity::Ex),
-                       layout.allocSize(HybridQuantity::Ey),
-                       layout.allocSize(HybridQuantity::Ez),
-                    { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
-                    "_resistivity" },
-      hyperResistivityTerm_{layout.allocSize(HybridQuantity::Ex),
-                            layout.allocSize(HybridQuantity::Ey),
-                            layout.allocSize(HybridQuantity::Ez),
-                    { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
-                    "_hyperresistivity" },
+    : idealTerm_ { layout.allocSize(HybridQuantity::Ex),
+                   layout.allocSize(HybridQuantity::Ey),
+                   layout.allocSize(HybridQuantity::Ez),
+            { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+            "_VexB" },
 
-      layout_{ layout }
-{
-}
+      pressureTerm_ { layout.allocSize(HybridQuantity::Ex),
+                             layout.allocSize(HybridQuantity::Ey),
+                             layout.allocSize(HybridQuantity::Ez),
+                      { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+                      "_gradPe" },
+      resistivityTerm_ { layout.allocSize(HybridQuantity::Ex),
+                             layout.allocSize(HybridQuantity::Ey),
+                             layout.allocSize(HybridQuantity::Ez),
+                      { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+                      "_etaJ" },
+      hyperResistivityTerm_ { layout.allocSize(HybridQuantity::Ex),
+                             layout.allocSize(HybridQuantity::Ey),
+                             layout.allocSize(HybridQuantity::Ez),
+                      { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+                      "_nuLapJ" },
+      layout_{layout}, eta_{eta}, nu_{nu}
+{}
+
+
+
 
 
 Ohm::Ohm(GridLayout const& layout)
