@@ -30,6 +30,14 @@ struct Box
            y0{0.}, y1{0.},
            z0{0.}, z1{0.} {}
 
+    Box( double xmin, double xmax )
+        : x0{xmin}, x1{xmax} {}
+
+    Box( double xmin, double xmax,
+         double ymin, double ymax )
+        : x0{xmin}, x1{xmax},
+          y0{ymin}, y1{ymax} {}
+
     Box( double xmin, double xmax,
          double ymin, double ymax,
          double zmin, double zmax )
@@ -80,15 +88,18 @@ struct LogicalBox
 
 struct PRA
 {
-    Box  innerBox, outerBox;
+    std::array<uint32, 3> nbrCells ;
 
-    std::vector<LogicalBox> boxDecomposition;
+    std::vector<LogicalBox> logicDecomposition;
+    std::vector<Box> boxDecomposition;
 
-    PRA(): innerBox{}, outerBox{} {}
+    PRA() {}
 
-    PRA( Box inner, Box outer,
-         std::vector<LogicalBox> boxes )
-        : innerBox{inner}, outerBox{outer},
+    PRA( std::array<uint32, 3> nbrCells,
+         std::vector<LogicalBox> logicBoxes,
+         std::vector<Box> boxes )
+        : nbrCells{nbrCells},
+          logicDecomposition{logicBoxes},
           boxDecomposition{boxes} {}
 };
 

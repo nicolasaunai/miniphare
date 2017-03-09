@@ -52,6 +52,9 @@ private:
     PRA buildPRA2D_( GridLayout const & layout ) const ;
     PRA buildPRA3D_( GridLayout const & layout ) const ;
 
+    GridLayout buildPRABoundaryLayout_(
+            PRA const & refinedPRA, uint32 idim ) const ;
+
 public:
     MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch,
                            Box newPatchCoords,

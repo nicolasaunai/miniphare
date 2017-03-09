@@ -102,12 +102,11 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
     std::vector<std::unique_ptr<Boundary>> boundaries{} ;
 
     // FIRST, LOOP OVER all the boundaries
-    for(uint32 idim=0 ; idim<nbrBoundaries ; ++idim)
+    for(uint32 ibord=0 ; ibord<nbrBoundaries ; ++ibord)
     {
-
-        // TODO: get a sub Box from the PRA
-        // corresponding to the adequate boundary
-        Box subBox{} ;
+        // Get a sub layout of the patch layout
+        // corresponding to the adequate PRA boundary
+        GridLayout praEdgeLayout{ buildPRABoundaryLayout_( refinedPRA, ibord ) };
 
         /* this routine creates an ion initializer with a Patch Choice function. */
         std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
@@ -133,11 +132,11 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
         // WARNING: TODO: we need a sublayout of refinedLayout_
         // corresponding to the sub Box
         std::unique_ptr<ElectromagInitializer> emInitPtr {
-            new ElectromagInitializer{refinedLayout_, "_EMField", "_EMFields"} };
+            new ElectromagInitializer{praEdgeLayout, "_EMField", "_EMFields"} };
 
         // For each boundary build the PatchBoundary object
         std::unique_ptr<Boundary>
-                boundaryPtr{ new PatchBoundary{refinedLayout_, subBox,
+                boundaryPtr{ new PatchBoundary{praEdgeLayout,
                         std::move(ionInitPtr), std::move(emInitPtr)} };
 
 
@@ -157,6 +156,64 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 
 
 
+GridLayout MLMDInitializerFactory::buildPRABoundaryLayout_(
+        PRA const & refinedPRA, uint32 ibord ) const
+{
+
+    std::array<double,3> dxdydz = refinedLayout_.dxdydz();
+
+    uint32 nbDims = refinedLayout_.nbDimensions() ;
+    std::string layoutName = refinedLayout_.layoutName() ;
+
+    uint32 ghostParameter = refinedLayout_.order() ;
+
+
+    LogicalBox logic = refinedPRA.logicDecomposition[ibord] ;
+    Box box = refinedPRA.boxDecomposition[ibord] ;
+
+    // TODO: find out the adequate origin
+    Point origin{box.x0, box.y0, box.z0} ;
+
+    // TODO: find out the required number of cells in each direction
+    uint32 nbrCellx = logic.ix1 - logic.ix0 -1 ;
+    uint32 nbrCelly = logic.iy1 - logic.iy0 -1 ;
+    uint32 nbrCellz = logic.iz1 - logic.iz0 -1 ;
+
+    switch( ibord )
+    {
+    case 0:
+        nbrCelly = refinedLayout_.nbrCelly() + refinedPRA.nbrCells[1] ;
+        nbrCellz = refinedLayout_.nbrCellz() + refinedPRA.nbrCells[2] ;
+        break;
+    case 1:
+        nbrCelly = refinedLayout_.nbrCelly() + refinedPRA.nbrCells[1] ;
+        nbrCellz = refinedLayout_.nbrCellz() + refinedPRA.nbrCells[2] ;
+        break;
+    case 2:
+        nbrCellz = refinedLayout_.nbrCellz() + refinedPRA.nbrCells[2] ;
+        break;
+    case 3:
+        nbrCellz = refinedLayout_.nbrCellz() + refinedPRA.nbrCells[2] ;
+        break;
+    case 4:
+        break;
+    case 5:
+        break;
+    default:
+        throw std::runtime_error("Wrong boundary identifier");
+    }
+
+    std::array<uint32,3> nbrCells{ {nbrCellx, nbrCelly, nbrCellz} } ;
+
+
+    return  GridLayout(dxdydz, nbrCells,
+                       nbDims, layoutName,
+                       origin, ghostParameter );
+}
+
+
+
+
 PRA MLMDInitializerFactory::buildPRA_( GridLayout const & layout ) const
 {
     PRA newPRA{} ;
@@ -171,6 +228,7 @@ PRA MLMDInitializerFactory::buildPRA_( GridLayout const & layout ) const
         break;
     case 3:
         newPRA = buildPRA3D_( layout );
+        break;
     default:
         throw std::runtime_error("wrong dimensionality");
     }
@@ -184,50 +242,61 @@ PRA MLMDInitializerFactory::buildPRA1D_( GridLayout const & layout ) const
     uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
                                    layout.nbrGhostCells(QtyCentering::dual) ) ;
 
+    std::array<uint32, 3> nbrCells{ { 2*nbrMaxGhost, 0, 0 } } ;
+
+
+    // Inner primal indexes
     uint32 ix0_in = layout.physicalStartIndex(QtyCentering::primal, Direction::X) + nbrMaxGhost ;
     uint32 ix1_in = layout.physicalEndIndex  (QtyCentering::primal, Direction::X) - nbrMaxGhost ;
 
+    // Outer primal indexes
+    uint32 ix0_out = layout.physicalStartIndex(QtyCentering::primal, Direction::X) - nbrMaxGhost ;
+    uint32 ix1_out = layout.physicalEndIndex  (QtyCentering::primal, Direction::X) + nbrMaxGhost ;
+
+    // Inner box coordinates (primal)
     double x0_in = ix0_in*layout.dx() + layout.origin().x_ ;
     double x1_in = ix1_in*layout.dx() + layout.origin().x_ ;
-    Box innerBox{ x0_in, x1_in, 0., 0., 0., 0.} ;
 
-
-    uint32 ix0_out = layout.ghostStartIndex(QtyCentering::primal, Direction::X);
-    uint32 ix1_out = layout.ghostEndIndex  (QtyCentering::primal, Direction::X) ;
-
+    // Outer box coordinates (primal)
     double x0_out = ix0_out*layout.dx() + layout.origin().x_ ;
     double x1_out = ix1_out*layout.dx() + layout.origin().x_ ;
-    Box outerBox{ x0_out, x1_out, 0., 0., 0., 0.} ;
 
-    std::vector<LogicalBox> boxes ;
-    // TODO: build decomposition into boxes
+    // Build logic (primal) decomposition
+    std::vector<LogicalBox> logicBoxes = { {ix0_out, ix0_in}, {ix1_in, ix1_out} } ;
 
+    // Build decomposition into (primal) boxes
+    std::vector<Box> boxes = { {x0_out, x0_in}, {x1_in, x1_out} } ;
 
-
-    return PRA{innerBox, outerBox, boxes} ;
+    return PRA{nbrCells, logicBoxes, boxes} ;
 }
 
 
 
 PRA MLMDInitializerFactory::buildPRA2D_( GridLayout const & layout ) const
 {
+    uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
+                                   layout.nbrGhostCells(QtyCentering::dual) ) ;
 
-    Box innerBox{ 0., 0., 0., 0., 0., 0. } ;
-    Box outerBox{ 0., 0., 0., 0., 0., 0. } ;
-    std::vector<LogicalBox> boxes ;
+    std::array<uint32, 3> nbrCells{ { 2*nbrMaxGhost, 2*nbrMaxGhost, 0 } } ;
 
-    return PRA{innerBox, outerBox, boxes} ;
+    std::vector<LogicalBox> logicBoxes ;
+    std::vector<Box> boxes ;
+
+    return PRA{nbrCells, logicBoxes, boxes} ;
 }
 
 
 PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
 {
+    uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
+                                   layout.nbrGhostCells(QtyCentering::dual) ) ;
 
-    Box innerBox{ 0., 0., 0., 0., 0., 0. } ;
-    Box outerBox{ 0., 0., 0., 0., 0., 0. } ;
-    std::vector<LogicalBox> boxes ;
+    std::array<uint32, 3> nbrCells{ { 2*nbrMaxGhost, 2*nbrMaxGhost, 2*nbrMaxGhost } } ;
 
-    return PRA{innerBox, outerBox, boxes} ;
+    std::vector<LogicalBox> logicBoxes ;
+    std::vector<Box> boxes ;
+
+    return PRA{nbrCells, logicBoxes, boxes} ;
 }
 
 

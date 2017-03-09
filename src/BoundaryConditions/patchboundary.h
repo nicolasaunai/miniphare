@@ -16,15 +16,13 @@ class PatchBoundary : public Boundary
 private:
     Ions ions_ ;
     Electromag EMfields_ ;
-    Box position_ ;
 
 public:
-    PatchBoundary(GridLayout const & layout, Box const & box,
+    PatchBoundary(GridLayout const & layout,
                   std::unique_ptr<IonsInitializer> ionsInit,
                   std::unique_ptr<ElectromagInitializer> electromagInit )
-        :ions_{layout, std::move(ionsInit)},
-          EMfields_{std::move(electromagInit)},
-          position_{box}
+        : ions_{layout, std::move(ionsInit)},
+          EMfields_{std::move(electromagInit)}
     {std::cout << "creating patch boundary\n";}
 
     virtual ~PatchBoundary() = default ;
