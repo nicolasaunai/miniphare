@@ -52,6 +52,14 @@ private:
     PRA buildPRA2D_( GridLayout const & layout ) const ;
     PRA buildPRA3D_( GridLayout const & layout ) const ;
 
+    void preCompute_( GridLayout const & layout,
+                        Direction direction,
+                        uint32 nbrMaxGhost,
+                        uint32 & ix0_in , uint32 & ix1_in ,
+                        uint32 & ix0_out, uint32 & ix1_out,
+                        double & x0_in  , double & x1_in ,
+                        double & x0_out , double & x1_out ) const ;
+
     GridLayout buildPRABoundaryLayout_(
             PRA const & refinedPRA, uint32 idim ) const ;
 
