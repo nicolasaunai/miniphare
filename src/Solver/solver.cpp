@@ -40,7 +40,8 @@ Solver::Solver( GridLayout const& layout, double dt,
              { {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
              "Jtot" },
       faraday_{dt, layout},
-      ampere_{layout}
+      ampere_{layout},
+      ohm_{layout}
 {
 
     uint32 size = static_cast<uint32> ( solverInitializer->interpolationOrders.size() ) ;
@@ -95,8 +96,8 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     Field const&    PePred1 = electrons.pressure( ions.rho() );
 
     // --> Get electric field E_{n+1} pred1 from Ohm's law
-    // ohm(Bpred, Ne, Ve, Pe, Epred);
-    //boundaryConditions_.applyElectricBC( Epred ) ;
+    ohm_(Bpred, ions.rho(), Vepred1, PePred1, Jtot_, Epred);
+    boundaryCondition->applyElectricBC( Epred ) ;
 
 
     // Get time averaged prediction (E,B)^{n+1/2} pred1
@@ -134,8 +135,8 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // --> Get electric field E^{n+1} pred2 from Ohm's law
     // --> using (n^{n+1}, u^{n+1}) pred and B_{n+1} pred2
-    // ohm(Bpred, Ne, Ve, Pe, Epred);
-    // boundaryConditions_.applyElectricBC( Epred ) ;
+    ohm_(Bpred, ions.rho(), Vepred2, PePred2, Jtot_, Epred);
+    boundaryCondition->applyElectricBC( Epred ) ;
 
 
     // --> Get time averaged prediction (E^(n+1/2),B^(n+1/2)) pred2
@@ -173,9 +174,9 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // --> Get CORRECTED electric field E^{n+1} from Ohm's law
     // --> using (n^{n+1}, u^{n+1}) cor and B_{n+1} cor
-    // ohm(B, Ne, Ve, Pe, E);
+    ohm_(B, ions.rho(), Vecorr, Pecorr, Jtot_, E);
     // BC Fields --> Apply boundary conditions on the electric field
-    //boundaryConditions_.applyElectricBC( E ) ;
+    boundaryCondition->applyElectricBC( E ) ;
 
 }
 

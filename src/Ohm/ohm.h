@@ -32,7 +32,7 @@ public:
                             VecField const&J, VecField& Enew) = 0;
 
 
-        virtual ~OhmImpl();
+    virtual ~OhmImpl();
 };
 
 

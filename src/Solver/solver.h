@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "types.h"
+#include "Ohm/ohm.h"
 #include "Plasmas/ions.h"
 #include "Ampere/ampere.h"
 #include "pusher/pusher.h"
@@ -52,6 +53,7 @@ private:
     // algorithms
     Faraday faraday_;
     Ampere  ampere_;
+    Ohm ohm_;
     std::vector< std::unique_ptr<Interpolator> > interpolators_ ;
     std::unique_ptr<Pusher> pusher_ ;
 
