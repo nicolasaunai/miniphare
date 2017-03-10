@@ -4,7 +4,9 @@
 #include <memory>
 
 #include "Initializer/particleinitializer.h"
+#include "AMR/particleselector.h"
 #include "Plasmas/species.h"
+
 #include "utilityphare.h"
 
 

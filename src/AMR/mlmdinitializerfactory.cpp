@@ -5,6 +5,8 @@
 
 #include "AMR/mlmdinitializerfactory.h"
 #include "AMR/mlmdparticleinitializer.h"
+#include "AMR/particleselector.h"
+
 #include "Electromag/electromag.h"
 #include "Interpolator/interpolator.h"
 
