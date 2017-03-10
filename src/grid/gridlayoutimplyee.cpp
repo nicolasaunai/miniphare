@@ -191,7 +191,7 @@ void GridLayoutImplYee::initLinearCombinations_()
     P1.ix = 0;
     P1.iy = 0;
     P1.iz = 0;
-    P1.coef = (nbdims_ >= 2) ? 0.: 1;
+    P1.coef = (nbdims_ >= 2) ? 0.5: 1;
     BzToEx_.push_back(P1);
 
     if (nbdims_ >= 2)
