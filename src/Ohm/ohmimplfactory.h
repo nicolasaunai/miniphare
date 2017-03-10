@@ -15,7 +15,7 @@ public:
         switch ( layout.nbDimensions() )
         {
             case 1:
-                return std::unique_ptr<OhmImpl> ( new OhmImpl1D(layout));
+                return std::unique_ptr<OhmImpl> ( new OhmImpl1D(layout, 1e-3, 1e-4));
 
 #if 0
             case 2:

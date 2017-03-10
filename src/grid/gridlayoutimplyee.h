@@ -34,6 +34,17 @@ class GridLayoutImplYee : public GridLayoutImpl, private GridLayoutImplInternals
 private:
 
     void initLayoutCentering_( const gridDataT & staticData ) ;
+    void initLinearCombinations_();
+
+    LinearCombination momentsToEx_;
+    LinearCombination momentsToEy_;
+    LinearCombination momentsToEz_;
+    LinearCombination BxToEy_;
+    LinearCombination BxToEz_;
+    LinearCombination ByToEx_;
+    LinearCombination ByToEz_;
+    LinearCombination BzToEx_;
+    LinearCombination BzToEy_;
 
 
 
@@ -79,6 +90,20 @@ public:
     virtual QtyCentering fieldCentering(Field const & field, Direction dir) const override ;
 
     virtual uint32 nbrGhostCells( QtyCentering centering ) const override ;
+
+
+    virtual LinearCombination const& momentsToEx() const override;
+    virtual LinearCombination const& momentsToEy() const override;
+    virtual LinearCombination const& momentsToEz() const override;
+
+    virtual LinearCombination const& ByToEx() const override;
+    virtual LinearCombination const& ByToEz() const override;
+
+    virtual LinearCombination const& BxToEy() const override;
+    virtual LinearCombination const& BxToEz() const override;
+
+    virtual LinearCombination const& BzToEx() const override;
+    virtual LinearCombination const& BzToEy() const override;
 };
 
 

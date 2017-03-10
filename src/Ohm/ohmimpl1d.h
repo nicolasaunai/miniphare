@@ -6,7 +6,7 @@
 
 
 
-class OhmImpl1D : public OhmImpl , private OhmImplInternals
+class OhmImpl1D : public OhmImpl
 {
 private:
     // Field derivatives
@@ -14,13 +14,18 @@ private:
     // pressureTerm
     // inertiaTerm
 
+    void ideal_(VecField const& Ve, VecField const& B);
+    void resistive_(VecField const& J);
+    void pressure_(Field const& Pe);
+
 public:
 
-    explicit OhmImpl1D(GridLayout const& layout);
+    explicit OhmImpl1D(GridLayout const& layout, double eta, double nu);
 
 
     virtual void operator()(VecField const& B, Field const& Ne,
-                            VecField const& Ve, Field const& Pe, VecField& Enew);
+                            VecField const& Ve, Field const& Pe,
+                            VecField const&J, VecField& Enew);
 
      ~OhmImpl1D();
 };

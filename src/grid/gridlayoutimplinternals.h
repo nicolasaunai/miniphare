@@ -48,6 +48,7 @@ protected:
 
     uint32 nbrPrimalGhosts_ ;
     uint32 nbrDualGhosts_ ;
+    uint32 interpOrder_;
 
     double dx_ ;
     double dy_ ;
