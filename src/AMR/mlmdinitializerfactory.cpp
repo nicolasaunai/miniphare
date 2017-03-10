@@ -93,11 +93,14 @@ std::unique_ptr<OhmInitializer> MLMDInitializerFactory::createOhmInitializer() c
 std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryCondition() const
 {
 
-    const std::array<uint32, 3> nbrBCTab{ {2, 4, 8} } ;
-
     GridLayout coarseLayout{parentPatch_->layout()} ;
 
-    uint32 nbrBoundaries = nbrBCTab[coarseLayout.nbDimensions()-1] ;
+    uint32 nbrBoundaries = 2* (coarseLayout.nbDimensions()-1) ;
+
+    // this will be used to initialize electromagnetic fields
+    // at patch boundaries, into PRA layouts
+    Electromag const & parentElectromag = parentPatch_->data().EMfields() ;
+    Interpolator interpolator(interpolationOrder_) ;
 
     PRA refinedPRA{ buildPRA_(refinedLayout_) } ;
 
@@ -131,10 +134,18 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
         }
 
 
-        // WARNING: TODO: we need a sublayout of refinedLayout_
-        // corresponding to the sub Box
+        // We need the electromagnetic field on the PRA layout
+        // of the adequate Patch boundary
         std::unique_ptr<ElectromagInitializer> emInitPtr {
             new ElectromagInitializer{praEdgeLayout, "_EMField", "_EMFields"} };
+
+        // Now we compute the E and B fields
+        // of the ElectromagInitializer
+        fieldAtRefinedNodes1D( interpolator,
+                               parentPatch_->layout(),
+                               parentElectromag.getE() , parentElectromag.getB(),
+                               praEdgeLayout,
+                               emInitPtr->E_ , emInitPtr->B_ ) ;
 
         // For each boundary build the PatchBoundary object
         std::unique_ptr<Boundary>
