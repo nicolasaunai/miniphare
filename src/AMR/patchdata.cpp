@@ -6,7 +6,7 @@
 
 // contains all hybrid patch stuff (ions, fields, solver, etc.)
 
-PatchData::PatchData(std::unique_ptr<InitializerFactory> initFactory)
+PatchData::PatchData(std::unique_ptr<InitializerFactory> const & initFactory)
 
     : EMfields_ {initFactory->createElectromagInitializer()},
       solver_{ initFactory->gridLayout(), initFactory->timeStep(),

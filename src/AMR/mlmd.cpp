@@ -13,7 +13,7 @@ MLMD::MLMD(std::unique_ptr<InitializerFactory> initFactory)
     : baseLayout_{ GridLayout{initFactory->gridLayout()} },
       patchHierarchy_{ std::make_shared<Patch>(
                            initFactory->getBox(), baseLayout_,
-                           PatchData{std::move(initFactory)}  ) }
+                           PatchData{initFactory}  ) }
 
 {
     // will probably have to change the way objects are initialized.
