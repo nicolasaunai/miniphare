@@ -78,7 +78,7 @@ public:
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
 
-    virtual Box getRefinedBox() const override;
+    virtual Box getBox() const override;
     virtual GridLayout const& gridLayout() const override;
     virtual double timeStep() const override;
 };

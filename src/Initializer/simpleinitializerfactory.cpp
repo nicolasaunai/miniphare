@@ -191,7 +191,7 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
  * @brief SimpleInitializerFactory::createBoundaryCondition creates a BoundaryCondition that is a simple periodic domain boundary condition for 1D run.
  * @return
  */
-std::unique_ptr<BoundaryCondition>SimpleInitializerFactory::createBoundaryCondition() const
+std::unique_ptr<BoundaryCondition> SimpleInitializerFactory::createBoundaryCondition() const
 {
     // return hard coded domain periodic boundary condition
     std::vector<DomainBoundaryCondition::BoundaryInfo> boundaries(2);
@@ -274,7 +274,7 @@ GridLayout const& SimpleInitializerFactory::gridLayout() const
 }
 
 
-Box SimpleInitializerFactory::getRefinedBox() const
+Box SimpleInitializerFactory::getBox() const
 {
     return layout_.getBox() ;
 }
