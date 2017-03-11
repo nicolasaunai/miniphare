@@ -23,6 +23,7 @@ public:
             std::unique_ptr<Boundary> bc{ new PeriodicDomainBoundary{info.first} };
             return bc;
         }
+        return nullptr;
     }
 
 };

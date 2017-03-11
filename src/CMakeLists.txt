@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (miniphare)
 
-find_package(MPI)
+#find_package(MPI)
 file(GLOB_RECURSE SOURCES src *.cpp *.h)
 
 

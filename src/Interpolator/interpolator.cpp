@@ -1,4 +1,6 @@
 
+#include <stdexcept>
+
 #include "grid/gridlayoutdefs.h"
 #include "Interpolator/interpolator.h"
 #include "IndexesAndWeights/indexesandweightso1.h"
@@ -9,8 +11,7 @@
 
 
 Interpolator::Interpolator(uint32 order)
-    : order_{order},
-      impl_{ nullptr}
+    : impl_{ nullptr}
 {
 
     switch( order )
@@ -152,7 +153,14 @@ void fieldAtParticle2D(Interpolator const& interp,
                        GridLayout const & layout,
                        std::vector<Particle>& particles)
 {
-
+    // not implemented function
+    // void unused variables
+    (void) interp;
+    (void) E;
+    (void) B;
+    (void) layout;
+    (void)particles;
+    throw std::runtime_error("NOT IMPLEMENTED");
 }
 
 
@@ -161,7 +169,14 @@ void fieldAtParticle3D(Interpolator const& interp,
                        GridLayout const & layout,
                        std::vector<Particle>& particles)
 {
-
+    // not implemented function
+    // void unused variables
+    (void) interp;
+    (void) E;
+    (void) B;
+    (void) layout;
+    (void)particles;
+    throw std::runtime_error("NOT IMPLEMENTED");
 }
 
 
@@ -183,6 +198,7 @@ void fieldsAtParticles(Interpolator const& interp,
         break;
     case 3:
         fieldAtParticle3D(interp, E, B, layout, particles);
+        break;
     default:
         throw std::runtime_error("wrong dimensionality");
     }
@@ -259,7 +275,13 @@ void compute2DChargeDensityAndFlux(Interpolator& interpolator,
                                   GridLayout const& layout,
                                   std::vector<Particle>& particles)
 {
-
+    // not implemented function
+    // void unused variables
+    (void) interpolator;
+    (void) species;
+    (void) layout;
+    (void) particles;
+    throw std::runtime_error("NOT IMPLEMENTED");
 }
 
 
@@ -268,7 +290,13 @@ void compute3DChargeDensityAndFlux(Interpolator& interpolator,
                                   GridLayout const& layout,
                                   std::vector<Particle>& particles)
 {
-
+    // not implemented function
+    // void unused variables
+    (void) interpolator;
+    (void) species;
+    (void) layout;
+    (void) particles;
+    throw std::runtime_error("NOT IMPLEMENTED");
 }
 
 
@@ -287,6 +315,7 @@ void computeChargeDensityAndFlux(Interpolator& interpolator,
         break;
     case 3:
         compute3DChargeDensityAndFlux(interpolator, species, layout, particles);
+        break;
     default:
         throw std::runtime_error("wrong dimensionality");
     }

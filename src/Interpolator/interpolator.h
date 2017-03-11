@@ -17,7 +17,7 @@ class Interpolator
 {
 private:
 
-    uint32 order_ ;
+    //uint32 order_ ;
     std::unique_ptr<IndexesAndWeights> impl_ ;
 
 public:

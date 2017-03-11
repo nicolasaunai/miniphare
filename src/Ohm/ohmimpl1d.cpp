@@ -128,37 +128,39 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
     //                              Ve x B _ x
     //                           -(VyBz - VzBy)
     // ------------------------------------------------------------------------
-    uint32 const iStartx = layout_.physicalStartIndex(VexB_x, Direction::X);
-    uint32 const iEndx   = layout_.physicalEndIndex(VexB_x,  Direction::X);
-
-    for (uint32 ix=iStartx; ix <= iEndx; ++ix)
     {
+        uint32 const iStart = layout_.physicalStartIndex(VexB_x, Direction::X);
+        uint32 const iEnd   = layout_.physicalEndIndex(VexB_x,  Direction::X);
 
-        // get Vz at 'ix'
-        // and Vy at 'ix'
-        double vyloc = 0;
-        double vzloc = 0;
-        for (WeightPoint const& wp : avgPointsMomentsEx)
+        for (uint32 ix=iStart; ix <= iEnd; ++ix)
         {
-            vyloc += wp.coef * Vey(ix + wp.ix);
-            vzloc += wp.coef * Vez(ix + wp.ix);
-        }
 
-        // get Bz at 'ix'
-        double bzloc = 0;
-        for (WeightPoint const& wp : avgPointsBzEx)
-        {
-            bzloc += wp.coef * Bz(ix + wp.ix);
-        }
+            // get Vz at 'ix'
+            // and Vy at 'ix'
+            double vyloc = 0;
+            double vzloc = 0;
+            for (WeightPoint const& wp : avgPointsMomentsEx)
+            {
+                vyloc += wp.coef * Vey(ix + wp.ix);
+                vzloc += wp.coef * Vez(ix + wp.ix);
+            }
 
-        // get By at 'ix'
-        double byloc = 0;
-        for (WeightPoint const& wp : avgPointsByEx)
-        {
-            byloc += wp.coef * By(ix + wp.ix);
-        }
+            // get Bz at 'ix'
+            double bzloc = 0;
+            for (WeightPoint const& wp : avgPointsBzEx)
+            {
+                bzloc += wp.coef * Bz(ix + wp.ix);
+            }
 
-        VexB_x(ix) = vzloc * byloc  -  vyloc * bzloc;
+            // get By at 'ix'
+            double byloc = 0;
+            for (WeightPoint const& wp : avgPointsByEx)
+            {
+                byloc += wp.coef * By(ix + wp.ix);
+            }
+
+            VexB_x(ix) = vzloc * byloc  -  vyloc * bzloc;
+        }
     }
 
 
@@ -168,40 +170,42 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
     //                              Ve x B _ y
     //                           -(VzBx - VxBz)
     // ------------------------------------------------------------------------
-    uint32 const iStarty = layout_.physicalStartIndex(VexB_y, Direction::X);
-    uint32 const iEndy   = layout_.physicalEndIndex(VexB_y,  Direction::X);
-
-    for (uint32 ix=iStarty; ix <= iEndy; ++ix)
     {
-        // get Vz at 'ix'
-        double vzloc = 0;
-        for (WeightPoint const& wp : avgPointsMomentsEy)
-        {
-            vzloc += wp.coef * Vez(ix + wp.ix);
-        }
+        uint32 const iStart = layout_.physicalStartIndex(VexB_y, Direction::X);
+        uint32 const iEnd   = layout_.physicalEndIndex(VexB_y,  Direction::X);
 
-        // get Bx at 'ix'
-        double bxloc = 0;
-        for (WeightPoint const& wp : avgPointsBxEy)
+        for (uint32 ix=iStart; ix <= iEnd; ++ix)
         {
-            bxloc += wp.coef * Bx(ix + wp.ix);
-        }
+            // get Vz at 'ix'
+            double vzloc = 0;
+            for (WeightPoint const& wp : avgPointsMomentsEy)
+            {
+                vzloc += wp.coef * Vez(ix + wp.ix);
+            }
 
-        // get Vx at 'ix'
-        double vxloc = 0;
-        for (WeightPoint const& wp : avgPointsMomentsEy)
-        {
-            vxloc += wp.coef * Vex(ix + wp.ix);
-        }
+            // get Bx at 'ix'
+            double bxloc = 0;
+            for (WeightPoint const& wp : avgPointsBxEy)
+            {
+                bxloc += wp.coef * Bx(ix + wp.ix);
+            }
 
-        // get Bz at 'ix'
-        double bzloc = 0;
-        for (WeightPoint const& wp : avgPointsBzEy)
-        {
-            bzloc += wp.coef * Bz(ix + wp.ix);
-        }
+            // get Vx at 'ix'
+            double vxloc = 0;
+            for (WeightPoint const& wp : avgPointsMomentsEy)
+            {
+                vxloc += wp.coef * Vex(ix + wp.ix);
+            }
 
-        VexB_y(ix) = - vzloc * bxloc  +  vxloc * bzloc;
+            // get Bz at 'ix'
+            double bzloc = 0;
+            for (WeightPoint const& wp : avgPointsBzEy)
+            {
+                bzloc += wp.coef * Bz(ix + wp.ix);
+            }
+
+            VexB_y(ix) = - vzloc * bxloc  +  vxloc * bzloc;
+        }
     }
 
 
@@ -211,40 +215,42 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
     //                              Ve x B _ z
     //                           -(VxBy - VyBx)
     // ------------------------------------------------------------------------
-    uint32 const iStartz = layout_.physicalStartIndex(VexB_z, Direction::X);
-    uint32 const iEndz   = layout_.physicalEndIndex(VexB_z,  Direction::X);
-
-    for (uint32 ix=iStartz; ix <= iEndz; ++ix)
     {
-        // get Vx at 'ix'
-        double vxloc = 0;
-        for (WeightPoint const& wp : avgPointsMomentsEz)
-        {
-            vxloc += wp.coef * Vex(ix + wp.ix);
-        }
+        uint32 const iStart = layout_.physicalStartIndex(VexB_z, Direction::X);
+        uint32 const iEnd   = layout_.physicalEndIndex(VexB_z,  Direction::X);
 
-        // get By at 'ix'
-        double byloc = 0;
-        for (WeightPoint const& wp : avgPointsByEz)
+        for (uint32 ix=iStart; ix <= iEnd; ++ix)
         {
-            byloc += wp.coef * By(ix + wp.ix);
-        }
+            // get Vx at 'ix'
+            double vxloc = 0;
+            for (WeightPoint const& wp : avgPointsMomentsEz)
+            {
+                vxloc += wp.coef * Vex(ix + wp.ix);
+            }
 
-        // get Vy at 'ix'
-        double vyloc = 0;
-        for (WeightPoint const& wp : avgPointsMomentsEz)
-        {
-            vyloc += wp.coef * Vey(ix + wp.ix);
-        }
+            // get By at 'ix'
+            double byloc = 0;
+            for (WeightPoint const& wp : avgPointsByEz)
+            {
+                byloc += wp.coef * By(ix + wp.ix);
+            }
 
-        // get Bx at 'ix'
-        double bxloc = 0;
-        for (WeightPoint const& wp : avgPointsBxEz)
-        {
-            bxloc += wp.coef * Bx(ix + wp.ix);
-        }
+            // get Vy at 'ix'
+            double vyloc = 0;
+            for (WeightPoint const& wp : avgPointsMomentsEz)
+            {
+                vyloc += wp.coef * Vey(ix + wp.ix);
+            }
 
-        VexB_z(ix) = vxloc * byloc  -  vyloc * bxloc;
+            // get Bx at 'ix'
+            double bxloc = 0;
+            for (WeightPoint const& wp : avgPointsBxEz)
+            {
+                bxloc += wp.coef * Bx(ix + wp.ix);
+            }
+
+            VexB_z(ix) = vxloc * byloc  -  vyloc * bxloc;
+        }
     }
 
 }
@@ -265,29 +271,35 @@ void OhmImpl1D::resistive_(VecField const& J)
     Field& Ry = resistivityTerm_.component(1);
     Field& Rz = resistivityTerm_.component(2);
 
-    uint32 const iStartx = layout_.physicalStartIndex(Rx, Direction::X);
-    uint32 const iEndx   = layout_.physicalEndIndex(Rx,  Direction::X);
-
-    for (uint32 ix=iStartx; ix <= iEndx; ++ix)
     {
-        Rx(ix) = Jx(ix)*eta_;
+        uint32 const iStart = layout_.physicalStartIndex(Rx, Direction::X);
+        uint32 const iEnd   = layout_.physicalEndIndex(Rx,  Direction::X);
+
+        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+        {
+            Rx(ix) = Jx(ix)*eta_;
+        }
+    }
+
+    {
+        uint32 const iStart = layout_.physicalStartIndex(Ry, Direction::X);
+        uint32 const iEnd   = layout_.physicalEndIndex(Ry,  Direction::X);
+
+        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+        {
+            Ry(ix) = Jy(ix)*eta_;
+        }
     }
 
 
-    uint32 const iStarty = layout_.physicalStartIndex(Ry, Direction::X);
-    uint32 const iEndy   = layout_.physicalEndIndex(Ry,  Direction::X);
-
-    for (uint32 ix=iStarty; ix <= iEndy; ++ix)
     {
-        Ry(ix) = Jy(ix)*eta_;
-    }
+        uint32 const iStart = layout_.physicalStartIndex(Rz, Direction::X);
+        uint32 const iEnd   = layout_.physicalEndIndex(Rz,  Direction::X);
 
-    uint32 const iStartz = layout_.physicalStartIndex(Rz, Direction::X);
-    uint32 const iEndz   = layout_.physicalEndIndex(Rz,  Direction::X);
-
-    for (uint32 ix=iStartz; ix <= iEndz; ++ix)
-    {
-        Rz(ix) = Jz(ix)*eta_;
+        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+        {
+            Rz(ix) = Jz(ix)*eta_;
+        }
     }
 
 

@@ -68,7 +68,7 @@ void DomainBoundaryCondition::applyParticleBC(std::vector<Particle>& particleArr
 {
     for(auto&& bc : boundaries_)
     {
-        bc->applyParticleBC(particleArray, layout_);
+        bc->applyParticleBC(particleArray, leavingParticles);
     }
 }
 
