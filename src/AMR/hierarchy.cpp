@@ -11,6 +11,11 @@
 #include "utilityphare.h"
 
 
+void Hierarchy::setRootPatch(std::shared_ptr<Patch> root)
+{
+    patchTable_.push_back(std::vector< std::shared_ptr<Patch> >{std::move(root)});
+}
+
 
 
 /**

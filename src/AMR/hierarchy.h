@@ -43,10 +43,7 @@ public:
     using hierarchyType =
     std::vector< std::vector< std::shared_ptr<Patch> > > ;
 
-    explicit Hierarchy(std::shared_ptr<Patch> root)
-    {
-        patchTable_.push_back(std::vector< std::shared_ptr<Patch> >{std::move(root)});
-    }
+    Hierarchy() = default;
 
 
     Patch& root() { return *patchTable_[0][0]; }
@@ -59,6 +56,8 @@ public:
 
     void updateHierarchy( std::vector<GridLayout> const & newLayouts,
                           std::vector<RefinementInfo> const & refineInfo ) ;
+
+    void setRootPatch(std::shared_ptr<Patch> root);
 
     void addNewPatch( GridLayout const & layout,
                       RefinementInfo const & info ) ;
