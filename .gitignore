@@ -108,6 +108,5 @@ tests/Pusher/odepush_*.txt
 CMakeLists.txt.user
 Makefile
 CMakeFiles
-*.cmake
 *.cbp
 
