@@ -238,15 +238,15 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         {
             // move all particles of that species from n to n+1
             // and put the advanced particles in the predictor buffer 'particleArrayPred_'
-            pusher_->move(particles, particleArrayPred_, species.mass(), E, B, interpolator);
+            pusher_->move(particles, particleArrayPred_, species.mass(),
+                          E, B,interpolator, boundaryCondition );
 
             // resize the buffer so that charge density and fluxes use
             // no more than the right number of particles
             // particleArrayPred_ has a capacity that is large enough for all
             // particle arrays for all species.
             particleArrayPred_.resize(particles.size());
-            boundaryCondition->applyParticleBC(particleArrayPred_,
-                                               pusher_->getLeavingParticles());
+
 
             computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
         }
@@ -256,9 +256,9 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         else
         {
             // move all particles of that species from n to n+1
-            pusher_->move(particles, particles, species.mass(), E, B, interpolator);
-            boundaryCondition->applyParticleBC(particles,
-                                               pusher_->getLeavingParticles());
+            pusher_->move(particles, particles, species.mass(),
+                          E, B, interpolator, boundaryCondition );
+
             computeChargeDensityAndFlux(interpolator, species, layout_, particles);
         }
 

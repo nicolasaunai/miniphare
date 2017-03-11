@@ -30,7 +30,8 @@ public:
                        double m,
                        VecField const & E ,
                        VecField const & B ,
-                       Interpolator const& interpolator ) override ;
+                       Interpolator const& interpolator,
+                       BoundaryCondition const * const boundaryCondition) override ;
 
 };
 

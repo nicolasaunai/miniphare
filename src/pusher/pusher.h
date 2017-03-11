@@ -6,6 +6,7 @@
 #include "vecfield/vecfield.h"
 #include "Interpolator/interpolator.h"
 #include "BoundaryConditions/leavingparticles.h"
+#include "BoundaryConditions/boundary_conditions.h"
 
 /**
  * @brief Abstract interface for Pushers.
@@ -46,7 +47,8 @@ public:
                       double m,
                       VecField const & E ,
                       VecField const & B ,
-                      Interpolator const& interpolator ) = 0 ;
+                      Interpolator const& interpolator,
+                      BoundaryCondition const * const boundaryCondition) = 0 ;
 
     LeavingParticles const& getLeavingParticles() const {return leavingParticles_;}
 
