@@ -14,6 +14,12 @@
 // comment here
 class OhmImpl
 {
+protected:
+
+    virtual void ideal_(VecField const& Ve, VecField const& B) = 0;
+    virtual void resistive_(VecField const& J) = 0;
+    virtual void pressure_(Field const& Pe) = 0;
+
 public:
     VecField idealTerm_;
     VecField pressureTerm_;
@@ -23,13 +29,14 @@ public:
     double eta_;
     double nu_;
 
+
 //public:
 
     OhmImpl(GridLayout const& layout, double eta, double nu);
 
-    virtual void operator()(VecField const& B, Field const& Ne,
-                            VecField const& Ve, Field const& Pe,
-                            VecField const&J, VecField& Enew) = 0;
+
+    virtual void computeTerms(VecField const& B, VecField const& Ve,
+                              Field const& Pe, VecField const&J) =0;
 
 
     virtual ~OhmImpl();
