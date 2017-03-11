@@ -1,7 +1,9 @@
 
-#include "hybridenums.h"
+#include<algorithm>
+
 
 #include "ohm.h"
+#include "hybridenums.h"
 #include "ohmimplfactory.h"
 
 
