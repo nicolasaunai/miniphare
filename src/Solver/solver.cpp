@@ -44,6 +44,9 @@ Solver::Solver( GridLayout const& layout, double dt,
       ohm_{layout}
 {
 
+    // take information from the SolverInitializer
+    // we grab interpolators for each particle species
+    // then the pusher.
     uint32 size = static_cast<uint32> ( solverInitializer->interpolationOrders.size() ) ;
     for( uint32 ik=0 ; ik<size ; ++ik )
     {
@@ -54,8 +57,6 @@ Solver::Solver( GridLayout const& layout, double dt,
     const std::string pusherType = solverInitializer->pusherType ;
     pusher_ =  PusherFactory::createPusher( layout, pusherType, dt) ;
 
-    // TODO need to initialize OHM object
-    // TODO and vector (?) of particles (n+1)
 }
 
 
@@ -73,7 +74,6 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     VecField &Epred  = EMFieldsPred_.getE();
     VecField &Bavg   = EMFieldsAvg_.getB();
     VecField &Eavg   = EMFieldsAvg_.getE();
-
 
 
     // -----------------------------------------------------------------------
@@ -108,9 +108,9 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred 1
     // accumulate moments for each species and total ions.
-    // last argument is TRUE so that particles at n+1 are stored
+    // last argument is 'predictor1_' so that particles at n+1 are stored
     // in a temporary buffer and particles at n are kept at n
-    moveIons_(Eavg, Bavg, ions, boundaryCondition, true);
+    moveIons_(Eavg, Bavg, ions, boundaryCondition, predictor1_);
 
 
     // -----------------------------------------------------------------------
@@ -147,9 +147,9 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // Get the CORRECTED positions and velocities
     // Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred2
-    // Last argument here is FALSE because we want to
+    // Last argument here is 'predictor2_' because we want to
     // update ions at n+1 in place, i.e. overwritting ions at n
-    moveIons_(Eavg, Bavg, ions, boundaryCondition, false);
+    moveIons_(Eavg, Bavg, ions, boundaryCondition, predictor2_);
 
 
     // -----------------------------------------------------------------------
@@ -182,6 +182,8 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
 
 
+
+
 // convenience function that counts the maximum number of particles over
 // all species. this is useful to allocated the temporary particle buffer
 std::vector<Particle>::size_type maxNbrParticles(Ions const& ions)
@@ -210,7 +212,7 @@ std::vector<Particle>::size_type maxNbrParticles(Ions const& ions)
 // and compute the total ion moments.
 void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
                        BoundaryCondition const * const boundaryCondition,
-                       bool pred1)
+                       uint32 predictorStep)
 {
 
 
@@ -234,7 +236,7 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         // at t=n with particles at t=n+1 because time n will be used
         // in the second push. we rather put particles at time n+1 in a
         // temporary buffer particleArrayPred_
-        if (pred1)
+        if (predictorStep == predictor1_)
         {
             // move all particles of that species from n to n+1
             // and put the advanced particles in the predictor buffer 'particleArrayPred_'
@@ -253,7 +255,7 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
 
         // we're at pred2, so we can update particles in place as we won't
         // need their properties at t=n anymore
-        else
+        else if (predictorStep == predictor2_)
         {
             // move all particles of that species from n to n+1
             pusher_->move(particles, particles, species.mass(),
