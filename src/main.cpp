@@ -38,10 +38,11 @@ int main(int argc, char *argv[])
 
     mlmdManager.initializeRootLevel() ;
 
-    mlmdManager.evolveFullDomain() ;
-
-
-
+    for (uint32 it=0; it < 20; ++it)
+    {
+        mlmdManager.evolveFullDomain() ;
+        std::cout << it << std::endl;
+    }
 
 }
 
