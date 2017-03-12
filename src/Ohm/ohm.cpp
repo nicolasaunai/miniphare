@@ -56,7 +56,7 @@ OhmImpl::~OhmImpl()
                       VecField const&J, VecField& Enew)
 {
 
-     implPtr_->computeTerms(B, Ve, Pe, J);
+     implPtr_->computeTerms(B, Ne, Ve, Pe, J);
 
 
     Field& Ex = Enew.component(0);

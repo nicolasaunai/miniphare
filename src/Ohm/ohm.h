@@ -18,7 +18,7 @@ protected:
 
     virtual void ideal_(VecField const& Ve, VecField const& B) = 0;
     virtual void resistive_(VecField const& J) = 0;
-    virtual void pressure_(Field const& Pe) = 0;
+    virtual void pressure_(Field const& Pe, Field const& Ne) = 0;
 
 public:
     VecField idealTerm_;
@@ -30,12 +30,11 @@ public:
     double nu_;
 
 
-//public:
-
     OhmImpl(GridLayout const& layout, double eta, double nu);
 
 
-    virtual void computeTerms(VecField const& B, VecField const& Ve,
+    virtual void computeTerms(VecField const& B, Field const& Ne,
+                              VecField const& Ve,
                               Field const& Pe, VecField const&J) =0;
 
 
@@ -61,17 +60,6 @@ public:
     // TODO : faraday object should take start and end "iterators"
     // those are given by SOlver which takes them from GridLayout
     explicit Ohm(GridLayout const& layout);
-
-
-#if 0
-
-
-    Faraday(Faraday const& source) = delete;
-    Faraday& operator=(Faraday const& source) = delete;
-
-    Faraday(Faraday&& source)            = default;
-    Faraday& operator=(Faraday&& source) = default;
-#endif
 
 
      //ohm(Bpred, Ve, Pe, Epred);//

@@ -11,12 +11,13 @@ OhmImpl1D::OhmImpl1D(GridLayout const& layout, double eta, double nu)
 }
 
 
-void OhmImpl1D::computeTerms(VecField const& B, VecField const& Ve,
+void OhmImpl1D::computeTerms(VecField const& B, Field const& Ne,
+                            VecField const& Ve,
                             Field const& Pe, VecField const&J)
 {
     ideal_(Ve, B);
     resistive_(J);
-    pressure_(Pe);
+    pressure_(Pe, Ne);
     //hyperResistivity(J);
 }
 
@@ -266,10 +267,14 @@ void OhmImpl1D::resistive_(VecField const& J)
  * @brief calculates the pressure gradient in 1D
  * @param Pe is the electron pressure field (scalar)
  */
-void OhmImpl1D::pressure_(Field const& Pe)
+void OhmImpl1D::pressure_(Field const& Pe, Field const& Ne)
 {
     Field& gradPx = pressureTerm_.component(0);
     layout_.deriv(Pe, Direction::X, gradPx);
+    for (uint32 ix=0; ix <gradPx.size(); ++ix)
+    {
+        gradPx(ix) = -gradPx(ix)/Ne(ix);
+    }
 }
 
 
