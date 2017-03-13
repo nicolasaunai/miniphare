@@ -159,7 +159,7 @@ void PeriodicDomainBoundary::makeMomentPeriodic1D_(Field& moment, GridLayout con
         uint32 physEnd   = layout.physicalEndIndex  (moment, Direction::X);
         uint32 nbrGhosts = layout.nbrGhostCells(QtyCentering::primal);
 
-        for (uint32 ig=0; ig < nbrGhosts; ++ig)
+        for (uint32 ig=0; ig <= nbrGhosts; ++ig)
         {
             moment(phyStart - ig) += moment(physEnd - ig);
             moment(physEnd  + ig) += moment(phyStart + ig);
