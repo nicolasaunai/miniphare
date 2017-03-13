@@ -60,6 +60,12 @@ Solver::Solver( GridLayout const& layout, double dt,
 }
 
 
+
+
+
+
+
+
 /**
  * @brief Solver::init  ueses interpolators to initialize species moments
  * @param ions
@@ -76,11 +82,16 @@ void Solver::init(Ions& ions, BoundaryCondition const * const boundaryCondition 
     }
 
     ions.computeChargeDensity();
-    ions.computeBulkVelocity();
-
     boundaryCondition->applyDensityBC(ions.rho());
+
+    ions.computeBulkVelocity();
     boundaryCondition->applyBulkBC(ions.bulkVel());
 }
+
+
+
+
+
 
 
 
@@ -204,6 +215,9 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
 
 
+
+
+
 // convenience function that counts the maximum number of particles over
 // all species. this is useful to allocated the temporary particle buffer
 std::vector<Particle>::size_type maxNbrParticles(Ions const& ions)
@@ -224,6 +238,9 @@ std::vector<Particle>::size_type maxNbrParticles(Ions const& ions)
     }
     return nbrParticlesMax;
 }
+
+
+
 
 
 
