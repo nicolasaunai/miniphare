@@ -170,7 +170,7 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
 {
     const std::string pusher = "modifiedBoris" ;
 
-    const std::vector<uint32>  interpolationOrders = {2, 2} ;
+    const std::vector<uint32>  interpolationOrders = {1, 1} ;
 
     std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
 
