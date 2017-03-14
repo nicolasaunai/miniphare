@@ -43,7 +43,16 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
 
 
 
-
+/**
+ * @brief MLMDInitializerFactory::createElectromagInitializer creates an
+ * ElectromagInitializer object containing the adequate data built
+ * from the overlying parent patch.
+ * This data will be used to initialize the electromagnetic field of
+ * a refined patch.
+ *
+ *
+ * @return
+ */
 std::unique_ptr<ElectromagInitializer>
 MLMDInitializerFactory::createElectromagInitializer() const
 {
@@ -90,6 +99,24 @@ std::unique_ptr<OhmInitializer> MLMDInitializerFactory::createOhmInitializer() c
 }
 
 
+/**
+ * @brief MLMDInitializerFactory::createBoundaryCondition is responsible to create
+ * a BoundaryCondition object.
+ * We build the following private attributes of BoundaryCondition:
+ * - PRA refinedPRA_
+ * - std::shared_ptr<Patch> parent_
+ * - GridLayout coarseLayout_
+ * - std::vector<std::unique_ptr<Boundary>> boundaries_
+ *
+ * In this InitializerFactory, the last attribute has the following concrete type:
+ * - std::vector<std::unique_ptr<PatchBoundary>> boundaries
+ * we build a PatchBoundary object for each boundary, thereby we
+ * must provide an IonInitializer and an ElectromagInitializer containing
+ * the adequate data built from the overlying parent patch.
+ *
+ *
+ * @return a unique_ptr to a BoundaryCondition object
+ */
 std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryCondition() const
 {
 
@@ -109,11 +136,9 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
     // FIRST, LOOP OVER all the boundaries
     for(uint32 ibord=0 ; ibord<nbrBoundaries ; ++ibord)
     {
-        // Get a sub layout of the patch layout
-        // corresponding to the adequate PRA boundary
+        // Get the layout of the adequate PRA boundary
         GridLayout praEdgeLayout{ buildPRABoundaryLayout_( refinedPRA, ibord ) };
 
-        /* this routine creates an ion initializer with a Patch Choice function. */
         std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
         Ions const& parentIons = parentPatch_->ions();
 
@@ -168,7 +193,17 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 }
 
 
-
+/**
+ * @brief MLMDInitializerFactory::buildPRABoundaryLayout_ has to
+ * return a valid GridLayout corrsponding to a part of a complete PRA.
+ * In 1D, we have 2 possible boundaries.
+ * In 2D, we have 4 possible boundaries.
+ * In 3D, we have 6 possible boundaries.
+ *
+ * @param refinedPRA
+ * @param ibord
+ * @return
+ */
 GridLayout MLMDInitializerFactory::buildPRABoundaryLayout_(
         PRA const & refinedPRA, uint32 ibord ) const
 {
@@ -184,37 +219,14 @@ GridLayout MLMDInitializerFactory::buildPRABoundaryLayout_(
     LogicalBox logic = refinedPRA.logicDecomposition[ibord] ;
     Box box = refinedPRA.boxDecomposition[ibord] ;
 
-    // TODO: find out the adequate origin
+    // We set the origin from the adequate box
     Point origin{box.x0, box.y0, box.z0} ;
 
-    // TODO: find out the required number of cells in each direction
-    uint32 nbrCellx = logic.ix1 - logic.ix0 -1 ;
-    uint32 nbrCelly = logic.iy1 - logic.iy0 -1 ;
-    uint32 nbrCellz = logic.iz1 - logic.iz0 -1 ;
-
-    switch( ibord )
-    {
-    case 0:
-        nbrCelly = refinedLayout_.nbrCelly() + refinedPRA.nbrCells[1] ;
-        nbrCellz = refinedLayout_.nbrCellz() + refinedPRA.nbrCells[2] ;
-        break;
-    case 1:
-        nbrCelly = refinedLayout_.nbrCelly() + refinedPRA.nbrCells[1] ;
-        nbrCellz = refinedLayout_.nbrCellz() + refinedPRA.nbrCells[2] ;
-        break;
-    case 2:
-        nbrCellz = refinedLayout_.nbrCellz() + refinedPRA.nbrCells[2] ;
-        break;
-    case 3:
-        nbrCellz = refinedLayout_.nbrCellz() + refinedPRA.nbrCells[2] ;
-        break;
-    case 4:
-        break;
-    case 5:
-        break;
-    default:
-        throw std::runtime_error("Wrong boundary identifier");
-    }
+    // We set the required number of cells in each direction
+    // using the adequate logical box
+    uint32 nbrCellx = logic.ix1 - logic.ix0 ;
+    uint32 nbrCelly = logic.iy1 - logic.iy0 ;
+    uint32 nbrCellz = logic.iz1 - logic.iz0 ;
 
     std::array<uint32,3> nbrCells{ {nbrCellx, nbrCelly, nbrCellz} } ;
 
@@ -225,8 +237,16 @@ GridLayout MLMDInitializerFactory::buildPRABoundaryLayout_(
 }
 
 
-
-
+/**
+ * @brief MLMDInitializerFactory::buildPRA_ has to return a valid
+ * PRA depending on the dimension.
+ * In 1D, the PRA splits into 2 segments.
+ * In 2D, the PRA splits into 4 rectangle areas.
+ * In 3D, the PRA splits into 6 cuboid volumes.
+ *
+ * @param layout
+ * @return
+ */
 PRA MLMDInitializerFactory::buildPRA_( GridLayout const & layout ) const
 {
     PRA newPRA{} ;
@@ -250,6 +270,13 @@ PRA MLMDInitializerFactory::buildPRA_( GridLayout const & layout ) const
 }
 
 
+/**
+ * @brief MLMDInitializerFactory::buildPRA1D_ returns a simple
+ * 1D PRA made of 2 segments
+ *
+ * @param layout
+ * @return
+ */
 PRA MLMDInitializerFactory::buildPRA1D_( GridLayout const & layout ) const
 {
     uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
@@ -276,37 +303,14 @@ PRA MLMDInitializerFactory::buildPRA1D_( GridLayout const & layout ) const
 }
 
 
-
-
-void MLMDInitializerFactory::preCompute_( GridLayout const & layout,
-                                            Direction direction,
-                                            uint32 nbrMaxGhost,
-                                            uint32 & ix0_in , uint32 & ix1_in ,
-                                            uint32 & ix0_out, uint32 & ix1_out,
-                                            double & x0_in  , double & x1_in ,
-                                            double & x0_out , double & x1_out ) const
-{
-    // Inner primal indexes
-    ix0_in = layout.physicalStartIndex(QtyCentering::primal, direction) + nbrMaxGhost ;
-    ix1_in = layout.physicalEndIndex  (QtyCentering::primal, direction) - nbrMaxGhost ;
-
-    // Outer primal indexes
-    ix0_out = layout.physicalStartIndex(QtyCentering::primal, direction) - nbrMaxGhost ;
-    ix1_out = layout.physicalEndIndex  (QtyCentering::primal, direction) + nbrMaxGhost ;
-
-    // Inner box coordinates (primal)
-    x0_in = ix0_in*layout.dx() + layout.origin().x_ ;
-    x1_in = ix1_in*layout.dx() + layout.origin().x_ ;
-
-    // Outer box coordinates (primal)
-    x0_out = ix0_out*layout.dx() + layout.origin().x_ ;
-    x1_out = ix1_out*layout.dx() + layout.origin().x_ ;
-
-}
-
-
-
-
+/**
+ * @brief MLMDInitializerFactory::buildPRA2D_ returns a 2D PRA
+ * made of 4 rectangle areas
+ *
+ *
+ * @param layout
+ * @return
+ */
 PRA MLMDInitializerFactory::buildPRA2D_( GridLayout const & layout ) const
 {
     uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
@@ -332,6 +336,8 @@ PRA MLMDInitializerFactory::buildPRA2D_( GridLayout const & layout ) const
                     y0_out , y1_out ) ;
 
     // Build logic (primal) decomposition
+    // TODO: provide a link to redmine with a drawing
+    // to check rapidly the points
     std::vector<LogicalBox> logicBoxes = { {ix0_out, ix0_in , iy0_out, iy1_out},
                                            {ix1_in , ix1_out, iy0_out, iy1_out},
                                            {ix0_in , ix1_in , iy0_out, iy0_in },
@@ -347,6 +353,14 @@ PRA MLMDInitializerFactory::buildPRA2D_( GridLayout const & layout ) const
 }
 
 
+/**
+ * @brief MLMDInitializerFactory::buildPRA3D_ returns a 3D PRA
+ * made of 6 cuboid volumes
+ *
+ *
+ * @param layout
+ * @return
+ */
 PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
 {
     uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
@@ -381,6 +395,8 @@ PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
 
     // Build logic (primal) decomposition
     // TODO: 3D generalization
+    // TODO: provide a link to redmine with a drawing
+    // to check rapidly the points
     std::vector<LogicalBox> logicBoxes = { {ix0_out, ix0_in}, {ix1_in, ix1_out} } ;
 
     // Build decomposition into (primal) boxes
@@ -388,6 +404,44 @@ PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
     std::vector<Box> boxes = { {x0_out, x0_in}, {x1_in, x1_out} } ;
 
     return PRA{nbrCells, logicBoxes, boxes} ;
+}
+
+/**
+ * @brief MLMDInitializerFactory::preCompute_ is in charge of
+ * computing indexes - and the associated coordinates - defining a PRA
+ * in a prescribed direction.
+ * A PRA can be defined knowing an inner and an outer box
+ * (see https://hephaistos.lpp.polytechnique.fr/redmine/projects/hyb-par/wiki/FieldBCs#PRA-and-the-non-connexe-topology-issue)
+ *
+ *
+ * @param layout
+ * @param direction
+ * @param nbrMaxGhost
+ */
+void MLMDInitializerFactory::preCompute_( GridLayout const & layout,
+                                            Direction direction,
+                                            uint32 nbrMaxGhost,
+                                            uint32 & ix0_in , uint32 & ix1_in ,
+                                            uint32 & ix0_out, uint32 & ix1_out,
+                                            double & x0_in  , double & x1_in ,
+                                            double & x0_out , double & x1_out ) const
+{
+    // Inner primal indexes
+    ix0_in = layout.physicalStartIndex(QtyCentering::primal, direction) + nbrMaxGhost ;
+    ix1_in = layout.physicalEndIndex  (QtyCentering::primal, direction) - nbrMaxGhost ;
+
+    // Outer primal indexes
+    ix0_out = layout.physicalStartIndex(QtyCentering::primal, direction) - nbrMaxGhost ;
+    ix1_out = layout.physicalEndIndex  (QtyCentering::primal, direction) + nbrMaxGhost ;
+
+    // Inner box coordinates (primal)
+    x0_in = ix0_in*layout.dx() + layout.origin().getCoord( static_cast<uint32>(direction) ) ;
+    x1_in = ix1_in*layout.dx() + layout.origin().getCoord( static_cast<uint32>(direction) ) ;
+
+    // Outer box coordinates (primal)
+    x0_out = ix0_out*layout.dx() + layout.origin().getCoord( static_cast<uint32>(direction) ) ;
+    x1_out = ix1_out*layout.dx() + layout.origin().getCoord( static_cast<uint32>(direction) ) ;
+
 }
 
 

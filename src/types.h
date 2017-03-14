@@ -41,6 +41,30 @@ struct Point
     Point(double x, double y, double z):
         x_{x}, y_{y}, z_{z} {}
 
+    double getCoord(uint32 idim)
+    {
+        double value = 0.;
+        switch (idim)
+        {
+        case 0:
+            value = x_;
+            break;
+
+        case 1:
+            value = y_;
+            break;
+
+        case 2:
+            value = z_;
+            break;
+
+        default:
+            throw std::runtime_error("wrong dimensionality");
+        }
+
+        return value ;
+    }
+
 } ;
 
 
