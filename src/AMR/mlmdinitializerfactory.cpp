@@ -26,9 +26,12 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
     for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
     {
         Species const& species = parentIons.species(ispe);
-        Box  parentCoordinates  = parentPatch_->coordinates();
+
+        Box const &  parentBox  = parentPatch_->coordinates();
+        GridLayout const & parentLayout = parentPatch_->layout();
+
         std::unique_ptr<ParticleSelector> selector{
-            new isInBox{parentCoordinates, newPatchCoords_, refinedLayout_.dxdydz()} };
+            new isInBox{parentBox, newPatchCoords_, parentLayout.dxdydz()} };
 
         std::unique_ptr<ParticleInitializer>
                 particleInit{new MLMDParticleInitializer{species, std::move(selector) }};
@@ -145,11 +148,15 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
         for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
         {
             Species const& species = parentIons.species(ispe);
-            // unused: Box  parentCoordinates  = parentPatch_->coordinates();
 
-            // TODO: define isInPRA particle selector
+            Box const &  parentBox  = parentPatch_->coordinates();
+            GridLayout const & parentLayout = parentPatch_->layout();
+
+            // the selector will check whether particles from the parent Box
+            // belong to the boundary layout box
             std::unique_ptr<ParticleSelector> selector{
-                new isInPRA{} };
+                new isInBox{parentBox, praEdgeLayout.getBox(),
+                            parentLayout.dxdydz()} } ;
 
             std::unique_ptr<ParticleInitializer>
                     particleInit{new MLMDParticleInitializer{species, std::move(selector) }};

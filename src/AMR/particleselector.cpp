@@ -26,12 +26,3 @@ bool isInBox::operator()(Particle const& particle) const
 
 
 
-bool isInPRA::operator()(Particle const& particle) const
-{
-    bool isIn = false;
-
-
-    return isIn;
-}
-
-

@@ -39,18 +39,5 @@ public:
 
 
 
-class isInPRA : public ParticleSelector
-{
-
-private:
-
-
-public:
-    isInPRA() {}
-
-    bool operator()(Particle const& particle) const override ;
-    virtual ~isInPRA(){}
-};
-
 
 #endif // PARTICLESELECTOR_H
