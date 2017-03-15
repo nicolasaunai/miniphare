@@ -1,9 +1,10 @@
 
-#include <algorithm>
+#include<algorithm>
 
-#include "hybridenums.h"
+
 
 #include "ohm.h"
+#include "hybridenums.h"
 #include "ohmimplfactory.h"
 
 
@@ -55,7 +56,9 @@ OhmImpl::~OhmImpl()
                       VecField const& Ve, Field const& Pe,
                       VecField const&J, VecField& Enew)
 {
-    //(*implPtr_)(B, Ne, Ve, Pe, J, Enew);
+
+     implPtr_->computeTerms(B, Ne, Ve, Pe, J);
+
 
     Field& Ex = Enew.component(0);
     Field& Ey = Enew.component(1);

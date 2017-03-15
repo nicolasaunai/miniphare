@@ -2,7 +2,7 @@
 
 
 PythonInitializerFactory::PythonInitializerFactory()
-    : layout_{ {0.1,0.,0.}, {42, 0, 0}, 1, "yee", Point{0.,0.,0.}, 2 }, // hard-coded... will come from input somehow
+    : layout_{ {{0.1,0.,0.}}, {{42, 0, 0}}, 1, "yee", Point{0.,0.,0.}, 2 }, // hard-coded... will come from input somehow
       dt_{0.1}
 {
 

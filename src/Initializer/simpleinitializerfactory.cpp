@@ -10,7 +10,7 @@
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : layout_{ {0.1,0.,0.}, {42, 0, 0}, 1, "yee", Point{0.,0.,0.}, 2},
+    : layout_{ {{0.1,0.,0.}}, {{42, 0, 0}}, 1, "yee", Point{0.,0.,0.}, 2},
       // hard-coded... will come from input somehow
       dt_{0.1}
 {
@@ -172,10 +172,9 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
  */
 std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitializer() const
 {
-    const uint32 nbrSpecies = 2;
     const std::string pusher = "modifiedBoris" ;
 
-    const std::vector<uint32>  interpolationOrders = {2, 2} ;
+    const std::vector<uint32>  interpolationOrders = {1, 1} ;
 
     std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
 

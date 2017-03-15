@@ -159,10 +159,23 @@ void PeriodicDomainBoundary::makeMomentPeriodic1D_(Field& moment, GridLayout con
         uint32 physEnd   = layout.physicalEndIndex  (moment, Direction::X);
         uint32 nbrGhosts = layout.nbrGhostCells(QtyCentering::primal);
 
-        for (uint32 ig=0; ig < nbrGhosts; ++ig)
+        // need to deal with points on border separately
+        // because in the following loop
+        // ig=0 would do the reduction twice
+        double tmp = moment(phyStart);
+        moment(phyStart) += moment(physEnd);
+        moment(physEnd) += tmp;
+
+        // now loop on ghost nodes
+        for (uint32 ig=1; ig <= nbrGhosts; ++ig)
         {
+            tmp = moment(phyStart - ig);
             moment(phyStart - ig) += moment(physEnd - ig);
+            moment(physEnd-ig) += tmp;
+
+            tmp  = moment(physEnd+ig);
             moment(physEnd  + ig) += moment(phyStart + ig);
+            moment(phyStart+ig) += tmp;
         }
     }
 }

@@ -9,17 +9,17 @@
 
 
 
-MLMD::MLMD(std::unique_ptr<InitializerFactory> initFactory)
+MLMD::MLMD(const InitializerFactory* const initFactory)
     : baseLayout_{ GridLayout{initFactory->gridLayout()} },
       patchHierarchy_{ std::make_shared<Patch>(
                            initFactory->getBox(), baseLayout_,
                            PatchData{initFactory}  ) }
-
 {
     // will probably have to change the way objects are initialized.
     // if we want, at some point, start from an already existing hierarchy
     // (in case of restart for e.g.
 }
+
 
 
 
