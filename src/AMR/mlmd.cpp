@@ -7,9 +7,9 @@
 
 
 
-MLMD::MLMD(const InitializerFactory* const initFactory)
-    : baseLayout_{ GridLayout{initFactory->gridLayout()} },
-      patchHierarchy_( std::make_shared<Patch>( initFactory->getBox(),PatchData{initFactory} ) )
+MLMD::MLMD(InitializerFactory  const& initFactory)
+    : baseLayout_{ GridLayout{initFactory.gridLayout()} },
+      patchHierarchy_( std::make_shared<Patch>( initFactory.getBox(),PatchData{initFactory} ) )
 
 {
     // will probably have to change the way objects are initialized.

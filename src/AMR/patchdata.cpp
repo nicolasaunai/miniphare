@@ -6,14 +6,14 @@
 
 // contains all hybrid patch stuff (ions, fields, solver, etc.)
 
-PatchData::PatchData(const InitializerFactory* const  initFactory)
+PatchData::PatchData(const InitializerFactory &initFactory)
 
-    : EMfields_ {initFactory->createElectromagInitializer()},
-      solver_{ initFactory->gridLayout(), initFactory->timeStep(),
-               initFactory->createSolverInitializer() },
-      ions_{ initFactory->gridLayout(), initFactory->createIonsInitializer() },
-      electrons_{initFactory->gridLayout(), 0.2},
-      boundaryCondition_{initFactory->createBoundaryCondition()}//,
+    : EMfields_ {initFactory.createElectromagInitializer()},
+      solver_{ initFactory.gridLayout(), initFactory.timeStep(),
+               initFactory.createSolverInitializer() },
+      ions_{ initFactory.gridLayout(), initFactory.createIonsInitializer() },
+      electrons_{initFactory.gridLayout(), 0.2},
+      boundaryCondition_{initFactory.createBoundaryCondition()}//,
       //EMInitializer_{initFactory->createElectromagInitializer()}
 {
 

@@ -132,7 +132,7 @@ void Hierarchy::addNewPatch( GridLayout const & newLayout,
             factory { new MLMDInitializerFactory(parent, newBox, newLayout) } ;
 
     // create the new patch, give it a PatchData to which we pass the factory
-    Patch theNewPatch{ newBox, PatchData{ factory.get() } };
+    Patch theNewPatch{ newBox, PatchData{*factory} };
 
     // somehow attach this new patch to the hierarchy...
     parent->updateChildren( std::make_shared<Patch>( std::move(theNewPatch) ) ) ;
