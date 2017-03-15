@@ -67,10 +67,29 @@ public:
 
       std::vector<double> weightList() const { return weightList_ ; }
 
-      void computeIndexes( double reducedCoord ) ;
+      /**
+       * @brief IndexesAndWeights::computeIndexes computes
+       * the grid point indexes (indList), providing data
+       * (for interpolation) or receiving data (for projection)
+       *
+       *
+       */
+      inline std::vector<uint32> const& computeIndexes(double reducedCoord)
+      {
+          // Compute primal integer mesh coordinates of the particle
+          uint64 i_min = static_cast<uint64> \
+                  ( std::floor(reducedCoord - (static_cast<double> (order_)-1.)/2.) ) ;
+
+          for( uint64 ik=0 ; ik<order_+1 ; ik++ )
+          {
+              indexList_[ik] = i_min + ik ;
+          }
+          return indexList_;
+      }
+
 
       // this method depends on the interpolation order
-      virtual void computeWeights( double reducedCoord ) = 0 ;
+      virtual std::vector<double> const& computeWeights( double reducedCoord ) = 0 ;
 
 };
 
