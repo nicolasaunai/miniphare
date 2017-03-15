@@ -64,27 +64,23 @@ void fieldAtParticle1D(Interpolator const& interp,
     Field const & By = B.component(idirY) ;
     Field const & Bz = B.component(idirZ) ;
 
-    std::vector<std::reference_wrapper<Field const>> ExyzBxyzFields \
-            = {Ex, Ey, Ez, Bx, By, Bz} ;
+    QtyCentering centeringEx = layout.fieldCentering(Ex, Direction::X ) ;
+    QtyCentering centeringEy = layout.fieldCentering(Ey, Direction::X ) ;
+    QtyCentering centeringEz = layout.fieldCentering(Ez, Direction::X ) ;
+    QtyCentering centeringBx = layout.fieldCentering(Bx, Direction::X ) ;
+    QtyCentering centeringBy = layout.fieldCentering(By, Direction::X ) ;
+    QtyCentering centeringBz = layout.fieldCentering(Bz, Direction::X ) ;
+
 
     for (uint32 iPart=0; iPart < particles.size(); ++iPart)
     {
         Particle& part = particles[iPart];
-
-        part.Ex = 0. ; part.Ey = 0. ; part.Ez = 0. ;
-        part.Bx = 0. ; part.By = 0. ; part.Bz = 0. ;
-
-        std::vector<std::reference_wrapper<double>> partFields = \
-        {part.Ex, part.Ey, part.Ez, part.Bx, part.By, part.Bz} ;
-
-        for(uint32 ifield=0 ; ifield<partFields.size() ; ++ifield )
-        {
-            double & particleField = partFields[ifield] ;
-            Field const& meshField = ExyzBxyzFields[ifield] ;
-            auto centering = layout.fieldCentering( meshField, Direction::X ) ;
-            particleField =  interp(part, meshField, Direction::X, centering);
-
-        }// end loop on fields
+        part.Ex = interp(part, Ex, Direction::X, centeringEx);
+        part.Ey = interp(part, Ey, Direction::X, centeringEy);
+        part.Ez = interp(part, Ez, Direction::X, centeringEz);
+        part.Bx = interp(part, Bx, Direction::X, centeringBx);
+        part.By = interp(part, By, Direction::X, centeringBy);
+        part.Bz = interp(part, Bz, Direction::X, centeringBz);
     }// end loop on particles
 }
 
