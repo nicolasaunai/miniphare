@@ -34,7 +34,7 @@ private:
 
 public:
 
-    PatchData(std::unique_ptr<InitializerFactory> const & initFactory);
+    PatchData(const InitializerFactory* const  initFactory);
 
    // PatchData(double dt, const GridLayout& layout);
 

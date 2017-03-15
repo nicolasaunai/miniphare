@@ -33,6 +33,8 @@ public:
     Solver(Solver&& toMove)      = default;
     Solver& operator=(Solver&& source) = default;
 
+    void init(Ions& ions, BoundaryCondition const * const boundaryCondition ) const;
+
     void solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons,
                    BoundaryCondition const * const boundaryCondition);
 
@@ -56,6 +58,9 @@ public:
 
 private:
 
+    const uint32 predictor1_ = 0;
+    const uint32 predictor2_ = 1;
+
     GridLayout layout_;
 
     // quantities used in the solver
@@ -64,8 +69,6 @@ private:
     Electromag EMFieldsAvg_ ;
     VecField Jtot_ ;
     std::vector<Particle> particleArrayPred_;
-
-
 
 
     // algorithms
@@ -77,7 +80,7 @@ private:
 
     void moveIons_(VecField const& E, VecField const& B, Ions& ions,
                    BoundaryCondition const * const boundaryConditon,
-                   bool pred1);
+                   uint32 const predictorStep);
 
 };
 

@@ -1,13 +1,10 @@
 
-
-
 #include "patchdata.h"
 #include "hybridenums.h"
 
+
 // contains all hybrid patch stuff (ions, fields, solver, etc.)
-
-PatchData::PatchData(std::unique_ptr<InitializerFactory> const & initFactory)
-
+PatchData::PatchData(const InitializerFactory* const  initFactory)
     : EMfields_ {initFactory->createElectromagInitializer()},
       solver_{ initFactory->gridLayout(), initFactory->timeStep(),
                initFactory->createSolverInitializer() },
@@ -23,6 +20,7 @@ void PatchData::init()
 {
     std::cout << "Initializing PatchData..." << std::endl;
     ions_.loadParticles();
+    solver_.init(ions_, boundaryCondition_.get() );
     //EMfields_.init(EMInitializer_.get());
     std::cout << "PatchData initialized!" << std::endl;
 }

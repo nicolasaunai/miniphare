@@ -34,14 +34,15 @@ int main(int argc, char *argv[])
 
     std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv) ;
 
-    MLMD mlmdManager{ std::move(initFactory) } ;
+    MLMD mlmdManager{ initFactory.get() } ; //std::move(initFactory) } ;
 
     mlmdManager.initializeRootLevel() ;
 
-    mlmdManager.evolveFullDomain() ;
-
-
-
+    for (uint32 it=0; it < 20; ++it)
+    {
+        mlmdManager.evolveFullDomain() ;
+        std::cout << it << std::endl;
+    }
 
 }
 

@@ -132,6 +132,7 @@ void Ions::computeBulkVelocity()
     // therefore here we assume that rho_ has been computed before
     // i.e. that the code has called  Ions::computeChargeDensity() before.
 
+
     std::transform(vxTot.begin(), vxTot.end(), rho_.begin(), vxTot.begin(), std::divides<double>());
     std::transform(vyTot.begin(), vyTot.end(), rho_.begin(), vyTot.begin(), std::divides<double>());
     std::transform(vzTot.begin(), vzTot.end(), rho_.begin(), vzTot.begin(), std::divides<double>());

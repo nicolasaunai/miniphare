@@ -13,6 +13,7 @@
 
 
 
+
 /**
  * @brief Hierarchy::evolveHierarchy
  *
@@ -137,7 +138,7 @@ void Hierarchy::addNewPatch( GridLayout const & refinedLayout,
             factory { new MLMDInitializerFactory(coarsePatch, refinedBox, refinedLayout) } ;
 
     // create the new patch, give it a PatchData to which we pass the factory
-    Patch theNewPatch{ refinedBox, refinedLayout, PatchData{ std::move(factory) } };
+    Patch theNewPatch{ refinedBox, refinedLayout, PatchData{ factory.get() } };
 
     std::shared_ptr<Patch> patchPtr = std::make_shared<Patch>( std::move(theNewPatch) ) ;
 
