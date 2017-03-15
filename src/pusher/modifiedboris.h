@@ -16,7 +16,7 @@ private:
     void pushVelocity_(std::vector<Particle> const& particleIn,
                        std::vector<Particle> & particleOut, double m) ;
 
-    void corPush_(std::vector<Particle> const& particleIn,
+    void postPush_(std::vector<Particle> const& particleIn,
                   std::vector<Particle> & particleOut) ;
 
 public:
