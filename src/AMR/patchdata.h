@@ -33,7 +33,7 @@ private:
 
 public:
 
-    PatchData(std::unique_ptr<InitializerFactory> initFactory);
+    PatchData(const InitializerFactory* const  initFactory);
 
    // PatchData(double dt, const GridLayout& layout);
 

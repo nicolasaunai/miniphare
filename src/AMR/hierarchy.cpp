@@ -11,10 +11,6 @@
 #include "utilityphare.h"
 
 
-void Hierarchy::setRootPatch(std::shared_ptr<Patch> root)
-{
-    patchTable_.push_back(std::vector< std::shared_ptr<Patch> >{std::move(root)});
-}
 
 
 
@@ -136,7 +132,7 @@ void Hierarchy::addNewPatch( GridLayout const & newLayout,
             factory { new MLMDInitializerFactory(parent, newBox, newLayout) } ;
 
     // create the new patch, give it a PatchData to which we pass the factory
-    Patch theNewPatch{ newBox, PatchData{ std::move(factory) } };
+    Patch theNewPatch{ newBox, PatchData{ factory.get() } };
 
     // somehow attach this new patch to the hierarchy...
     parent->updateChildren( std::make_shared<Patch>( std::move(theNewPatch) ) ) ;
