@@ -31,7 +31,7 @@ public:
                        VecField const & E ,
                        VecField const & B ,
                        Interpolator const& interpolator,
-                       BoundaryCondition const * const boundaryCondition) override ;
+                       BoundaryCondition const&  boundaryCondition) override ;
 
 };
 

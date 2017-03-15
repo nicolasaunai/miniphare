@@ -48,7 +48,7 @@ public:
                       VecField const & E ,
                       VecField const & B ,
                       Interpolator const& interpolator,
-                      BoundaryCondition const * const boundaryCondition) = 0 ;
+                      BoundaryCondition const& boundaryCondition) = 0 ;
 
     LeavingParticles const& getLeavingParticles() const {return leavingParticles_;}
 

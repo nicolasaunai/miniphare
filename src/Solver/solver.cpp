@@ -70,7 +70,7 @@ Solver::Solver( GridLayout const& layout, double dt,
  * @brief Solver::init  ueses interpolators to initialize species moments
  * @param ions
  */
-void Solver::init(Ions& ions, BoundaryCondition const * const boundaryCondition ) const
+void Solver::init(Ions& ions, BoundaryCondition const& boundaryCondition) const
 {
     for (uint32 iSpe=0; iSpe < ions.nbrSpecies(); ++iSpe)
     {
@@ -82,10 +82,10 @@ void Solver::init(Ions& ions, BoundaryCondition const * const boundaryCondition 
     }
 
     ions.computeChargeDensity();
-    boundaryCondition->applyDensityBC(ions.rho());
+    boundaryCondition.applyDensityBC(ions.rho());
 
     ions.computeBulkVelocity();
-    boundaryCondition->applyBulkBC(ions.bulkVel());
+    boundaryCondition.applyBulkBC(ions.bulkVel());
 }
 
 
@@ -97,7 +97,7 @@ void Solver::init(Ions& ions, BoundaryCondition const * const boundaryCondition 
 
 void Solver::solveStep(Electromag& EMFields, Ions& ions,
                        Electrons& electrons,
-                       BoundaryCondition const * const boundaryCondition )
+                       BoundaryCondition const& boundaryCondition )
 {
     VecField &B      = EMFields.getB();
     VecField &E      = EMFields.getE();
@@ -115,11 +115,11 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // Get B^{n+1} pred1 from E^n
     faraday_(E, B, Bpred);
-    boundaryCondition->applyMagneticBC( Bpred ) ;
+    boundaryCondition.applyMagneticBC( Bpred ) ;
 
     // Compute J
     ampere_(Bpred, Jtot_);
-    boundaryCondition->applyCurrentBC(Jtot_);
+    boundaryCondition.applyCurrentBC(Jtot_);
 
 
     // --> Get electron moments at time n
@@ -128,7 +128,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // --> Get electric field E_{n+1} pred1 from Ohm's law
     ohm_(Bpred, ions.rho(), Vepred1, PePred1, Jtot_, Epred);
-    boundaryCondition->applyElectricBC( Epred ) ;
+    boundaryCondition.applyElectricBC( Epred ) ;
 
 
     // Get time averaged prediction (E,B)^{n+1/2} pred1
@@ -153,11 +153,11 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // Get B^{n+1} pred2 from E^{n+1/2} pred1
     faraday_(Eavg, B, Bpred);
-    boundaryCondition->applyMagneticBC( Bpred ) ;
+    boundaryCondition.applyMagneticBC( Bpred ) ;
 
     // Compute J
     ampere_(Bpred, Jtot_) ;
-    boundaryCondition->applyCurrentBC( Jtot_ ) ;
+    boundaryCondition.applyCurrentBC( Jtot_ ) ;
 
 
     // --> Get electron moments at time n with Pred1 ion moments
@@ -167,7 +167,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     // --> Get electric field E^{n+1} pred2 from Ohm's law
     // --> using (n^{n+1}, u^{n+1}) pred and B_{n+1} pred2
     ohm_(Bpred, ions.rho(), Vepred2, PePred2, Jtot_, Epred);
-    boundaryCondition->applyElectricBC( Epred ) ;
+    boundaryCondition.applyElectricBC( Epred ) ;
 
 
     // --> Get time averaged prediction (E^(n+1/2),B^(n+1/2)) pred2
@@ -192,11 +192,11 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // Get CORRECTED B^{n+1} from E^{n+1/2} pred2
     faraday_(Eavg, B, B);
-    boundaryCondition->applyMagneticBC(B);
+    boundaryCondition.applyMagneticBC(B);
 
     // Compute J
     ampere_(B, Jtot_) ;
-    boundaryCondition->applyCurrentBC(Jtot_) ;
+    boundaryCondition.applyCurrentBC(Jtot_) ;
 
 
     // --> Get electron moments at time n with Pred2 ion moments
@@ -207,7 +207,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     // --> using (n^{n+1}, u^{n+1}) cor and B_{n+1} cor
     ohm_(B, ions.rho(), Vecorr, Pecorr, Jtot_, E);
     // BC Fields --> Apply boundary conditions on the electric field
-    boundaryCondition->applyElectricBC( E ) ;
+    boundaryCondition.applyElectricBC( E ) ;
 
 }
 
@@ -248,7 +248,7 @@ std::vector<Particle>::size_type maxNbrParticles(Ions const& ions)
 // this routine move the ions for all species, accumulate their moments
 // and compute the total ion moments.
 void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
-                       BoundaryCondition const * const boundaryCondition,
+                       BoundaryCondition const& boundaryCondition,
                        uint32 predictorStep)
 {
 
@@ -309,8 +309,8 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
     ions.computeChargeDensity();
     ions.computeBulkVelocity();
 
-    boundaryCondition->applyDensityBC(ions.rho());
-    boundaryCondition->applyBulkBC(ions.bulkVel());
+    boundaryCondition.applyDensityBC(ions.rho());
+    boundaryCondition.applyBulkBC(ions.bulkVel());
 }
 
 

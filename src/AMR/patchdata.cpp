@@ -24,7 +24,7 @@ void PatchData::init()
 {
     std::cout << "Initializing PatchData..." << std::endl;
     ions_.loadParticles();
-    solver_.init(ions_, boundaryCondition_.get() );
+    solver_.init(ions_, *boundaryCondition_);
     //EMfields_.init(EMInitializer_.get());
     std::cout << "PatchData initialized!" << std::endl;
 }
@@ -32,7 +32,7 @@ void PatchData::init()
 
 void PatchData::solveStep()
 {
-    solver_.solveStep(EMfields_, ions_, electrons_, boundaryCondition_.get());
+    solver_.solveStep(EMfields_, ions_, electrons_, *boundaryCondition_);
 }
 
 
