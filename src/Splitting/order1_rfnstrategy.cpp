@@ -1,4 +1,6 @@
-#include "order1_allrefinestrategy.h"
+
+
+#include "Splitting/order1_rfnstrategy.h"
 
 #include "Distributions/distribgenerator.h"
 #include "Distributions/distribstrategy.h"
@@ -10,16 +12,9 @@ Order1_RFnStrategy::Order1_RFnStrategy( const std::string & splitMethod )
 
 
 std::vector<Particle> Order1_RFnStrategy::split(
-        const GlobalParams & globalParams  ,
-        uint64 totalNbrParticles_          ,
-        double dxL1,
+        double dxL1, uint32 refineFactor,
         const std::vector<Particle> & motherParticles ) const
 {
-
-    double xmin = globalParams.minGlobX() ;
-    double xmax = globalParams.maxGlobX() ;
-
-    uint32 refineFactor = globalParams.refineFactor() ;
 
     std::vector<Particle> newParticles ;
 
@@ -72,27 +67,18 @@ std::vector<Particle> Order1_RFnStrategy::split(
             wn_tab[ik] = mum_weight * w_tab[ik]/wtot ;
         }
 
-        bool valid_pos = false ;
-        if( posx_tab[0]      >xmin && posx_tab[0]      <xmax &&
-            posx_tab[nbpts-1]>xmin && posx_tab[nbpts-1]<xmax )
+
+        for( unsigned int ik=0 ; ik<nbpts ; ik++ )
         {
-            valid_pos = true ;
+            Particle partBaby( wn_tab[ik], posx_tab[ik], mum_vel) ;
+
+            newParticles.push_back( partBaby );
         }
 
-        if( valid_pos )
-        {
-            for( unsigned int ik=0 ; ik<nbpts ; ik++ )
-            {
-                Particle partBaby( wn_tab[ik], posx_tab[ik], mum_vel) ;
-
-                newParticles.push_back( partBaby );
-            }
-
-            nbpart_L1 += nbpts ;
-        }
+        nbpart_L1 += nbpts ;
     }
 
-    std::cout << "Nombre de particules L0 = " << totalNbrParticles_ << "\n" << std::endl ;
+    std::cout << "Nombre de particules L0 = " << motherParticles.size() << "\n" << std::endl ;
     std::cout << "Nombre de particules L1 = " << nbpart_L1 << "\n" << std::endl ;
 
 

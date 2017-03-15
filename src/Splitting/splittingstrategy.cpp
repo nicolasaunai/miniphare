@@ -1,4 +1,5 @@
-#include "splittingstrategy.h"
+
+#include "Splitting/splittingstrategy.h"
 
 
 

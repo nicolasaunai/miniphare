@@ -4,12 +4,12 @@
 
 
 
-void MLMDParticleInitializer::loadParticles(std::vector<Particle>& particle) const
+void MLMDParticleInitializer::loadParticles( std::vector<Particle>& particlesArray ) const
 {
     ParticleSelector const & selector = *selector_;
 
     // the ParticleInitializer has a private access to the ion of the Parent Patch
-    for( Particle const & particle: particleSource_ )
+    for( Particle const & particle: particleSource_.particles() )
     {
 
         // look if the particle is in the Patch domain
@@ -17,6 +17,7 @@ void MLMDParticleInitializer::loadParticles(std::vector<Particle>& particle) con
         if( selector(particle) )
         {
 
+            std::vector<Particle> childParticles ;
             // the big particle 'particle' is within the patch
             // so we need to split it and grab its children
             // TODO: add splitting algorithms
@@ -24,9 +25,9 @@ void MLMDParticleInitializer::loadParticles(std::vector<Particle>& particle) con
 
             // we add each child particles to the array to fill.
             // this array is the particle array of the appropriate species of the new patch
-            for child in childParticles
+            for( Particle const & child: childParticles)
             {
-                arrayToFill.push_back(child) ;
+                particlesArray.push_back(child) ;
             }
         }
     }

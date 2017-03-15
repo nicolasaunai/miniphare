@@ -3,6 +3,7 @@
 
 
 
+
 bool isInBox::operator()(Particle const& particle) const
 {
     bool isIn = false;

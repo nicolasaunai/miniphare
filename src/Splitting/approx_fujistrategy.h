@@ -1,15 +1,16 @@
-#ifndef APPROX_1TO4STRATEGY_H
-#define APPROX_1TO4STRATEGY_H
+#ifndef APPROXFUJISTRATEGY_H
+#define APPROXFUJISTRATEGY_H
 
 #include "Splitting/splittingstrategy.h"
 
-class Approx_1to4Strategy : public SplittingStrategy
+
+class Approx_FujiStrategy : public SplittingStrategy
 {
 protected:
-        double ratioDx_ ;
+    double ratioDx_ ;
 
 public:
-    Approx_1to4Strategy( const std::string & splitMethod, double ratioDx );
+    Approx_FujiStrategy( const std::string & splitMethod, double ratioDx );
 
     virtual std::vector<Particle> split(
             double dxL1, uint32 refineFactor,
@@ -17,4 +18,4 @@ public:
             const std::vector<Particle> & motherParticles ) const override ;
 };
 
-#endif // APPROX_1TO4STRATEGY_H
+#endif // APPROXFUJISTRATEGY_H

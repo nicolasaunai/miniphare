@@ -7,6 +7,8 @@
 #include <random>
 #include <cmath>
 
+#include "utilityphare.h"
+
 #include "Plasmas/particles.h"
 
 
@@ -20,9 +22,8 @@ public:
     inline std::string name() const {return p_name;}
 
     virtual std::vector<Particle> split(
-            const GlobalParams & globalParams  ,
-            uint64 totalNbrParticles_          ,
-            double dxL1,
+            double dxL1, uint32 refineFactor,
+            uint32 interpOrder,
             const std::vector<Particle> & motherParticles ) const = 0 ;
 
 protected:

@@ -1,18 +1,17 @@
 #ifndef ORDER3_RF2STRATEGY_H
 #define ORDER3_RF2STRATEGY_H
 
-#include "splittingstrategy.h"
+#include "Splitting/splittingstrategy.h"
 
 
-class Order3Strategy : public SplittingStrategy
+class Order3_RF2Strategy : public SplittingStrategy
 {
 public:
-    Order3Strategy( const std::string & splitMethod, double ratioDx );
+    Order3_RF2Strategy( const std::string & splitMethod );
 
     virtual std::vector<Particle> split(
-            const GlobalParams & globalParams  ,
-            uint64 totalNbrParticles_          ,
-            double dxL1,
+            double dxL1, uint32 refineFactor,
+            uint32 interpOrder,
             const std::vector<Particle> & motherParticles ) const override ;
 };
 

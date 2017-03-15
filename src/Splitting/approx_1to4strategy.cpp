@@ -1,26 +1,21 @@
-#include "approx_1to4strategy.h"
+
+
+#include "Splitting/approx_1to4strategy.h"
 
 #include "Distributions/distribgenerator.h"
 #include "Distributions/distribstrategy.h"
 #include "Distributions/uniformstrategy.h"
 
 
-Split1to4Strategy::Split1to4Strategy(const std::string & splitMethod,
-                                 double ratioDx)
+Approx_1to4Strategy::Approx_1to4Strategy(const std::string & splitMethod,
+                                         double ratioDx)
     : SplittingStrategy(splitMethod), ratioDx_{ratioDx} {}
 
 
-std::vector<Particle> Split1to4Strategy::split(
-        const GlobalParams & globalParams  ,
-        uint64 totalNbrParticles_          ,
-        double dxL1,
+std::vector<Particle> Approx_1to4Strategy::split(
+        double dxL1, uint32 refineFactor,
         const std::vector<Particle> & motherParticles ) const
 {
-
-    double xmin = globalParams.minGlobX() ;
-    double xmax = globalParams.maxGlobX() ;
-
-    uint32 refineFactor = globalParams.refineFactor() ;
 
     std::vector<double> jitterX ;
     std::vector<Particle> newParticles ;
@@ -37,7 +32,7 @@ std::vector<Particle> Split1to4Strategy::split(
 
     distGenerator->setStrategy(uniform);
     // We draw a uniform on the segment [0., 1.]
-    distGenerator->draw(jitterX, totalNbrParticles_, 0., 1.);
+    distGenerator->draw(jitterX, motherParticles.size(), 0., 1.);
 
     // We limit jitter to 10% of the local(refined) cell size
     for( double & jitx : jitterX )
@@ -62,39 +57,21 @@ std::vector<Particle> Split1to4Strategy::split(
             double posx1 = mum_posx + 0.5*jitterX[ik_mum] ;
             double posx2 = mum_posx - 0.5*jitterX[ik_mum] ;
 
-            bool valid_pos = false ;
-            if( posx1>xmin && posx1<xmax && posx2>xmin && posx2<xmax )
-            {
-                valid_pos = true ;
-            }
-
-            if( valid_pos )
-            {
-                Particle partBaby1( weight, posx1, mum_vel) ;
-                Particle partBaby2( weight, posx2, mum_vel) ;
-                newParticles.push_back( partBaby1 );
-                newParticles.push_back( partBaby2 );
-                nbpart_L1 += 2 ;
-            }
+            Particle partBaby1( weight, posx1, mum_vel) ;
+            Particle partBaby2( weight, posx2, mum_vel) ;
+            newParticles.push_back( partBaby1 );
+            newParticles.push_back( partBaby2 );
+            nbpart_L1 += 2 ;
 
             // creation of particles 3 and 4
             posx1 = mum_posx + 1.5*jitterX[ik_mum] ;
             posx2 = mum_posx - 1.5*jitterX[ik_mum] ;
 
-            valid_pos = false ;
-            if( posx1>xmin && posx1<xmax && posx2>xmin && posx2<xmax )
-            {
-                valid_pos = true ;
-            }
-
-            if( valid_pos )
-            {
-                Particle partBaby1( weight, posx1, mum_vel) ;
-                Particle partBaby2( weight, posx2, mum_vel) ;
-                newParticles.push_back( partBaby1 );
-                newParticles.push_back( partBaby2 );
-                nbpart_L1 += 2 ;
-            }
+            Particle partBaby1( weight, posx1, mum_vel) ;
+            Particle partBaby2( weight, posx2, mum_vel) ;
+            newParticles.push_back( partBaby1 );
+            newParticles.push_back( partBaby2 );
+            nbpart_L1 += 2 ;
         }
             break;
 

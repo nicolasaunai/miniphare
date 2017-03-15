@@ -1,25 +1,20 @@
-#include "order1_rf2strategy.h"
+
+
+#include "Splitting/order1_rf2strategy.h"
 
 #include "Distributions/distribgenerator.h"
 #include "Distributions/distribstrategy.h"
 #include "Distributions/uniformstrategy.h"
 
 
-Order1Strategy::Order1Strategy( const std::string & splitMethod )
+Order1_RF2Strategy::Order1_RF2Strategy( const std::string & splitMethod )
     : SplittingStrategy(splitMethod) {}
 
 
-std::vector<Particle> Order1Strategy::split(
-        const GlobalParams & globalParams  ,
-        uint64 totalNbrParticles_          ,
-        double dxL1,
+std::vector<Particle> Order1_RF2Strategy::split(
+        double dxL1, uint32 refineFactor,
         const std::vector<Particle> & motherParticles ) const
 {
-
-    double xmin = globalParams.minGlobX() ;
-    double xmax = globalParams.maxGlobX() ;
-
-    uint32 refineFactor = globalParams.refineFactor() ;
 
     std::vector<Particle> newParticles ;
 
@@ -51,25 +46,15 @@ std::vector<Particle> Order1Strategy::split(
             double wn2 = mum_weight * w2/wtot ;
             double wn3 = mum_weight * w3/wtot ;
 
-            bool valid_pos = false ;
-            if( posx1>xmin && posx1<xmax &&
-                posx3>xmin && posx3<xmax )
-            {
-                valid_pos = true ;
-            }
+            Particle partBaby1( wn1, posx1, mum_vel) ;
+            Particle partBaby2( wn2, posx2, mum_vel) ;
+            Particle partBaby3( wn3, posx3, mum_vel) ;
 
-            if( valid_pos )
-            {
-                Particle partBaby1( wn1, posx1, mum_vel) ;
-                Particle partBaby2( wn2, posx2, mum_vel) ;
-                Particle partBaby3( wn3, posx3, mum_vel) ;
+            newParticles.push_back( partBaby1 );
+            newParticles.push_back( partBaby2 );
+            newParticles.push_back( partBaby3 );
 
-                newParticles.push_back( partBaby1 );
-                newParticles.push_back( partBaby2 );
-                newParticles.push_back( partBaby3 );
-
-                nbpart_L1 += 3 ;
-            }
+            nbpart_L1 += 3 ;
         }
             break;
 
@@ -80,7 +65,7 @@ std::vector<Particle> Order1Strategy::split(
 
     }
 
-    std::cout << "Nombre de particules L0 = " << totalNbrParticles_ << "\n" << std::endl ;
+    std::cout << "Nombre de particules L0 = " << motherParticles.size() << "\n" << std::endl ;
     std::cout << "Nombre de particules L1 = " << nbpart_L1 << "\n" << std::endl ;
 
     return newParticles ;
