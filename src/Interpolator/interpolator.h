@@ -38,7 +38,7 @@ public:
 
         // we might interpolate a field from
         // a primal or a dual mesh
-        if(centering == QtyCentering::dual)
+        if(centering == QtyCentering::dual) // TODO this if is probably slowing us down
         {
             reducedCoord += 0.5 ;
         }
