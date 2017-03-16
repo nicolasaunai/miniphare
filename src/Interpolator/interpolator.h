@@ -24,14 +24,65 @@ public:
 
     Interpolator(uint32 order);
 
-    // we might interpolate a field from
-    // a primal or a dual mesh
-    std::tuple<std::vector<uint32>, std::vector<double>>
-    getIndexesAndWeights( Particle const & particle, \
-                          Direction dir, QtyCentering centering ) const ;
 
-    std::tuple<std::vector<uint32>, std::vector<double>>
-    getIndexesAndWeights( Particle const & particle, Direction dir ) const;
+    /**
+     * @brief operator () this overload is used to interpolate 'meshField' onto 'particle'
+     * @return the meshField interpolated at the particle position
+     */
+    inline double operator()(Particle const& particle, Field const& meshField,
+                             Direction direction,
+                             QtyCentering centering) const
+    {
+        uint32 idir = static_cast<uint32>(direction) ;
+        double reducedCoord = particle.icell[idir] + static_cast<double>(particle.delta[idir]) ;
+
+        // we might interpolate a field from
+        // a primal or a dual mesh
+        if(centering == QtyCentering::dual)
+        {
+            reducedCoord += 0.5 ;
+        }
+
+        std::vector<uint32> const& indexes = impl_->computeIndexes(reducedCoord);
+        std::vector<double> const& weights = impl_->computeWeights(reducedCoord);
+
+        double particleField = 0;
+
+        for(uint32 ik=0 ; ik<indexes.size() ; ++ik)
+        {
+            particleField += meshField(indexes[ik]) * weights[ik] ;
+        }
+        return particleField;
+    }
+
+
+    /**
+     * @brief operator () this overload projects 'particle' onto rho and fluxes
+     */
+    inline void operator()(Particle const& particle, double cellVolumeInverse,
+                           Field& rho, Field& xFlux, Field& yFlux, Field& zFlux,
+                           Direction direction) const
+    {
+        uint32 idir = static_cast<uint32>(direction) ;
+        double reducedCoord = particle.icell[idir] + static_cast<double>(particle.delta[idir]) ;
+        double weightOncellVolume = particle.weight*cellVolumeInverse;
+
+        double partRho = weightOncellVolume * particle.charge;
+        double partVx  = weightOncellVolume * particle.v[0] ;
+        double partVy  = weightOncellVolume * particle.v[1] ;
+        double partVz  = weightOncellVolume * particle.v[2] ;
+
+        std::vector<uint32> const& indexes = impl_->computeIndexes(reducedCoord);
+        std::vector<double> const& weights = impl_->computeWeights(reducedCoord);
+
+        for(uint32 ik=0 ; ik<indexes.size() ; ++ik)
+        {
+            rho(   indexes[ik] ) += partRho * weights[ik] ;
+            xFlux( indexes[ik] ) += partVx  * weights[ik] ;
+            yFlux( indexes[ik] ) += partVy  * weights[ik] ;
+            zFlux( indexes[ik] ) += partVz  * weights[ik] ;
+        }
+    }
 };
 
 

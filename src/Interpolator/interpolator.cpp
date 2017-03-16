@@ -33,53 +33,6 @@ Interpolator::Interpolator(uint32 order)
 
 
 
-std::tuple<std::vector<uint32>, std::vector<double>>
-Interpolator::getIndexesAndWeights( Particle const & particle, \
-                                    Direction dir, \
-                                    QtyCentering centering ) const
-{
-
-    uint32 idir = static_cast<uint32>( dir ) ;
-
-    // we compute the reduced coordinate
-    // in the adequate direction
-    double reducedCoord = particle.icell[idir] + \
-            static_cast<double>(particle.delta[idir]) ;
-
-    if(centering == QtyCentering::dual){
-        reducedCoord += 0.5 ;
-    }
-
-    impl_->computeIndexes( reducedCoord ) ;
-    impl_->computeWeights( reducedCoord ) ;
-
-    std::vector<uint32> indexList  = impl_->indexList () ;
-    std::vector<double> weightList = impl_->weightList() ;
-
-    return std::make_tuple( indexList, weightList ) ;
-}
-
-
-
-std::tuple<std::vector<uint32>, std::vector<double>>
-Interpolator::getIndexesAndWeights( Particle const & particle, Direction dir ) const
-{
-
-    uint32 idir = static_cast<uint32>( dir ) ;
-
-    // we compute the reduced coordinate
-    // in the adequate direction
-    double reducedCoord = particle.icell[idir] + static_cast<double>(particle.delta[idir]) ;
-
-    impl_->computeIndexes( reducedCoord ) ;
-    impl_->computeWeights( reducedCoord ) ;
-
-    std::vector<uint32> indexList  = impl_->indexList () ;
-    std::vector<double> weightList = impl_->weightList() ;
-
-    return std::make_tuple( indexList, weightList ) ;
-}
-
 
 
 
@@ -111,38 +64,23 @@ void fieldAtParticle1D(Interpolator const& interp,
     Field const & By = B.component(idirY) ;
     Field const & Bz = B.component(idirZ) ;
 
-    std::vector<std::reference_wrapper<Field const>> ExyzBxyzFields \
-            = {Ex, Ey, Ez, Bx, By, Bz} ;
+    QtyCentering centeringEx = layout.fieldCentering(Ex, Direction::X ) ;
+    QtyCentering centeringEy = layout.fieldCentering(Ey, Direction::X ) ;
+    QtyCentering centeringEz = layout.fieldCentering(Ez, Direction::X ) ;
+    QtyCentering centeringBx = layout.fieldCentering(Bx, Direction::X ) ;
+    QtyCentering centeringBy = layout.fieldCentering(By, Direction::X ) ;
+    QtyCentering centeringBz = layout.fieldCentering(Bz, Direction::X ) ;
+
 
     for (uint32 iPart=0; iPart < particles.size(); ++iPart)
     {
         Particle& part = particles[iPart];
-
-        part.Ex = 0. ; part.Ey = 0. ; part.Ez = 0. ;
-        part.Bx = 0. ; part.By = 0. ; part.Bz = 0. ;
-
-        std::vector<std::reference_wrapper<double>> partFields = \
-        {part.Ex, part.Ey, part.Ez, part.Bx, part.By, part.Bz} ;
-
-        for(uint32 ifield=0 ; ifield<partFields.size() ; ++ifield )
-        {
-            double & particleField = partFields[ifield] ;
-
-            Field const& meshField = ExyzBxyzFields[ifield] ;
-
-            auto centering = layout.fieldCentering( meshField, Direction::X ) ;
-
-            auto indexesAndWeights = \
-                    interp.getIndexesAndWeights( part, Direction::X, centering ) ;
-
-            std::vector<uint32> indexes = std::get<0>(indexesAndWeights) ;
-            std::vector<double> weights = std::get<1>(indexesAndWeights) ;
-
-            for(uint32 ik=0 ; ik<indexes.size() ; ++ik)
-            {
-                particleField += meshField(indexes[ik]) * weights[ik] ;
-            }
-        }// end loop on fields
+        part.Ex = interp(part, Ex, Direction::X, centeringEx);
+        part.Ey = interp(part, Ey, Direction::X, centeringEy);
+        part.Ez = interp(part, Ez, Direction::X, centeringEz);
+        part.Bx = interp(part, Bx, Direction::X, centeringBx);
+        part.By = interp(part, By, Direction::X, centeringBy);
+        part.Bz = interp(part, Bz, Direction::X, centeringBz);
     }// end loop on particles
 }
 
@@ -240,28 +178,7 @@ void compute1DChargeDensityAndFlux(Interpolator& interpolator,
 
     for( const Particle & part : particles)
     {
-
-        double aux_rh   = part.weight * part.charge * layout.odx() ;
-        double aux_flux = part.weight * layout.odx() ;
-
-        double aux_vx = aux_flux * part.v[0] ;
-        double aux_vy = aux_flux * part.v[1] ;
-        double aux_vz = aux_flux * part.v[2] ;
-
-        auto indexesAndWeights = \
-        interpolator.getIndexesAndWeights(part, Direction::X ) ;
-
-        std::vector<uint32> indexes = std::get<0>(indexesAndWeights) ;
-        std::vector<double> weights = std::get<1>(indexesAndWeights) ;
-
-        for( uint32 ik=0 ; ik<indexes.size() ; ++ik )
-        {
-            rho( indexes[ik] ) += aux_rh * weights[ik] ;
-
-            fx( indexes[ik] ) += aux_vx * weights[ik] ;
-            fy( indexes[ik] ) += aux_vy * weights[ik] ;
-            fz( indexes[ik] ) += aux_vz * weights[ik] ;
-        }
+        interpolator(part, layout.dx(), rho, fx, fy, fz, Direction::X);
     }
 
 }
