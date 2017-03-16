@@ -307,9 +307,9 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
 
 
     ions.computeChargeDensity();
-    ions.computeBulkVelocity();
-
     boundaryCondition.applyDensityBC(ions.rho());
+
+    ions.computeBulkVelocity();
     boundaryCondition.applyBulkBC(ions.bulkVel());
 }
 
