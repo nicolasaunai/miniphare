@@ -86,7 +86,7 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
         Vth    = thermalSpeed(x, origin.y_, origin.z_);
 
         cellWeight = n*cellVolume / nbrParticlePerCell_;
-        std::uniform_real_distribution<float> randPosX(0., static_cast<float>(dx));
+        std::uniform_real_distribution<float> randPosX(0., 1.);
 
         for (uint32 ipart=0; ipart < nbrParticlePerCell_; ++ipart)
         {
@@ -160,8 +160,8 @@ void FluidParticleInitializer::loadParticles2D_(std::vector<Particle>& particles
             Vth    = thermalSpeed(x, y, origin.z_);
 
             cellWeight = n*cellVolume / nbrParticlePerCell_;
-            std::uniform_real_distribution<float> randPosX(0., static_cast<float>(dx));
-            std::uniform_real_distribution<float> randPosY(0., static_cast<float>(dy));
+            std::uniform_real_distribution<float> randPosX(0., 1.);
+            std::uniform_real_distribution<float> randPosY(0., 1.);
 
             for (uint32 ipart=0; ipart < nbrParticlePerCell_; ++ipart)
             {
@@ -240,9 +240,9 @@ void FluidParticleInitializer::loadParticles3D_(std::vector<Particle>& particles
                 Vth    = thermalSpeed(x, y, z);
                 cellWeight = n * cellVolume / nbrParticlePerCell_;
 
-                std::uniform_real_distribution<float> randPosX(0., static_cast<float>(dx));
-                std::uniform_real_distribution<float> randPosY(0., static_cast<float>(dy));
-                std::uniform_real_distribution<float> randPosZ(0., static_cast<float>(dz));
+                std::uniform_real_distribution<float> randPosX(0., 1.);
+                std::uniform_real_distribution<float> randPosY(0., 1.);
+                std::uniform_real_distribution<float> randPosZ(0., 1.);
 
                 for (uint32 ipart=0; ipart < nbrParticlePerCell_; ++ipart)
                 {
