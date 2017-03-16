@@ -91,7 +91,7 @@ public:
         {
             particleIndicesAtMax[direction].push_back(ipart);
         }
-        else if (icell < startEndIndices[direction].lastCellIndex)
+        else if (icell < startEndIndices[direction].firstCellIndex)
         {
             particleIndicesAtMin[direction].push_back(ipart);
         }
