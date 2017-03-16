@@ -20,7 +20,7 @@ class MLMD // TODO should be a singleton pattern
 
 public:
 
-    MLMD(const InitializerFactory* const initFactory);
+    MLMD(InitializerFactory const& initFactory);
 
     void initializeRootLevel();
 

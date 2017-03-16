@@ -27,7 +27,7 @@ void ModifiedBoris::move(std::vector<Particle>const & partIn ,
                          double m,
                          VecField const& E , VecField const & B,
                          Interpolator const& interpolator,
-                         BoundaryCondition const * const boundaryCondition)
+                         BoundaryCondition const& boundaryCondition)
 {
     // must clean the leaving particles buffer before the last step
     // since newly leaving particles will be added to it.
@@ -35,7 +35,7 @@ void ModifiedBoris::move(std::vector<Particle>const & partIn ,
 
     prePush_( partIn, partOut) ;
 
-    boundaryCondition->applyParticleBC(partOut, leavingParticles_);
+    boundaryCondition.applyParticleBC(partOut, leavingParticles_);
 
     fieldsAtParticles(interpolator, E, B, layout_, partOut);
 
@@ -47,7 +47,7 @@ void ModifiedBoris::move(std::vector<Particle>const & partIn ,
 
     postPush_( partOut, partOut);
 
-    boundaryCondition->applyParticleBC(partOut, leavingParticles_);
+    boundaryCondition.applyParticleBC(partOut, leavingParticles_);
 }
 
 

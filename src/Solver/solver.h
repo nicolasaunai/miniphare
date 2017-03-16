@@ -33,10 +33,10 @@ public:
     Solver(Solver&& toMove)      = default;
     Solver& operator=(Solver&& source) = default;
 
-    void init(Ions& ions, BoundaryCondition const * const boundaryCondition ) const;
+    void init(Ions& ions, BoundaryCondition const& boundaryCondition ) const;
 
     void solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons,
-                   BoundaryCondition const * const boundaryCondition);
+                   BoundaryCondition const& boundaryCondition);
 
 private:
 
@@ -61,7 +61,7 @@ private:
     std::unique_ptr<Pusher> pusher_ ;
 
     void moveIons_(VecField const& E, VecField const& B, Ions& ions,
-                   BoundaryCondition const * const boundaryConditon,
+                   BoundaryCondition const& boundaryConditon,
                    uint32 const predictorStep);
 
 };

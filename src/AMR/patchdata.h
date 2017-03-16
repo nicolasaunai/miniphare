@@ -33,7 +33,7 @@ private:
 
 public:
 
-    PatchData(const InitializerFactory* const  initFactory);
+    PatchData(InitializerFactory const& initFactory);
 
    // PatchData(double dt, const GridLayout& layout);
 
