@@ -14,8 +14,30 @@ public:
 
     IndexesAndWeightsO2( uint32 order ): IndexesAndWeights(order) {}
 
-    // the formulas ruling the weights are specific to a given order
-    void computeWeights( double reducedCoord ) override ;
+    /**
+     * @brief IndexesAndWeightsO2::computeWeights computes
+     * the weights (or ponderations) associated to each point
+     * of indexList_
+     *
+     * Inputs: indexList_, reducedCoord_
+     * Output: weightList_
+     *
+     *
+     */
+    virtual std::vector<double> const& computeWeights( double reducedCoord ) final
+    {
+        double coef1, coef2, coef3;
+
+        coef1 = 0.5 + (static_cast<double>(indexList_[1]) - reducedCoord);
+        coef2 = static_cast<double>(indexList_[1]) - reducedCoord;
+        coef3 = 0.5 - (static_cast<double>(indexList_[1]) - reducedCoord);
+
+        weightList_[0] = 0.5 * coef1 * coef1;
+        weightList_[1] = 0.75 -coef2 * coef2;
+        weightList_[2] = 0.5 * coef3 * coef3;
+
+        return weightList_;
+    }
 };
 
 

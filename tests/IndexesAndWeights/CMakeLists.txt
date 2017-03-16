@@ -2,14 +2,10 @@ cmake_minimum_required (VERSION 2.6)
 project (test-indexweight)
 
 set(SOURCES
- 	../../src/grid/gridlayout.cpp
+    ../../src/grid/gridlayout.cpp
     ../../src/grid/gridlayoutimplyee.cpp
     ../../src/grid/gridlayoutimplinternals.cpp
     ../../src/IndexesAndWeights/indexesandweights.cpp
-    ../../src/IndexesAndWeights/indexesandweightso1.cpp
-    ../../src/IndexesAndWeights/indexesandweightso2.cpp
-    ../../src/IndexesAndWeights/indexesandweightso3.cpp
-    ../../src/IndexesAndWeights/indexesandweightso4.cpp
     ../../src/Plasmas/particles.cpp
     test_main.cpp
     test_utilities.cpp

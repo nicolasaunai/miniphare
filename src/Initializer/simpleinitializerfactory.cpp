@@ -124,7 +124,7 @@ std::array<double,3> electricField(double x, double y, double z)
 std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer() const
 {
     const uint32 nbrSpecies = 2;
-    const uint32 nbrPartPerCell = 100;
+    const uint32 nbrPartPerCell = 1000;
     double chargeProton1 = 1., chargeProton2 = 1.;
 
     // should be obtained from
