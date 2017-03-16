@@ -68,6 +68,8 @@ void ModifiedBoris::prePush_(std::vector<Particle> const& particleIn,
     {
         Particle const& partIn = particleIn[iPart];
         Particle& partOut = particleOut[iPart];
+        partOut.weight = partIn.weight;
+        partOut.charge = partIn.charge;
 
         for (uint32 dim=0; dim < nbdims_;  ++dim)
         {
