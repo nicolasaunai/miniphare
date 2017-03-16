@@ -75,12 +75,14 @@ void fieldAtParticle1D(Interpolator const& interp,
     for (uint32 iPart=0; iPart < particles.size(); ++iPart)
     {
         Particle& part = particles[iPart];
+        // all dual fields in X first
         part.Ex = interp(part, Ex, Direction::X, centeringEx);
+        part.By = interp(part, By, Direction::X, centeringBy);
+        part.Bz = interp(part, Bz, Direction::X, centeringBz);
+
         part.Ey = interp(part, Ey, Direction::X, centeringEy);
         part.Ez = interp(part, Ez, Direction::X, centeringEz);
         part.Bx = interp(part, Bx, Direction::X, centeringBx);
-        part.By = interp(part, By, Direction::X, centeringBy);
-        part.Bz = interp(part, Bz, Direction::X, centeringBz);
     }// end loop on particles
 }
 
