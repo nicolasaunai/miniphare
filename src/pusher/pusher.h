@@ -50,7 +50,7 @@ public:
                       VecField const & E ,
                       VecField const & B ,
                       Interpolator const& interpolator,
-                      BoundaryCondition const * const boundaryCondition) = 0 ;
+                      BoundaryCondition const& boundaryCondition) = 0 ;
 
     std::string const & pusherType() const { return pusherType_; }
 
