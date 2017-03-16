@@ -512,8 +512,8 @@ void fieldAtRefinedNodes1D(Interpolator const& interp,
     Field const & By = Bcoarse.component(idirY) ;
     Field const & Bz = Bcoarse.component(idirZ) ;
 
-    std::vector<std::reference_wrapper<Field const>>
-            ExyzBxyzCoarse = {Ex, Ey, Ez, Bx, By, Bz} ;
+    std::array<std::reference_wrapper<Field const>, 6>
+            ExyzBxyzCoarse = { {Ex, Ey, Ez, Bx, By, Bz} } ;
 
 
     Field & ExNew = Erefined.component(idirX) ;
@@ -524,8 +524,8 @@ void fieldAtRefinedNodes1D(Interpolator const& interp,
     Field & ByNew = Brefined.component(idirY) ;
     Field & BzNew = Brefined.component(idirZ) ;
 
-    std::vector<std::reference_wrapper<Field>>
-            ExyzBxyzRefined = {ExNew, EyNew, EzNew, BxNew, ByNew, BzNew} ;
+    std::array<std::reference_wrapper<Field>, 6>
+            ExyzBxyzRefined = { { ExNew, EyNew, EzNew, BxNew, ByNew, BzNew} } ;
 
 
     double newOriginReducedOnCoarse =
@@ -544,10 +544,6 @@ void fieldAtRefinedNodes1D(Interpolator const& interp,
         // The parent field centering DOES matter
         auto centering = coarseLayout.fieldCentering( coarseField, Direction::X ) ;
 
-        // Initialize new field
-        for( uint32 ix=iStart ; ix<=iEnd ; ++ix )
-            refinedField(ix) = 0. ;
-
         // loop on new field indexes
         for( uint32 ix=iStart ; ix<=iEnd ; ++ix )
         {
@@ -558,21 +554,12 @@ void fieldAtRefinedNodes1D(Interpolator const& interp,
             // on the parent GridLayout
             double delta = ix * refinedLayout.dx() / coarseLayout.dx() ;
 
+            // coord is a reduced coordinate on the parent GridLayout
             double coord = newOriginReducedOnCoarse + delta ;
 
-            // WARNING: coord is a reduced coordinate
-            // on the parent GridLayout
-            auto indexesAndWeights = interp.getIndexesAndWeights( coord, centering ) ;
-
-            std::vector<uint32> indexes = std::get<0>(indexesAndWeights) ;
-            std::vector<double> weights = std::get<1>(indexesAndWeights) ;
-
-            // nodes (stored in indexes) from the parent layout now contribute
+            // nodes from the parent layout now contribute
             // to the node: ix, located on the new layout
-            for(uint32 ik=0 ; ik<indexes.size() ; ++ik)
-            {
-                refinedField(ix) += coarseField(indexes[ik]) * weights[ik] ;
-            }
+            refinedField(ix) = interp( coord, coarseField, centering ) ;
         }
     }
 
