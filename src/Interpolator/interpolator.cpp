@@ -178,7 +178,7 @@ void compute1DChargeDensityAndFlux(Interpolator& interpolator,
 
     for( const Particle & part : particles)
     {
-        interpolator(part, layout.dx(), rho, fx, fy, fz, Direction::X);
+        interpolator(part, layout.odx(), rho, fx, fy, fz, Direction::X);
     }
 
 }
