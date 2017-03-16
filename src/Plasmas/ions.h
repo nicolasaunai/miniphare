@@ -54,7 +54,6 @@ public:
     Species const& species(uint32 index) const;
     //std::vector<Species>& species() {return speciesArray_;}
 
-
     Field& rho() {return rho_;}
     Field const& rho() const {return rho_;}
 

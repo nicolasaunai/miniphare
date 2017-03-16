@@ -86,9 +86,11 @@
   */
  void Ions::computeChargeDensity()
  {
+     // reset charge density to zero
+     rho_.zero();
+
      for (Species const& spe : speciesArray_)
      {
-         // we assume that rho_ has been reset to 0 before.
          // we sum over all nodes contiguously, including ghosts
          // nodes. This is more efficient and easier to code as we don't
          // have to account for the field dimensionality.
@@ -107,6 +109,10 @@ void Ions::computeBulkVelocity()
     const uint32 compY=1;
     const uint32 compZ=2;
 
+    // reset bulk velocity to 0
+    bulkVel_.zero();
+
+
     Field& vxTot = bulkVel_.component(compX);
     Field& vyTot = bulkVel_.component(compY);
     Field& vzTot = bulkVel_.component(compZ);
@@ -114,8 +120,6 @@ void Ions::computeBulkVelocity()
 
     // first we sum the charge density flux of each species
     // sum_s q_s*n_s*v_s
-    // we assume the total bulk velocity has been set to zero
-    // before, i.e. vxyzTot = 0.
     for (Species const& spe : speciesArray_)
     {
         Field const& rhovX = spe.flux(compX);
