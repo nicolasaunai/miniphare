@@ -133,8 +133,8 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // Get time averaged prediction (E,B)^{n+1/2} pred1
     // using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred1
-    average(E, Epred, Eavg, layout_ );
-    average(B, Bpred, Bavg, layout_ );
+    timeAverage(E, Epred, Eavg);
+    timeAverage(B, Bpred, Bavg);
 
 
     // Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred 1
@@ -172,8 +172,8 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // --> Get time averaged prediction (E^(n+1/2),B^(n+1/2)) pred2
     // --> using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred2
-    average( E, Epred, Eavg, layout_ );
-    average( B, Bpred, Bavg, layout_ );
+    timeAverage(E, Epred, Eavg);
+    timeAverage(B, Bpred, Bavg);
 
 
     // Get the CORRECTED positions and velocities
