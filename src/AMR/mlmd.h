@@ -17,6 +17,11 @@
  */
 class MLMD // TODO should be a singleton pattern
 {
+private:
+    uint32 refinementRatio_ {2};
+    GridLayout baseLayout_ ;
+    Hierarchy patchHierarchy_;
+
 
 public:
 
@@ -26,24 +31,10 @@ public:
 
     void evolveFullDomain();
 
-    std::vector< std::vector<GridLayout> >
-    buildLayouts( std::vector< std::vector<RefinementInfo> > const & refinementTable ) ;
-
     Hierarchy & hierarchy() { return patchHierarchy_ ; }
     Hierarchy const & hierarchy() const { return patchHierarchy_ ; }
 
 
-private:
-    uint32 refinementRatio_ {2};
-    GridLayout baseLayout_ ;
-    Hierarchy patchHierarchy_;
-
-
-
-    // PRAwidthx,
-    // splitting
-
-   // TODO GridLayout* generateLayoutFromRefineRatio() ....
    // TODO void computedtFromCFL(); // calculate dt from CFL and dx_ // for MLMD version
 
 

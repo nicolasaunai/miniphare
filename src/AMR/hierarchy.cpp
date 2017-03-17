@@ -47,7 +47,8 @@ void Hierarchy::evolveHierarchy()
  *
  */
 std::vector< std::vector<RefinementInfo> >
-Hierarchy::evaluateHierarchy()
+Hierarchy::evaluateHierarchy( uint32 refineRatio,
+                              GridLayout const & baseLayout )
 {
 
     std::vector< std::vector<RefinementInfo> > refinementTable ;
@@ -72,7 +73,8 @@ Hierarchy::evaluateHierarchy()
             {
                 Box refineBox = analyser.refinedArea() ;
 
-                struct RefinementInfo refine{ patch, refineBox, iLevel+1 } ;
+                struct RefinementInfo refine{ patch, refineBox,
+                            iLevel+1, refineRatio, baseLayout } ;
 
                 refinementVector.push_back( refine ) ;
             }
@@ -97,8 +99,7 @@ Hierarchy::evaluateHierarchy()
  * @param layoutTable
  */
 void Hierarchy::updateHierarchy(
-        std::vector< std::vector<RefinementInfo> > const & refinementTable,
-        std::vector< std::vector<GridLayout> > const & layoutTable  )
+        std::vector< std::vector<RefinementInfo> > const & refinementTable )
 {
 
     uint32 nbrLevels = static_cast<uint32>(refinementTable.size()) ;
@@ -109,11 +110,11 @@ void Hierarchy::updateHierarchy(
 
         for( uint32 iPatch=0 ; iPatch<nbrPatches ; ++iPatch )
         {
-            GridLayout const & layout = layoutTable[iLevel][iPatch] ;
+            // GridLayout const & layout = layoutTable[iLevel][iPatch] ;
             RefinementInfo const & info = refinementTable[iLevel][iPatch] ;
 
             // create new Patch and update Hierarchy
-            addNewPatch( layout, info ) ;
+            addNewPatch( info ) ;
 
             // TODO: call patch.init to initialize patch content
 
@@ -125,19 +126,19 @@ void Hierarchy::updateHierarchy(
 
 
 
-void Hierarchy::addNewPatch( GridLayout const & refinedLayout,
-                             RefinementInfo const & info)
+void Hierarchy::addNewPatch( RefinementInfo const & info)
 {
 
     std::shared_ptr<Patch> coarsePatch = info.parentPatch ;
     Box refinedBox = info.box ;
     uint32 refinedLevel = info.level ;
 
+    GridLayout refinedLayout = buildLayout( info ) ;
+
     // we need to build a factory for PatchData to be built
     std::unique_ptr<InitializerFactory>
             factory { new MLMDInitializerFactory(coarsePatch, refinedBox, refinedLayout) } ;
 
-    // create the new patch, give it a PatchData to which we pass the factory
     Patch theNewPatch{ refinedBox, refinedLayout, PatchData{*factory} };
 
     std::shared_ptr<Patch> patchPtr = std::make_shared<Patch>( std::move(theNewPatch) ) ;
@@ -150,8 +151,41 @@ void Hierarchy::addNewPatch( GridLayout const & refinedLayout,
 
 }
 
+/**
+ * @brief Hierarchy::buildLayout is in charge of creating a GridLayout
+ * using a RefinementInfo object
+ *
+ * This GridLayout will be directly used by addNewPatch(...) to
+ * build the new patch
+ *
+ * @param info
+ * @return
+ */
+GridLayout  Hierarchy::buildLayout( RefinementInfo const & info )
+{
+    Box newBox = info.box ;
+    uint32 level = info.level ;
 
+    uint32 refineRatio = info.refinementRatio ;
+    GridLayout const & L0 = info.baseLayout ;
 
+    // TODO: return the adequate GridLayout given newBox information
+    // new spatial step sizes
+    double dx = L0.dx()/std::pow( refineRatio, level ) ;
+    double dy = L0.dy()/std::pow( refineRatio, level ) ;
+    double dz = L0.dz()/std::pow( refineRatio, level ) ;
+
+    // cell numbers
+    uint32 nbx = static_cast<uint32>( std::ceil( (newBox.x1 - newBox.x0)/dx ) ) ;
+    uint32 nby = static_cast<uint32>( std::ceil( (newBox.y1 - newBox.y0)/dy ) ) ;
+    uint32 nbz = static_cast<uint32>( std::ceil( (newBox.z1 - newBox.z0)/dz ) ) ;
+
+    // we create the layout of a new patch
+    // and store it
+    return GridLayout({{dx, dy, dz}}, {{nbx, nby, nbz}},
+                      L0.nbDimensions(), L0.layoutName(),
+                      Point{newBox.x0, newBox.y0, newBox.z0}, L0.order() ) ;
+}
 
 
 

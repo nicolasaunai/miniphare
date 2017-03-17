@@ -12,14 +12,19 @@
 struct RefinementInfo
 {
     std::shared_ptr<Patch> parentPatch;
-
     Box box;
     uint32 level;
 
-    RefinementInfo( std::shared_ptr<Patch> parentInfo, Box boxInfo,
-                    uint32 levelInfo):
+    uint32 refinementRatio ;
+    GridLayout const & baseLayout ;
+
+    RefinementInfo( std::shared_ptr<Patch> parentInfo,
+                    Box boxInfo, uint32 levelInfo,
+                    uint32 refinementRatio,
+                    GridLayout const & baseLayout ):
         parentPatch{parentInfo}, box{boxInfo},
-        level{levelInfo} {}
+        level{levelInfo}, refinementRatio{refinementRatio},
+        baseLayout{baseLayout} {}
 
 };
 
@@ -56,15 +61,14 @@ public:
 
     void evolveHierarchy() ;
 
-    std::vector< std::vector<RefinementInfo> > evaluateHierarchy() ;
+    std::vector< std::vector<RefinementInfo> >
+    evaluateHierarchy( uint32 refineRatio, GridLayout const & baseLayout ) ;
 
-    void updateHierarchy( std::vector< std::vector<RefinementInfo> > const & refinementTable,
-                          std::vector< std::vector<GridLayout> > const & layoutTable ) ;
+    void updateHierarchy( std::vector< std::vector<RefinementInfo> > const & refinementTable ) ;
 
-    //void setRootPatch(std::shared_ptr<Patch> root);
+    void addNewPatch( RefinementInfo const & info ) ;
 
-    void addNewPatch( GridLayout const & layout,
-                      RefinementInfo const & info ) ;
+    GridLayout  buildLayout( RefinementInfo const & info ) ;
 
 };
 
