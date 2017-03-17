@@ -8,9 +8,9 @@
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : layout_{ {{0.1,0.,0.}}, {{42, 0, 0}}, 1, "yee", Point{0.,0.,0.}, 2},
+    : layout_{ {{0.1,0.,0.}}, {{42, 0, 0}}, 1, "yee", Point{0.,0.,0.}, 1},
       // hard-coded... will come from input somehow
-      dt_{0.001}
+      dt_{0.0001}
 {
 
 }
