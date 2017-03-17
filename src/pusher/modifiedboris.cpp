@@ -33,12 +33,14 @@ void ModifiedBoris::move(std::vector<Particle>const & partIn ,
     // since newly leaving particles will be added to it.
     leavingParticles_.cleanBuffers();
 
+    // advance partOut from partIn(n) to n+1/2
     prePush_( partIn, partOut) ;
-
     boundaryCondition.applyParticleBC(partOut, leavingParticles_);
 
+    // get fields(n+1/2) at position partOut now at n+11/2
     fieldsAtParticles(interpolator, E, B, layout_, partOut);
 
+    // push velocity from partIn (n) to n+1 using fields at partOut(n+1/2)
     pushVelocity_( partOut, partOut, m);
 
     // must clean the leaving particles buffer before the last step
@@ -70,6 +72,8 @@ void ModifiedBoris::prePush_(std::vector<Particle> const& particleIn,
         Particle& partOut = particleOut[iPart];
         partOut.weight = partIn.weight;
         partOut.charge = partIn.charge;
+        for (uint32 iv=0; iv < 3; ++iv)
+            partOut.v[iv] = partIn.v[iv];
 
         for (uint32 dim=0; dim < nbdims_;  ++dim)
         {
