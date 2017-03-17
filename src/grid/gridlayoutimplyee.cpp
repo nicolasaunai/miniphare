@@ -202,6 +202,22 @@ void GridLayoutImplYee::initLinearCombinations_()
         P2.coef = 0.5;
         BzToEx_.push_back(P2);
     }
+
+
+    // Bz to Ey is Ddp to Pdp
+    // shift only in the X direction
+    // the averaging is done for all simulations
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = 0.5;
+    BzToEy_.push_back(P1);
+    P2.ix = dualToPrimal;
+    P2.iy = 0;
+    P2.iz = 0;
+    P2.coef = 0.5;
+    BzToEy_.push_back(P2);
+
 }
 
 
