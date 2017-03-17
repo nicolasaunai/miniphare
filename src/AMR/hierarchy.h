@@ -59,10 +59,10 @@ public:
 
     hierarchyType & patchTable() { return patchTable_; }
 
-    void evolveHierarchy() ;
+    void evolveFieldsAndParticles() ;
 
     std::vector< std::vector<RefinementInfo> >
-    evaluateHierarchy( uint32 refineRatio, GridLayout const & baseLayout ) ;
+    evaluateAMRPatches( uint32 refineRatio, GridLayout const & baseLayout ) ;
 
     void updateHierarchy( std::vector< std::vector<RefinementInfo> > const & refinementTable ) ;
 

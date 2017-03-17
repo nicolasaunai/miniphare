@@ -20,7 +20,7 @@
  * evolve fields and particle for a time step
  *
  */
-void Hierarchy::evolveHierarchy()
+void Hierarchy::evolveFieldsAndParticles()
 {
     uint32 nbrLevels = static_cast<uint32>(patchTable_.size());
 
@@ -47,7 +47,7 @@ void Hierarchy::evolveHierarchy()
  *
  */
 std::vector< std::vector<RefinementInfo> >
-Hierarchy::evaluateHierarchy( uint32 refineRatio,
+Hierarchy::evaluateAMRPatches( uint32 refineRatio,
                               GridLayout const & baseLayout )
 {
 

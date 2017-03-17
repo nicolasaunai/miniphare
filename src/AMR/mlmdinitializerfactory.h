@@ -47,12 +47,14 @@ private:
     // on a refined patch
     uint32 interpolationOrder_;
 
+    uint32 PRAHalfWidth_( GridLayout const & layout ) const ;
+
     PRA buildPRA_  ( GridLayout const & layout ) const ;
     PRA buildPRA1D_( GridLayout const & layout ) const ;
     PRA buildPRA2D_( GridLayout const & layout ) const ;
     PRA buildPRA3D_( GridLayout const & layout ) const ;
 
-    void preCompute_( GridLayout const & layout,
+    void definePRA1Dlimits_( GridLayout const & layout,
                         Direction direction,
                         uint32 nbrMaxGhost,
                         uint32 & ix0_in , uint32 & ix1_in ,

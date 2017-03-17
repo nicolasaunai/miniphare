@@ -85,17 +85,17 @@ struct LogicalBox
 
 struct PRA
 {
-    std::array<uint32, 3> nbrCells ;
+    std::array<uint32, 3> PRAwidth ;
 
     std::vector<LogicalBox> logicDecomposition;
     std::vector<Box> boxDecomposition;
 
     PRA() {}
 
-    PRA( std::array<uint32, 3> nbrCells,
+    PRA( std::array<uint32, 3> PRAwidth,
          std::vector<LogicalBox> logicBoxes,
          std::vector<Box> boxes )
-        : nbrCells{nbrCells},
+        : PRAwidth{PRAwidth},
           logicDecomposition{logicBoxes},
           boxDecomposition{boxes} {}
 };

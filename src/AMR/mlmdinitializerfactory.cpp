@@ -125,7 +125,7 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 
     GridLayout coarseLayout{parentPatch_->layout()} ;
 
-    uint32 nbrBoundaries = 2* (coarseLayout.nbDimensions()-1) ;
+    uint32 nbrBoundaries = 2* coarseLayout.nbDimensions() ;
 
     // this will be used to initialize electromagnetic fields
     // at patch boundaries, into PRA layouts
@@ -286,19 +286,17 @@ PRA MLMDInitializerFactory::buildPRA_( GridLayout const & layout ) const
  */
 PRA MLMDInitializerFactory::buildPRA1D_( GridLayout const & layout ) const
 {
-    uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
-                                   layout.nbrGhostCells(QtyCentering::dual) ) ;
-
-    std::array<uint32, 3> nbrCells{ { 2*nbrMaxGhost, 0, 0 } } ;
+    std::array<uint32, 3> PRAwidth{ { 2*PRAHalfWidth_(layout), 0, 0 } } ;
 
     uint32 ix0_in, ix1_in, ix0_out, ix1_out ;
     double x0_in, x1_in, x0_out, x1_out ;
 
-    preCompute_( layout, Direction::X, nbrMaxGhost,
-                   ix0_in , ix1_in ,
-                   ix0_out, ix1_out,
-                   x0_in  , x1_in  ,
-                   x0_out , x1_out ) ;
+    definePRA1Dlimits_( layout, Direction::X,
+                        PRAHalfWidth_(layout),
+                        ix0_in , ix1_in ,
+                        ix0_out, ix1_out,
+                        x0_in  , x1_in  ,
+                        x0_out , x1_out ) ;
 
     // Build logic (primal) decomposition
     std::vector<LogicalBox> logicBoxes = { {ix0_out, ix0_in}, {ix1_in, ix1_out} } ;
@@ -306,7 +304,7 @@ PRA MLMDInitializerFactory::buildPRA1D_( GridLayout const & layout ) const
     // Build decomposition into (primal) boxes
     std::vector<Box> boxes = { {x0_out, x0_in}, {x1_in, x1_out} } ;
 
-    return PRA{nbrCells, logicBoxes, boxes} ;
+    return PRA{PRAwidth, logicBoxes, boxes} ;
 }
 
 
@@ -320,27 +318,27 @@ PRA MLMDInitializerFactory::buildPRA1D_( GridLayout const & layout ) const
  */
 PRA MLMDInitializerFactory::buildPRA2D_( GridLayout const & layout ) const
 {
-    uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
-                                   layout.nbrGhostCells(QtyCentering::dual) ) ;
 
-    std::array<uint32, 3> nbrCells{ { 2*nbrMaxGhost, 2*nbrMaxGhost, 0 } } ;
+    std::array<uint32, 3> PRAwidth{ { 2*PRAHalfWidth_(layout), 2*PRAHalfWidth_(layout), 0 } } ;
 
     uint32 ix0_in, ix1_in, ix0_out, ix1_out ;
     uint32 iy0_in, iy1_in, iy0_out, iy1_out ;
     double x0_in, x1_in, x0_out, x1_out ;
     double y0_in, y1_in, y0_out, y1_out ;
 
-    preCompute_( layout, Direction::X, nbrMaxGhost,
-                   ix0_in , ix1_in ,
-                   ix0_out, ix1_out,
-                   x0_in  , x1_in  ,
-                   x0_out , x1_out ) ;
+    definePRA1Dlimits_( layout, Direction::X,
+                        PRAHalfWidth_(layout),
+                        ix0_in , ix1_in ,
+                        ix0_out, ix1_out,
+                        x0_in  , x1_in  ,
+                        x0_out , x1_out ) ;
 
-    preCompute_( layout, Direction::Y, nbrMaxGhost,
-                   iy0_in , iy1_in ,
-                   iy0_out, iy1_out,
-                    y0_in  , y1_in  ,
-                    y0_out , y1_out ) ;
+    definePRA1Dlimits_( layout, Direction::Y,
+                        PRAHalfWidth_(layout),
+                        iy0_in , iy1_in ,
+                        iy0_out, iy1_out,
+                        y0_in  , y1_in  ,
+                        y0_out , y1_out ) ;
 
     // Build logic (primal) decomposition
     // TODO: provide a link to redmine with a drawing
@@ -356,7 +354,7 @@ PRA MLMDInitializerFactory::buildPRA2D_( GridLayout const & layout ) const
                                {x0_in , x1_in , y0_out, y0_in },
                                {x0_in , x1_in , y1_in , y1_out} } ;
 
-    return PRA{nbrCells, logicBoxes, boxes} ;
+    return PRA{PRAwidth, logicBoxes, boxes} ;
 }
 
 
@@ -370,10 +368,8 @@ PRA MLMDInitializerFactory::buildPRA2D_( GridLayout const & layout ) const
  */
 PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
 {
-    uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
-                                   layout.nbrGhostCells(QtyCentering::dual) ) ;
 
-    std::array<uint32, 3> nbrCells{ { 2*nbrMaxGhost, 2*nbrMaxGhost, 2*nbrMaxGhost } } ;
+    std::array<uint32, 3> PRAwidth{ { 2*PRAHalfWidth_(layout), 2*PRAHalfWidth_(layout), 2*PRAHalfWidth_(layout) } } ;
 
     uint32 ix0_in, ix1_in, ix0_out, ix1_out ;
     uint32 iy0_in, iy1_in, iy0_out, iy1_out ;
@@ -382,23 +378,26 @@ PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
     double y0_in, y1_in, y0_out, y1_out ;
     double z0_in, z1_in, z0_out, z1_out ;
 
-    preCompute_( layout, Direction::X, nbrMaxGhost,
-                   ix0_in , ix1_in ,
-                   ix0_out, ix1_out,
-                   x0_in  , x1_in  ,
-                   x0_out , x1_out ) ;
+    definePRA1Dlimits_( layout, Direction::X,
+                        PRAHalfWidth_(layout),
+                        ix0_in , ix1_in ,
+                        ix0_out, ix1_out,
+                        x0_in  , x1_in  ,
+                        x0_out , x1_out ) ;
 
-    preCompute_( layout, Direction::Y, nbrMaxGhost,
-                   iy0_in , iy1_in ,
-                   iy0_out, iy1_out,
-                    y0_in  , y1_in  ,
-                    y0_out , y1_out ) ;
+    definePRA1Dlimits_( layout, Direction::Y,
+                        PRAHalfWidth_(layout),
+                        iy0_in , iy1_in ,
+                        iy0_out, iy1_out,
+                        y0_in  , y1_in  ,
+                        y0_out , y1_out ) ;
 
-    preCompute_( layout, Direction::Z, nbrMaxGhost,
-                   iz0_in , iz1_in ,
-                   iz0_out, iz1_out,
-                    z0_in  , z1_in  ,
-                    z0_out , z1_out ) ;
+    definePRA1Dlimits_( layout, Direction::Z,
+                        PRAHalfWidth_(layout),
+                        iz0_in , iz1_in ,
+                        iz0_out, iz1_out,
+                        z0_in  , z1_in  ,
+                        z0_out , z1_out ) ;
 
     // Build logic (primal) decomposition
     // TODO: 3D generalization
@@ -410,11 +409,11 @@ PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
     // TODO: 3D generalization
     std::vector<Box> boxes = { {x0_out, x0_in}, {x1_in, x1_out} } ;
 
-    return PRA{nbrCells, logicBoxes, boxes} ;
+    return PRA{PRAwidth, logicBoxes, boxes} ;
 }
 
 /**
- * @brief MLMDInitializerFactory::preCompute_ is in charge of
+ * @brief MLMDInitializerFactory::definePRA1Dlimits_ is in charge of
  * computing indexes - and the associated coordinates - defining a PRA
  * in a prescribed direction.
  * A PRA can be defined knowing an inner and an outer box
@@ -425,21 +424,21 @@ PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
  * @param direction
  * @param nbrMaxGhost
  */
-void MLMDInitializerFactory::preCompute_( GridLayout const & layout,
+void MLMDInitializerFactory::definePRA1Dlimits_( GridLayout const & layout,
                                             Direction direction,
-                                            uint32 nbrMaxGhost,
+                                            uint32 praHalfWidth,
                                             uint32 & ix0_in , uint32 & ix1_in ,
                                             uint32 & ix0_out, uint32 & ix1_out,
                                             double & x0_in  , double & x1_in ,
                                             double & x0_out , double & x1_out ) const
 {
     // Inner primal indexes
-    ix0_in = layout.physicalStartIndex(QtyCentering::primal, direction) + nbrMaxGhost ;
-    ix1_in = layout.physicalEndIndex  (QtyCentering::primal, direction) - nbrMaxGhost ;
+    ix0_in = layout.physicalStartIndex(QtyCentering::primal, direction) + praHalfWidth ;
+    ix1_in = layout.physicalEndIndex  (QtyCentering::primal, direction) - praHalfWidth ;
 
     // Outer primal indexes
-    ix0_out = layout.physicalStartIndex(QtyCentering::primal, direction) - nbrMaxGhost ;
-    ix1_out = layout.physicalEndIndex  (QtyCentering::primal, direction) + nbrMaxGhost ;
+    ix0_out = layout.physicalStartIndex(QtyCentering::primal, direction) - praHalfWidth ;
+    ix1_out = layout.physicalEndIndex  (QtyCentering::primal, direction) + praHalfWidth ;
 
     // Inner box coordinates (primal)
     x0_in = ix0_in*layout.dx() + layout.origin().getCoord( static_cast<uint32>(direction) ) ;
@@ -450,6 +449,15 @@ void MLMDInitializerFactory::preCompute_( GridLayout const & layout,
     x1_out = ix1_out*layout.dx() + layout.origin().getCoord( static_cast<uint32>(direction) ) ;
 
 }
+
+
+
+
+uint32 MLMDInitializerFactory::PRAHalfWidth_( GridLayout const & layout ) const
+{
+    return layout.nbrGhostCells(QtyCentering::primal) ;
+}
+
 
 
 

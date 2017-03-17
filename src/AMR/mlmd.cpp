@@ -34,22 +34,35 @@ void MLMD::initializeRootLevel()
 }
 
 
+/**
+ * @brief MLMD::evolveFullDomain contains the main operations
+ * achieved in one computational cycle
+ * For the moment:
+ * - we evolve fields and particles
+ * - we evaluate the consistency of the refinement with the physical processes
+ * - if necessary the hierarchy is updated with new patches
+ * - ...
+ *
+ * Diagnostics will be added soon
+ *
+ *
+ */
 void MLMD::evolveFullDomain()
 {
 
     // evolve fields and particle for a time step
-    patchHierarchy_.evolveHierarchy() ;
+    patchHierarchy_.evolveFieldsAndParticles() ;
 
 #if 1
     // Here, AMR patches will say whether they need refinement
     // the ouput of this method is used by updateHierarchy()
     // Note for later: will probably not be called every time step.
     std::vector< std::vector<RefinementInfo> > refinementTable
-            = patchHierarchy_.evaluateHierarchy( refinementRatio_, baseLayout_ ) ;
+            = patchHierarchy_.evaluateAMRPatches( refinementRatio_, baseLayout_ ) ;
 
     // New patches are created here if necessary
     // it depends on evaluateHierarchy()
-    patchHierarchy_.updateHierarchy( refinementTable ) ; // , refinedLayouts
+    patchHierarchy_.updateHierarchy( refinementTable ) ;
 #endif
 
 }
