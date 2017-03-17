@@ -143,6 +143,10 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     // in a temporary buffer and particles at n are kept at n
     moveIons_(Eavg, Bavg, ions, boundaryCondition, predictor1_);
 
+    //Bpred.zero();
+    //Epred.zero();
+    //Bavg.zero();
+
 
     // -----------------------------------------------------------------------
     //
@@ -154,6 +158,8 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     // Get B^{n+1} pred2 from E^{n+1/2} pred1
     faraday_(Eavg, B, Bpred);
     boundaryCondition.applyMagneticBC( Bpred ) ;
+
+    //Eavg.zero();
 
     // Compute J
     ampere_(Bpred, Jtot_) ;

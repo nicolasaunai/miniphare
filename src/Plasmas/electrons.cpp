@@ -42,9 +42,9 @@ const VecField& Electrons::bulkVel(VecField const& Vi, const Field& Ni, const Ve
 
     for (uint32 i = 0; i < totalSize; ++i)
     {
-        Vx(i) = Vix(i) - Jx(i)/Ni(i);
-        Vy(i) = Viy(i) - Jy(i)/Ni(i);
-        Vz(i) = Viz(i) - Jz(i)/Ni(i);
+        Vx(i) = Vix(i) -Jx(i)/Ni(i);
+        Vy(i) = Viy(i) -Jy(i)/Ni(i);
+        Vz(i) = Viz(i) -Jz(i)/Ni(i);
     }
 
     return Ve_;
