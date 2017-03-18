@@ -281,16 +281,16 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         // temporary buffer particleArrayPred_
         if (predictorStep == predictor1_)
         {
+            // resize the buffer
+            // so that it has the exact number of particle for this species
+            particleArrayPred_.resize(particles.size());
+
+
             // move all particles of that species from n to n+1
             // and put the advanced particles in the predictor buffer 'particleArrayPred_'
             pusher_->move(particles, particleArrayPred_, species.mass(),
                           E, B,interpolator, boundaryCondition );
 
-            // resize the buffer so that charge density and fluxes use
-            // no more than the right number of particles
-            // particleArrayPred_ has a capacity that is large enough for all
-            // particle arrays for all species.
-            particleArrayPred_.resize(particles.size());
 
 
             computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
