@@ -68,8 +68,6 @@ OhmImpl::~OhmImpl()
     Field const& VexB_z = implPtr_->idealTerm_.component(VecField::VecZ);
 
     Field const& ePressureX = implPtr_->pressureTerm_.component(VecField::VecX);
-    Field const& ePressureY = implPtr_->pressureTerm_.component(VecField::VecY);
-    Field const& ePressureZ = implPtr_->pressureTerm_.component(VecField::VecZ);
 
     Field const& Rx     = implPtr_->resistivityTerm_.component(VecField::VecX);
     Field const& Ry     = implPtr_->resistivityTerm_.component(VecField::VecY);
