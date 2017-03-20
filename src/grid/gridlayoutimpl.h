@@ -83,6 +83,11 @@ public:
     virtual LinearCombination const& BzToEx() const = 0;
     virtual LinearCombination const& BzToEy() const = 0;
 
+    virtual LinearCombination const& ExToMoment() const = 0;
+    virtual LinearCombination const& EyToMoment() const = 0;
+    virtual LinearCombination const& EzToMoment() const = 0;
+
+
 };
 
 

@@ -143,10 +143,6 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     // in a temporary buffer and particles at n are kept at n
     moveIons_(Eavg, Bavg, ions, boundaryCondition, predictor1_);
 
-    //Bpred.zero();
-    //Epred.zero();
-    //Bavg.zero();
-
 
     // -----------------------------------------------------------------------
     //
@@ -281,8 +277,10 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         // temporary buffer particleArrayPred_
         if (predictorStep == predictor1_)
         {
-            // resize the buffer
-            // so that it has the exact number of particle for this species
+            // resize the buffer so that charge density and fluxes use
+            // no more than the right number of particles
+            // particleArrayPred_ has a capacity that is large enough for all
+            // particle arrays for all species.
             particleArrayPred_.resize(particles.size());
 
 

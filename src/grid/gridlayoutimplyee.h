@@ -45,6 +45,9 @@ private:
     LinearCombination ByToEz_;
     LinearCombination BzToEx_;
     LinearCombination BzToEy_;
+    LinearCombination ExToMoment_;
+    LinearCombination EyToMoment_;
+    LinearCombination EzToMoment_;
 
 
 
@@ -101,6 +104,10 @@ public:
 
     virtual LinearCombination const& BzToEx() const override;
     virtual LinearCombination const& BzToEy() const override;
+
+    virtual LinearCombination const& ExToMoment() const override;
+    virtual LinearCombination const& EyToMoment() const override;
+    virtual LinearCombination const& EzToMoment() const override;
 };
 
 
