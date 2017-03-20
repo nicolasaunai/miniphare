@@ -59,21 +59,21 @@ OhmImpl::~OhmImpl()
      implPtr_->computeTerms(B, Ne, Ve, Pe, J);
 
 
-    Field& Ex = Enew.component(0);
-    Field& Ey = Enew.component(1);
-    Field& Ez = Enew.component(2);
+    Field& Ex = Enew.component(VecField::VecX);
+    Field& Ey = Enew.component(VecField::VecY);
+    Field& Ez = Enew.component(VecField::VecZ);
 
-    Field const& VexB_x = implPtr_->idealTerm_.component(0);
-    Field const& VexB_y = implPtr_->idealTerm_.component(1);
-    Field const& VexB_z = implPtr_->idealTerm_.component(2);
+    Field const& VexB_x = implPtr_->idealTerm_.component(VecField::VecX);
+    Field const& VexB_y = implPtr_->idealTerm_.component(VecField::VecY);
+    Field const& VexB_z = implPtr_->idealTerm_.component(VecField::VecZ);
 
-    Field const& ePressureX = implPtr_->pressureTerm_.component(0);
-    Field const& ePressureY = implPtr_->pressureTerm_.component(1);
-    Field const& ePressureZ = implPtr_->pressureTerm_.component(2);
+    Field const& ePressureX = implPtr_->pressureTerm_.component(VecField::VecX);
+    Field const& ePressureY = implPtr_->pressureTerm_.component(VecField::VecY);
+    Field const& ePressureZ = implPtr_->pressureTerm_.component(VecField::VecZ);
 
-    Field const& Rx     = implPtr_->resistivityTerm_.component(0);
-    Field const& Ry     = implPtr_->resistivityTerm_.component(1);
-    Field const& Rz     = implPtr_->resistivityTerm_.component(2);
+    Field const& Rx     = implPtr_->resistivityTerm_.component(VecField::VecX);
+    Field const& Ry     = implPtr_->resistivityTerm_.component(VecField::VecY);
+    Field const& Rz     = implPtr_->resistivityTerm_.component(VecField::VecZ);
 
 
     for (uint32 i=0; i < Ex.size(); ++i)

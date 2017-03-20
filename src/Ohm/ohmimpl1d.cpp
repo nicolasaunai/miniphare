@@ -48,17 +48,17 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
 
     // this function is 1D therefore loop only in the X direction:
 
-    Field const& Vex = Ve.component(0);
-    Field const& Vey = Ve.component(1);
-    Field const& Vez = Ve.component(2);
+    Field const& Vex = Ve.component(VecField::VecX);
+    Field const& Vey = Ve.component(VecField::VecY);
+    Field const& Vez = Ve.component(VecField::VecZ);
 
-    Field const& Bx  = B.component(0);
-    Field const& By  = B.component(1);
-    Field const& Bz  = B.component(2);
+    Field const& Bx  = B.component(VecField::VecX);
+    Field const& By  = B.component(VecField::VecY);
+    Field const& Bz  = B.component(VecField::VecZ);
 
-    Field& VexB_x = idealTerm_.component(0);
-    Field& VexB_y = idealTerm_.component(1);
-    Field& VexB_z = idealTerm_.component(2);
+    Field& VexB_x = idealTerm_.component(VecField::VecX);
+    Field& VexB_y = idealTerm_.component(VecField::VecY);
+    Field& VexB_z = idealTerm_.component(VecField::VecZ);
 
 
 
@@ -219,13 +219,13 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
  */
 void OhmImpl1D::resistive_(VecField const& J)
 {
-    Field const& Jx = J.component(0);
-    Field const& Jy = J.component(1);
-    Field const& Jz = J.component(2);
+    Field const& Jx = J.component(VecField::VecX);
+    Field const& Jy = J.component(VecField::VecY);
+    Field const& Jz = J.component(VecField::VecZ);
 
-    Field& Rx = resistivityTerm_.component(0);
-    Field& Ry = resistivityTerm_.component(1);
-    Field& Rz = resistivityTerm_.component(2);
+    Field& Rx = resistivityTerm_.component(VecField::VecX);
+    Field& Ry = resistivityTerm_.component(VecField::VecY);
+    Field& Rz = resistivityTerm_.component(VecField::VecZ);
 
     {
         uint32 const iStart = layout_.physicalStartIndex(Rx, Direction::X);
@@ -270,7 +270,7 @@ void OhmImpl1D::resistive_(VecField const& J)
  */
 void OhmImpl1D::pressure_(Field const& Pe, Field const& Ne)
 {
-    Field& gradPx = pressureTerm_.component(0);
+    Field& gradPx = pressureTerm_.component(VecField::VecX);
     layout_.deriv(Pe, Direction::X, gradPx);
 
     // we need now to divide the gradPe by the electron density Ne
