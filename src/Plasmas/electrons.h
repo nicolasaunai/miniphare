@@ -6,9 +6,14 @@
 #include "vecfield/vecfield.h"
 
 
-class Electrons
+
+/**
+ * @brief private abstract implementation of the electrons
+ * can compute 1D, 2D or 3D electron properties.
+ */
+class ElectronsImpl
 {
-private:
+protected:
 
     VecField   Ve_;
     Field      Pe_;
@@ -16,9 +21,54 @@ private:
     GridLayout layout_;
 
 public:
+
+    ElectronsImpl(GridLayout const& layout, double Te)
+        :  Ve_    { layout.allocSize(HybridQuantity::V),
+                    layout.allocSize(HybridQuantity::V),
+                    layout.allocSize(HybridQuantity::V),
+                    { {HybridQuantity::V, HybridQuantity::V, HybridQuantity::V} },
+                    "_electronBulkFlow" },
+          Pe_     { layout.allocSize(HybridQuantity::P), HybridQuantity::P, "_electronPressure" },
+          Te_{Te},
+          layout_{layout}
+    {
+
+    }
+
+
+    virtual VecField const& bulkVel(VecField const& Vi,
+                                    Field const& Ni,
+                                    VecField const&J) = 0;
+
+    virtual Field const& pressure(Field const& Ni) = 0;
+};
+
+
+
+
+
+
+class Electrons
+{
+private:
+
+    std::unique_ptr<ElectronsImpl> Impl_;
+
+
+public:
     Electrons(GridLayout const& layout, double Te);
-    const VecField& bulkVel(VecField const& Vi, Field const& Ni, VecField const& J);
-    const Field& pressure(Field const& Ni);
+
+    VecField const& bulkVel(VecField const& Vi,
+                            Field const& Ni,
+                            VecField const& J)
+    {
+        return Impl_->bulkVel(Vi, Ni, J);
+    }
+
+    Field const& pressure(Field const& Ni)
+    {
+        return Impl_->pressure(Ni);
+    }
 
 
 
