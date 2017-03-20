@@ -40,7 +40,7 @@ public:
         // a primal or a dual mesh
         if(centering == QtyCentering::dual) // TODO this if is probably slowing us down
         {
-            reducedCoord += 0.5 ;
+            reducedCoord -= 0.5 ;
         }
 
         std::vector<uint32> const& indexes = impl_->computeIndexes(reducedCoord);
