@@ -40,6 +40,10 @@ public:
         // a primal or a dual mesh
         if(centering == QtyCentering::dual) // TODO this if is probably slowing us down
         {
+            //TODO constant should be named and linked to the
+            // GridLayout somehow because this depends on the number of ghost nodes
+            // at the specific interpolation order.
+            // at present this only works for 1st order interpolation.
             reducedCoord -= 0.5 ;
         }
 
