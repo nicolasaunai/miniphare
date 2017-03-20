@@ -272,9 +272,23 @@ void OhmImpl1D::pressure_(Field const& Pe, Field const& Ne)
 {
     Field& gradPx = pressureTerm_.component(0);
     layout_.deriv(Pe, Direction::X, gradPx);
+
+    // we need now to divide the gradPe by the electron density Ne
+    // Ne is on primal^3 and gradPx is on the electric field
+    // since we don't know here where the electric field is
+    // we will express Ne in terms of a linear combination
+    // of surrounding points
+    // the coefficients and nodes indexes will be given by:
+    LinearCombination const& avgPointsMomentsEx = layout_.momentsToEx();
+
     for (uint32 ix=0; ix <gradPx.size(); ++ix)
     {
-        gradPx(ix) = -gradPx(ix)/Ne(ix);
+        double ne_loc = 0;
+        for (WeightPoint const& wp : avgPointsMomentsEx)
+        {
+            ne_loc+= wp.coef * Ne(ix + wp.ix);
+        }
+        gradPx(ix) = -gradPx(ix)/ne_loc;
     }
 }
 
