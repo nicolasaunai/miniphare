@@ -31,9 +31,9 @@ const VecField& Electrons::bulkVel(VecField const& Vi, const Field& Ni, const Ve
     LinearCombination const& JzOnMoment = layout_.EzToMoment();
 
 
-    Field& Vx = Ve_.component(compX);
-    Field& Vy = Ve_.component(compY);
-    Field& Vz = Ve_.component(compZ);
+    Field& Vex = Ve_.component(compX);
+    Field& Vey = Ve_.component(compY);
+    Field& Vez = Ve_.component(compZ);
 
     const Field& Jx  = J.component(compX);
     const Field& Jy  = J.component(compY);
@@ -45,13 +45,17 @@ const VecField& Electrons::bulkVel(VecField const& Vi, const Field& Ni, const Ve
 
 
 
-    // every V (x,y,z) component has the same centering: ppp
+    // every V (x,y,z) component and density has the same centering: ppp
     // so only one spatial loop is necessary
-    uint32 const iStart = layout_.physicalStartIndex(Vx, Direction::X);
-    uint32 const iEnd   = layout_.physicalEndIndex(Vx, Direction::X);
+    uint32 const iStart = layout_.physicalStartIndex(Vex, Direction::X);
+    uint32 const iEnd   = layout_.physicalEndIndex(Vex, Direction::X);
 
     for (uint32 ix = iStart; ix <= iEnd; ++ix)
     {
+
+        // J is defined on E. We don't know here where E (thus J) here
+        // we need to call the gridLayout LinearCombinations to get J components
+        // at the primal nodes.
         double jxloc = 0;
         for (WeightPoint const& wp : JxOnMoment)
         {
@@ -70,9 +74,12 @@ const VecField& Electrons::bulkVel(VecField const& Vi, const Field& Ni, const Ve
             jzloc += wp.coef * Jz(ix + wp.ix);
         }
 
-        Vx(ix)  = Vix(ix) - jxloc / Ni(ix);
-        Vy(ix)  = Viy(ix) - jyloc / Ni(ix);
-        Vz(ix)  = Viz(ix) - jzloc / Ni(ix);
+        // now we have all J components at the primal nodes
+        // we can safely compute Ve.
+
+        Vex(ix)  = Vix(ix) - jxloc / Ni(ix);
+        Vey(ix)  = Viy(ix) - jyloc / Ni(ix);
+        Vez(ix)  = Viz(ix) - jzloc / Ni(ix);
     }
 
     return Ve_;
