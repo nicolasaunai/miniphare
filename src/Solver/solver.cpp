@@ -10,7 +10,7 @@
 #include "pusher/pusherfactory.h"
 #include "Faraday/faradayfactory.h"
 #include "Interpolator/interpolator.h"
-
+#include "Interpolator/particlemesh.h"
 #include "vecfield/vecfieldoperations.h"
 
 

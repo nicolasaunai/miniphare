@@ -4,6 +4,7 @@ project (test-Pusher)
 set(SOURCES
      ../../src/Plasmas/particles.cpp
      ../../src/Interpolator/interpolator.cpp
+     ../../src/Interpolator/particlemesh.cpp
      ../../src/pusher/modifiedboris.cpp
      ../../src/grid/gridlayout.cpp
      ../../src/grid/gridlayoutimplyee.cpp
