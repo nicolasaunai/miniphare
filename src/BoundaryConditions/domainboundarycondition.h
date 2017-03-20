@@ -41,6 +41,8 @@ public:
     virtual void applyBulkBC(VecField& Vi)    const override;
     virtual void applyParticleBC(std::vector<Particle>& particleArray,
                                  LeavingParticles const& leavingParticles)  const override;
+
+    virtual ~DomainBoundaryCondition();
 };
 
 

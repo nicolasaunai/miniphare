@@ -1,4 +1,5 @@
 
+
 #include <string>
 #include <array>
 #include <iostream>
@@ -17,11 +18,14 @@
 #include "pusher/modifiedboris.h"
 #include "pusher/pusherfactory.h"
 
-
+#include "BoundaryConditions/domainboundarycondition.h"
+#include "BoundaryConditions/periodicdomainboundary.h"
 
 
 
 void print(InterpPushParams const& inputs) ;
+
+std::unique_ptr<BoundaryCondition> createBoundary( GridLayout const & layout ) ;
 
 void allocEBVecFields( GridLayout const & layout, \
                       std::shared_ptr<VecField> & E_out, \
@@ -168,6 +172,9 @@ public:
 
         std::vector<Particle> particArray{partic} ;
 
+        std::unique_ptr<BoundaryCondition> bc{ createBoundary(layout) } ;
+
+
         precision_x = 6.*dt*dt ;
         precision_v = 2.45*dt ; // sqrt(6.) = 2.45
 
@@ -179,7 +186,7 @@ public:
 
             pusher->move( particArray, particArray,
                           mass, Efields, Bfields,
-                          *interpolator ) ;
+                          *interpolator, *bc ) ;
 
             Particle const & iPart = particArray[0] ;
 
@@ -205,6 +212,24 @@ public:
 };
 
 
+
+std::unique_ptr<BoundaryCondition> createBoundary( GridLayout const & layout )
+{
+    // return hard coded domain periodic boundary condition
+    std::vector<DomainBoundaryCondition::BoundaryInfo> boundaries(2);
+
+    // "first" is the edge coordinate
+    boundaries[0].first = Edge::Xmin;
+    boundaries[1].first = Edge::Xmax;
+
+    // "second" is the type of boundary, here periodic
+    boundaries[0].second = BoundaryType::Periodic;
+    boundaries[1].second = BoundaryType::Periodic;
+
+    std::unique_ptr<BoundaryCondition> bc {new DomainBoundaryCondition{layout, boundaries}};
+
+    return bc;
+}
 
 
 void allocEBVecFields( GridLayout const & layout, \
@@ -361,6 +386,5 @@ TEST_P(PusherTest, xVxyzCompo)
 
 INSTANTIATE_TEST_CASE_P(Interpolate1DTest, PusherTest,
                         testing::ValuesIn( getInterpPushParamsFromFile() ) );
-
 
 
