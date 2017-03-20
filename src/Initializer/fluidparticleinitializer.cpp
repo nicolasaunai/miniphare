@@ -60,7 +60,8 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
     // random seed and generator needed to load maxwellian velocity
     // and random position with the cell
     std::random_device randSeed;
-    std::mt19937_64 generator(randSeed());
+    //std::mt19937_64 generator(randSeed());
+    std::mt19937_64 generator(1);
 
     // beware: we're looping over the cell but use primal indices because of
     // GridLayout::cellCenteredCoordinates
