@@ -83,12 +83,12 @@ OhmImpl::~OhmImpl()
 
     for (uint32 i=0; i < Ey.size(); ++i)
     {
-        Ey(i) = VexB_y(i) + 0*ePressureY(i) +0* Ry(i);
+        Ey(i) = VexB_y(i) +0* Ry(i);
     }
 
     for (uint32 i=0; i < Ez.size(); ++i)
     {
-        Ez(i) = VexB_z(i) + 0*ePressureZ(i) + 0*Rz(i);
+        Ez(i) = VexB_z(i) + 0*Rz(i);
     }
     std::cout << Ex(1) <<" " << Ex(2) <<" " <<Ex(3) <<" " <<Ex(4)<< std::endl;
 }
