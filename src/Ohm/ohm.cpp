@@ -76,7 +76,7 @@ OhmImpl::~OhmImpl()
 
     for (uint32 i=0; i < Ex.size(); ++i)
     {
-        Ex(i) = VexB_x(i) + 0*ePressureX(i) +0*Rx(i);
+        Ex(i) = VexB_x(i) + ePressureX(i) +0*Rx(i);
     }
 
     for (uint32 i=0; i < Ey.size(); ++i)
