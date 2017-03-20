@@ -143,10 +143,11 @@ void compute1DChargeDensityAndFlux(Interpolator& interpolator,
     Field& rho = species.rho();
 
     species.resetMoments() ;
+    double odx = layout.odx();
 
     for( const Particle & part : particles)
     {
-        interpolator(part, layout.odx(), rho, fx, fy, fz, Direction::X);
+        interpolator(part, odx, rho, fx, fy, fz, Direction::X);
     }
 
 }
