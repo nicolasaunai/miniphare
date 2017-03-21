@@ -35,12 +35,12 @@ void GridLayoutImplYee::initLinearCombinations_()
     int dualToPrimal;
     int primalTodual;
 
-    if (interpOrder_ == 1 || interpOrder_ ==2)
+    if (interpOrder_ == 1 || interpOrder_ ==2 || interpOrder_ == 3)
     {
         dualToPrimal = -1;
         primalTodual = 1;
     }
-    else if (interpOrder_ == 3 || interpOrder_ == 4)
+    else if (interpOrder_ == 4)
     {
         dualToPrimal = 1;
         primalTodual = -1;
@@ -56,8 +56,7 @@ void GridLayoutImplYee::initLinearCombinations_()
 
     // moment to Ex is Ppp to Dpp
     // shift only in X
-    // the shift is -1 for interpolation orders 3 and 4
-    // it is 1 for interpolation orders 1 and 2
+    // the average is done for all simulations
     P1.ix = 0;
     P1.iy = 0;
     P1.iz = 0;
