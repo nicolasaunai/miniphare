@@ -133,8 +133,8 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // Get time averaged prediction (E,B)^{n+1/2} pred1
     // using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred1
-    average(E, Epred, Eavg, layout_ );
-    average(B, Bpred, Bavg, layout_ );
+    timeAverage(E, Epred, Eavg);
+    timeAverage(B, Bpred, Bavg);
 
 
     // Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred 1
@@ -155,6 +155,8 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     faraday_(Eavg, B, Bpred);
     boundaryCondition.applyMagneticBC( Bpred ) ;
 
+    //Eavg.zero();
+
     // Compute J
     ampere_(Bpred, Jtot_) ;
     boundaryCondition.applyCurrentBC( Jtot_ ) ;
@@ -172,8 +174,8 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
 
     // --> Get time averaged prediction (E^(n+1/2),B^(n+1/2)) pred2
     // --> using (E^n, B^n) and (E^{n+1}, B^{n+1}) pred2
-    average( E, Epred, Eavg, layout_ );
-    average( B, Bpred, Bavg, layout_ );
+    timeAverage(E, Epred, Eavg);
+    timeAverage(B, Bpred, Bavg);
 
 
     // Get the CORRECTED positions and velocities
@@ -275,16 +277,18 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         // temporary buffer particleArrayPred_
         if (predictorStep == predictor1_)
         {
-            // move all particles of that species from n to n+1
-            // and put the advanced particles in the predictor buffer 'particleArrayPred_'
-            pusher_->move(particles, particleArrayPred_, species.mass(),
-                          E, B,interpolator, boundaryCondition );
-
             // resize the buffer so that charge density and fluxes use
             // no more than the right number of particles
             // particleArrayPred_ has a capacity that is large enough for all
             // particle arrays for all species.
             particleArrayPred_.resize(particles.size());
+
+
+            // move all particles of that species from n to n+1
+            // and put the advanced particles in the predictor buffer 'particleArrayPred_'
+            pusher_->move(particles, particleArrayPred_, species.mass(),
+                          E, B,interpolator, boundaryCondition );
+
 
 
             computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
@@ -307,9 +311,9 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
 
 
     ions.computeChargeDensity();
-    ions.computeBulkVelocity();
-
     boundaryCondition.applyDensityBC(ions.rho());
+
+    ions.computeBulkVelocity();
     boundaryCondition.applyBulkBC(ions.bulkVel());
 }
 

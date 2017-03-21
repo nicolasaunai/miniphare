@@ -10,9 +10,9 @@
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : layout_{ {{0.1,0.,0.}}, {{42, 0, 0}}, 1, "yee", Point{0.,0.,0.}, 2},
+    : layout_{ {{0.2,0.,0.}}, {{100, 0, 0}}, 1, "yee", Point{0.,0.,0.}, 1},
       // hard-coded... will come from input somehow
-      dt_{0.1}
+      dt_{0.001}
 {
 
 }
@@ -50,7 +50,7 @@ double thermalSpeedProton1(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    return 0.25;
+    return 0.025;
 }
 
 
@@ -59,7 +59,7 @@ double thermalSpeedProton2(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    return 0.25;
+    return 0.025;
 }
 
 
@@ -69,7 +69,7 @@ std::array<double,3> bulkVelocityProton1(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    vec[0] = 0.;
+    vec[0] = 1.;
     vec[1] = 0.;
     vec[2] = 0.;
     return vec;
@@ -81,7 +81,7 @@ std::array<double,3> bulkVelocityProton2(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    vec[0] = 0.;
+    vec[0] = 1.;
     vec[1] = 0.;
     vec[2] = 0.;
     return vec;
@@ -94,9 +94,9 @@ std::array<double,3>  magneticField(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    vec[0] = 1.;
-    vec[1] = 0.;
-    vec[2] = 0.;
+    vec[0] = 0.;
+    vec[1] = 0.;//std::sin(2.*std::acos(-1)/20. * x);//std::tanh((x-10)/0.2);
+    vec[2] = 1.;
     return vec;
 }
 
@@ -128,7 +128,7 @@ std::array<double,3> electricField(double x, double y, double z)
 std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer() const
 {
     const uint32 nbrSpecies = 2;
-    const uint32 nbrPartPerCell = 1000;
+    const uint32 nbrPartPerCell = 100;
     double chargeProton1 = 1., chargeProton2 = 1.;
 
     // should be obtained from

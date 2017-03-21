@@ -68,30 +68,30 @@ OhmImpl::~OhmImpl()
     Field const& VexB_y = implPtr_->idealTerm_.component(1);
     Field const& VexB_z = implPtr_->idealTerm_.component(2);
 
-    Field const& gradPx = implPtr_->pressureTerm_.component(0);
-    Field const& gradPy = implPtr_->pressureTerm_.component(1);
-    Field const& gradPz = implPtr_->pressureTerm_.component(2);
+    Field const& ePressureX = implPtr_->pressureTerm_.component(0);
+    Field const& ePressureY = implPtr_->pressureTerm_.component(1);
+    Field const& ePressureZ = implPtr_->pressureTerm_.component(2);
 
     Field const& Rx     = implPtr_->resistivityTerm_.component(0);
     Field const& Ry     = implPtr_->resistivityTerm_.component(1);
     Field const& Rz     = implPtr_->resistivityTerm_.component(2);
 
 
-    // add the ideal term
-    std::transform(Ex.begin(), Ex.end(), VexB_x.begin(), Ex.begin(), std::plus<double>());
-    std::transform(Ey.begin(), Ey.end(), VexB_y.begin(), Ey.begin(), std::plus<double>());
-    std::transform(Ez.begin(), Ez.end(), VexB_z.begin(), Ez.begin(), std::plus<double>());
+    for (uint32 i=0; i < Ex.size(); ++i)
+    {
+        Ex(i) = VexB_x(i) + 0*ePressureX(i) +0*Rx(i);
+    }
 
-    // add the pressure term
-    std::transform(Ex.begin(), Ex.end(), gradPx.begin(), Ex.begin(), std::plus<double>());
-    std::transform(Ey.begin(), Ey.end(), gradPy.begin(), Ey.begin(), std::plus<double>());
-    std::transform(Ez.begin(), Ez.end(), gradPz.begin(), Ez.begin(), std::plus<double>());
+    for (uint32 i=0; i < Ey.size(); ++i)
+    {
+        Ey(i) = VexB_y(i) + 0*ePressureY(i) +0* Ry(i);
+    }
 
-    // add resistive term
-    std::transform(Ex.begin(), Ex.end(), Rx.begin(), Ex.begin(), std::plus<double>());
-    std::transform(Ey.begin(), Ey.end(), Ry.begin(), Ey.begin(), std::plus<double>());
-    std::transform(Ez.begin(), Ez.end(), Rz.begin(), Ez.begin(), std::plus<double>());
-
+    for (uint32 i=0; i < Ez.size(); ++i)
+    {
+        Ez(i) = VexB_z(i) + 0*ePressureZ(i) + 0*Rz(i);
+    }
+    std::cout << Ex(1) <<" " << Ex(2) <<" " <<Ex(3) <<" " <<Ex(4)<< std::endl;
 }
 
 

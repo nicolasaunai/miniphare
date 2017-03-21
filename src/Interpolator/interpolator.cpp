@@ -76,6 +76,7 @@ void fieldAtParticle1D(Interpolator const& interp,
         part.Ex = interp(part, Ex, Direction::X, centeringEx);
         part.Ey = interp(part, Ey, Direction::X, centeringEy);
         part.Ez = interp(part, Ez, Direction::X, centeringEz);
+
         part.Bx = interp(part, Bx, Direction::X, centeringBx);
         part.By = interp(part, By, Direction::X, centeringBy);
         part.Bz = interp(part, Bz, Direction::X, centeringBz);
@@ -167,7 +168,7 @@ void compute1DChargeDensityAndFlux(Interpolator& interpolator,
 
     for( const Particle & part : particles)
     {
-        interpolator(part, layout.dx(), rho, fx, fy, fz, Direction::X);
+        interpolator(part, layout.odx(), rho, fx, fy, fz, Direction::X);
     }
 
 }

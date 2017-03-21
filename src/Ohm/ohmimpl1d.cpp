@@ -116,6 +116,7 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
 
             VexB_x(ix) = vzloc * byloc  -  vyloc * bzloc;
         }
+
     }
 
 

@@ -202,6 +202,76 @@ void GridLayoutImplYee::initLinearCombinations_()
         P2.coef = 0.5;
         BzToEx_.push_back(P2);
     }
+
+
+    // Bz to Ey is Ddp to Pdp
+    // shift only in the X direction
+    // the averaging is done for all simulations
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = 0.5;
+    BzToEy_.push_back(P1);
+    P2.ix = dualToPrimal;
+    P2.iy = 0;
+    P2.iz = 0;
+    P2.coef = 0.5;
+    BzToEy_.push_back(P2);
+
+
+    // Ex to Moment is Dpp to Ppp
+    // shift only in the X direction
+    // the averaging is done for all simulations
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = 0.5;
+    ExToMoment_.push_back(P1);
+    P2.ix = dualToPrimal;
+    P2.iy = 0;
+    P2.iz = 0;
+    P2.coef = 0.5;
+    ExToMoment_.push_back(P2);
+
+
+    // Ey to Moment is pDp to PPP
+    // shift tis only in the Y direction
+    // the averaging is done for 2D and 3D simulations
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = (nbdims_ >= 2) ? 0.5: 1;
+    EyToMoment_.push_back(P1);
+
+    if (nbdims_ >= 2)
+    {
+        P2.ix = 0;
+        P2.iy = dualToPrimal;
+        P2.iz = 0;
+        P2.coef = 0.5;
+        EyToMoment_.push_back(P2);
+    }
+
+
+    // Ez to Moment is ppD on ppP
+    // shift only in the Z direction
+    // the averaging is only for 3D simulations
+    P1.ix = 0;
+    P1.iy = 0;
+    P1.iz = 0;
+    P1.coef = (nbdims_ == 3) ? 0.5: 1;
+    EzToMoment_.push_back(P1);
+
+    if (nbdims_ == 3)
+    {
+        P2.ix = 0;
+        P2.iy = 0;
+        P2.iz = dualToPrimal;
+        P2.coef = 0.5;
+        EzToMoment_.push_back(P2);
+    }
+
+
 }
 
 
@@ -453,5 +523,22 @@ LinearCombination const& GridLayoutImplYee::BzToEx() const
 }
 
 
+
+LinearCombination const& GridLayoutImplYee::ExToMoment() const
+{
+    return ExToMoment_;
+}
+
+
+LinearCombination const& GridLayoutImplYee::EyToMoment() const
+{
+    return EyToMoment_;
+}
+
+
+LinearCombination const& GridLayoutImplYee::EzToMoment() const
+{
+    return EzToMoment_;
+}
 
 

@@ -73,6 +73,9 @@ void DomainBoundaryCondition::applyParticleBC(std::vector<Particle>& particleArr
 }
 
 
+DomainBoundaryCondition::~DomainBoundaryCondition()
+{
 
+}
 
 

@@ -68,10 +68,10 @@ void PeriodicDomainBoundary::makeFieldPeriodic1D_(VecField& vecField, GridLayout
                 uint32 physEnd   = layout.physicalEndIndex  ( field, Direction::X) ;
                 uint32 nbrGhosts = layout.nbrGhostCells( centering ) ;
 
-                for( uint32 ig=1 ; ig<nbrGhosts+1 ; ++ig )
+                for( uint32 ig=1; ig<= nbrGhosts; ++ig )
                 {
-                    field( physStart- ig ) = field( physEnd   - ig ) ;
-                    field( physEnd  + ig ) = field( physStart + ig ) ;
+                    field( physStart- ig ) = field( physEnd - ig + 1) ;
+                    field( physEnd  + ig ) = field( physStart + ig - 1) ;
                 }
 
             }
