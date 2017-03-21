@@ -17,7 +17,9 @@ class Interpolator
 {
 private:
 
-    //uint32 order_ ;
+    uint32 order_ ;
+    double dualOffset_ ;
+
     std::unique_ptr<IndexesAndWeights> impl_ ;
 
 public:
@@ -44,7 +46,7 @@ public:
             // GridLayout somehow because this depends on the number of ghost nodes
             // at the specific interpolation order.
             // at present this only works for 1st order interpolation.
-            reducedCoord -= 0.5 ;
+            reducedCoord += dualOffset_ ;
         }
 
         std::vector<uint32> const& indexes = impl_->computeIndexes(reducedCoord);
