@@ -57,12 +57,14 @@ Hierarchy::evaluateAMRPatches( uint32 refineRatio,
 
     for( uint32 iLevel=0 ; iLevel<nbrLevels ; iLevel++ )
     {
-        auto & patchesAtLevel = patchTable_[iLevel] ;
+        std::vector< std::shared_ptr<Patch> > const & patchesAtLevel = patchTable_[iLevel] ;
 
         std::vector<RefinementInfo> refinementVector ;
 
-        for( std::shared_ptr<Patch> patch: patchesAtLevel)
+        for( uint32 iPatch=0 ; iPatch<patchesAtLevel.size() ; ++iPatch )
         {
+            auto const & patch = patchesAtLevel[iPatch] ;
+
             RefinementAnalyser analyser{} ;
 
             analyser( patch->data() ) ;
@@ -71,12 +73,15 @@ Hierarchy::evaluateAMRPatches( uint32 refineRatio,
             // for further use
             if( analyser.hasNoEmptyBox() )
             {
-                Box refineBox = analyser.refinedArea() ;
+                std::vector<Box> const & refinedList = analyser.refinedVolumes() ;
 
-                struct RefinementInfo refine{ patch, refineBox,
-                            iLevel+1, refineRatio, baseLayout } ;
+                for( Box const & domain: refinedList )
+                {
+                    struct RefinementInfo refine{ patch, domain,
+                                iLevel+1, refineRatio, baseLayout } ;
 
-                refinementVector.push_back( refine ) ;
+                    refinementVector.push_back( refine ) ;
+                }
             }
         }
 
@@ -130,7 +135,7 @@ void Hierarchy::addNewPatch( RefinementInfo const & info)
 {
 
     std::shared_ptr<Patch> coarsePatch = info.parentPatch ;
-    Box refinedBox = info.box ;
+    Box refinedBox = info.refinedArea ;
     uint32 refinedLevel = info.level ;
 
     GridLayout refinedLayout = buildLayout( info ) ;
@@ -163,7 +168,7 @@ void Hierarchy::addNewPatch( RefinementInfo const & info)
  */
 GridLayout  Hierarchy::buildLayout( RefinementInfo const & info )
 {
-    Box newBox = info.box ;
+    Box area = info.refinedArea ;
     uint32 level = info.level ;
 
     uint32 refineRatio = info.refinementRatio ;
@@ -176,15 +181,15 @@ GridLayout  Hierarchy::buildLayout( RefinementInfo const & info )
     double dz = L0.dz()/std::pow( refineRatio, level ) ;
 
     // cell numbers
-    uint32 nbx = static_cast<uint32>( std::ceil( (newBox.x1 - newBox.x0)/dx ) ) ;
-    uint32 nby = static_cast<uint32>( std::ceil( (newBox.y1 - newBox.y0)/dy ) ) ;
-    uint32 nbz = static_cast<uint32>( std::ceil( (newBox.z1 - newBox.z0)/dz ) ) ;
+    uint32 nbx = static_cast<uint32>( std::ceil( (area.x1 - area.x0)/dx ) ) ;
+    uint32 nby = static_cast<uint32>( std::ceil( (area.y1 - area.y0)/dy ) ) ;
+    uint32 nbz = static_cast<uint32>( std::ceil( (area.z1 - area.z0)/dz ) ) ;
 
     // we create the layout of a new patch
     // and store it
     return GridLayout({{dx, dy, dz}}, {{nbx, nby, nbz}},
                       L0.nbDimensions(), L0.layoutName(),
-                      Point{newBox.x0, newBox.y0, newBox.z0}, L0.order() ) ;
+                      Point{area.x0, area.y0, area.z0}, L0.order() ) ;
 }
 
 

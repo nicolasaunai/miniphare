@@ -12,18 +12,18 @@
 struct RefinementInfo
 {
     std::shared_ptr<Patch> parentPatch;
-    Box box;
+    Box refinedArea;
     uint32 level;
 
     uint32 refinementRatio ;
     GridLayout const & baseLayout ;
 
-    RefinementInfo( std::shared_ptr<Patch> parentInfo,
-                    Box boxInfo, uint32 levelInfo,
+    RefinementInfo( std::shared_ptr<Patch> parentPatch,
+                    Box area, uint32 level,
                     uint32 refinementRatio,
                     GridLayout const & baseLayout ):
-        parentPatch{parentInfo}, box{boxInfo},
-        level{levelInfo}, refinementRatio{refinementRatio},
+        parentPatch{parentPatch}, refinedArea{area},
+        level{level}, refinementRatio{refinementRatio},
         baseLayout{baseLayout} {}
 
 };

@@ -13,12 +13,12 @@ class RefinementAnalyser
 private:
     // it tells where the mesh should be refined
     // Initialize with an empty Box
-    Box refinedArea_ ;
+    std::vector<Box> refinedVolumes_ ;
 
 public:
 
     RefinementAnalyser()
-        : refinedArea_{ 0, 0, 0, 0, 0, 0} {}
+        : refinedVolumes_{ {0, 0, 0, 0, 0, 0} } {}
 
     bool operator()(PatchData const& data)
     {
@@ -33,7 +33,7 @@ public:
         return result ;
     }
 
-    Box refinedArea() { return refinedArea_; }
+    std::vector<Box> const & refinedVolumes() { return refinedVolumes_; }
 
     bool hasNoEmptyBox() ;
 };

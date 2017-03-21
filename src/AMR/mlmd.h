@@ -15,10 +15,11 @@
  *     - refinement / patch creation and insertion into the Hierarchy
  *     -  etc.
  */
-class MLMD // TODO should be a singleton pattern
+class MLMD
 {
 private:
-    uint32 refinementRatio_ {2};
+    // TODO: should be initialized by reading inputs parameters
+    uint32 refinementRatio_ {2};   // temporary hard-coded refinement strategy
     GridLayout baseLayout_ ;
     Hierarchy patchHierarchy_;
 
