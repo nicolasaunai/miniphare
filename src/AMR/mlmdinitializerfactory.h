@@ -8,7 +8,7 @@
 #include "Initializer/initializerfactory.h"
 
 #include "AMR/patch.h"
-
+#include "AMR/particleselector.h"
 
 
 
@@ -46,6 +46,9 @@ private:
     // this interpolator is used to initialize fields
     // on a refined patch
     uint32 interpolationOrder_;
+
+    void ionsInitializerInternals_( IonsInitializer & ionInit,
+                                    ParticleSelector const & selector ) const ;
 
     uint32 PRAHalfWidth_( GridLayout const & layout ) const ;
 

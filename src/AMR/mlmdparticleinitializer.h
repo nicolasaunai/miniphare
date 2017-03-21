@@ -15,14 +15,14 @@ class MLMDParticleInitializer : public ParticleInitializer
 {
 
 private:
-    std::unique_ptr<ParticleSelector> selector_;
     Species const& particleSource_;
+    ParticleSelector const & selector_;
 
 public:
     MLMDParticleInitializer(Species const& particleSource,
-                            std::unique_ptr<ParticleSelector> selector)
-                        : selector_{std::move(selector)},
-                          particleSource_{particleSource} {}
+                            ParticleSelector const & selector)
+                        : particleSource_{particleSource},
+                          selector_{selector} {}
 
     virtual ~MLMDParticleInitializer() = default;
 

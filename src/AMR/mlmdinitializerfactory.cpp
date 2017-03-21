@@ -16,30 +16,39 @@
 
 
 
-
-std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer() const
+void MLMDInitializerFactory::ionsInitializerInternals_(
+        IonsInitializer & ionInit,
+        ParticleSelector const & selector ) const
 {
-    /* this routine creates an ion initializer with a Patch Choice function. */
-    std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
+
     Ions const& parentIons = parentPatch_->ions();
 
     for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
     {
         Species const& species = parentIons.species(ispe);
 
-        Box const &  parentBox  = parentPatch_->coordinates();
-        GridLayout const & parentLayout = parentPatch_->layout();
-
-        std::unique_ptr<ParticleSelector> selector{
-            new isInBox{parentBox, newPatchCoords_, parentLayout.dxdydz()} };
-
         std::unique_ptr<ParticleInitializer>
-                particleInit{new MLMDParticleInitializer{species, std::move(selector) }};
+                particleInit{new MLMDParticleInitializer{species, selector }};
 
-        ionInitPtr->masses.push_back( parentIons.species(ispe).mass() );
-        ionInitPtr->particleInitializers.push_back( std::move(particleInit) );
+        ionInit.masses.push_back( parentIons.species(ispe).mass() );
+        ionInit.particleInitializers.push_back( std::move(particleInit) );
     }
 
+}
+
+
+
+std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer() const
+{
+    /* this routine creates an ion initializer with a Patch Choice function. */
+    std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
+
+    std::unique_ptr<ParticleSelector> selectorPtr{
+        new isInBox{parentPatch_->coordinates(),
+                    newPatchCoords_,
+                    parentPatch_->layout().dxdydz()} };
+
+    ionsInitializerInternals_( *ionInitPtr, *selectorPtr ) ;
 
     return ionInitPtr;
 }
@@ -143,28 +152,15 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
         GridLayout praEdgeLayout{ buildPRABoundaryLayout_( refinedPRA, ibord ) };
 
         std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
-        Ions const& parentIons = parentPatch_->ions();
 
-        for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
-        {
-            Species const& species = parentIons.species(ispe);
+        // the selector will check whether particles from the parent Box
+        // belong to the boundary layout box
+        std::unique_ptr<ParticleSelector> selectorPtr{
+            new isInBox{parentPatch_->coordinates(),
+                        praEdgeLayout.getBox(),
+                        parentPatch_->layout().dxdydz()} } ;
 
-            Box const &  parentBox  = parentPatch_->coordinates();
-            GridLayout const & parentLayout = parentPatch_->layout();
-
-            // the selector will check whether particles from the parent Box
-            // belong to the boundary layout box
-            std::unique_ptr<ParticleSelector> selector{
-                new isInBox{parentBox, praEdgeLayout.getBox(),
-                            parentLayout.dxdydz()} } ;
-
-            std::unique_ptr<ParticleInitializer>
-                    particleInit{new MLMDParticleInitializer{species, std::move(selector) }};
-
-            ionInitPtr->masses.push_back( parentIons.species(ispe).mass() );
-            ionInitPtr->particleInitializers.push_back( std::move(particleInit) );
-        }
-
+        ionsInitializerInternals_( *ionInitPtr, *selectorPtr ) ;
 
         // We need the electromagnetic field on the PRA layout
         // of the adequate Patch boundary
