@@ -14,6 +14,9 @@ Interpolator::Interpolator(uint32 order)
     : impl_{ nullptr}
 {
 
+    // for each interpolation order there is a specific way to calculate
+    // nodes and coef. Indexes for dual quantities mush be incremented by
+    // dualOffset_, which also depend on the interpolation order.
     switch( order )
     {
     case 1:
