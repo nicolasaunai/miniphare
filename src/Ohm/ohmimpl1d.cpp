@@ -277,11 +277,17 @@ void OhmImpl1D::pressure_(Field const& Pe, Field const& Ne)
     // Ne is on primal^3 and gradPx is on the electric field
     // since we don't know here where the electric field is
     // we will express Ne in terms of a linear combination
-    // of surrounding points
-    // the coefficients and nodes indexes will be given by:
+    // of surrounding points the coefficients and nodes
+    // indexes will be given by:
     LinearCombination const& avgPointsMomentsEx = layout_.momentsToEx();
 
-    for (uint32 ix=0; ix <gradPx.size(); ++ix)
+    uint32 iStart = layout_.physicalStartIndex(gradPx, Direction::X);
+    uint32 iEnd   = layout_.physicalEndIndex(gradPx, Direction::X);
+
+    // we loop from iStart to iEnd and forget about ghost nodes
+    // because they will be fixed by the boundary condition
+    // on the electric field
+    for (uint32 ix=iStart; ix <= iEnd; ++ix)
     {
         double ne_loc = 0;
         for (WeightPoint const& wp : avgPointsMomentsEx)
