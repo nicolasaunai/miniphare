@@ -7,8 +7,10 @@
 #include "BoundaryConditions/periodicdomainboundary.h"
 
 
+static const uint32 interpOrderConstant = 1;
+
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, 4},
+    : layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
       // hard-coded... will come from input somehow
       dt_{0.01}
 {
@@ -90,8 +92,8 @@ std::array<double,3>  magneticField(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    vec[0] = 1.;
-    vec[1] = 0.;//std::sin(2.*std::acos(-1)/20. * x);//std::tanh((x-10)/0.2);
+    vec[0] = 0.;
+    vec[1] = 1.;
     vec[2] = 0.;
     return vec;
 }
@@ -170,7 +172,7 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
 {
     const std::string pusher = "modifiedBoris" ;
 
-    const std::vector<uint32>  interpolationOrders = {4, 4} ;
+    const std::vector<uint32>  interpolationOrders = {interpOrderConstant, interpOrderConstant} ;
 
     std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
 
