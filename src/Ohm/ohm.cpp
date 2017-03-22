@@ -88,8 +88,8 @@ OhmImpl::~OhmImpl()
     {
         Ez(i) = VexB_z(i);// +0* Rz(i);
     }
-    std::cout << Ez(1) << " " << Ez(2) << " " << Ez(3) <<" "
-              << Ez(4) << " " << Ez(5) << " " << Ez(6) << std::endl;
+    std::cout << Ez(0) << " " << Ez(1) << " " << Ez(2) <<" "
+              << Ez(3) << " " << Ez(4) << " " << Ez(5) << std::endl;
 }
 
 
