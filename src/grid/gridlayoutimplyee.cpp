@@ -35,12 +35,12 @@ void GridLayoutImplYee::initLinearCombinations_()
     int dualToPrimal;
     int primalTodual;
 
-    if (interpOrder_ == 1 || interpOrder_ ==2 || interpOrder_ == 3)
+    if (interpOrder_ == 1 || interpOrder_ ==2 || interpOrder_ == 4)
     {
         dualToPrimal = -1;
         primalTodual = 1;
     }
-    else if (interpOrder_ == 4)
+    else if (interpOrder_ == 3)
     {
         dualToPrimal = 1;
         primalTodual = -1;
