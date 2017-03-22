@@ -215,27 +215,6 @@ void PeriodicDomainBoundary::makeMomentPeriodic3D_(Field& moment, GridLayout con
 
 
 
-void makeParticlesPeriodic1D(std::vector<Particle>& particleArray,
-                             LeavingParticles const& leavingParticles)
-{
-
-}
-
-
-
-
-void makeParticlesPeriodic2D(std::vector<Particle>& particleArray,
-                             LeavingParticles const& leavingParticles)
-{
-
-}
-
-void makeParticlesPeriodic3D(std::vector<Particle>& particleArray,
-                             LeavingParticles const& leavingParticles)
-{
-
-}
-
 
 void makeParticlesPeriodic(std::vector<Particle>& particleArray,
                            LeavingParticles const& leavingParticles)
@@ -269,7 +248,10 @@ void makeParticlesPeriodic(std::vector<Particle>& particleArray,
 void PeriodicDomainBoundary::applyParticleBC(std::vector<Particle>& particleArray,
                                              LeavingParticles const& leavingParticles) const
 {
-    makeParticlesPeriodic(particleArray, leavingParticles);
+    if (edge_ == Edge::Xmin)
+    {
+        makeParticlesPeriodic(particleArray, leavingParticles);
+    }
 }
 
 
