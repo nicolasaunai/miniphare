@@ -62,18 +62,26 @@ void PeriodicDomainBoundary::makeFieldPeriodic1D_(VecField& vecField, GridLayout
                **calculated** correctly
             */
             auto centering = layout.fieldCentering( field, Direction::X) ;
+            uint32 nbrGhosts = layout.nbrGhostCells(centering);
+            uint32 physStart = layout.physicalStartIndex( field, Direction::X) ;
+            uint32 physEnd   = layout.physicalEndIndex  ( field, Direction::X) ;
+
             if (centering == QtyCentering::dual)
             {
-                uint32 physStart = layout.physicalStartIndex( field, Direction::X) ;
-                uint32 physEnd   = layout.physicalEndIndex  ( field, Direction::X) ;
-                uint32 nbrGhosts = layout.nbrGhostCells( centering ) ;
-
                 for( uint32 ig=1; ig<= nbrGhosts; ++ig )
                 {
                     field( physStart- ig ) = field( physEnd - ig + 1) ;
                     field( physEnd  + ig ) = field( physStart + ig - 1) ;
                 }
+            }
 
+            else if (centering == QtyCentering::primal)
+            {
+                for (uint32 ig=1; ig <= nbrGhosts;  ++ig)
+                {
+                    field(physStart - ig) = field(physEnd - ig);
+                    field(physEnd + ig)   = field(physStart + ig);
+                }
             }
         }
     } // end if at Min boundary
