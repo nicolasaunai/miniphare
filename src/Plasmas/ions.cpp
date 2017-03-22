@@ -98,6 +98,7 @@
         Field const& rhoSpe = spe.rho();
         std::transform (rho_.begin(), rho_.end(), rhoSpe.begin(), rho_.begin(), std::plus<double>());
      }
+
  }
 
 

@@ -112,7 +112,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     //                              PREDICTOR 1
     //
     // -----------------------------------------------------------------------
-
+#if 1
     // Get B^{n+1} pred1 from E^n
     faraday_(E, B, Bpred);
     boundaryCondition.applyMagneticBC( Bpred ) ;
@@ -136,20 +136,20 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     timeAverage(E, Epred, Eavg);
     timeAverage(B, Bpred, Bavg);
 
-
     // Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred 1
     // accumulate moments for each species and total ions.
     // last argument is 'predictor1_' so that particles at n+1 are stored
     // in a temporary buffer and particles at n are kept at n
     moveIons_(Eavg, Bavg, ions, boundaryCondition, predictor1_);
-
+#endif
+    //moveIons_(E, B, ions, boundaryCondition, predictor1_);
 
     // -----------------------------------------------------------------------
     //
     //                         PREDICTOR 2
     //
     // -----------------------------------------------------------------------
-
+#if 1
 
     // Get B^{n+1} pred2 from E^{n+1/2} pred1
     faraday_(Eavg, B, Bpred);
@@ -183,14 +183,26 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     // Last argument here is 'predictor2_' because we want to
     // update ions at n+1 in place, i.e. overwritting ions at n
     moveIons_(Eavg, Bavg, ions, boundaryCondition, predictor2_);
-
-
+#endif
+    //moveIons_(E, B, ions, boundaryCondition, predictor2_);
+    Field const& rho_ = ions.bulkVel().component(1);
+#if 0
+    std::cout << rho_(0) << " " << rho_(1) << " " << rho_(2)
+              << " " << rho_(3)
+              << " " << rho_(4)
+              << " I16 = " << rho_(16)
+              << " " << rho_(17)
+              << " " << rho_(18)
+              << " " << rho_(19)
+              << " " << rho_(20)
+              << std::endl;
+#endif
     // -----------------------------------------------------------------------
     //
     //                           CORRECTOR
     //
     // -----------------------------------------------------------------------
-
+#if 1
 
     // Get CORRECTED B^{n+1} from E^{n+1/2} pred2
     faraday_(Eavg, B, B);
@@ -210,7 +222,7 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     ohm_(B, ions.rho(), Vecorr, Pecorr, Jtot_, E);
     // BC Fields --> Apply boundary conditions on the electric field
     boundaryCondition.applyElectricBC( E ) ;
-
+#endif
 }
 
 
@@ -288,7 +300,6 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
             // and put the advanced particles in the predictor buffer 'particleArrayPred_'
             pusher_->move(particles, particleArrayPred_, species.mass(),
                           E, B,interpolator, boundaryCondition );
-
 
 
             computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
