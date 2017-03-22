@@ -23,6 +23,8 @@ private:
     GridLayout baseLayout_ ;
     Hierarchy patchHierarchy_;
 
+    const std::vector<uint32>  interpolationOrders_ ;
+    const std::string pusher_ ;
 
 public:
 
@@ -32,8 +34,8 @@ public:
 
     void evolveFullDomain();
 
-    Hierarchy & hierarchy() { return patchHierarchy_ ; }
-    Hierarchy const & hierarchy() const { return patchHierarchy_ ; }
+//    Hierarchy & hierarchy() { return patchHierarchy_ ; }
+//    Hierarchy const & hierarchy() const { return patchHierarchy_ ; }
 
 
    // TODO void computedtFromCFL(); // calculate dt from CFL and dx_ // for MLMD version

@@ -33,9 +33,9 @@ public:
         return result ;
     }
 
-    std::vector<Box> const & refinedVolumes() { return refinedVolumes_; }
+    std::vector<Box> const & refinedDomains() { return refinedVolumes_; }
 
-    bool hasNoEmptyBox() ;
+    bool refinementNeeded() ;
 };
 
 

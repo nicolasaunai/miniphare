@@ -14,7 +14,9 @@ MLMD::MLMD(InitializerFactory const& initFactory)
     : baseLayout_{ GridLayout{initFactory.gridLayout()} },
       patchHierarchy_{ std::make_shared<Patch>(
                            initFactory.getBox(), baseLayout_,
-                           PatchData{initFactory}  ) }
+                           PatchData{initFactory}  ) },
+      interpolationOrders_{  initFactory.interpolationOrders() },
+      pusher_{ initFactory.pusher() }
 {
     // will probably have to change the way objects are initialized.
     // if we want, at some point, start from an already existing hierarchy
@@ -51,18 +53,18 @@ void MLMD::evolveFullDomain()
 {
 
     // evolve fields and particle for a time step
-    patchHierarchy_.evolveFieldsAndParticles() ;
+    patchHierarchy_.evolveDomainForOneTimeStep() ;
 
 #if 1
     // Here, AMR patches will say whether they need refinement
     // the ouput of this method is used by updateHierarchy()
     // Note for later: will probably not be called every time step.
     std::vector< std::vector<RefinementInfo> > refinementTable
-            = patchHierarchy_.evaluateAMRPatches( refinementRatio_, baseLayout_ ) ;
+            = patchHierarchy_.evaluateRefinementNeed( refinementRatio_, baseLayout_ ) ;
 
     // New patches are created here if necessary
     // it depends on evaluateHierarchy()
-    patchHierarchy_.updateHierarchy( refinementTable ) ;
+    patchHierarchy_.updateHierarchy( refinementTable, interpolationOrders_, pusher_ ) ;
 #endif
 
 }

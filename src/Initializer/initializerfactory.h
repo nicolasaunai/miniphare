@@ -44,6 +44,8 @@ public:
     virtual Box getBox() const = 0;
     virtual GridLayout const& gridLayout() const = 0 ;
     virtual double timeStep() const = 0 ;
+    virtual std::string const & pusher() const = 0 ;
+    virtual std::vector<uint32> const & interpolationOrders() const = 0 ;
 
     // virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() = 0;
     // virtual std::unique_ptr<GridLayoutInitializer> createGridLayoutInitializer() = 0;
@@ -58,12 +60,7 @@ public:
 
 
 
-
-
 std::unique_ptr<InitializerFactory> fromCommandLine(int argc, char** argv);
-
-
-
 
 
 /* ----------------------------------------------------------------------------

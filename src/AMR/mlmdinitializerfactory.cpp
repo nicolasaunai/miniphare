@@ -12,11 +12,12 @@
 
 
 #include <cmath>
+#include <algorithm>
 
 
 
 
-void MLMDInitializerFactory::ionsInitializerInternals_(
+void MLMDInitializerFactory::buildIonsInitializer_(
         IonsInitializer & ionInit,
         ParticleSelector const & selector ) const
 {
@@ -48,7 +49,7 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
                     newPatchCoords_,
                     parentPatch_->layout().dxdydz()} };
 
-    ionsInitializerInternals_( *ionInitPtr, *selectorPtr ) ;
+    buildIonsInitializer_( *ionInitPtr, *selectorPtr ) ;
 
     return ionInitPtr;
 }
@@ -70,19 +71,19 @@ MLMDInitializerFactory::createElectromagInitializer() const
 {
 
     Electromag const & parentElectromag = parentPatch_->data().EMfields() ;
+    GridLayout const & coarseLayout = parentPatch_->layout() ;
 
-    Interpolator interpolator(interpolationOrder_) ;
+    Interpolator interpolator( *std::max_element(interpolationOrders_.begin(),
+                                                 interpolationOrders_.end()   ) ) ;
 
     std::unique_ptr<ElectromagInitializer> eminit {
         new ElectromagInitializer{refinedLayout_, "_EMField", "_EMFields"} };
 
     std::cout << "creating MLMD ElectromagInitializer" << std::endl;
 
-    fieldAtRefinedNodes1D( interpolator,
-                           parentPatch_->layout(),
-                           parentElectromag.getE() , parentElectromag.getB(),
-                           refinedLayout_,
-                           eminit->E_ , eminit->B_ ) ;
+    fieldAtRefinedNodes( interpolator,
+                         coarseLayout, parentElectromag ,
+                         refinedLayout_, *eminit ) ;
 
     return eminit;
 }
@@ -95,11 +96,9 @@ std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializ
     std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
 
 
-    solverInitPtr->pusherType =
-           parentPatch_->solver().getPusherType() ;
+    solverInitPtr->pusherType = pusher_ ;
 
-    solverInitPtr->interpolationOrders =
-            parentPatch_->solver().getInterpolationOrders() ;
+    solverInitPtr->interpolationOrders = interpolationOrders_ ;
 
     return  solverInitPtr;
 }
@@ -139,7 +138,9 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
     // this will be used to initialize electromagnetic fields
     // at patch boundaries, into PRA layouts
     Electromag const & parentElectromag = parentPatch_->data().EMfields() ;
-    Interpolator interpolator(interpolationOrder_) ;
+
+    Interpolator interpolator( *std::max_element(interpolationOrders_.begin(),
+                                                 interpolationOrders_.end()   ) ) ;
 
     PRA refinedPRA{ buildPRA_(refinedLayout_) } ;
 
@@ -160,7 +161,7 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
                         praEdgeLayout.getBox(),
                         parentPatch_->layout().dxdydz()} } ;
 
-        ionsInitializerInternals_( *ionInitPtr, *selectorPtr ) ;
+        buildIonsInitializer_( *ionInitPtr, *selectorPtr ) ;
 
         // We need the electromagnetic field on the PRA layout
         // of the adequate Patch boundary
@@ -169,11 +170,9 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 
         // Now we compute the E and B fields
         // of the ElectromagInitializer
-        fieldAtRefinedNodes1D( interpolator,
-                               parentPatch_->layout(),
-                               parentElectromag.getE() , parentElectromag.getB(),
-                               praEdgeLayout,
-                               emInitPtr->E_ , emInitPtr->B_ ) ;
+        fieldAtRefinedNodes( interpolator,
+                             parentPatch_->layout(), parentElectromag ,
+                             praEdgeLayout, *emInitPtr ) ;
 
         // For each boundary build the PatchBoundary object
         std::unique_ptr<Boundary>
@@ -222,11 +221,8 @@ GridLayout MLMDInitializerFactory::buildPRABoundaryLayout_(
     LogicalBox logic = refinedPRA.logicDecomposition[ibord] ;
     Box box = refinedPRA.boxDecomposition[ibord] ;
 
-    // We set the origin from the adequate box
     Point origin{box.x0, box.y0, box.z0} ;
 
-    // We set the required number of cells in each direction
-    // using the adequate logical box
     uint32 nbrCellx = logic.ix1 - logic.ix0 ;
     uint32 nbrCelly = logic.iy1 - logic.iy0 ;
     uint32 nbrCellz = logic.iz1 - logic.iz0 ;
@@ -252,24 +248,20 @@ GridLayout MLMDInitializerFactory::buildPRABoundaryLayout_(
  */
 PRA MLMDInitializerFactory::buildPRA_( GridLayout const & layout ) const
 {
-    PRA newPRA{} ;
-
     switch (layout.nbDimensions())
     {
     case 1:
-        newPRA = buildPRA1D_( layout );
-        break;
+        return buildPRA1D_( layout );
+
     case 2:
-        newPRA = buildPRA2D_( layout );
-        break;
+        return buildPRA2D_( layout );
+
     case 3:
-        newPRA = buildPRA3D_( layout );
-        break;
+        return buildPRA3D_( layout );
+
     default:
         throw std::runtime_error("wrong dimensionality");
     }
-
-    return newPRA ;
 }
 
 
@@ -457,23 +449,44 @@ uint32 MLMDInitializerFactory::PRAHalfWidth_( GridLayout const & layout ) const
 
 
 
-GridLayout const& MLMDInitializerFactory::gridLayout() const
+
+
+
+void fieldAtRefinedNodes( Interpolator const& interpolator,
+                          GridLayout const & coarseLayout,
+                          Electromag const & parentElectromag ,
+                          GridLayout const & refinedLayout,
+                          ElectromagInitializer & eminit )
 {
-    return refinedLayout_;
+
+    switch( coarseLayout.nbDimensions() )
+    {
+    case 1:
+        fieldAtRefinedNodes1D( interpolator,
+                               coarseLayout,
+                               parentElectromag.getE() , parentElectromag.getB(),
+                               refinedLayout,
+                               eminit.E_ , eminit.B_ ) ;
+        break;
+    case 2:
+        fieldAtRefinedNodes2D( interpolator,
+                               coarseLayout,
+                               parentElectromag.getE() , parentElectromag.getB(),
+                               refinedLayout,
+                               eminit.E_ , eminit.B_ ) ;
+        break;
+    case 3:
+        fieldAtRefinedNodes3D( interpolator,
+                               coarseLayout,
+                               parentElectromag.getE() , parentElectromag.getB(),
+                               refinedLayout,
+                               eminit.E_ , eminit.B_ ) ;
+        break;
+    default:
+        throw std::runtime_error("wrong dimensionality");
+    }
+
 }
-
-
-Box MLMDInitializerFactory::getBox() const
-{
-    return refinedLayout_.getBox() ;
-}
-
-
-double MLMDInitializerFactory::timeStep() const
-{
-    return dt_;
-}
-
 
 
 
@@ -545,7 +558,8 @@ void fieldAtRefinedNodes1D(Interpolator const& interp,
         uint32 iStart = refinedLayout.physicalStartIndex(refinedField, Direction::X);
         uint32 iEnd   = refinedLayout.physicalEndIndex  (refinedField, Direction::X);
 
-        // The parent field centering DOES matter
+        // we might interpolate the parent field
+        // from a primal or a dual mesh
         auto centering = coarseLayout.fieldCentering( coarseField, Direction::X ) ;
 
         // loop on new field indexes
@@ -572,6 +586,36 @@ void fieldAtRefinedNodes1D(Interpolator const& interp,
 
 
 
+void fieldAtRefinedNodes2D(Interpolator const& interp,
+                           GridLayout const & coarseLayout,
+                           VecField const & Ecoarse , VecField const & Bcoarse,
+                           GridLayout const & refinedLayout,
+                           VecField & Erefined , VecField & Brefined)
+{
+    (void) interp ;
+    (void) coarseLayout ;
+    (void) Ecoarse ;
+    (void) Bcoarse ;
+    (void) refinedLayout ;
+    (void) Erefined ;
+    (void) Brefined ;
+}
 
+
+
+void fieldAtRefinedNodes3D(Interpolator const& interp,
+                           GridLayout const & coarseLayout,
+                           VecField const & Ecoarse , VecField const & Bcoarse,
+                           GridLayout const & refinedLayout,
+                           VecField & Erefined , VecField & Brefined)
+{
+    (void) interp ;
+    (void) coarseLayout ;
+    (void) Ecoarse ;
+    (void) Bcoarse ;
+    (void) refinedLayout ;
+    (void) Erefined ;
+    (void) Brefined ;
+}
 
 

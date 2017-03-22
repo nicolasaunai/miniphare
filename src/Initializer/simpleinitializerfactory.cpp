@@ -12,7 +12,8 @@
 SimpleInitializerFactory::SimpleInitializerFactory()
     : layout_{ {{0.2,0.,0.}}, {{100, 0, 0}}, 1, "yee", Point{0.,0.,0.}, 1},
       // hard-coded... will come from input somehow
-      dt_{0.01}
+      dt_{0.01}, interpolationOrders_{ {1, 1} },
+      pusher_{"modifiedBoris"}
 {
 
 }
@@ -172,14 +173,11 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
  */
 std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitializer() const
 {
-    const std::string pusher = "modifiedBoris" ;
-
-    const std::vector<uint32>  interpolationOrders = {1, 1} ;
 
     std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
 
-    solverInitPtr->pusherType = pusher ;
-    solverInitPtr->interpolationOrders = interpolationOrders ;
+    solverInitPtr->pusherType = pusher_ ;
+    solverInitPtr->interpolationOrders = interpolationOrders_ ;
 
     return  solverInitPtr;
 }
@@ -267,21 +265,6 @@ std::unique_ptr<OhmInitializer> SimpleInitializerFactory::createOhmInitializer()
 
 
 
-GridLayout const& SimpleInitializerFactory::gridLayout() const
-{
-    return layout_;
-}
 
-
-Box SimpleInitializerFactory::getBox() const
-{
-    return layout_.getBox() ;
-}
-
-
-double SimpleInitializerFactory::timeStep() const
-{
-    return dt_;
-}
 
 
