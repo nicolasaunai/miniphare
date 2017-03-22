@@ -205,7 +205,7 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
                 bxloc += wp.coef * Bx(ix + wp.ix);
             }
 
-            VexB_z(ix) = vxloc * byloc  -  vyloc * bxloc;
+            VexB_z(ix) = -vxloc * byloc  +  vyloc * bxloc;
         }
     }
 
