@@ -60,38 +60,37 @@ OhmImpl::~OhmImpl()
      implPtr_->computeTerms(B, Ne, Ve, Pe, J);
 
 
-    Field& Ex = Enew.component(0);
-    Field& Ey = Enew.component(1);
-    Field& Ez = Enew.component(2);
+    Field& Ex = Enew.component(VecField::VecX);
+    Field& Ey = Enew.component(VecField::VecY);
+    Field& Ez = Enew.component(VecField::VecZ);
 
-    Field const& VexB_x = implPtr_->idealTerm_.component(0);
-    Field const& VexB_y = implPtr_->idealTerm_.component(1);
-    Field const& VexB_z = implPtr_->idealTerm_.component(2);
+    Field const& VexB_x = implPtr_->idealTerm_.component(VecField::VecX);
+    Field const& VexB_y = implPtr_->idealTerm_.component(VecField::VecY);
+    Field const& VexB_z = implPtr_->idealTerm_.component(VecField::VecZ);
 
-    Field const& ePressureX = implPtr_->pressureTerm_.component(0);
-    Field const& ePressureY = implPtr_->pressureTerm_.component(1);
-    Field const& ePressureZ = implPtr_->pressureTerm_.component(2);
+    Field const& ePressureX = implPtr_->pressureTerm_.component(VecField::VecX);
 
-    Field const& Rx     = implPtr_->resistivityTerm_.component(0);
-    Field const& Ry     = implPtr_->resistivityTerm_.component(1);
-    Field const& Rz     = implPtr_->resistivityTerm_.component(2);
+    Field const& Rx     = implPtr_->resistivityTerm_.component(VecField::VecX);
+    Field const& Ry     = implPtr_->resistivityTerm_.component(VecField::VecY);
+    Field const& Rz     = implPtr_->resistivityTerm_.component(VecField::VecZ);
 
 
     for (uint32 i=0; i < Ex.size(); ++i)
     {
-        Ex(i) = VexB_x(i) + 0*ePressureX(i) +0*Rx(i);
+        Ex(i) = VexB_x(i) ;//+0* ePressureX(i) +0*Rx(i);
     }
 
     for (uint32 i=0; i < Ey.size(); ++i)
     {
-        Ey(i) = VexB_y(i) + 0*ePressureY(i) +0* Ry(i);
+        Ey(i) = VexB_y(i) ;//+ 0*Ry(i);
     }
 
     for (uint32 i=0; i < Ez.size(); ++i)
     {
-        Ez(i) = VexB_z(i) + 0*ePressureZ(i) + 0*Rz(i);
+        Ez(i) = VexB_z(i);// +0* Rz(i);
     }
-    std::cout << Ex(1) <<" " << Ex(2) <<" " <<Ex(3) <<" " <<Ex(4)<< std::endl;
+    std::cout << Ez(0) << " " << Ez(1) << " " << Ez(2) <<" "
+              << Ez(3) << " " << Ez(4) << " " << Ez(5) << std::endl;
 }
 
 

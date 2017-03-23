@@ -62,18 +62,26 @@ void PeriodicDomainBoundary::makeFieldPeriodic1D_(VecField& vecField, GridLayout
                **calculated** correctly
             */
             auto centering = layout.fieldCentering( field, Direction::X) ;
+            uint32 nbrGhosts = layout.nbrGhostCells(centering);
+            uint32 physStart = layout.physicalStartIndex( field, Direction::X) ;
+            uint32 physEnd   = layout.physicalEndIndex  ( field, Direction::X) ;
+
             if (centering == QtyCentering::dual)
             {
-                uint32 physStart = layout.physicalStartIndex( field, Direction::X) ;
-                uint32 physEnd   = layout.physicalEndIndex  ( field, Direction::X) ;
-                uint32 nbrGhosts = layout.nbrGhostCells( centering ) ;
-
                 for( uint32 ig=1; ig<= nbrGhosts; ++ig )
                 {
                     field( physStart- ig ) = field( physEnd - ig + 1) ;
                     field( physEnd  + ig ) = field( physStart + ig - 1) ;
                 }
+            }
 
+            else if (centering == QtyCentering::primal)
+            {
+                for (uint32 ig=1; ig <= nbrGhosts;  ++ig)
+                {
+                    field(physStart - ig) = field(physEnd - ig);
+                    field(physEnd + ig)   = field(physStart + ig);
+                }
             }
         }
     } // end if at Min boundary
@@ -207,27 +215,6 @@ void PeriodicDomainBoundary::makeMomentPeriodic3D_(Field& moment, GridLayout con
 
 
 
-void makeParticlesPeriodic1D(std::vector<Particle>& particleArray,
-                             LeavingParticles const& leavingParticles)
-{
-
-}
-
-
-
-
-void makeParticlesPeriodic2D(std::vector<Particle>& particleArray,
-                             LeavingParticles const& leavingParticles)
-{
-
-}
-
-void makeParticlesPeriodic3D(std::vector<Particle>& particleArray,
-                             LeavingParticles const& leavingParticles)
-{
-
-}
-
 
 void makeParticlesPeriodic(std::vector<Particle>& particleArray,
                            LeavingParticles const& leavingParticles)
@@ -261,7 +248,10 @@ void makeParticlesPeriodic(std::vector<Particle>& particleArray,
 void PeriodicDomainBoundary::applyParticleBC(std::vector<Particle>& particleArray,
                                              LeavingParticles const& leavingParticles) const
 {
-    makeParticlesPeriodic(particleArray, leavingParticles);
+    if (edge_ == Edge::Xmin)
+    {
+        makeParticlesPeriodic(particleArray, leavingParticles);
+    }
 }
 
 

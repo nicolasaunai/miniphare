@@ -98,6 +98,7 @@
         Field const& rhoSpe = spe.rho();
         std::transform (rho_.begin(), rho_.end(), rhoSpe.begin(), rho_.begin(), std::plus<double>());
      }
+
  }
 
 
@@ -105,26 +106,22 @@
 
 void Ions::computeBulkVelocity()
 {
-    const uint32 compX=0;
-    const uint32 compY=1;
-    const uint32 compZ=2;
-
     // reset bulk velocity to 0
     bulkVel_.zero();
 
 
-    Field& vxTot = bulkVel_.component(compX);
-    Field& vyTot = bulkVel_.component(compY);
-    Field& vzTot = bulkVel_.component(compZ);
+    Field& vxTot = bulkVel_.component(VecField::VecX);
+    Field& vyTot = bulkVel_.component(VecField::VecY);
+    Field& vzTot = bulkVel_.component(VecField::VecZ);
 
 
     // first we sum the charge density flux of each species
     // sum_s q_s*n_s*v_s
     for (Species const& spe : speciesArray_)
     {
-        Field const& rhovX = spe.flux(compX);
-        Field const& rhovY = spe.flux(compY);
-        Field const& rhovZ = spe.flux(compZ);
+        Field const& rhovX = spe.flux(VecField::VecX);
+        Field const& rhovY = spe.flux(VecField::VecY);
+        Field const& rhovZ = spe.flux(VecField::VecZ);
 
         std::transform (vxTot.begin(), vxTot.end(), rhovX.begin(), vxTot.begin(), std::plus<double>());
         std::transform (vyTot.begin(), vyTot.end(), rhovY.begin(), vyTot.begin(), std::plus<double>());

@@ -124,30 +124,5 @@ public:
 
 
 
-/* ----------------------------------------------------------------------------
-
-                      Field interpolations at particles
-
-   ---------------------------------------------------------------------------- */
-
-void fieldsAtParticles(Interpolator const& interp,
-                       VecField const& E, VecField const& B,
-                       GridLayout const& layout,
-                       std::vector<Particle>& particles);
-
-/* ----------------------------------------------------------------------------
-
-                      Interpolations from particles to moments
-
-   ---------------------------------------------------------------------------- */
-
-void computeChargeDensityAndFlux(Interpolator& interpolator,
-                                 Species& species,
-                                 GridLayout const& layout,
-                                 std::vector<Particle>& particles);
-
-
-
-
 
 #endif // INTERPOLATOR_H

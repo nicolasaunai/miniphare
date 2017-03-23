@@ -8,11 +8,13 @@
 
 
 
+static const uint32 interpOrderConstant = 3;
+
 
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : layout_{ {{0.2,0.,0.}}, {{100, 0, 0}}, 1, "yee", Point{0.,0.,0.}, 1},
+    : layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
       // hard-coded... will come from input somehow
-      dt_{0.01}, interpolationOrders_{ {1, 1} },
+      dt_{0.01}, interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
       pusher_{"modifiedBoris"}
 {
 
@@ -70,7 +72,7 @@ std::array<double,3> bulkVelocityProton1(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    vec[0] = 1.;
+    vec[0] = 0.;
     vec[1] = 0.;
     vec[2] = 0.;
     return vec;
@@ -82,7 +84,7 @@ std::array<double,3> bulkVelocityProton2(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    vec[0] = 1.;
+    vec[0] = 0.;
     vec[1] = 0.;
     vec[2] = 0.;
     return vec;
@@ -95,9 +97,9 @@ std::array<double,3>  magneticField(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    vec[0] = 0.;
-    vec[1] = 0.;//std::sin(2.*std::acos(-1)/20. * x);//std::tanh((x-10)/0.2);
-    vec[2] = 1.;
+    vec[0] = 1.;
+    vec[1] = 0.;
+    vec[2] = 0.;
     return vec;
 }
 
@@ -173,6 +175,7 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
  */
 std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitializer() const
 {
+
 
     std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
 

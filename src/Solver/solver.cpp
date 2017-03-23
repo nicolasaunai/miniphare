@@ -10,7 +10,7 @@
 #include "pusher/pusherfactory.h"
 #include "Faraday/faradayfactory.h"
 #include "Interpolator/interpolator.h"
-
+#include "Interpolator/particlemesh.h"
 #include "vecfield/vecfieldoperations.h"
 
 
@@ -136,7 +136,6 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     timeAverage(E, Epred, Eavg);
     timeAverage(B, Bpred, Bavg);
 
-
     // Move ions from n to n+1 using (E^{n+1/2},B^{n+1/2}) pred 1
     // accumulate moments for each species and total ions.
     // last argument is 'predictor1_' so that particles at n+1 are stored
@@ -149,7 +148,6 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     //                         PREDICTOR 2
     //
     // -----------------------------------------------------------------------
-
 
     // Get B^{n+1} pred2 from E^{n+1/2} pred1
     faraday_(Eavg, B, Bpred);
@@ -185,12 +183,12 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     moveIons_(Eavg, Bavg, ions, boundaryCondition, predictor2_);
 
 
+
     // -----------------------------------------------------------------------
     //
     //                           CORRECTOR
     //
     // -----------------------------------------------------------------------
-
 
     // Get CORRECTED B^{n+1} from E^{n+1/2} pred2
     faraday_(Eavg, B, B);
@@ -210,7 +208,6 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions,
     ohm_(B, ions.rho(), Vecorr, Pecorr, Jtot_, E);
     // BC Fields --> Apply boundary conditions on the electric field
     boundaryCondition.applyElectricBC( E ) ;
-
 }
 
 
@@ -288,7 +285,6 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
             // and put the advanced particles in the predictor buffer 'particleArrayPred_'
             pusher_->move(particles, particleArrayPred_, species.mass(),
                           E, B,interpolator, boundaryCondition );
-
 
 
             computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
