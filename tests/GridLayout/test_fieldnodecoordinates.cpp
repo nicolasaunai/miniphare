@@ -59,21 +59,27 @@ public:
             exit(-1);
         }
 
-        uint32 iStart = inputs.field_iStart ;
-        uint32 iEnd   = inputs.field_iEnd   ;
-        for (uint32 ik=iStart ; ik<=iEnd ; ++ik)
         {
-            ifs2 >> inputs.fieldXCoords[ik] ;
+            uint32 iStart = inputs.field_iStart ;
+            uint32 iEnd   = inputs.field_iEnd   ;
+            for (uint32 ik=iStart ; ik<=iEnd ; ++ik)
+            {
+                ifs2 >> inputs.fieldXCoords[ik] ;
 
-            expected_fieldCoordsx.push_back( inputs.fieldXCoords[ik] ) ;
+                expected_fieldCoordsx.push_back( inputs.fieldXCoords[ik] ) ;
+            }
         }
 
 
-        for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
         {
-            Point fieldNode = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
+            uint32 iStart = gl.physicalStartIndex(field, Direction::X) ;
+            uint32 iEnd   = gl.physicalEndIndex  (field, Direction::X)   ;
+            for( uint32 ix= iStart ; ix<= iEnd ; ix++ )
+            {
+                Point fieldNode = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz) ;
 
-            actual_fieldCoordsx.push_back( fieldNode.x_ ) ;
+                actual_fieldCoordsx.push_back( fieldNode.x_ ) ;
+            }
         }
 
     }
@@ -107,7 +113,7 @@ public:
 
 TEST_P(GridLayoutFieldCoordsTest, XFieldCoords)
 {
-    EXPECT_THAT( actual_fieldCoordsx, \
+    EXPECT_THAT( actual_fieldCoordsx,
                  ::testing::Pointwise(DoubleNear(dbl_epsilon), expected_fieldCoordsx) ) ;
 }
 
