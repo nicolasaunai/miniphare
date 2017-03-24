@@ -7,7 +7,22 @@
 #include "vecfield/vecfield.h"
 #include "Plasmas/particles.h"
 #include "Interpolator/interpolator.h"
+#include "Electromag/electromag.h"
 
+
+
+/* ----------------------------------------------------------------------------
+
+                      Field interpolation from a coarse patch
+                      to a refined patch
+
+   ---------------------------------------------------------------------------- */
+
+void fieldAtRefinedNodes( Interpolator const& interpolator,
+                          GridLayout const & coarseLayout,
+                          Electromag const & parentElectromag ,
+                          GridLayout const & refinedLayout,
+                          ElectromagInitializer & eminit ) ;
 
 
 /* ----------------------------------------------------------------------------
