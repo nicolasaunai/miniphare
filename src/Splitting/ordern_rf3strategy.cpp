@@ -6,6 +6,8 @@
 #include "Distributions/distribstrategy.h"
 #include "Distributions/uniformstrategy.h"
 
+#include "multinomial.h"
+
 
 OrderN_RF3Strategy::OrderN_RF3Strategy( const std::string & splitMethod )
     : SplittingStrategy(splitMethod) {}
