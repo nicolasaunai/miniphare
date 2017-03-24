@@ -48,17 +48,17 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
 
     // this function is 1D therefore loop only in the X direction:
 
-    Field const& Vex = Ve.component(0);
-    Field const& Vey = Ve.component(1);
-    Field const& Vez = Ve.component(2);
+    Field const& Vex = Ve.component(VecField::VecX);
+    Field const& Vey = Ve.component(VecField::VecY);
+    Field const& Vez = Ve.component(VecField::VecZ);
 
-    Field const& Bx  = B.component(0);
-    Field const& By  = B.component(1);
-    Field const& Bz  = B.component(2);
+    Field const& Bx  = B.component(VecField::VecX);
+    Field const& By  = B.component(VecField::VecY);
+    Field const& Bz  = B.component(VecField::VecZ);
 
-    Field& VexB_x = idealTerm_.component(0);
-    Field& VexB_y = idealTerm_.component(1);
-    Field& VexB_z = idealTerm_.component(2);
+    Field& VexB_x = idealTerm_.component(VecField::VecX);
+    Field& VexB_y = idealTerm_.component(VecField::VecY);
+    Field& VexB_z = idealTerm_.component(VecField::VecZ);
 
 
 
@@ -116,6 +116,7 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
 
             VexB_x(ix) = vzloc * byloc  -  vyloc * bzloc;
         }
+
     }
 
 
@@ -204,7 +205,7 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
                 bxloc += wp.coef * Bx(ix + wp.ix);
             }
 
-            VexB_z(ix) = vxloc * byloc  -  vyloc * bxloc;
+            VexB_z(ix) = -vxloc * byloc  +  vyloc * bxloc;
         }
     }
 
@@ -218,13 +219,13 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
  */
 void OhmImpl1D::resistive_(VecField const& J)
 {
-    Field const& Jx = J.component(0);
-    Field const& Jy = J.component(1);
-    Field const& Jz = J.component(2);
+    Field const& Jx = J.component(VecField::VecX);
+    Field const& Jy = J.component(VecField::VecY);
+    Field const& Jz = J.component(VecField::VecZ);
 
-    Field& Rx = resistivityTerm_.component(0);
-    Field& Ry = resistivityTerm_.component(1);
-    Field& Rz = resistivityTerm_.component(2);
+    Field& Rx = resistivityTerm_.component(VecField::VecX);
+    Field& Ry = resistivityTerm_.component(VecField::VecY);
+    Field& Rz = resistivityTerm_.component(VecField::VecZ);
 
     {
         uint32 const iStart = layout_.physicalStartIndex(Rx, Direction::X);
@@ -269,11 +270,31 @@ void OhmImpl1D::resistive_(VecField const& J)
  */
 void OhmImpl1D::pressure_(Field const& Pe, Field const& Ne)
 {
-    Field& gradPx = pressureTerm_.component(0);
+    Field& gradPx = pressureTerm_.component(VecField::VecX);
     layout_.deriv(Pe, Direction::X, gradPx);
-    for (uint32 ix=0; ix <gradPx.size(); ++ix)
+
+    // we need now to divide the gradPe by the electron density Ne
+    // Ne is on primal^3 and gradPx is on the electric field
+    // since we don't know here where the electric field is
+    // we will express Ne in terms of a linear combination
+    // of surrounding points the coefficients and nodes
+    // indexes will be given by:
+    LinearCombination const& avgPointsMomentsEx = layout_.momentsToEx();
+
+    uint32 iStart = layout_.physicalStartIndex(gradPx, Direction::X);
+    uint32 iEnd   = layout_.physicalEndIndex(gradPx, Direction::X);
+
+    // we loop from iStart to iEnd and forget about ghost nodes
+    // because they will be fixed by the boundary condition
+    // on the electric field
+    for (uint32 ix=iStart; ix <= iEnd; ++ix)
     {
-        gradPx(ix) = -gradPx(ix)/Ne(ix);
+        double ne_loc = 0;
+        for (WeightPoint const& wp : avgPointsMomentsEx)
+        {
+            ne_loc+= wp.coef * Ne(ix + wp.ix);
+        }
+        gradPx(ix) = -gradPx(ix)/ne_loc;
     }
 }
 

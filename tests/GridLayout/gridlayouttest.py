@@ -17,8 +17,8 @@ import sys
 import os
 
 def main():
-    print os.getcwd()
-    print  os.path.dirname(os.path.realpath(__file__))
+    print (os.getcwd() ) 
+    print ( os.path.dirname(os.path.realpath(__file__)) )
 
     if len(sys.argv) ==2:
         path = sys.argv[1]

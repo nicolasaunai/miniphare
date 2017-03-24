@@ -8,7 +8,7 @@
 #include "Initializer/initializerfactory.h"
 
 #include "AMR/patch.h"
-
+#include "AMR/particleselector.h"
 
 
 
@@ -17,7 +17,25 @@
                       Interpolation from a coarse patch
                       to a refined patch
    ---------------------------------------------------------------------------- */
+void fieldAtRefinedNodes( Interpolator const& interpolator,
+                          GridLayout const & coarseLayout,
+                          Electromag const & parentElectromag ,
+                          GridLayout const & refinedLayout,
+                          ElectromagInitializer & eminit ) ;
+
 void fieldAtRefinedNodes1D( Interpolator const& interp,
+                            GridLayout const & coarseLayout,
+                            VecField const & Ecoarse , VecField const & Bcoarse,
+                            GridLayout const & refinedLayout,
+                            VecField & Erefined , VecField & Brefined ) ;
+
+void fieldAtRefinedNodes2D( Interpolator const& interp,
+                            GridLayout const & coarseLayout,
+                            VecField const & Ecoarse , VecField const & Bcoarse,
+                            GridLayout const & refinedLayout,
+                            VecField & Erefined , VecField & Brefined ) ;
+
+void fieldAtRefinedNodes3D( Interpolator const& interp,
                             GridLayout const & coarseLayout,
                             VecField const & Ecoarse , VecField const & Bcoarse,
                             GridLayout const & refinedLayout,
@@ -43,16 +61,20 @@ private:
     GridLayout refinedLayout_;
     double dt_;
 
-    // this interpolator is used to initialize fields
-    // on a refined patch
-    uint32 interpolationOrder_;
+    const std::vector<uint32>  interpolationOrders_ ;
+    const std::string pusher_ ;
+
+    void buildIonsInitializer_( IonsInitializer & ionInit,
+                                    ParticleSelector const & selector ) const ;
+
+    uint32 PRAHalfWidth_( GridLayout const & layout ) const ;
 
     PRA buildPRA_  ( GridLayout const & layout ) const ;
     PRA buildPRA1D_( GridLayout const & layout ) const ;
     PRA buildPRA2D_( GridLayout const & layout ) const ;
     PRA buildPRA3D_( GridLayout const & layout ) const ;
 
-    void preCompute_( GridLayout const & layout,
+    void definePRA1Dlimits_( GridLayout const & layout,
                         Direction direction,
                         uint32 nbrMaxGhost,
                         uint32 & ix0_in , uint32 & ix1_in ,
@@ -65,12 +87,13 @@ private:
 
 public:
     MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch,
-                           Box newPatchCoords,
-                           GridLayout refinedLayout ) // uint32 refinement
+                           Box const & newPatchCoords,
+                           GridLayout const & refinedLayout,
+                           std::vector<uint32> const & orders,
+                           std::string const & pusher )
         : parentPatch_{parentPatch}, newPatchCoords_{newPatchCoords},
-          refinedLayout_{ refinedLayout }, interpolationOrder_{2}
-          // layout_{ parentPatch->layout().subLayout(newPatchCoords, refinement) }
-    { }
+          refinedLayout_{ refinedLayout },
+          interpolationOrders_{orders}, pusher_{pusher} {}
 
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const  override;
@@ -78,9 +101,16 @@ public:
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
 
-    virtual Box getBox() const override;
-    virtual GridLayout const& gridLayout() const override;
-    virtual double timeStep() const override;
+    virtual Box getBox() const override { return refinedLayout_.getBox(); }
+    virtual GridLayout const& gridLayout() const override { return refinedLayout_; }
+    virtual double timeStep() const override { return dt_; }
+    virtual std::string const & pusher() const override { return pusher_; }
+
+    virtual std::vector<uint32> const &
+    interpolationOrders() const override { return interpolationOrders_; }
 };
 
 #endif // MLMDINITIALIZERFACTORY_H
+
+
+

@@ -2,8 +2,8 @@
 #include <cmath>
 
 #include "pusher/modifiedboris.h"
+#include "Interpolator/particlemesh.h"
 #include "Interpolator/interpolator.h"
-
 
 
 
@@ -33,12 +33,14 @@ void ModifiedBoris::move(std::vector<Particle>const & partIn ,
     // since newly leaving particles will be added to it.
     leavingParticles_.cleanBuffers();
 
+    // advance partOut from partIn(n) to n+1/2
     prePush_( partIn, partOut) ;
-
     boundaryCondition.applyParticleBC(partOut, leavingParticles_);
 
+    // get fields(n+1/2) at position partOut now at n+11/2
     fieldsAtParticles(interpolator, E, B, layout_, partOut);
 
+    // push velocity from partIn (n) to n+1 using fields at partOut(n+1/2)
     pushVelocity_( partOut, partOut, m);
 
     // must clean the leaving particles buffer before the last step
@@ -68,6 +70,10 @@ void ModifiedBoris::prePush_(std::vector<Particle> const& particleIn,
     {
         Particle const& partIn = particleIn[iPart];
         Particle& partOut = particleOut[iPart];
+        partOut.weight = partIn.weight;
+        partOut.charge = partIn.charge;
+        for (uint32 iv=0; iv < 3; ++iv)
+            partOut.v[iv] = partIn.v[iv];
 
         for (uint32 dim=0; dim < nbdims_;  ++dim)
         {
@@ -97,14 +103,14 @@ void ModifiedBoris::pushVelocity_(std::vector<Particle> const& particleIn,
                                   std::vector<Particle> & particleOut,
                                   double m)
 {
-    double dto2 = 0.5*dt_;
+    double dto2m = 0.5*dt_/m;
 
     for (uint32 iPart=0; iPart < particleIn.size(); ++iPart)
     {
         Particle const& partIn = particleIn[iPart];
         Particle& partOut      = particleOut[iPart];
 
-        double coef1 = partIn.charge * dto2/m ;
+        double coef1 = partIn.charge * dto2m ;
 
         // We now apply the 3 steps of the BORIS PUSHER
 
@@ -115,37 +121,37 @@ void ModifiedBoris::pushVelocity_(std::vector<Particle> const& particleIn,
 
 
         // preparing variables for magnetic rotation
-        double rx = coef1 *partIn.Bx ;
-        double ry = coef1 *partIn.By ;
-        double rz = coef1 *partIn.Bz ;
+        double const rx = coef1 *partIn.Bx ;
+        double const ry = coef1 *partIn.By ;
+        double const rz = coef1 *partIn.Bz ;
 
-        double rx2 = rx*rx ;
-        double ry2 = ry*ry ;
-        double rz2 = rz*rz ;
-        double rxry = rx*ry ;
-        double rxrz = rx*rz ;
-        double ryrz = ry*rz ;
+        double const rx2 = rx*rx ;
+        double const ry2 = ry*ry ;
+        double const rz2 = rz*rz ;
+        double const rxry = rx*ry ;
+        double const rxrz = rx*rz ;
+        double const ryrz = ry*rz ;
 
-        double invDet = 1./(1. + rx2 + ry2 + rz2 ) ;
+        double const invDet = 1./(1. + rx2 + ry2 + rz2 ) ;
 
         // preparing rotation matrix due to the magnetic field
         // m = invDet*(I + r*r - r x I) - I where x denotes the cross product
-        double mxx = 1. + rx2 - ry2 - rz2 ;
-        double mxy = 2.*( rxry + rz ) ;
-        double mxz = 2.*( rxrz - ry ) ;
+        double const mxx = 1. + rx2 - ry2 - rz2 ;
+        double const mxy = 2.*( rxry + rz ) ;
+        double const mxz = 2.*( rxrz - ry ) ;
 
-        double myx = 2.*( rxry - rz ) ;
-        double myy = 1. + ry2 - rx2 - rz2 ;
-        double myz = 2.*( ryrz + rx ) ;
+        double const myx = 2.*( rxry - rz ) ;
+        double const myy = 1. + ry2 - rx2 - rz2 ;
+        double const myz = 2.*( ryrz + rx ) ;
 
-        double mzx = 2.*( rxrz + ry ) ;
-        double mzy = 2.*( ryrz - rx ) ;
-        double mzz = 1. + rz2 - rx2 - ry2 ;
+        double const mzx = 2.*( rxrz + ry ) ;
+        double const mzy = 2.*( ryrz - rx ) ;
+        double const mzz = 1. + rz2 - rx2 - ry2 ;
 
         // magnetic rotation
-        double velx2 = ( mxx*velx1 + mxy*vely1 + mxz*velz1 )*invDet ;
-        double vely2 = ( myx*velx1 + myy*vely1 + myz*velz1 )*invDet ;
-        double velz2 = ( mzx*velx1 + mzy*vely1 + mzz*velz1 )*invDet ;
+        double const velx2 = ( mxx*velx1 + mxy*vely1 + mxz*velz1 )*invDet ;
+        double const vely2 = ( myx*velx1 + myy*vely1 + myz*velz1 )*invDet ;
+        double const velz2 = ( mzx*velx1 + mzy*vely1 + mzz*velz1 )*invDet ;
 
 
         // 2nd half push of the electric field

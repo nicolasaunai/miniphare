@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
     mlmdManager.initializeRootLevel() ;
 
-    for (uint32 it=0; it < 20; ++it)
+    for (uint32 it=0; it < 1000; ++it)
     {
         mlmdManager.evolveFullDomain() ;
         std::cout << it << std::endl;

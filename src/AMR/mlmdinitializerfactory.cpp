@@ -12,8 +12,30 @@
 
 
 #include <cmath>
+#include <algorithm>
 
 
+
+
+void MLMDInitializerFactory::buildIonsInitializer_(
+        IonsInitializer & ionInit,
+        ParticleSelector const & selector ) const
+{
+
+    Ions const& parentIons = parentPatch_->ions();
+
+    for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
+    {
+        Species const& species = parentIons.species(ispe);
+
+        std::unique_ptr<ParticleInitializer>
+                particleInit{new MLMDParticleInitializer{species, selector }};
+
+        ionInit.masses.push_back( parentIons.species(ispe).mass() );
+        ionInit.particleInitializers.push_back( std::move(particleInit) );
+    }
+
+}
 
 
 
@@ -21,25 +43,13 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
 {
     /* this routine creates an ion initializer with a Patch Choice function. */
     std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
-    Ions const& parentIons = parentPatch_->ions();
 
-    for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
-    {
-        Species const& species = parentIons.species(ispe);
+    std::unique_ptr<ParticleSelector> selectorPtr{
+        new isInBox{parentPatch_->coordinates(),
+                    newPatchCoords_,
+                    parentPatch_->layout().dxdydz()} };
 
-        Box const &  parentBox  = parentPatch_->coordinates();
-        GridLayout const & parentLayout = parentPatch_->layout();
-
-        std::unique_ptr<ParticleSelector> selector{
-            new isInBox{parentBox, newPatchCoords_, parentLayout.dxdydz()} };
-
-        std::unique_ptr<ParticleInitializer>
-                particleInit{new MLMDParticleInitializer{species, std::move(selector) }};
-
-        ionInitPtr->masses.push_back( parentIons.species(ispe).mass() );
-        ionInitPtr->particleInitializers.push_back( std::move(particleInit) );
-    }
-
+    buildIonsInitializer_( *ionInitPtr, *selectorPtr ) ;
 
     return ionInitPtr;
 }
@@ -61,19 +71,19 @@ MLMDInitializerFactory::createElectromagInitializer() const
 {
 
     Electromag const & parentElectromag = parentPatch_->data().EMfields() ;
+    GridLayout const & coarseLayout = parentPatch_->layout() ;
 
-    Interpolator interpolator(interpolationOrder_) ;
+    Interpolator interpolator( *std::max_element(interpolationOrders_.begin(),
+                                                 interpolationOrders_.end()   ) ) ;
 
     std::unique_ptr<ElectromagInitializer> eminit {
         new ElectromagInitializer{refinedLayout_, "_EMField", "_EMFields"} };
 
     std::cout << "creating MLMD ElectromagInitializer" << std::endl;
 
-    fieldAtRefinedNodes1D( interpolator,
-                           parentPatch_->layout(),
-                           parentElectromag.getE() , parentElectromag.getB(),
-                           refinedLayout_,
-                           eminit->E_ , eminit->B_ ) ;
+    fieldAtRefinedNodes( interpolator,
+                         coarseLayout, parentElectromag ,
+                         refinedLayout_, *eminit ) ;
 
     return eminit;
 }
@@ -86,11 +96,9 @@ std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializ
     std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
 
 
-    solverInitPtr->pusherType =
-           parentPatch_->solver().getPusherType() ;
+    solverInitPtr->pusherType = pusher_ ;
 
-    solverInitPtr->interpolationOrders =
-            parentPatch_->solver().getInterpolationOrders() ;
+    solverInitPtr->interpolationOrders = interpolationOrders_ ;
 
     return  solverInitPtr;
 }
@@ -125,12 +133,14 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 
     GridLayout coarseLayout{parentPatch_->layout()} ;
 
-    uint32 nbrBoundaries = 2* (coarseLayout.nbDimensions()-1) ;
+    uint32 nbrBoundaries = 2* coarseLayout.nbDimensions() ;
 
     // this will be used to initialize electromagnetic fields
     // at patch boundaries, into PRA layouts
     Electromag const & parentElectromag = parentPatch_->data().EMfields() ;
-    Interpolator interpolator(interpolationOrder_) ;
+
+    Interpolator interpolator( *std::max_element(interpolationOrders_.begin(),
+                                                 interpolationOrders_.end()   ) ) ;
 
     PRA refinedPRA{ buildPRA_(refinedLayout_) } ;
 
@@ -143,28 +153,15 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
         GridLayout praEdgeLayout{ buildPRABoundaryLayout_( refinedPRA, ibord ) };
 
         std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
-        Ions const& parentIons = parentPatch_->ions();
 
-        for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
-        {
-            Species const& species = parentIons.species(ispe);
+        // the selector will check whether particles from the parent Box
+        // belong to the boundary layout box
+        std::unique_ptr<ParticleSelector> selectorPtr{
+            new isInBox{parentPatch_->coordinates(),
+                        praEdgeLayout.getBox(),
+                        parentPatch_->layout().dxdydz()} } ;
 
-            Box const &  parentBox  = parentPatch_->coordinates();
-            GridLayout const & parentLayout = parentPatch_->layout();
-
-            // the selector will check whether particles from the parent Box
-            // belong to the boundary layout box
-            std::unique_ptr<ParticleSelector> selector{
-                new isInBox{parentBox, praEdgeLayout.getBox(),
-                            parentLayout.dxdydz()} } ;
-
-            std::unique_ptr<ParticleInitializer>
-                    particleInit{new MLMDParticleInitializer{species, std::move(selector) }};
-
-            ionInitPtr->masses.push_back( parentIons.species(ispe).mass() );
-            ionInitPtr->particleInitializers.push_back( std::move(particleInit) );
-        }
-
+        buildIonsInitializer_( *ionInitPtr, *selectorPtr ) ;
 
         // We need the electromagnetic field on the PRA layout
         // of the adequate Patch boundary
@@ -173,11 +170,9 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 
         // Now we compute the E and B fields
         // of the ElectromagInitializer
-        fieldAtRefinedNodes1D( interpolator,
-                               parentPatch_->layout(),
-                               parentElectromag.getE() , parentElectromag.getB(),
-                               praEdgeLayout,
-                               emInitPtr->E_ , emInitPtr->B_ ) ;
+        fieldAtRefinedNodes( interpolator,
+                             parentPatch_->layout(), parentElectromag ,
+                             praEdgeLayout, *emInitPtr ) ;
 
         // For each boundary build the PatchBoundary object
         std::unique_ptr<Boundary>
@@ -226,11 +221,8 @@ GridLayout MLMDInitializerFactory::buildPRABoundaryLayout_(
     LogicalBox logic = refinedPRA.logicDecomposition[ibord] ;
     Box box = refinedPRA.boxDecomposition[ibord] ;
 
-    // We set the origin from the adequate box
     Point origin{box.x0, box.y0, box.z0} ;
 
-    // We set the required number of cells in each direction
-    // using the adequate logical box
     uint32 nbrCellx = logic.ix1 - logic.ix0 ;
     uint32 nbrCelly = logic.iy1 - logic.iy0 ;
     uint32 nbrCellz = logic.iz1 - logic.iz0 ;
@@ -256,24 +248,20 @@ GridLayout MLMDInitializerFactory::buildPRABoundaryLayout_(
  */
 PRA MLMDInitializerFactory::buildPRA_( GridLayout const & layout ) const
 {
-    PRA newPRA{} ;
-
     switch (layout.nbDimensions())
     {
     case 1:
-        newPRA = buildPRA1D_( layout );
-        break;
+        return buildPRA1D_( layout );
+
     case 2:
-        newPRA = buildPRA2D_( layout );
-        break;
+        return buildPRA2D_( layout );
+
     case 3:
-        newPRA = buildPRA3D_( layout );
-        break;
+        return buildPRA3D_( layout );
+
     default:
         throw std::runtime_error("wrong dimensionality");
     }
-
-    return newPRA ;
 }
 
 
@@ -286,19 +274,17 @@ PRA MLMDInitializerFactory::buildPRA_( GridLayout const & layout ) const
  */
 PRA MLMDInitializerFactory::buildPRA1D_( GridLayout const & layout ) const
 {
-    uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
-                                   layout.nbrGhostCells(QtyCentering::dual) ) ;
-
-    std::array<uint32, 3> nbrCells{ { 2*nbrMaxGhost, 0, 0 } } ;
+    std::array<uint32, 3> PRAwidth{ { 2*PRAHalfWidth_(layout), 0, 0 } } ;
 
     uint32 ix0_in, ix1_in, ix0_out, ix1_out ;
     double x0_in, x1_in, x0_out, x1_out ;
 
-    preCompute_( layout, Direction::X, nbrMaxGhost,
-                   ix0_in , ix1_in ,
-                   ix0_out, ix1_out,
-                   x0_in  , x1_in  ,
-                   x0_out , x1_out ) ;
+    definePRA1Dlimits_( layout, Direction::X,
+                        PRAHalfWidth_(layout),
+                        ix0_in , ix1_in ,
+                        ix0_out, ix1_out,
+                        x0_in  , x1_in  ,
+                        x0_out , x1_out ) ;
 
     // Build logic (primal) decomposition
     std::vector<LogicalBox> logicBoxes = { {ix0_out, ix0_in}, {ix1_in, ix1_out} } ;
@@ -306,7 +292,7 @@ PRA MLMDInitializerFactory::buildPRA1D_( GridLayout const & layout ) const
     // Build decomposition into (primal) boxes
     std::vector<Box> boxes = { {x0_out, x0_in}, {x1_in, x1_out} } ;
 
-    return PRA{nbrCells, logicBoxes, boxes} ;
+    return PRA{PRAwidth, logicBoxes, boxes} ;
 }
 
 
@@ -320,27 +306,27 @@ PRA MLMDInitializerFactory::buildPRA1D_( GridLayout const & layout ) const
  */
 PRA MLMDInitializerFactory::buildPRA2D_( GridLayout const & layout ) const
 {
-    uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
-                                   layout.nbrGhostCells(QtyCentering::dual) ) ;
 
-    std::array<uint32, 3> nbrCells{ { 2*nbrMaxGhost, 2*nbrMaxGhost, 0 } } ;
+    std::array<uint32, 3> PRAwidth{ { 2*PRAHalfWidth_(layout), 2*PRAHalfWidth_(layout), 0 } } ;
 
     uint32 ix0_in, ix1_in, ix0_out, ix1_out ;
     uint32 iy0_in, iy1_in, iy0_out, iy1_out ;
     double x0_in, x1_in, x0_out, x1_out ;
     double y0_in, y1_in, y0_out, y1_out ;
 
-    preCompute_( layout, Direction::X, nbrMaxGhost,
-                   ix0_in , ix1_in ,
-                   ix0_out, ix1_out,
-                   x0_in  , x1_in  ,
-                   x0_out , x1_out ) ;
+    definePRA1Dlimits_( layout, Direction::X,
+                        PRAHalfWidth_(layout),
+                        ix0_in , ix1_in ,
+                        ix0_out, ix1_out,
+                        x0_in  , x1_in  ,
+                        x0_out , x1_out ) ;
 
-    preCompute_( layout, Direction::Y, nbrMaxGhost,
-                   iy0_in , iy1_in ,
-                   iy0_out, iy1_out,
-                    y0_in  , y1_in  ,
-                    y0_out , y1_out ) ;
+    definePRA1Dlimits_( layout, Direction::Y,
+                        PRAHalfWidth_(layout),
+                        iy0_in , iy1_in ,
+                        iy0_out, iy1_out,
+                        y0_in  , y1_in  ,
+                        y0_out , y1_out ) ;
 
     // Build logic (primal) decomposition
     // TODO: provide a link to redmine with a drawing
@@ -356,7 +342,7 @@ PRA MLMDInitializerFactory::buildPRA2D_( GridLayout const & layout ) const
                                {x0_in , x1_in , y0_out, y0_in },
                                {x0_in , x1_in , y1_in , y1_out} } ;
 
-    return PRA{nbrCells, logicBoxes, boxes} ;
+    return PRA{PRAwidth, logicBoxes, boxes} ;
 }
 
 
@@ -370,10 +356,8 @@ PRA MLMDInitializerFactory::buildPRA2D_( GridLayout const & layout ) const
  */
 PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
 {
-    uint32 nbrMaxGhost = std::max( layout.nbrGhostCells(QtyCentering::primal),
-                                   layout.nbrGhostCells(QtyCentering::dual) ) ;
 
-    std::array<uint32, 3> nbrCells{ { 2*nbrMaxGhost, 2*nbrMaxGhost, 2*nbrMaxGhost } } ;
+    std::array<uint32, 3> PRAwidth{ { 2*PRAHalfWidth_(layout), 2*PRAHalfWidth_(layout), 2*PRAHalfWidth_(layout) } } ;
 
     uint32 ix0_in, ix1_in, ix0_out, ix1_out ;
     uint32 iy0_in, iy1_in, iy0_out, iy1_out ;
@@ -382,23 +366,26 @@ PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
     double y0_in, y1_in, y0_out, y1_out ;
     double z0_in, z1_in, z0_out, z1_out ;
 
-    preCompute_( layout, Direction::X, nbrMaxGhost,
-                   ix0_in , ix1_in ,
-                   ix0_out, ix1_out,
-                   x0_in  , x1_in  ,
-                   x0_out , x1_out ) ;
+    definePRA1Dlimits_( layout, Direction::X,
+                        PRAHalfWidth_(layout),
+                        ix0_in , ix1_in ,
+                        ix0_out, ix1_out,
+                        x0_in  , x1_in  ,
+                        x0_out , x1_out ) ;
 
-    preCompute_( layout, Direction::Y, nbrMaxGhost,
-                   iy0_in , iy1_in ,
-                   iy0_out, iy1_out,
-                    y0_in  , y1_in  ,
-                    y0_out , y1_out ) ;
+    definePRA1Dlimits_( layout, Direction::Y,
+                        PRAHalfWidth_(layout),
+                        iy0_in , iy1_in ,
+                        iy0_out, iy1_out,
+                        y0_in  , y1_in  ,
+                        y0_out , y1_out ) ;
 
-    preCompute_( layout, Direction::Z, nbrMaxGhost,
-                   iz0_in , iz1_in ,
-                   iz0_out, iz1_out,
-                    z0_in  , z1_in  ,
-                    z0_out , z1_out ) ;
+    definePRA1Dlimits_( layout, Direction::Z,
+                        PRAHalfWidth_(layout),
+                        iz0_in , iz1_in ,
+                        iz0_out, iz1_out,
+                        z0_in  , z1_in  ,
+                        z0_out , z1_out ) ;
 
     // Build logic (primal) decomposition
     // TODO: 3D generalization
@@ -410,11 +397,11 @@ PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
     // TODO: 3D generalization
     std::vector<Box> boxes = { {x0_out, x0_in}, {x1_in, x1_out} } ;
 
-    return PRA{nbrCells, logicBoxes, boxes} ;
+    return PRA{PRAwidth, logicBoxes, boxes} ;
 }
 
 /**
- * @brief MLMDInitializerFactory::preCompute_ is in charge of
+ * @brief MLMDInitializerFactory::definePRA1Dlimits_ is in charge of
  * computing indexes - and the associated coordinates - defining a PRA
  * in a prescribed direction.
  * A PRA can be defined knowing an inner and an outer box
@@ -425,21 +412,21 @@ PRA MLMDInitializerFactory::buildPRA3D_( GridLayout const & layout ) const
  * @param direction
  * @param nbrMaxGhost
  */
-void MLMDInitializerFactory::preCompute_( GridLayout const & layout,
+void MLMDInitializerFactory::definePRA1Dlimits_( GridLayout const & layout,
                                             Direction direction,
-                                            uint32 nbrMaxGhost,
+                                            uint32 praHalfWidth,
                                             uint32 & ix0_in , uint32 & ix1_in ,
                                             uint32 & ix0_out, uint32 & ix1_out,
                                             double & x0_in  , double & x1_in ,
                                             double & x0_out , double & x1_out ) const
 {
     // Inner primal indexes
-    ix0_in = layout.physicalStartIndex(QtyCentering::primal, direction) + nbrMaxGhost ;
-    ix1_in = layout.physicalEndIndex  (QtyCentering::primal, direction) - nbrMaxGhost ;
+    ix0_in = layout.physicalStartIndex(QtyCentering::primal, direction) + praHalfWidth ;
+    ix1_in = layout.physicalEndIndex  (QtyCentering::primal, direction) - praHalfWidth ;
 
     // Outer primal indexes
-    ix0_out = layout.physicalStartIndex(QtyCentering::primal, direction) - nbrMaxGhost ;
-    ix1_out = layout.physicalEndIndex  (QtyCentering::primal, direction) + nbrMaxGhost ;
+    ix0_out = layout.physicalStartIndex(QtyCentering::primal, direction) - praHalfWidth ;
+    ix1_out = layout.physicalEndIndex  (QtyCentering::primal, direction) + praHalfWidth ;
 
     // Inner box coordinates (primal)
     x0_in = ix0_in*layout.dx() + layout.origin().getCoord( static_cast<uint32>(direction) ) ;
@@ -453,23 +440,53 @@ void MLMDInitializerFactory::preCompute_( GridLayout const & layout,
 
 
 
-GridLayout const& MLMDInitializerFactory::gridLayout() const
+
+uint32 MLMDInitializerFactory::PRAHalfWidth_( GridLayout const & layout ) const
 {
-    return refinedLayout_;
+    return layout.nbrGhostCells(QtyCentering::primal) ;
 }
 
 
-Box MLMDInitializerFactory::getBox() const
+
+
+
+
+
+void fieldAtRefinedNodes( Interpolator const& interpolator,
+                          GridLayout const & coarseLayout,
+                          Electromag const & parentElectromag ,
+                          GridLayout const & refinedLayout,
+                          ElectromagInitializer & eminit )
 {
-    return refinedLayout_.getBox() ;
+
+    switch( coarseLayout.nbDimensions() )
+    {
+    case 1:
+        fieldAtRefinedNodes1D( interpolator,
+                               coarseLayout,
+                               parentElectromag.getE() , parentElectromag.getB(),
+                               refinedLayout,
+                               eminit.E_ , eminit.B_ ) ;
+        break;
+    case 2:
+        fieldAtRefinedNodes2D( interpolator,
+                               coarseLayout,
+                               parentElectromag.getE() , parentElectromag.getB(),
+                               refinedLayout,
+                               eminit.E_ , eminit.B_ ) ;
+        break;
+    case 3:
+        fieldAtRefinedNodes3D( interpolator,
+                               coarseLayout,
+                               parentElectromag.getE() , parentElectromag.getB(),
+                               refinedLayout,
+                               eminit.E_ , eminit.B_ ) ;
+        break;
+    default:
+        throw std::runtime_error("wrong dimensionality");
+    }
+
 }
-
-
-double MLMDInitializerFactory::timeStep() const
-{
-    return dt_;
-}
-
 
 
 
@@ -541,7 +558,8 @@ void fieldAtRefinedNodes1D(Interpolator const& interp,
         uint32 iStart = refinedLayout.physicalStartIndex(refinedField, Direction::X);
         uint32 iEnd   = refinedLayout.physicalEndIndex  (refinedField, Direction::X);
 
-        // The parent field centering DOES matter
+        // we might interpolate the parent field
+        // from a primal or a dual mesh
         auto centering = coarseLayout.fieldCentering( coarseField, Direction::X ) ;
 
         // loop on new field indexes
@@ -568,6 +586,36 @@ void fieldAtRefinedNodes1D(Interpolator const& interp,
 
 
 
+void fieldAtRefinedNodes2D(Interpolator const& interp,
+                           GridLayout const & coarseLayout,
+                           VecField const & Ecoarse , VecField const & Bcoarse,
+                           GridLayout const & refinedLayout,
+                           VecField & Erefined , VecField & Brefined)
+{
+    (void) interp ;
+    (void) coarseLayout ;
+    (void) Ecoarse ;
+    (void) Bcoarse ;
+    (void) refinedLayout ;
+    (void) Erefined ;
+    (void) Brefined ;
+}
 
+
+
+void fieldAtRefinedNodes3D(Interpolator const& interp,
+                           GridLayout const & coarseLayout,
+                           VecField const & Ecoarse , VecField const & Bcoarse,
+                           GridLayout const & refinedLayout,
+                           VecField & Erefined , VecField & Brefined)
+{
+    (void) interp ;
+    (void) coarseLayout ;
+    (void) Ecoarse ;
+    (void) Bcoarse ;
+    (void) refinedLayout ;
+    (void) Erefined ;
+    (void) Brefined ;
+}
 
 

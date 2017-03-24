@@ -3,7 +3,7 @@
 
 
 
-bool RefinementAnalyser::hasNoEmptyBox()
+bool RefinementAnalyser::refinementNeeded()
 {
     bool result = false ;
 

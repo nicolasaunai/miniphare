@@ -18,7 +18,7 @@ public:
     DomainBoundaryFactory() = delete;
     static std::unique_ptr<Boundary> makeBoundary(DomainBoundaryCondition::BoundaryInfo info)
     {
-        std::unique_ptr<Boundary> bc ;
+        std::unique_ptr<Boundary> bc{nullptr} ;
 
         if (info.second == BoundaryType::Periodic)
         {

@@ -18,6 +18,8 @@ class Interpolator
 private:
 
     uint32 order_ ;
+    double dualOffset_ ;
+
     std::unique_ptr<IndexesAndWeights> impl_ ;
 
 public:
@@ -40,7 +42,7 @@ public:
         // a primal or a dual mesh
         if(centering == QtyCentering::dual)
         {
-            reducedCoord += 0.5 ;
+            reducedCoord += dualOffset_ ;
         }
 
         std::vector<uint32> const& indexes = impl_->computeIndexes(reducedCoord);
@@ -69,9 +71,13 @@ public:
 
         // we might interpolate a field from
         // a primal or a dual mesh
-        if(centering == QtyCentering::dual)
+        if(centering == QtyCentering::dual) // TODO this if is probably slowing us down
         {
-            reducedCoord += 0.5 ;
+            //TODO constant should be named and linked to the
+            // GridLayout somehow because this depends on the number of ghost nodes
+            // at the specific interpolation order.
+            // at present this only works for 1st order interpolation.
+            reducedCoord += dualOffset_ ;
         }
 
         std::vector<uint32> const& indexes = impl_->computeIndexes(reducedCoord);
@@ -115,31 +121,6 @@ public:
         }
     }
 };
-
-
-
-/* ----------------------------------------------------------------------------
-
-                      Field interpolations at particles
-
-   ---------------------------------------------------------------------------- */
-
-void fieldsAtParticles(Interpolator const& interp,
-                       VecField const& E, VecField const& B,
-                       GridLayout const& layout,
-                       std::vector<Particle>& particles);
-
-/* ----------------------------------------------------------------------------
-
-                      Interpolations from particles to moments
-
-   ---------------------------------------------------------------------------- */
-
-void computeChargeDensityAndFlux(Interpolator& interpolator,
-                                 Species& species,
-                                 GridLayout const& layout,
-                                 std::vector<Particle>& particles);
-
 
 
 

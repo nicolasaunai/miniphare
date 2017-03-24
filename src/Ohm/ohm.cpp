@@ -60,38 +60,37 @@ OhmImpl::~OhmImpl()
      implPtr_->computeTerms(B, Ne, Ve, Pe, J);
 
 
-    Field& Ex = Enew.component(0);
-    Field& Ey = Enew.component(1);
-    Field& Ez = Enew.component(2);
+    Field& Ex = Enew.component(VecField::VecX);
+    Field& Ey = Enew.component(VecField::VecY);
+    Field& Ez = Enew.component(VecField::VecZ);
 
-    Field const& VexB_x = implPtr_->idealTerm_.component(0);
-    Field const& VexB_y = implPtr_->idealTerm_.component(1);
-    Field const& VexB_z = implPtr_->idealTerm_.component(2);
+    Field const& VexB_x = implPtr_->idealTerm_.component(VecField::VecX);
+    Field const& VexB_y = implPtr_->idealTerm_.component(VecField::VecY);
+    Field const& VexB_z = implPtr_->idealTerm_.component(VecField::VecZ);
 
-    Field const& gradPx = implPtr_->pressureTerm_.component(0);
-    Field const& gradPy = implPtr_->pressureTerm_.component(1);
-    Field const& gradPz = implPtr_->pressureTerm_.component(2);
+    Field const& ePressureX = implPtr_->pressureTerm_.component(VecField::VecX);
 
-    Field const& Rx     = implPtr_->resistivityTerm_.component(0);
-    Field const& Ry     = implPtr_->resistivityTerm_.component(1);
-    Field const& Rz     = implPtr_->resistivityTerm_.component(2);
+    Field const& Rx     = implPtr_->resistivityTerm_.component(VecField::VecX);
+    Field const& Ry     = implPtr_->resistivityTerm_.component(VecField::VecY);
+    Field const& Rz     = implPtr_->resistivityTerm_.component(VecField::VecZ);
 
 
-    // add the ideal term
-    std::transform(Ex.begin(), Ex.end(), VexB_x.begin(), Ex.begin(), std::plus<double>());
-    std::transform(Ey.begin(), Ey.end(), VexB_y.begin(), Ey.begin(), std::plus<double>());
-    std::transform(Ez.begin(), Ez.end(), VexB_z.begin(), Ez.begin(), std::plus<double>());
+    for (uint32 i=0; i < Ex.size(); ++i)
+    {
+        Ex(i) = VexB_x(i) ;//+0* ePressureX(i) +0*Rx(i);
+    }
 
-    // add the pressure term
-    std::transform(Ex.begin(), Ex.end(), gradPx.begin(), Ex.begin(), std::plus<double>());
-    std::transform(Ey.begin(), Ey.end(), gradPy.begin(), Ey.begin(), std::plus<double>());
-    std::transform(Ez.begin(), Ez.end(), gradPz.begin(), Ez.begin(), std::plus<double>());
+    for (uint32 i=0; i < Ey.size(); ++i)
+    {
+        Ey(i) = VexB_y(i) ;//+ 0*Ry(i);
+    }
 
-    // add resistive term
-    std::transform(Ex.begin(), Ex.end(), Rx.begin(), Ex.begin(), std::plus<double>());
-    std::transform(Ey.begin(), Ey.end(), Ry.begin(), Ey.begin(), std::plus<double>());
-    std::transform(Ez.begin(), Ez.end(), Rz.begin(), Ez.begin(), std::plus<double>());
-
+    for (uint32 i=0; i < Ez.size(); ++i)
+    {
+        Ez(i) = VexB_z(i);// +0* Rz(i);
+    }
+    std::cout << Ez(0) << " " << Ez(1) << " " << Ez(2) <<" "
+              << Ez(3) << " " << Ez(4) << " " << Ez(5) << std::endl;
 }
 
 

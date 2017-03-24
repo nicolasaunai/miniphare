@@ -4,17 +4,18 @@ project (test-Pusher)
 set(SOURCES
      ../../src/Plasmas/particles.cpp
      ../../src/Interpolator/interpolator.cpp
-     ../../src/IndexesAndWeights/indexesandweights.cpp
-     ../../src/IndexesAndWeights/indexesandweightso1.cpp
-     ../../src/IndexesAndWeights/indexesandweightso2.cpp
-     ../../src/IndexesAndWeights/indexesandweightso3.cpp
-     ../../src/IndexesAndWeights/indexesandweightso4.cpp
+     ../../src/Interpolator/particlemesh.cpp
      ../../src/pusher/modifiedboris.cpp
      ../../src/grid/gridlayout.cpp
      ../../src/grid/gridlayoutimplyee.cpp
      ../../src/grid/gridlayoutimplinternals.cpp
+     ../../src/BoundaryConditions/boundary_conditions.cpp
+     ../../src/BoundaryConditions/domainboundarycondition.cpp
+     ../../src/BoundaryConditions/periodicdomainboundary.cpp
      ../../src/vecfield/vecfield.cpp
      ../../src/Field/field.cpp
+     ../../src/BoundaryConditions/domainboundarycondition.cpp
+     ../../src/BoundaryConditions/periodicdomainboundary.cpp
      test_main.cpp
      test_utilities.cpp
      test_commons.cpp

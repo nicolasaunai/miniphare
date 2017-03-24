@@ -163,6 +163,9 @@ public:
     LinearCombination const& BzToEx() const {return implPtr_->BzToEx();}
     LinearCombination const& BzToEy() const {return implPtr_->BzToEy();}
 
+    LinearCombination const& ExToMoment() const {return implPtr_->ExToMoment();}
+    LinearCombination const& EyToMoment() const {return implPtr_->EyToMoment();}
+    LinearCombination const& EzToMoment() const {return implPtr_->EzToMoment();}
 
 };
 

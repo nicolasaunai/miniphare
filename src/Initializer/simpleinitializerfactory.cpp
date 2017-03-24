@@ -8,11 +8,14 @@
 
 
 
+static const uint32 interpOrderConstant = 3;
+
 
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : layout_{ {{0.1,0.,0.}}, {{42, 0, 0}}, 1, "yee", Point{0.,0.,0.}, 2},
+    : layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
       // hard-coded... will come from input somehow
-      dt_{0.1}
+      dt_{0.01}, interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
+      pusher_{"modifiedBoris"}
 {
 
 }
@@ -50,7 +53,7 @@ double thermalSpeedProton1(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    return 0.25;
+    return 0.025;
 }
 
 
@@ -59,7 +62,7 @@ double thermalSpeedProton2(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    return 0.25;
+    return 0.025;
 }
 
 
@@ -128,7 +131,7 @@ std::array<double,3> electricField(double x, double y, double z)
 std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer() const
 {
     const uint32 nbrSpecies = 2;
-    const uint32 nbrPartPerCell = 1000;
+    const uint32 nbrPartPerCell = 100;
     double chargeProton1 = 1., chargeProton2 = 1.;
 
     // should be obtained from
@@ -172,14 +175,12 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
  */
 std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitializer() const
 {
-    const std::string pusher = "modifiedBoris" ;
 
-    const std::vector<uint32>  interpolationOrders = {1, 1} ;
 
     std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
 
-    solverInitPtr->pusherType = pusher ;
-    solverInitPtr->interpolationOrders = interpolationOrders ;
+    solverInitPtr->pusherType = pusher_ ;
+    solverInitPtr->interpolationOrders = interpolationOrders_ ;
 
     return  solverInitPtr;
 }
@@ -267,21 +268,6 @@ std::unique_ptr<OhmInitializer> SimpleInitializerFactory::createOhmInitializer()
 
 
 
-GridLayout const& SimpleInitializerFactory::gridLayout() const
-{
-    return layout_;
-}
 
-
-Box SimpleInitializerFactory::getBox() const
-{
-    return layout_.getBox() ;
-}
-
-
-double SimpleInitializerFactory::timeStep() const
-{
-    return dt_;
-}
 
 

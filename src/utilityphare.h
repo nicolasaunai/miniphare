@@ -19,12 +19,6 @@ namespace utils
 }
 
 
-double factorial(int64 n) ;
-int64 binomial(int64 n, int64 k) ;
-int64 ipow(int base, unsigned exp) ;
-int64 trinomial(int64 n, int64 k) ;
-
-
 struct Box
 {
     double x0, x1, y0, y1, z0, z1;
@@ -91,17 +85,17 @@ struct LogicalBox
 
 struct PRA
 {
-    std::array<uint32, 3> nbrCells ;
+    std::array<uint32, 3> PRAwidth ;
 
     std::vector<LogicalBox> logicDecomposition;
     std::vector<Box> boxDecomposition;
 
     PRA() {}
 
-    PRA( std::array<uint32, 3> nbrCells,
+    PRA( std::array<uint32, 3> PRAwidth,
          std::vector<LogicalBox> logicBoxes,
          std::vector<Box> boxes )
-        : nbrCells{nbrCells},
+        : PRAwidth{PRAwidth},
           logicDecomposition{logicBoxes},
           boxDecomposition{boxes} {}
 };

@@ -34,10 +34,11 @@ void AmpereImpl1D::operator()(VecField const& B, VecField& Jnew)
     uint32 iStart = layout_.physicalStartIndex(Jxnew, Direction::X);
     uint32 iEnd   = layout_.physicalEndIndex  (Jxnew, Direction::X);
 
-    for (uint32 ix = iStart; ix <= iEnd; ++ix )
-    {
-        Jxnew(ix) = 0. ;
-    }
+    // no need to update Jx, already initialized at 0.
+    //for (uint32 ix = iStart; ix <= iEnd; ++ix )
+    //{
+    //    Jxnew(ix) = 0. ;
+    //}
 
 
     iStart = layout_.physicalStartIndex(Jynew, Direction::X);

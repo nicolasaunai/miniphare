@@ -38,24 +38,6 @@ public:
     void solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons,
                    BoundaryCondition const& boundaryCondition);
 
-    // getters used by MLMDInitializerFactory
-    std::vector<uint32> getInterpolationOrders() const
-    {
-        std::vector<uint32> orderList {} ;
-        for( auto && interp : interpolators_ )
-        {
-            orderList.push_back( interp->order() ) ;
-        }
-
-        return orderList;
-    }
-
-    std::string getPusherType() const
-    {
-        return pusher_->pusherType() ;
-    }
-
-
 private:
 
     const uint32 predictor1_ = 0;

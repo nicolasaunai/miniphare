@@ -12,14 +12,19 @@
 struct RefinementInfo
 {
     std::shared_ptr<Patch> parentPatch;
-
-    Box box;
+    Box refinedDomain;
     uint32 level;
 
-    RefinementInfo( std::shared_ptr<Patch> parentInfo, Box boxInfo,
-                    uint32 levelInfo):
-        parentPatch{parentInfo}, box{boxInfo},
-        level{levelInfo} {}
+    uint32 refinementRatio ;
+    GridLayout const & baseLayout ;
+
+    RefinementInfo( std::shared_ptr<Patch> parentPatch,
+                    Box area, uint32 level,
+                    uint32 refinementRatio,
+                    GridLayout const & baseLayout ):
+        parentPatch{parentPatch}, refinedDomain{area},
+        level{level}, refinementRatio{refinementRatio},
+        baseLayout{baseLayout} {}
 
 };
 
@@ -36,6 +41,8 @@ class Hierarchy
 private:
 
     std::vector< std::vector< std::shared_ptr<Patch> > > patchTable_ ;
+
+    GridLayout  buildLayout_( RefinementInfo const & info ) ;
 
 public:
 
@@ -54,17 +61,18 @@ public:
 
     hierarchyType & patchTable() { return patchTable_; }
 
-    void evolveHierarchy() ;
+    void evolveDomainForOneTimeStep() ;
 
-    std::vector< std::vector<RefinementInfo> > evaluateHierarchy() ;
+    std::vector< std::vector<RefinementInfo> >
+    evaluateRefinementNeed( uint32 refineRatio, GridLayout const & baseLayout ) ;
 
     void updateHierarchy( std::vector< std::vector<RefinementInfo> > const & refinementTable,
-                          std::vector< std::vector<GridLayout> > const & layoutTable ) ;
+                          std::vector<uint32> const & ordersFromMLMD,
+                          std::string const & pusherFromMLMD ) ;
 
-    //void setRootPatch(std::shared_ptr<Patch> root);
-
-    void addNewPatch( GridLayout const & layout,
-                      RefinementInfo const & info ) ;
+    void addNewPatch( RefinementInfo const & info,
+                      std::vector<uint32> const & ordersFromMLMD,
+                      std::string const & pusherFromMLMD ) ;
 
 };
 

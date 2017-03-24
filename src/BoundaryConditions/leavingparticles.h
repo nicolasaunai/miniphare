@@ -66,6 +66,14 @@ public:
             startEndIndices[3].lastCellIndex  = layout.physicalEndIndex(QtyCentering::primal,
                                                                          Direction::Z)-1;
         }
+
+        // hard coded pre-allocation
+        const uint32 estimateLeavingParticles = 1000;
+        for (uint32 iDim=0; iDim < layout.nbDimensions(); ++iDim)
+        {
+            particleIndicesAtMin.reserve(estimateLeavingParticles);
+            particleIndicesAtMax.reserve(estimateLeavingParticles);
+        }
     }
 
 
@@ -91,7 +99,7 @@ public:
         {
             particleIndicesAtMax[direction].push_back(ipart);
         }
-        else if (icell < startEndIndices[direction].lastCellIndex)
+        else if (icell < startEndIndices[direction].firstCellIndex)
         {
             particleIndicesAtMin[direction].push_back(ipart);
         }
