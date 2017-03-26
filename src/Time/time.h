@@ -41,7 +41,7 @@ public:
 
 
     uint32 nbrIter() const {return nbrIterations_;}
-    uint32 currentTime() const {return currentTime_;}
+    double currentTime() const {return currentTime_;}
     void advance() {currentTime_ += dt_;}
 
 
