@@ -4,22 +4,19 @@
 #include <string>
 
 #include "types.h"
-
+#include "Time/time.h"
 #include "AMR/patch.h"
+#include "AMR/mlmd.h"
 #include "AMR/patchdata.h"
 #include "AMR/hierarchy.h"
-#include "AMR/mlmd.h"
-
 #include "grid/gridlayout.h"
-
+//#include "Diagnostics/diagnostics.h"
 #include "Initializer/initializerfactory.h"
 
 
 
 int main(int argc, char *argv[])
 {
-
-
     std::cout << "Welcome to : " << std::endl;
 
     std::cout <<R"(
@@ -32,16 +29,24 @@ int main(int argc, char *argv[])
              << std::endl << std::endl;
 
 
+
+
     std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv) ;
+
+    Time timeManager{initFactory->timeStep(), 0., 100};
+    //DiagnosticScheduler diags;
 
     MLMD mlmdManager{*initFactory} ; //std::move(initFactory) } ;
 
     mlmdManager.initializeRootLevel() ;
 
-    for (uint32 it=0; it < 1000; ++it)
+    for (uint32 it=0; it < timeManager.nbrIter(); ++it)
     {
         mlmdManager.evolveFullDomain() ;
-        std::cout << it << std::endl;
+        //diags.applyDiagnostics( timeManager.currentTime() );
+        timeManager.advance();
+
+        std::cout << timeManager.currentTime() << std::endl;
     }
 
 }
