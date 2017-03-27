@@ -34,17 +34,15 @@ int main(int argc, char *argv[])
     std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv) ;
 
     Time timeManager{initFactory->timeStep(), 0., 100};
-    DiagnosticScheduler diagScheduler;
-    std::unique_ptr<DiagnosticsManager> diagnostics{new AsciiDiagnosticsManager{}};
+    DiagnosticsManager diagnosticManager;
 
-    MLMD mlmdManager{*initFactory} ; //std::move(initFactory) } ;
-
+    MLMD mlmdManager{*initFactory} ;
     mlmdManager.initializeRootLevel() ;
 
     for (uint32 it=0; it < timeManager.nbrIter(); ++it)
     {
         mlmdManager.evolveFullDomain() ;
-        diagScheduler.applyDiagnostics( timeManager.currentTime() );
+      //  diagScheduler.applyDiagnostics( timeManager);
         timeManager.advance();
 
         std::cout << timeManager.currentTime() << std::endl;

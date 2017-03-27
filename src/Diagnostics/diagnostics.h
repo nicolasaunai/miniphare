@@ -7,87 +7,201 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
+#include <unordered_map>
 
 #include "types.h"
 #include "Time/time.h"
 #include "Field/field.h"
 #include "utilityphare.h"
+#include "amr/patchdata.h"
+#include "Plasmas/particles.h"
+#include "Electromag/electromag.h"
 
 
+// all data that will ever be written by PHARE
+// will have to be put in there.
+// this is the most general form of data we
+// can use, that enable ExportStrategy to write
+// any kind of concrete Diagnostic
+// and therefore be implemented as a Bridge pattern
 
-
-template <class T>
-class DiagnosticUnit
+// this can take field data (depends=x, y, z; data= Ex, Ey, Ez)
+// or particle data (depends = id_particle; data = x,y,z,vx,vy,vz)
+// or 1 orbit data (depends=time; data=x,y,z)
+// etc.
+struct DiagData
 {
-private:
-    Box domain_;
-    LogicalBox logicalDomain_;
-
-public:
-    Box const& domain() const {return domain_;}
-    LogicalBox const& logicalDomain() const {return logicalDomain_;}
-
-    virtual T const& getResult() = 0;
-
-    virtual ~DiagnosticUnit() = default;
+    std::vector<float> depends;
+    std::vector<float> data;
 };
 
 
 
 
-// class qui retourne les tableaux où sont les champs
-// ces classes sont dans PatchData
-class FieldDiagUnit : public DiagnosticUnit<Field>
-{
-public:
-
-    void compute();
-};
-
-
-
-
-class ParticleDiagUnit : public DiagnosticUnit
-{
-
-};
-
-
-
-
-// the diagnostics knows all diagnostics units
-// it gets data and knows how to organier oy
+// that's the standard Diagnostic interface
+// all diagnostics must respect this
+// this interface is used by the DiagnosticManager
 class Diagnostic
 {
-private:
-    // they do the work
-    std::vector< std::shared_ptr<DiagnosticUnit> > units_;
+protected:
+    std::string name_;
+
+public:
+    Diagnostic(std::string name):name_{name}{}
+    virtual std::string const& name() const {return name_;}
+
+    virtual void compute(PatchData const& patchData) = 0;
+
+    virtual std::vector<DiagData> const& data() const = 0;
+
+    virtual ~Diagnostic() = default;
+
 };
+
+
+
+
+
+// an example of diagnostic for the electromagnetic field
+// the class implement compute() and data()
+// compute() will put EM data as a DiagData
+// data() return the reference to this DiagData
+class ElectromagDiagnostic : public Diagnostic
+{
+private:
+    std::vector<DiagData> data_;
+
+public:
+    ElectromagDiagnostic()
+        : Diagnostic{"EM"}{}
+
+    virtual void compute(PatchData const& patchData) final
+    {
+        std::cout << "computing EM diags" << std::endl;
+        Electromag const& em = patchData.EMfields();
+
+        // may need layout at some point
+        // put all em data into the vector
+        // format is:
+        // x y z into data_[i].depends
+        // Ex, Ey Ez into data_[i].data
+    }
+
+    virtual std::vector<DiagData> const& data() const final
+    {
+        std::cout << "getting EM data" << std::endl;
+        return data_;
+    }
+
+    virtual ~ElectromagDiagnostic() = default;
+};
+
+
+
 
 
 
 
 // interface used to write data on disk
+// it is used by the DiagnosticManager, which does
+// not know which concrete strategy is used to write data on disk
+// all concrete ExportStrategy will implement the save() method
+// which will take, for a diagnostic 'diag' a ref to a standard DiagData
+// structure and know how to write it in a concrete file format
+// this is implemented as a bridge pattern
 class ExportStrategy
 {
 private:
 
 public:
+    virtual void save(Diagnostic const& diag, Time const& timeManager) = 0;
 
 };
 
 
-// write Ascii files
+
+
+// a concrete ExportStrategy is to write Ascii files
+// here we will write one file per time step and per diagnostic
+// this is the simplest and dumbest we can do
+// any smarter ascii format will just be a pain in the ass to read
+// this is mainly for 1D debug stuff... not for real usage
 class AsciiExportStrategy : public ExportStrategy
 {
+public:
+
+
+    virtual void save(Diagnostic const& diag, Time const& timeManager) final
+    {
+        std::string const& name = diag.name();
+        double time = timeManager.currentTime();
+        std::vector<DiagData> const& data = diag.data();
+
+
+        // open file
+
+        // now write data
+       // fprintf(fp, "", di);
+
+        // close file
+
+    }
+};
+
+
+
+
+// A concrete ExportStrategy that writes Diagnostic objects
+// into an HDF5 file
+// the save() routine here will take a Diagnostic and a Time object
+// from that it will be able to create a group, dataset etc. compliant to
+// the specific format we've chosen.
+class HDF5ExportStrategy : public ExportStrategy
+{
 
 };
 
 
 
 
-class HDF5ExportStrategy : public ExportStrategy
+
+
+// this object is in charge of saying TRUE or FALSE if a particular
+// diagnostic is to be computed or written.
+// each of the diagnostics in the DiagnosticManager will have to
+// register its compute and dump iteration numbers to the scheduler
+// these vectors will at some point come from the initialization factory
+// this object is manipulated by a DiagnosticManager
+class DiagnosticScheduler
 {
+private:
+
+    std::unordered_map< uint32, std::vector<uint32> > computingIterations_;
+    std::unordered_map< uint32, std::vector<uint32> > writingIterations_;
+
+public:
+
+    DiagnosticScheduler() = default;
+
+    void registerDiagnostic(uint32 diagType,
+                            std::vector<uint32> const& computingIterations,
+                            std::vector<uint32> const& writingIterations)
+    {
+        computingIterations_.insert({diagType, computingIterations}  );
+        writingIterations_.insert(  {diagType, writingIterations} );
+    }
+
+
+    bool timeToWrite(Time const& timeManager, uint32 diagType)
+    {
+        return writingIterations_[diagType][timeManager.currentIteration()];
+    }
+
+
+    bool timeToCompute(Time const& timeManager, uint32 diagType)
+    {
+        return computingIterations_[diagType][timeManager.currentIteration()];
+    }
 
 };
 
@@ -99,103 +213,70 @@ class HDF5ExportStrategy : public ExportStrategy
 /**
  * @brief encapsulate all diagnostics (fields, particle, globals, etc.)
  */
-/*
-cette classe est celle qui est appelée par le scheduler
-elle offre une interface pour appeler chacun des diagnostiques possibles
-dans le code.
-*/
+
 class DiagnosticsManager
 {
 private:
-    std::vector< std::shared_ptr<Diagnostic> > diags_;
+    std::vector< std::shared_ptr<Diagnostic> > diags_; //TODO make unordered_map
+    std::unique_ptr<ExportStrategy> exportStrat_;
+    DiagnosticScheduler scheduler_;
 
 public:
 
+    uint32 const EMDiag       = 0;
+    uint32 const ParticleDiag = 1;
 
 
-
-
-    virtual ~DiagnosticsManager() = default;
-};
-
-
-
-
-#if 0
-class AsciiDiagnosticsManager  : public DiagnosticsManager
-{
-private:
-    FILE* fieldFile_;
-    FILE* particleFile_;
-
-    std::vector< std::shared_ptr<FieldDiagUnit> > fieldDiagUnits_;
-    std::vector< std::shared_ptr<ParticleDiagUnit> > particleDiagUnits_;
-
-public:
-
-    virtual void writeFields(double time) final
+    // hard coded for now in the initialization list
+    // will have to have a add_diag() function at some point
+    // this will come from the factory..
+    DiagnosticsManager()
+        : diags_{ std::make_shared<ElectromagDiagnostic>() },
+          exportStrat_{ new AsciiExportStrategy{} },
+          scheduler_{}
     {
-        std::ostringstream strs;
-        strs << "fields_" << std::setfill('0')
-             << std::setw(6)
-             << std::setprecision(6) << time << ".txt";
 
-        std::string filename = strs.str();
-
-        fieldFile_ = fopen(filename.c_str(), "w");
+    }
 
 
-        for (uint32 iDiag=0; iDiag < fieldDiagUnits_.size(); ++iDiag)
+    void registerDiagnostic(uint32 diagType,
+                            std::vector<uint32> const& computingIterations,
+                            std::vector<uint32> const& writingIterations)
+    {
+        // register to the scheduler
+        scheduler_.registerDiagnostic(diagType, computingIterations, writingIterations);
+    }
+
+
+
+    void compute(Time const& timeManager, PatchData const& patchData)
+    {
+        for (uint32 iDiag=0; iDiag < diags_.size();  ++iDiag)
         {
-            //Box const& region = fieldDiagUnits_[iDiag]->region();
-            //LogicalBox const& indices = fieldDiagUnits_[iDiag]->indexBox();
-           // Field const& E = fieldDiagUnits_[iDiag]->electricField();
+            if ( scheduler_.timeToWrite(timeManager, iDiag) )
+            {
+                Diagnostic& currentDiag = *diags_[iDiag];
+                currentDiag.compute(patchData);
+            }
         }
-
-        fclose(fieldFile_);
     }
 
 
-    virtual void writeParticles(double time) final{}
-    virtual void writeOrbits(double time) final{}
-
-    virtual ~AsciiDiagnosticsManager() = default;
-};
-
-
-
-#endif
-
-
-
-
-enum class DiagType {Field, Particle};
-
-
-
-// en charge de savoir quel diagnostic faire a un temps donné
-class DiagnosticScheduler
-{
-private:
-
-    std::vector<uint32> schedule_;
-
-public:
-
-    void registerDiagnostics(std::vector<uint32> const& iterations);
-
-    // go in a table
-    // and at time t apply all diagnostics applicable at that time
-    void applyDiagnostics(Time const& timeManager)
+    void save(Time const& timeManager)
     {
-        std::cout << "Applying diagnostics at time "
-                  << timeManager.currentTime() << std::endl;
-
-        uint32 iter = timeManager.currentIteration();
-
+        for(uint32 idiag=0; idiag < diags_.size();  ++idiag)
+        {
+            exportStrat_->save(*diags_[idiag], timeManager);
+        }
     }
 
+    ~DiagnosticsManager() = default;
 };
+
+
+
+
+
 
 
 
