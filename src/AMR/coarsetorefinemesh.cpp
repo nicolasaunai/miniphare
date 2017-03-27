@@ -71,6 +71,9 @@ void fieldAtRefinedNodes1D(Interpolator const& interp,
             std::fabs(refinedLayout.origin().x_ - coarseLayout.origin().x_)
             / coarseLayout.dx() ;
 
+    double dx_refined = refinedLayout.dx() ;
+    double dx_coarse  = coarseLayout.dx()  ;
+
     // loop on Electric field components
     for( uint32 ifield=0 ; ifield < ExyzBxyzCoarse.size() ; ++ifield )
     {
@@ -92,7 +95,7 @@ void fieldAtRefinedNodes1D(Interpolator const& interp,
             //
             // Compute the reduced coordinate
             // on the parent GridLayout
-            double delta = ix * refinedLayout.dx() / coarseLayout.dx() ;
+            double delta = ix * dx_refined / dx_coarse ;
 
             // coord is a reduced coordinate on the parent GridLayout
             double coord = newOriginReducedOnCoarse + delta ;
