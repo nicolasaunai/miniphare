@@ -7,6 +7,7 @@
 #include "vecfield/vecfield.h"
 #include "Plasmas/particles.h"
 #include "Interpolator/interpolator.h"
+#include "Electromag/electromag.h"
 
 
 

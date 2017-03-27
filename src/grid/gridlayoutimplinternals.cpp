@@ -348,9 +348,9 @@ QtyCentering GridLayoutImplInternals::changeCentering(QtyCentering centering ) c
  * @param field
  * the returned point depends on the field's centering
  * @param origin
- * @param ix is a primal index
- * @param iy is a primal index
- * @param iz is a primal index
+ * @param ix is a primal or dual index
+ * @param iy is a primal or dual index
+ * @param iz is a primal or dual index
  * @return Point
  * the desired field-centered coordinate
  */
@@ -360,30 +360,35 @@ Point GridLayoutImplInternals::fieldNodeCoordinates_( const Field & field, const
     uint32 idirX   = static_cast<uint32>(Direction::X) ;
     uint32 idirY   = static_cast<uint32>(Direction::Y) ;
     uint32 idirZ   = static_cast<uint32>(Direction::Z) ;
-    uint32 iprimal = static_cast<uint32>(QtyCentering::primal);
 
-    uint32 ixStart = physicalStartIndexTable_[iprimal][idirX];
-    uint32 iyStart = physicalStartIndexTable_[iprimal][idirY];
-    uint32 izStart = physicalStartIndexTable_[iprimal][idirZ];
-
+    const uint32 idual   = static_cast<uint32>(QtyCentering::dual);
 
     std::array<double, 3> halfCell{ {0, 0, 0} } ;
 
     uint32 iQty = static_cast<uint32>(field.hybridQty()) ;
 
-    std::array<QtyCentering, 3> centering =
-    { {hybridQtyCentering_[iQty][idirX],
-       hybridQtyCentering_[iQty][idirY],
-       hybridQtyCentering_[iQty][idirZ]} } ;
+    std::array<uint32, 3> centering =
+    { {static_cast<uint32>(hybridQtyCentering_[iQty][idirX]),
+       static_cast<uint32>(hybridQtyCentering_[iQty][idirY]),
+       static_cast<uint32>(hybridQtyCentering_[iQty][idirZ])} } ;
+
+    uint32 ixStart = physicalStartIndexTable_[centering[idirX]][idirX];
+    uint32 iyStart = physicalStartIndexTable_[centering[idirY]][idirY];
+    uint32 izStart = physicalStartIndexTable_[centering[idirZ]][idirZ];
 
     for( uint32 idir=idirX ; idir<=idirZ ; ++idir)
     {
-        if(centering[idir] == QtyCentering::dual) halfCell[idir] = 0.5 ;
+        if(centering[idir] == idual) halfCell[idir] = 0.5 ;
     }
 
-    // A shift of -dx/2, -dy/2, -dz/2 is necessary to get the physical
+    // A shift of +dx/2, +dy/2, +dz/2 is necessary to get the physical
     // coordinate on the dual mesh
     // No shift for coordinate on the primal mesh
+    // This shift DOES NOT DEPEND ON the interpolation order
+    // Because,
+    // if ix is primal then ixStart is primal
+    // if ix is dual   then ixStart is dual
+    // if iy is primal then iyStart is primal ...
 
     double x = ( (ix-ixStart) + halfCell[0])*dx_ + origin.x_ ;
     double y = ( (iy-iyStart) + halfCell[1])*dy_ + origin.y_ ;
@@ -425,7 +430,7 @@ Point GridLayoutImplInternals::cellCenteredCoordinates_(uint32 ix,
     uint32 izStart = physicalStartIndexTable_[iprimal][idirZ];
 
     double halfCell = 0.5 ;
-    // A shift of -dx/2, -dy/2, -dz/2 is necessary to get the
+    // A shift of +dx/2, +dy/2, +dz/2 is necessary to get the
     // cell center physical coordinates,
     // because this point is located on the dual mesh
 

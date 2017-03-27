@@ -230,7 +230,7 @@ void FluidParticleInitializer::loadParticles3D_(std::vector<Particle>& particles
                 std::array<double,3> particleVelocity;
 
                 // get the coordinate of the current cell
-                coord  = layout_.cellCenteredCoordinates(ix,iy,0);
+                coord  = layout_.cellCenteredCoordinates(ix,iy,iz);
                 x      = coord.x_;
                 y      = coord.y_;
                 z      = coord.z_;
