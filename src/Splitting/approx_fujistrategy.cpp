@@ -12,7 +12,7 @@ Approx_FujiStrategy::Approx_FujiStrategy(const std::string & splitMethod,
     : SplittingStrategy(splitMethod), ratioDx_{ratioDx} {}
 
 
-std::vector<Particle> Approx_FujiStrategy::split(
+std::vector<Particle> Approx_FujiStrategy::split1D(
         double dxL1, uint32 refineFactor,
         const std::vector<Particle> & motherParticles ) const
 {

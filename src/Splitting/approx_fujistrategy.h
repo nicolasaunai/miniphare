@@ -12,10 +12,9 @@ protected:
 public:
     Approx_FujiStrategy( const std::string & splitMethod, double ratioDx );
 
-    virtual std::vector<Particle> split(
-            double dxL1, uint32 refineFactor,
-            uint32 interpOrder,
-            const std::vector<Particle> & motherParticles ) const override ;
+    virtual void split1D(
+            const Particle & mother,
+            std::vector<Particle> & childParticles ) const override ;
 };
 
 #endif // APPROXFUJISTRATEGY_H

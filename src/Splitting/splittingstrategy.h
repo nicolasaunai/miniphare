@@ -19,12 +19,13 @@ public:
 
     explicit SplittingStrategy(std::string name);
 
+    virtual ~SplittingStrategy() = default ;
+
     inline std::string name() const {return p_name;}
 
-    virtual std::vector<Particle> split(
-            double dxL1, uint32 refineFactor,
-            uint32 interpOrder,
-            const std::vector<Particle> & motherParticles ) const = 0 ;
+    virtual void split1D(
+            const Particle & mother,
+            std::vector<Particle> & childParticles ) const = 0 ;
 
 protected:
 

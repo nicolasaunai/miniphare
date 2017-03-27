@@ -11,7 +11,7 @@ Order1_RFnStrategy::Order1_RFnStrategy( const std::string & splitMethod )
     : SplittingStrategy(splitMethod) {}
 
 
-std::vector<Particle> Order1_RFnStrategy::split(
+std::vector<Particle> Order1_RFnStrategy::split1D(
         double dxL1, uint32 refineFactor,
         const std::vector<Particle> & motherParticles ) const
 {

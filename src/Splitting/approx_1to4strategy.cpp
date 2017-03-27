@@ -12,7 +12,7 @@ Approx_1to4Strategy::Approx_1to4Strategy(const std::string & splitMethod,
     : SplittingStrategy(splitMethod), ratioDx_{ratioDx} {}
 
 
-std::vector<Particle> Approx_1to4Strategy::split(
+std::vector<Particle> Approx_1to4Strategy::split1D(
         double dxL1, uint32 refineFactor,
         const std::vector<Particle> & motherParticles ) const
 {

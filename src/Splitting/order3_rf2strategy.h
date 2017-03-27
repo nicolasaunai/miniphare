@@ -6,13 +6,16 @@
 
 class Order3_RF2Strategy : public SplittingStrategy
 {
+private:
+    const uint32 refineFactor_ = 2 ;
+    const uint32 interpOrder_ = 3 ;
+
 public:
     Order3_RF2Strategy( const std::string & splitMethod );
 
-    virtual std::vector<Particle> split(
-            double dxL1, uint32 refineFactor,
-            uint32 interpOrder,
-            const std::vector<Particle> & motherParticles ) const override ;
+    virtual void split1D(
+            const Particle & mother,
+            std::vector<Particle> & childParticles ) const override ;
 };
 
 #endif // ORDER3_RF2STRATEGY_H

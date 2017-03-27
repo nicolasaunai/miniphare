@@ -6,13 +6,23 @@
 
 class OrderN_RF2Strategy : public SplittingStrategy
 {
-public:
-    OrderN_RF2Strategy( const std::string & splitMethod );
+private:
+    uint32 nbpts_ ;
 
-    virtual std::vector<Particle> split(
-            double dxL1, uint32 refineFactor,
-            uint32 interpOrder,
-            const std::vector<Particle> & motherParticles ) const override ;
+    std::vector<int32> child_icellx_ ;
+    std::vector<double> child_weights_ ;
+
+    double wtot_ ;
+
+public:
+
+    OrderN_RF2Strategy( const std::string & splitMethod,
+                        uint32 refineFactor,
+                        uint32 interpOrder ) ;
+
+    virtual void split1D(
+            const Particle & mother,
+            std::vector<Particle> & childParticles ) const override ;
 };
 
 
