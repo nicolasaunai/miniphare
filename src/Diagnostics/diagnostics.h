@@ -47,12 +47,9 @@ class Diagnostic
 {
 protected:
     std::string name_;
-    DiagType type_;
 
 public:
-    Diagnostic(std::string name, DiagType type):name_{name}, type_{type}{}
-
-    DiagType type() const {return type_;}
+    Diagnostic(std::string name):name_{name} {}
 
     std::string const& name() const {return name_;}
 
@@ -80,7 +77,7 @@ private:
 
 public:
     ElectromagDiagnostic()
-        : Diagnostic{"EM", DiagType::EM}{}
+        : Diagnostic{"EM"}{}
 
     virtual void compute(PatchData const& patchData) final
     {
@@ -250,7 +247,7 @@ public:
 class DiagnosticsManager
 {
 private:
-    std::vector< std::shared_ptr<Diagnostic> > diags_; //TODO make unordered_map
+    DiagUnorderedMap< DiagType, std::shared_ptr<Diagnostic> > diags_;
     std::unique_ptr<ExportStrategy> exportStrat_;
     DiagnosticScheduler scheduler_;
 
@@ -261,7 +258,7 @@ public:
     // will have to have a add_diag() function at some point
     // this will come from the factory..
     DiagnosticsManager()
-        : diags_{ std::make_shared<ElectromagDiagnostic>() },
+        : diags_{ { DiagType::EM, std::make_shared<ElectromagDiagnostic>()} },
           exportStrat_{ new AsciiExportStrategy{} },
           scheduler_{}
     {
@@ -281,13 +278,14 @@ public:
 
     void compute(Time const& timeManager, PatchData const& patchData)
     {
-        for (uint32 iDiag=0; iDiag < diags_.size();  ++iDiag)
+        for (auto const& diagPair : diags_)
         {
-            Diagnostic& currentDiag = *diags_[iDiag];
+            DiagType type    =  diagPair.first;
+            Diagnostic& diag = *diagPair.second;
 
-            if ( scheduler_.timeToWrite(timeManager, currentDiag.type() ) )
+            if (scheduler_.timeToCompute(timeManager, type))
             {
-                currentDiag.compute(patchData);
+                diag.compute(patchData);
             }
         }
     }
@@ -295,9 +293,9 @@ public:
 
     void save(Time const& timeManager)
     {
-        for(uint32 idiag=0; idiag < diags_.size();  ++idiag)
+        for (auto const& diagPair : diags_)
         {
-            exportStrat_->save(*diags_[idiag], timeManager);
+            exportStrat_->save(*diagPair.second, timeManager);
         }
     }
 
