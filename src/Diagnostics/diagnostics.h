@@ -36,6 +36,8 @@ struct DiagData
 };
 
 
+enum class DiagType {EM, Ni};
+
 
 
 // that's the standard Diagnostic interface
@@ -45,14 +47,19 @@ class Diagnostic
 {
 protected:
     std::string name_;
+    DiagType type_;
 
 public:
-    Diagnostic(std::string name):name_{name}{}
-    virtual std::string const& name() const {return name_;}
+    Diagnostic(std::string name, DiagType type):name_{name}, type_{type}{}
+
+    DiagType type() const {return type_;}
+
+    std::string const& name() const {return name_;}
 
     virtual void compute(PatchData const& patchData) = 0;
 
     virtual std::vector<DiagData> const& data() const = 0;
+
 
     virtual ~Diagnostic() = default;
 
@@ -73,7 +80,7 @@ private:
 
 public:
     ElectromagDiagnostic()
-        : Diagnostic{"EM"}{}
+        : Diagnostic{"EM", DiagType::EM}{}
 
     virtual void compute(PatchData const& patchData) final
     {
@@ -162,6 +169,29 @@ class HDF5ExportStrategy : public ExportStrategy
 };
 
 
+// trick seen here
+// http://stackoverflow.com/questions/18837857/cant-use-enum-class-as-unordered-map-key
+// to use an enum class as a key in unordered_map
+struct EnumClassHash
+{
+    template <typename T>
+    std::size_t operator()(T t) const
+    {
+        return static_cast<std::size_t>(t);
+    }
+};
+
+
+template <typename Key>
+using HashType = typename std::conditional<std::is_enum<Key>::value, EnumClassHash, std::hash<Key>>::type;
+
+template <typename Key, typename T>
+using DiagUnorderedMap = std::unordered_map<Key, T, HashType<Key>>;
+
+
+
+
+
 
 
 
@@ -176,31 +206,34 @@ class DiagnosticScheduler
 {
 private:
 
-    std::unordered_map< uint32, std::vector<uint32> > computingIterations_;
-    std::unordered_map< uint32, std::vector<uint32> > writingIterations_;
+    //std::unordered_map< uint32, std::vector<uint32> > computingIterations_;
+    //std::unordered_map< uint32, std::vector<uint32> > writingIterations_;
+
+    DiagUnorderedMap<DiagType, std::vector<uint32> > computingIterations_;
+    DiagUnorderedMap<DiagType, std::vector<uint32> > writingIterations_;
 
 public:
 
     DiagnosticScheduler() = default;
 
-    void registerDiagnostic(uint32 diagType,
+    void registerDiagnostic(DiagType type,
                             std::vector<uint32> const& computingIterations,
                             std::vector<uint32> const& writingIterations)
     {
-        computingIterations_.insert({diagType, computingIterations}  );
-        writingIterations_.insert(  {diagType, writingIterations} );
+        computingIterations_.insert({type, computingIterations}  );
+        writingIterations_.insert(  {type, writingIterations} );
     }
 
 
-    bool timeToWrite(Time const& timeManager, uint32 diagType)
+    bool timeToWrite(Time const& timeManager, DiagType type)
     {
-        return writingIterations_[diagType][timeManager.currentIteration()];
+        return writingIterations_[type][timeManager.currentIteration()];
     }
 
 
-    bool timeToCompute(Time const& timeManager, uint32 diagType)
+    bool timeToCompute(Time const& timeManager, DiagType type)
     {
-        return computingIterations_[diagType][timeManager.currentIteration()];
+        return computingIterations_[type][timeManager.currentIteration()];
     }
 
 };
@@ -223,9 +256,6 @@ private:
 
 public:
 
-    uint32 const EMDiag       = 0;
-    uint32 const ParticleDiag = 1;
-
 
     // hard coded for now in the initialization list
     // will have to have a add_diag() function at some point
@@ -239,12 +269,12 @@ public:
     }
 
 
-    void registerDiagnostic(uint32 diagType,
+    void registerDiagnostic(DiagType type,
                             std::vector<uint32> const& computingIterations,
                             std::vector<uint32> const& writingIterations)
     {
         // register to the scheduler
-        scheduler_.registerDiagnostic(diagType, computingIterations, writingIterations);
+        scheduler_.registerDiagnostic(type, computingIterations, writingIterations);
     }
 
 
@@ -253,9 +283,10 @@ public:
     {
         for (uint32 iDiag=0; iDiag < diags_.size();  ++iDiag)
         {
-            if ( scheduler_.timeToWrite(timeManager, iDiag) )
+            Diagnostic& currentDiag = *diags_[iDiag];
+
+            if ( scheduler_.timeToWrite(timeManager, currentDiag.type() ) )
             {
-                Diagnostic& currentDiag = *diags_[iDiag];
                 currentDiag.compute(patchData);
             }
         }
