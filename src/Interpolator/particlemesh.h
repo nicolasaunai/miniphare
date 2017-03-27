@@ -13,20 +13,6 @@
 
 /* ----------------------------------------------------------------------------
 
-                      Field interpolation from a coarse patch
-                      to a refined patch
-
-   ---------------------------------------------------------------------------- */
-
-void fieldAtRefinedNodes( Interpolator const& interpolator,
-                          GridLayout const & coarseLayout,
-                          Electromag const & parentElectromag ,
-                          GridLayout const & refinedLayout,
-                          ElectromagInitializer & eminit ) ;
-
-
-/* ----------------------------------------------------------------------------
-
                       Field interpolations at particles
 
    ---------------------------------------------------------------------------- */

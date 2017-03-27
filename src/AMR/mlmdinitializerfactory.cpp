@@ -9,7 +9,7 @@
 
 #include "Electromag/electromag.h"
 #include "Interpolator/interpolator.h"
-#include "Interpolator/particlemesh.h"
+#include "AMR/coarsetorefinemesh.h"
 
 
 #include <cmath>
