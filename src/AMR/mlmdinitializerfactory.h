@@ -13,35 +13,6 @@
 
 
 
-/* ----------------------------------------------------------------------------
-                      Interpolation from a coarse patch
-                      to a refined patch
-   ---------------------------------------------------------------------------- */
-void fieldAtRefinedNodes( Interpolator const& interpolator,
-                          GridLayout const & coarseLayout,
-                          Electromag const & parentElectromag ,
-                          GridLayout const & refinedLayout,
-                          ElectromagInitializer & eminit ) ;
-
-void fieldAtRefinedNodes1D( Interpolator const& interp,
-                            GridLayout const & coarseLayout,
-                            VecField const & Ecoarse , VecField const & Bcoarse,
-                            GridLayout const & refinedLayout,
-                            VecField & Erefined , VecField & Brefined ) ;
-
-void fieldAtRefinedNodes2D( Interpolator const& interp,
-                            GridLayout const & coarseLayout,
-                            VecField const & Ecoarse , VecField const & Bcoarse,
-                            GridLayout const & refinedLayout,
-                            VecField & Erefined , VecField & Brefined ) ;
-
-void fieldAtRefinedNodes3D( Interpolator const& interp,
-                            GridLayout const & coarseLayout,
-                            VecField const & Ecoarse , VecField const & Bcoarse,
-                            GridLayout const & refinedLayout,
-                            VecField & Erefined , VecField & Brefined ) ;
-
-
 
 /**
  * @brief The MLMDInitializerFactory class creates objects to initialize MLMD patches
