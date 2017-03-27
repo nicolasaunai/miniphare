@@ -1,5 +1,4 @@
-#include "particlemesh.h"
-
+#include "Interpolator/particlemesh.h"
 
 
 
@@ -8,9 +7,6 @@
                       Field interpolations at particles
 
    ---------------------------------------------------------------------------- */
-
-
-
 
 
 void fieldAtParticle1D(Interpolator const& interp,
@@ -86,9 +82,6 @@ void fieldAtParticle3D(Interpolator const& interp,
 }
 
 
-
-
-
 void fieldsAtParticles(Interpolator const& interp,
                        VecField const& E, VecField const& B,
                        GridLayout const& layout,
@@ -112,20 +105,11 @@ void fieldsAtParticles(Interpolator const& interp,
 
 
 
-
-
 /* ----------------------------------------------------------------------------
 
                       Interpolations from particles to moments
 
    ---------------------------------------------------------------------------- */
-
-
-
-
-
-
-
 
 
 void compute1DChargeDensityAndFlux(Interpolator& interpolator,
@@ -151,9 +135,6 @@ void compute1DChargeDensityAndFlux(Interpolator& interpolator,
     }
 
 }
-
-
-
 
 
 void compute2DChargeDensityAndFlux(Interpolator& interpolator,
@@ -206,5 +187,6 @@ void computeChargeDensityAndFlux(Interpolator& interpolator,
         throw std::runtime_error("wrong dimensionality");
     }
 }
+
 
 
