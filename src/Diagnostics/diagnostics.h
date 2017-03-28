@@ -54,9 +54,15 @@ public:
 
     std::string const& name() const {return name_;}
 
+    std::vector<DiagData> const& data() const
+    {
+        std::cout << "getting Diganostic data" << std::endl;
+        return data_;
+    }
+
+
     virtual void compute(PatchData const& patchData) = 0;
 
-    virtual std::vector<DiagData> const& data() const = 0;
 
 
     virtual ~Diagnostic() = default;
@@ -91,11 +97,6 @@ public:
         // Ex, Ey Ez into data_[i].data
     }
 
-    virtual std::vector<DiagData> const& data() const final
-    {
-        std::cout << "getting EM data" << std::endl;
-        return data_;
-    }
 
     virtual ~ElectromagDiagnostic() = default;
 };
