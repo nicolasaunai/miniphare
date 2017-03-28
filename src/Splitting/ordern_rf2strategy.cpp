@@ -9,21 +9,41 @@
 #include "multinomial.h"
 
 
+
+const uint32 refineFactor = 2 ;
+
+/**
+ * @brief OrderN_RF2Strategy::OrderN_RF2Strategy
+ * This splitting strategy is exact, it works for arbitrary order but
+ * only when the refinement factor equals 2.
+ * One mother Particle is split into:
+ * 3, 4, 5, 6 children particles depending on order 1, 2, 3, 4
+ *
+ * See https://hephaistos.lpp.polytechnique.fr/redmine/projects/hyb-par/wiki/Bsplines
+ * for algebraic details.
+ * The polynomial decomposition requires to compute binomial coefficients.
+ *
+ * @param splitMethod
+ * @param refineFactor
+ * @param interpOrder
+ */
 OrderN_RF2Strategy::OrderN_RF2Strategy( const std::string & splitMethod,
-                                        uint32 refineFactor,
                                         uint32 interpOrder )
-    : SplittingStrategy(splitMethod),
-      nbpts_{ (2*refineFactor -1) + (refineFactor -1)*(interpOrder-1) },
-      child_icellx_{ std::vector<int32>(nbpts_, 0) },
-      child_weights_{ std::vector<double>(nbpts_, 0) },
-      wtot_{ 0. }
+    : SplittingStrategy( splitMethod,
+                         (2*refineFactor -1) + (refineFactor -1)*(interpOrder-1) )
 {
 
-    int32 icell = static_cast<int32>( -(nbpts_ - 1)/2. ) ;
+    float nbrCello2 = static_cast<float>( (nbpts_ - 1)/2. ) ;
+
+    float delta = nbrCello2 - std::floor(nbrCello2);
+
+    int32 icell = static_cast<int32>( std::floor(-nbrCello2) ) ;
     for( uint32 ik=0 ; ik<nbpts_ ; ++ik )
     {
         child_icellx_[ik] = icell ;
         ++icell ;
+
+        child_deltax_[ik] = delta ;
     }
 
     for( uint32 ik=0 ; ik<nbpts_ ; ++ik )
@@ -37,25 +57,6 @@ OrderN_RF2Strategy::OrderN_RF2Strategy( const std::string & splitMethod,
 }
 
 
-void OrderN_RF2Strategy::split1D(
-        const Particle & mother,
-        std::vector<Particle> & childParticles ) const
-{
-
-    for( uint32 ik=0 ; ik<nbpts_ ; ++ik )
-    {
-        uint32 icellx = mother.icell[0] + child_icellx_[ik] ;
-
-        double weight = mother.weight * child_weights_[ik]/wtot_ ;
-
-        Particle newBorn( weight, mother.charge,
-                         {{icellx, mother.icell[1], mother.icell[2]}},
-                          mother.delta, mother.v ) ;
-
-        childParticles.push_back( std::move(newBorn) );
-    }
-
-}
 
 
 

@@ -6,7 +6,6 @@
 
 void MLMDParticleInitializer::loadParticles( std::vector<Particle>& particlesArray ) const
 {
-    ParticleSelector const & selector = *selector_;
 
     // the ParticleInitializer has a private access to the ion of the Parent Patch
     for( Particle const & particle: particleSource_.particles() )
@@ -14,7 +13,7 @@ void MLMDParticleInitializer::loadParticles( std::vector<Particle>& particlesArr
 
         // look if the particle is in the Patch domain
         // the Patch hyperVolume can be represented as a "Box"
-        if( selector(particle) )
+        if( selector_(particle) )
         {
 
             std::vector<Particle> childParticles ;

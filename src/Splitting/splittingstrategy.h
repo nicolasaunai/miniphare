@@ -17,19 +17,27 @@ class SplittingStrategy
 {
 public:
 
-    explicit SplittingStrategy(std::string name);
+    SplittingStrategy( std::string name, uint32 nbpts );
 
     virtual ~SplittingStrategy() = default ;
 
-    inline std::string name() const {return p_name;}
+    inline std::string name() const { return splitMethod_ ; }
 
-    virtual void split1D(
-            const Particle & mother,
-            std::vector<Particle> & childParticles ) const = 0 ;
+    void split1D( const Particle & mother,
+                  std::vector<Particle> & childParticles ) const ;
 
 protected:
 
-    std::string p_name;
+    std::string splitMethod_ ;
+
+    uint32 nbpts_ ;
+
+    std::vector<int32> child_icellx_ ;
+    std::vector<float> child_deltax_ ;
+
+    std::vector<double> child_weights_ ;
+
+    double wtot_ ;
 
 };
 

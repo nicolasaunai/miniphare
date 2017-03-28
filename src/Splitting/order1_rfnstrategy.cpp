@@ -1,5 +1,4 @@
 
-
 #include "Splitting/order1_rfnstrategy.h"
 
 #include "Distributions/distribgenerator.h"
@@ -7,29 +6,40 @@
 #include "Distributions/uniformstrategy.h"
 
 
-Order1_RFnStrategy::Order1_RFnStrategy( const std::string & splitMethod )
-    : SplittingStrategy(splitMethod) {}
 
 
-std::vector<Particle> Order1_RFnStrategy::split1D(
-        double dxL1, uint32 refineFactor,
-        const std::vector<Particle> & motherParticles ) const
+/**
+ * @brief Order1_RFnStrategy::Order1_RFnStrategy
+ * This splitting strategy is exact, it works for arbitrary refinement factor
+ * but only for 1st order shape function.
+ * One mother Particle is split into:
+ * 3, 5, 7 children particles when the refinement factor
+ * equals 2, 3, 4
+ *
+ * @param splitMethod
+ * @param refineFactor
+ * @param interpOrder
+ */
+Order1_RFnStrategy::Order1_RFnStrategy( const std::string & splitMethod,
+                                        uint32 refineFactor )
+    : SplittingStrategy(splitMethod, (2*refineFactor -1) )
 {
 
-    std::vector<Particle> newParticles ;
-
-    uint64 nbpart_L1 = 0 ;
-
-
-    uint32 nbpts = (2*refineFactor -1) ;
-
-    std::vector<double> w_tab    (nbpts, 0.) ;
-    std::vector<double> delta_tab(nbpts, 0.) ;
-
-    int inum=1 ;
-    for( unsigned int ik=0 ; ik<nbpts ; ik++ )
+    int32 icell = -(static_cast<int32>(refineFactor) - 1) ;
+    for( uint32 ik=0 ; ik<nbpts_ ; ++ik )
     {
-        w_tab[ik] = static_cast<double>(inum)/static_cast<double>(refineFactor) ;
+        child_icellx_[ik] = icell ;
+        ++icell ;
+
+        child_deltax_[ik] = 0. ;
+    }
+
+    int32 inum=1 ;
+    for( uint32 ik=0 ; ik<nbpts_ ; ik++ )
+    {
+        child_weights_[ik] = static_cast<double>(inum)/static_cast<double>(refineFactor) ;
+
+        wtot_ += child_weights_[ik] ;
 
         if( static_cast<int>(ik-refineFactor+1) < 0 )
             inum++ ;
@@ -37,52 +47,6 @@ std::vector<Particle> Order1_RFnStrategy::split1D(
             inum-- ;
     }
 
-    double wtot = 0. ;
-    for( double weight : w_tab )
-    {
-        wtot += weight ;
-    }
-
-    int ix = -(static_cast<int>(refineFactor) - 1) ;
-    for( double & delta : delta_tab )
-    {
-        delta = ix * dxL1 ;
-        ix++ ;
-    }
-
-
-    for( const Particle & part : motherParticles )
-    {
-        double  mum_weight = part.getP_po() ;
-        double  mum_posx   = part.getP_qx() ;
-        std::array<double, 3> mum_vel = { {part.getP_vx(), part.getP_vy(), part.getP_vz()} };
-
-        std::vector<double> posx_tab(nbpts, 0.) ;
-        std::vector<double> wn_tab  (nbpts, 0.) ;
-
-        for( unsigned int ik=0 ; ik<nbpts ; ik++ )
-        {
-            posx_tab[ik] = mum_posx + delta_tab[ik] ;
-
-            wn_tab[ik] = mum_weight * w_tab[ik]/wtot ;
-        }
-
-
-        for( unsigned int ik=0 ; ik<nbpts ; ik++ )
-        {
-            Particle partBaby( wn_tab[ik], posx_tab[ik], mum_vel) ;
-
-            newParticles.push_back( partBaby );
-        }
-
-        nbpart_L1 += nbpts ;
-    }
-
-    std::cout << "Nombre de particules L0 = " << motherParticles.size() << "\n" << std::endl ;
-    std::cout << "Nombre de particules L1 = " << nbpart_L1 << "\n" << std::endl ;
-
-
-    return newParticles ;
 }
 
 
