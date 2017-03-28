@@ -14,6 +14,8 @@
 #include "Field/field.h"
 #include "utilityphare.h"
 #include "amr/patchdata.h"
+#include "grid/gridlayout.h"
+#include "vecfield/vecfield.h"
 #include "Plasmas/particles.h"
 #include "Electromag/electromag.h"
 
@@ -47,14 +49,16 @@ class Diagnostic
 {
 protected:
     std::string name_;
-    std::vector<DiagData> data_;
+    std::unordered_map<std::string, DiagData> data_;
+    GridLayout layout_;
 
 public:
-    Diagnostic(std::string name):name_{name} {}
+    Diagnostic(std::string name, GridLayout const& layout)
+        :name_{name}, layout_{layout} {}
 
     std::string const& name() const {return name_;}
 
-    std::vector<DiagData> const& data() const
+    std::unordered_map<std::string, DiagData> const& data() const
     {
         std::cout << "getting Diganostic data" << std::endl;
         return data_;
@@ -82,8 +86,11 @@ class ElectromagDiagnostic : public Diagnostic
 private:
 
 public:
-    ElectromagDiagnostic()
-        : Diagnostic{"EM"}{}
+    ElectromagDiagnostic(GridLayout const& layout)
+        : Diagnostic{"EM", layout}
+    {
+
+    }
 
     virtual void compute(PatchData const& patchData) final
     {
@@ -95,6 +102,35 @@ public:
         // format is:
         // x y z into data_[i].depends
         // Ex, Ey Ez into data_[i].data
+        Field const& Ex = em.getEi(0);
+        Field const& Ey = em.getEi(1);
+        Field const& Ez = em.getEi(2);
+
+        Field const& Bx = em.getBi(0);
+        Field const& By = em.getBi(1);
+        Field const& Bz = em.getBi(2);
+
+        // get shapes, host nodes and remove ghost nodes
+        std::array<uint32, 3> ghostNodes; //get shape without ghost nodes
+        // and put data into 1D vectors
+        // also add a geometry attribute to DiagData so we can know
+        // the dimensionality and nbr of cells in each direction
+
+
+        DiagData diagData;
+        diagData.depends.insert( {"x", std::vector<float>(10) } );
+        diagData.depends.insert( {"y", std::vector<float>(10) } );
+        diagData.depends.insert( {"z", std::vector<float>(10) } );
+
+        diagData.data.insert( {"Ex", std::vector<float>(10) } );
+        diagData.data.insert( {"Ey", std::vector<float>(10) } );
+        diagData.data.insert( {"Ez", std::vector<float>(10) } );
+        diagData.data.insert( {"Bx", std::vector<float>(10) } );
+        diagData.data.insert( {"By", std::vector<float>(10) } );
+        diagData.data.insert( {"Bz", std::vector<float>(10) } );
+
+        data_.insert( {"HardCoded Patch", std::move(diagData)} );
+
     }
 
 
@@ -140,7 +176,7 @@ public:
     {
         std::string const& name = diag.name();
         double time = timeManager.currentTime();
-        std::vector<DiagData> const& data = diag.data();
+       // std::vector<DiagData> const& data = diag.data();
 
 
         // open file
@@ -265,11 +301,11 @@ class DiagnosticFactory
 public:
 
     // for now no other option than the type.
-    static std::unique_ptr<Diagnostic> makeDiagnostic(DiagType type)
+    static std::unique_ptr<Diagnostic> makeDiagnostic(DiagType type, GridLayout const& layout)
     {
         if (type == DiagType::EM )
         {
-            return std::unique_ptr<Diagnostic> {new ElectromagDiagnostic{} };
+            return std::unique_ptr<Diagnostic> {new ElectromagDiagnostic{layout} };
         }
 
         return nullptr;
@@ -291,6 +327,7 @@ private:
     DiagUnorderedMap< DiagType, std::shared_ptr<Diagnostic> > diags_;
     std::unique_ptr<ExportStrategy> exportStrat_;
     DiagnosticScheduler scheduler_;
+    GridLayout layout_;
 
 public:
 
@@ -298,10 +335,11 @@ public:
     // hard coded for now in the initialization list
     // will have to have a add_diag() function at some point
     // this will come from the factory..
-    DiagnosticsManager(ExportStrategyType exportType)
+    DiagnosticsManager(ExportStrategyType exportType, GridLayout const& layout)
         : diags_{},
           exportStrat_{ExportStrategyFactory::makeExportStrategy(exportType)},
-          scheduler_{}
+          scheduler_{},
+          layout_{layout}
     {
 
     }
@@ -312,7 +350,7 @@ public:
                        std::vector<uint32> const& writingIterations)
     {
         // create a new diagnostic of type 'type'
-        std::shared_ptr<Diagnostic> newDiag = DiagnosticFactory::makeDiagnostic(type);
+        std::shared_ptr<Diagnostic> newDiag = DiagnosticFactory::makeDiagnostic(type, layout_);
         diags_.insert( {type, newDiag} );
 
         // register to the scheduler
