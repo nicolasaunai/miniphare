@@ -277,7 +277,7 @@ public:
     // will have to have a add_diag() function at some point
     // this will come from the factory..
     DiagnosticsManager()
-        : diags_{ { DiagType::EM, std::make_shared<ElectromagDiagnostic>()} },
+        : diags_{},
           exportStrat_{ new AsciiExportStrategy{} },
           scheduler_{}
     {
