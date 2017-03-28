@@ -238,6 +238,25 @@ public:
 
 
 
+class DiagnosticFactory
+{
+public:
+
+    // for now no other option than the type.
+    static std::unique_ptr<Diagnostic> makeDiagnostic(DiagType type)
+    {
+        if (type == DiagType::EM )
+        {
+            return std::unique_ptr<Diagnostic> {new ElectromagDiagnostic{} };
+        }
+
+        return nullptr;
+    }
+};
+
+
+
+
 
 
 /**
@@ -266,10 +285,14 @@ public:
     }
 
 
-    void registerDiagnostic(DiagType type,
-                            std::vector<uint32> const& computingIterations,
-                            std::vector<uint32> const& writingIterations)
+    void newDiagnostic(DiagType type,
+                       std::vector<uint32> const& computingIterations,
+                       std::vector<uint32> const& writingIterations)
     {
+        // create a new diagnostic of type 'type'
+        std::shared_ptr<Diagnostic> newDiag = DiagnosticFactory::makeDiagnostic(type);
+        diags_.insert( {type, newDiag} );
+
         // register to the scheduler
         scheduler_.registerDiagnostic(type, computingIterations, writingIterations);
     }
