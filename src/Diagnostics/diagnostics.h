@@ -166,6 +166,27 @@ class HDF5ExportStrategy : public ExportStrategy
 };
 
 
+enum class ExportStrategyType {ASCII, HDF5NATIVE, OPENPMD};
+
+
+class ExportStrategyFactory
+{
+public:
+    static std::unique_ptr<ExportStrategy> makeExportStrategy(ExportStrategyType type)
+    {
+        if (type == ExportStrategyType::ASCII)
+        {
+            return std::unique_ptr<ExportStrategy> {new AsciiExportStrategy{} };
+        }
+
+        return nullptr;
+    }
+};
+
+
+
+
+
 // trick seen here
 // http://stackoverflow.com/questions/18837857/cant-use-enum-class-as-unordered-map-key
 // to use an enum class as a key in unordered_map
@@ -276,9 +297,9 @@ public:
     // hard coded for now in the initialization list
     // will have to have a add_diag() function at some point
     // this will come from the factory..
-    DiagnosticsManager()
+    DiagnosticsManager(ExportStrategyType exportType)
         : diags_{},
-          exportStrat_{ new AsciiExportStrategy{} },
+          exportStrat_{ExportStrategyFactory::makeExportStrategy(exportType)},
           scheduler_{}
     {
 
