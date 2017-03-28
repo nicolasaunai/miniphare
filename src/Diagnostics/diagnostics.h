@@ -29,10 +29,13 @@
 // or particle data (depends = id_particle; data = x,y,z,vx,vy,vz)
 // or 1 orbit data (depends=time; data=x,y,z)
 // etc.
+
+
+
 struct DiagData
 {
-    std::vector<float> depends;
-    std::vector<float> data;
+    std::unordered_map<std::string, std::vector<float>> depends;
+    std::unordered_map<std::string, std::vector<float>> data;
 };
 
 
