@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv) ;
 
     Time timeManager{initFactory->timeStep(), 0., 100};
-    DiagnosticsManager diagnosticManager{ExportStrategyType::ASCII};
+    DiagnosticsManager diagnosticManager{ExportStrategyType::ASCII, initFactory->gridLayout()};
 
     MLMD mlmdManager{*initFactory} ;
     mlmdManager.initializeRootLevel() ;
