@@ -116,6 +116,17 @@ public:
         // also add a geometry attribute to DiagData so we can know
         // the dimensionality and nbr of cells in each direction
 
+        switch (layout_.nbDimensions())
+        {
+            case 1:
+            auto centering  = layout_.fieldCentering(Ex, Direction::X);
+            uint32 nbrGhost = layout_.nbrGhostNodes(centering);
+
+            break;
+        }
+
+
+
 
         DiagData diagData;
         diagData.depends.insert( {"x", std::vector<float>(10) } );
