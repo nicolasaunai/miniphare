@@ -62,7 +62,7 @@ void PeriodicDomainBoundary::makeFieldPeriodic1D_(VecField& vecField, GridLayout
                **calculated** correctly
             */
             auto centering = layout.fieldCentering( field, Direction::X) ;
-            uint32 nbrGhosts = layout.nbrGhostCells(centering);
+            uint32 nbrGhosts = layout.nbrGhostNodes(centering);
             uint32 physStart = layout.physicalStartIndex( field, Direction::X) ;
             uint32 physEnd   = layout.physicalEndIndex  ( field, Direction::X) ;
 
@@ -165,7 +165,7 @@ void PeriodicDomainBoundary::makeMomentPeriodic1D_(Field& moment, GridLayout con
     {
         uint32 phyStart = layout.physicalStartIndex(moment, Direction::X);
         uint32 physEnd   = layout.physicalEndIndex  (moment, Direction::X);
-        uint32 nbrGhosts = layout.nbrGhostCells(QtyCentering::primal);
+        uint32 nbrGhosts = layout.nbrGhostNodes(QtyCentering::primal);
 
         // need to deal with points on border separately
         // because in the following loop

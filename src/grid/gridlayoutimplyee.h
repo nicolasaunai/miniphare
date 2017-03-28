@@ -92,7 +92,7 @@ public:
 
     virtual QtyCentering fieldCentering(Field const & field, Direction dir) const override ;
 
-    virtual uint32 nbrGhostCells( QtyCentering centering ) const override ;
+    virtual uint32 nbrGhostNodes( QtyCentering centering ) const override ;
 
 
     virtual LinearCombination const& momentsToEx() const override;

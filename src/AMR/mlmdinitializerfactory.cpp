@@ -444,7 +444,7 @@ void MLMDInitializerFactory::definePRA1Dlimits_( GridLayout const & layout,
 
 uint32 MLMDInitializerFactory::PRAHalfWidth_( GridLayout const & layout ) const
 {
-    return layout.nbrGhostCells(QtyCentering::primal) ;
+    return layout.nbrGhostNodes(QtyCentering::primal) ;
 }
 
 

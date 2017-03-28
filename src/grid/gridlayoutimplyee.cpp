@@ -443,7 +443,7 @@ QtyCentering GridLayoutImplYee::fieldCentering(Field const & field, Direction di
 }
 
 
-uint32 GridLayoutImplYee::nbrGhostCells( QtyCentering centering ) const
+uint32 GridLayoutImplYee::nbrGhostNodes( QtyCentering centering ) const
 {
     return nbrGhosts( centering ) ;
 }
