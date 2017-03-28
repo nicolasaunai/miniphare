@@ -29,9 +29,6 @@
 // or particle data (depends = id_particle; data = x,y,z,vx,vy,vz)
 // or 1 orbit data (depends=time; data=x,y,z)
 // etc.
-
-
-
 struct DiagData
 {
     std::unordered_map<std::string, std::vector<float>> depends;
@@ -50,6 +47,7 @@ class Diagnostic
 {
 protected:
     std::string name_;
+    std::vector<DiagData> data_;
 
 public:
     Diagnostic(std::string name):name_{name} {}
@@ -76,7 +74,6 @@ public:
 class ElectromagDiagnostic : public Diagnostic
 {
 private:
-    std::vector<DiagData> data_;
 
 public:
     ElectromagDiagnostic()
