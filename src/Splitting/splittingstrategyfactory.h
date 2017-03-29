@@ -27,62 +27,65 @@ class SplittingStrategyFactory
 public:
 
     static std::unique_ptr<SplittingStrategy>
-    createSplittingStrategy(const std::string & splitMethod,
-                            double ratioDx )
+    createSplittingStrategy( const std::string & splitMethod,
+                             uint32 interpOrder, uint32 refineFactor )
     {
 
-        bool stratOkOrNot = false ;
+        bool isValid = false ;
         std::unique_ptr<SplittingStrategy> split_strategy ;
 
         if( splitMethod.compare("ApproxFujimoto")==0 )
         {
-            stratOkOrNot = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> ( new Approx_FujiStrategy{splitMethod, ratioDx} );
+            isValid = true ;
+            split_strategy = std::unique_ptr<SplittingStrategy> ( new Approx_FujiStrategy{splitMethod} );
         }
 
         if( splitMethod.compare("Approx1to4")==0 )
         {
-            stratOkOrNot = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> ( new Approx_1to4Strategy{splitMethod, ratioDx} );
+            isValid = true ;
+            split_strategy = std::unique_ptr<SplittingStrategy> ( new Approx_1to4Strategy{splitMethod} );
         }
 
         if( splitMethod.compare("splitOrder1")==0 )
         {
-            stratOkOrNot = true ;
+            isValid = true ;
             split_strategy = std::unique_ptr<SplittingStrategy> ( new Order1_RF2Strategy{splitMethod} );
         }
 
         if( splitMethod.compare("splitOrder2")==0 )
         {
-            stratOkOrNot = true ;
+            isValid = true ;
             split_strategy = std::unique_ptr<SplittingStrategy> ( new Order2_RF2Strategy{splitMethod} );
         }
 
         if( splitMethod.compare("splitOrder3")==0 )
         {
-            stratOkOrNot = true ;
+            isValid = true ;
             split_strategy = std::unique_ptr<SplittingStrategy> ( new Order3_RF2Strategy{splitMethod} );
         }
 
         if( splitMethod.compare("splitOrder1_RFn")==0 )
         {
-            stratOkOrNot = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> ( new Order1_RFnStrategy{splitMethod} );
+            isValid = true ;
+            split_strategy = std::unique_ptr<SplittingStrategy> (
+                        new Order1_RFnStrategy{splitMethod, refineFactor} );
         }
 
         if( splitMethod.compare("splitOrderN_RF2")==0 )
         {
-            stratOkOrNot = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> ( new OrderN_RF2Strategy{splitMethod} );
+            isValid = true ;
+            split_strategy = std::unique_ptr<SplittingStrategy> (
+                        new OrderN_RF2Strategy{splitMethod, interpOrder} );
         }
 
         if( splitMethod.compare("splitOrderN_RF3")==0 )
         {
-            stratOkOrNot = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> ( new OrderN_RF3Strategy{splitMethod} );
+            isValid = true ;
+            split_strategy = std::unique_ptr<SplittingStrategy> (
+                        new OrderN_RF3Strategy{splitMethod, interpOrder} );
         }
 
-        if(!stratOkOrNot)
+        if(!isValid)
         {
              throw std::runtime_error("Error : SplittingStrategyFactory - ");
         }
