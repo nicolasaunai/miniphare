@@ -5,11 +5,12 @@
 #include <memory>
 #include <string>
 
-#include "ionsinitializer.h"
-#include "electromaginitializer.h"
-#include "ohminitializer.h"
-#include "solverinitializer.h"
+#include "Initializer/ionsinitializer.h"
+#include "Initializer/electromaginitializer.h"
+#include "Initializer/ohminitializer.h"
+#include "Initializer/solverinitializer.h"
 
+#include "Splitting/splittingstrategy.h"
 
 
 /**
@@ -40,6 +41,8 @@ public:
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const = 0;
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const = 0;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const = 0;
+    virtual std::unique_ptr<SplittingStrategy> createSplittingStrategy() const = 0;
+
 
     virtual Box getBox() const = 0;
     virtual GridLayout const& gridLayout() const = 0 ;

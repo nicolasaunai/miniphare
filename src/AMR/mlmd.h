@@ -5,6 +5,8 @@
 #include "hierarchy.h"
 #include "Initializer/initializerfactory.h"
 #include "grid/gridlayout.h"
+#include "Splitting/splittingstrategy.h"
+
 
 
 /**
@@ -25,6 +27,12 @@ private:
 
     const std::vector<uint32>  interpolationOrders_ ;
     const std::string pusher_ ;
+
+    // WARNING: we assume the same SplittingStrategy
+    // for all species, this is wrong if we use a different
+    // interpolation order for each species
+    std::unique_ptr<SplittingStrategy> splitStrategy_ ;
+
 
 public:
 

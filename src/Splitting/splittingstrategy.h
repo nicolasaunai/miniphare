@@ -21,7 +21,7 @@ public:
 
     virtual ~SplittingStrategy() = default ;
 
-    inline std::string name() const { return splitMethod_ ; }
+    std::string const & name() const { return splitMethod_ ; }
 
     void split1D( const Particle & mother,
                   std::vector<Particle> & childParticles ) const ;

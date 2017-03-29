@@ -11,6 +11,7 @@
 #include "Interpolator/interpolator.h"
 #include "AMR/coarsetorefinemesh.h"
 
+#include "Splitting/splittingstrategyfactory.h"
 
 #include <cmath>
 #include <algorithm>
@@ -194,6 +195,27 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 
     return boundaryCondition;
 }
+
+
+
+/**
+ * @brief MLMDInitializerFactory::createSplittingStrategy
+ *
+ * @return
+ */
+std::unique_ptr<SplittingStrategy> MLMDInitializerFactory::createSplittingStrategy() const
+{
+
+    uint32 maxInterpOrder =
+            *std::max_element(interpolationOrders_.begin(),
+                              interpolationOrders_.end()   ) ;
+
+    return SplittingStrategyFactory::createSplittingStrategy(
+                splitMethod_, maxInterpOrder,
+                refinementRatio_ ) ;
+}
+
+
 
 
 /**

@@ -18,12 +18,14 @@ class SimpleInitializerFactory : public InitializerFactory
 public:
     // TODO : see what Ctors will need to be defined
     SimpleInitializerFactory();
+    SimpleInitializerFactory( const std::string & splitMethod );
 
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const override;
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
+    virtual std::unique_ptr<SplittingStrategy> createSplittingStrategy() const override;
 
     virtual Box getBox() const override { return layout_.getBox() ; }
     virtual GridLayout const& gridLayout() const override { return layout_; }
@@ -44,6 +46,7 @@ private:
 
     const std::vector<uint32>  interpolationOrders_ ;
     const std::string pusher_ ;
+    const std::string splitMethod_ ;
 
     void readInputFile();
 

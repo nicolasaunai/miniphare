@@ -8,6 +8,8 @@
 #include "AMR/patch.h"
 #include "AMR/mlmdinitializerfactory.h"
 
+#include "Splitting/splittingstrategy.h"
+
 #include "utilityphare.h"
 
 
@@ -104,8 +106,10 @@ Hierarchy::evaluateRefinementNeed( uint32 refineRatio,
  */
 void Hierarchy::updateHierarchy(
         std::vector< std::vector<RefinementInfo> > const & refinementTable,
+        uint32 const & refineFactorFromMLMD,
         std::vector<uint32> const & ordersFromMLMD,
-        std::string const & pusherFromMLMD )
+        std::string const & pusherFromMLMD,
+        SplittingStrategy const & splitMethodFromMLMD )
 {
 
     uint32 nbrLevels = static_cast<uint32>(refinementTable.size()) ;
@@ -120,7 +124,9 @@ void Hierarchy::updateHierarchy(
             RefinementInfo const & info = refinementTable[iLevel][iPatch] ;
 
             // create new Patch and update Hierarchy
-            addNewPatch( info, ordersFromMLMD, pusherFromMLMD ) ;
+            addNewPatch( info, refineFactorFromMLMD,
+                         ordersFromMLMD, pusherFromMLMD,
+                         splitMethodFromMLMD ) ;
 
             // TODO: call patch.init to initialize patch content
 
@@ -133,8 +139,10 @@ void Hierarchy::updateHierarchy(
 
 
 void Hierarchy::addNewPatch( RefinementInfo const & info,
+                             uint32 const & refineFactorFromMLMD,
                              std::vector<uint32> const & ordersFromMLMD,
-                             std::string const & pusherFromMLMD )
+                             std::string const & pusherFromMLMD,
+                             SplittingStrategy const & splitMethodFromMLMD)
 {
 
     std::shared_ptr<Patch> coarsePatch = info.parentPatch ;
@@ -147,7 +155,9 @@ void Hierarchy::addNewPatch( RefinementInfo const & info,
     std::unique_ptr<InitializerFactory>
             factory { new MLMDInitializerFactory( coarsePatch, refinedBox,
                                                   refinedLayout,
-                                                  ordersFromMLMD, pusherFromMLMD ) } ;
+                                                  refineFactorFromMLMD,
+                                                  ordersFromMLMD, pusherFromMLMD,
+                                                  splitMethodFromMLMD.name() ) } ;
 
     Patch theNewPatch{ refinedBox, refinedLayout, PatchData{*factory} };
 

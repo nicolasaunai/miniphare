@@ -10,6 +10,7 @@
 #include "AMR/patch.h"
 #include "AMR/particleselector.h"
 
+#include "Splitting/splittingstrategy.h"
 
 
 
@@ -32,8 +33,10 @@ private:
     GridLayout refinedLayout_;
     double dt_;
 
+    const uint32 refinementRatio_ ;
     const std::vector<uint32>  interpolationOrders_ ;
     const std::string pusher_ ;
+    const std::string splitMethod_ ;
 
     void buildIonsInitializer_( IonsInitializer & ionInit,
                                     ParticleSelector const & selector ) const ;
@@ -60,17 +63,22 @@ public:
     MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch,
                            Box const & newPatchCoords,
                            GridLayout const & refinedLayout,
+                           uint32 const & refineFactor,
                            std::vector<uint32> const & orders,
-                           std::string const & pusher )
+                           std::string const & pusher,
+                           std::string const & splitMethod )
         : parentPatch_{parentPatch}, newPatchCoords_{newPatchCoords},
           refinedLayout_{ refinedLayout },
-          interpolationOrders_{orders}, pusher_{pusher} {}
+          refinementRatio_{ refineFactor },
+          interpolationOrders_{orders}, pusher_{pusher},
+          splitMethod_{splitMethod} {}
 
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const  override;
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const  override;
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
+    virtual std::unique_ptr<SplittingStrategy> createSplittingStrategy() const override;
 
     virtual Box getBox() const override { return refinedLayout_.getBox(); }
     virtual GridLayout const& gridLayout() const override { return refinedLayout_; }
