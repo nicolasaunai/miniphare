@@ -1,87 +1,45 @@
 
-
 #include "Splitting/order3_rf2strategy.h"
 
-#include "Distributions/distribgenerator.h"
-#include "Distributions/distribstrategy.h"
-#include "Distributions/uniformstrategy.h"
 
 
+const uint32 interpOrder  = 3 ;
+const uint32 refineFactor = 2 ;
+
+
+/**
+ * @brief Order3_RF2Strategy::Order3_RF2Strategy is a
+ * specific case of OrderN_RF2Strategy.
+ * This splitting strategy is exact, it works for 3rd order and
+ * a refinement factor of 2.
+ *
+ *
+ * @param splitMethod
+ */
 Order3_RF2Strategy::Order3_RF2Strategy( const std::string & splitMethod )
-    : SplittingStrategy(splitMethod) {}
-
-
-std::vector<Particle> Order3_RF2Strategy::split1D(
-        double dxL1, uint32 refineFactor,
-        const std::vector<Particle> & motherParticles ) const
+    : SplittingStrategy( splitMethod,
+                         (2*refineFactor -1) + (refineFactor -1)*(interpOrder-1) )
 {
 
-    std::vector<Particle> newParticles ;
+    child_icellx_[0] = -2 ;
+    child_icellx_[1] = -1 ;
+    child_icellx_[2] =  0 ;
+    child_icellx_[3] =  1 ;
+    child_icellx_[4] =  2 ;
 
-    uint64 nbpart_L1 = 0 ;
+    child_deltax_[0] = 0. ;
+    child_deltax_[1] = 0. ;
+    child_deltax_[2] = 0. ;
+    child_deltax_[3] = 0. ;
+    child_deltax_[4] = 0. ;
 
+    child_weights_[0] = 1./8. ;
+    child_weights_[1] = 4./8. ;
+    child_weights_[2] = 6./8. ;
+    child_weights_[3] = 4./8. ;
+    child_weights_[4] = 1./8. ;
 
-    double w1 = 1./8. ;
-    double w2 = 4./8. ;
-    double w3 = 6./8. ;
-    double w4 = 4./8. ;
-    double w5 = 1./8. ;
-
-    double wtot = w1 + w2 + w3 + w4 + w5 ;
-
-
-    for( const Particle & part : motherParticles )
-    {
-        double  mum_weight = part.getP_po() ;
-        double  mum_posx   = part.getP_qx() ;
-        std::array<double, 3> mum_vel = { {part.getP_vx(), part.getP_vy(), part.getP_vz()} } ;
-
-        switch( refineFactor )
-        {
-        case 2:
-        {
-            double posx1 = mum_posx - 2.*dxL1 ;
-            double posx2 = mum_posx -    dxL1 ;
-            double posx3 = mum_posx            ;
-            double posx4 = mum_posx +    dxL1 ;
-            double posx5 = mum_posx + 2.*dxL1 ;
-
-            double wn1 = mum_weight * w1/wtot ;
-            double wn2 = mum_weight * w2/wtot ;
-            double wn3 = mum_weight * w3/wtot ;
-            double wn4 = mum_weight * w4/wtot ;
-            double wn5 = mum_weight * w5/wtot ;
-
-            Particle partBaby1( wn1, posx1, mum_vel) ;
-            Particle partBaby2( wn2, posx2, mum_vel) ;
-            Particle partBaby3( wn3, posx3, mum_vel) ;
-            Particle partBaby4( wn4, posx4, mum_vel) ;
-            Particle partBaby5( wn5, posx5, mum_vel) ;
-
-            newParticles.push_back( partBaby1 );
-            newParticles.push_back( partBaby2 );
-            newParticles.push_back( partBaby3 );
-            newParticles.push_back( partBaby4 );
-            newParticles.push_back( partBaby5 );
-
-            nbpart_L1 += 5 ;
-        }
-            break;
-
-        default:
-            std::cout << "Method  Species::splitOrdre2 : default case !" << std::endl ;
-            std::cout << "FATAL ERROR !" << std::endl ;
-            std::exit(0) ;
-            break;
-        }
-
-
-    }
-
-    std::cout << "Nombre de particules L0 = " << motherParticles.size() << "\n" << std::endl ;
-    std::cout << "Nombre de particules L1 = " << nbpart_L1 << "\n" << std::endl ;
-
-    return newParticles ;
+    wtot_ = 2. ;
 }
 
 

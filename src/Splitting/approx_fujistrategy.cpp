@@ -2,79 +2,46 @@
 
 #include "Splitting/approx_fujistrategy.h"
 
-#include "Distributions/distribgenerator.h"
-#include "Distributions/distribstrategy.h"
-#include "Distributions/uniformstrategy.h"
 
 
-Approx_FujiStrategy::Approx_FujiStrategy(const std::string & splitMethod,
-                                 double ratioDx)
-    : SplittingStrategy(splitMethod), ratioDx_{ratioDx} {}
+const uint32 nbpts = 2 ;
 
-
-std::vector<Particle> Approx_FujiStrategy::split1D(
-        double dxL1, uint32 refineFactor,
-        const std::vector<Particle> & motherParticles ) const
+/**
+ * @brief Approx_FujiStrategy::Approx_FujiStrategy only approximately preserve
+ * the moments of the particle distribution on the coarse grid.
+ *
+ * In 1D an exact splitting algorithm should be prefered.
+ *
+ * https://hephaistos.lpp.polytechnique.fr/redmine/projects/hyb-par/wiki/ApproxSplit
+ *
+ *
+ * @param splitMethod
+ */
+Approx_FujiStrategy::Approx_FujiStrategy(const std::string & splitMethod)
+    : SplittingStrategy(splitMethod, nbpts),
+      jitterX_{ 0. }
 {
 
-    std::vector<double> jitterX ;
+    std::random_device randSeed;
+    std::mt19937_64 generator(randSeed());
 
+    // We limit jitter to 10% of the local cell size
+    std::uniform_real_distribution<float> randPosX(0., 0.1f);
 
-    std::vector<Particle> newParticles ;
+    // we prepare a random jitter for child particles
+    jitterX_ = randPosX(generator) ;
 
-    uint64 nbpart_L1 = 0 ;
+    child_icellx_[0] = -1 ;
+    child_icellx_[1] =  0 ;
 
-    // we prepare random jitter for child particles
-    auto distGenerator = std::make_shared< DistribGenerator >();
-    std::shared_ptr<DistribStrategy> uniform ( std::make_shared<UniformStrategy>() );
+    child_deltax_[0] = (1.0f - jitterX_) ;
+    child_deltax_[1] = jitterX_ ;
 
-    distGenerator->setStrategy(uniform);
-    // We draw a uniform on the segment [0., 1.]
-    distGenerator->draw(jitterX, motherParticles.size(), 0., 1.);
+    double weight = 1./nbpts ;
+    wtot_ = 1. ;
+    child_weights_[0] = weight ;
+    child_weights_[1] = weight ;
 
-    // We limit jitter to 10% of the local(refined) cell size
-    for( double & jitx : jitterX )
-    {
-        jitx = jitx * dxL1 * ratioDx_ ;
-    }
-
-    unsigned int ik_mum = 0 ;
-    for( const Particle & part : motherParticles )
-    {
-        double  mum_weight = part.getP_po() ;
-        double  mum_posx   = part.getP_qx() ;
-        std::array<double, 3> mum_vel = { {part.getP_vx(), part.getP_vy(), part.getP_vz()} } ;
-
-        double weight = mum_weight/static_cast<double>(refineFactor) ;
-
-        switch( refineFactor )
-        {
-        case 2:
-        {
-            double posx1 = mum_posx + jitterX[ik_mum] ;
-            double posx2 = mum_posx - jitterX[ik_mum] ;
-
-            Particle partBaby1( weight, posx1, mum_vel) ;
-            Particle partBaby2( weight, posx2, mum_vel) ;
-            newParticles.push_back( partBaby1 );
-            newParticles.push_back( partBaby2 );
-            nbpart_L1 += 2 ;
-        }
-            break;
-
-        default:
-            std::cout << "Split particles : default case !" << std::endl ;
-            break;
-        }
-
-        ik_mum++ ;
-    }
-
-
-    std::cout << "Nombre de particules L0 = " << motherParticles.size() << "\n" << std::endl ;
-    std::cout << "Nombre de particules L1 = " << nbpart_L1 << "\n" << std::endl ;
-
-    return newParticles ;
 }
 
 

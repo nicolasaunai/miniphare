@@ -1,12 +1,8 @@
 
-
 #include "Splitting/ordern_rf3strategy.h"
 
-#include "Distributions/distribgenerator.h"
-#include "Distributions/distribstrategy.h"
-#include "Distributions/uniformstrategy.h"
-
 #include "multinomial.h"
+
 
 
 const uint32 refineFactor = 3 ;

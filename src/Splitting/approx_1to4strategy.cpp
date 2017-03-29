@@ -2,95 +2,49 @@
 
 #include "Splitting/approx_1to4strategy.h"
 
-#include "Distributions/distribgenerator.h"
-#include "Distributions/distribstrategy.h"
-#include "Distributions/uniformstrategy.h"
 
 
-Approx_1to4Strategy::Approx_1to4Strategy(const std::string & splitMethod,
-                                         double ratioDx)
-    : SplittingStrategy(splitMethod), ratioDx_{ratioDx} {}
 
+const uint32 nbpts = 4 ;
 
-std::vector<Particle> Approx_1to4Strategy::split1D(
-        double dxL1, uint32 refineFactor,
-        const std::vector<Particle> & motherParticles ) const
+/**
+ * @brief Approx_1to4Strategy::Approx_1to4Strategy only approximately preserve
+ * the moments of the particle distribution on the coarse grid.
+ *
+ * In 1D an exact splitting algorithm should be prefered.
+ *
+ * https://hephaistos.lpp.polytechnique.fr/redmine/projects/hyb-par/wiki/ApproxSplit
+ *
+ * @param splitMethod
+ */
+Approx_1to4Strategy::Approx_1to4Strategy(const std::string & splitMethod)
+    : SplittingStrategy(splitMethod, nbpts),
+      jitterX_{ 0. }
 {
 
-    std::vector<double> jitterX ;
-    std::vector<Particle> newParticles ;
+    std::random_device randSeed;
+    std::mt19937_64 generator(randSeed());
 
-    uint64 nbpart_L1 = 0 ;
+    // We limit jitter to 10% of the local cell size
+    std::uniform_real_distribution<float> randPosX(0., 0.1f);
 
-    const double nb_children = 4. ;
+    // we prepare a random jitter for child particles
+    jitterX_ = randPosX(generator) ;
 
+    child_icellx_[0] = -1 ;
+    child_icellx_[1] = -1 ;
+    child_icellx_[2] =  0 ;
+    child_icellx_[3] =  0 ;
 
+    child_deltax_[0] = (1.0f - 1.5f*jitterX_) ;
+    child_deltax_[1] = (1.0f - 0.5f*jitterX_) ;
+    child_deltax_[2] = 0.5f * jitterX_ ;
+    child_deltax_[3] = 1.5f * jitterX_ ;
 
-    // we prepare random jitter for child particles
-    auto distGenerator = std::make_shared< DistribGenerator >();
-    std::shared_ptr<DistribStrategy> uniform ( std::make_shared<UniformStrategy>() );
+    double weight = 1./nbpts ;
+    wtot_ = 1. ;
+    for( uint32 ipart=0 ; ipart<nbpts ; ++ipart) child_weights_[ipart] = weight ;
 
-    distGenerator->setStrategy(uniform);
-    // We draw a uniform on the segment [0., 1.]
-    distGenerator->draw(jitterX, motherParticles.size(), 0., 1.);
-
-    // We limit jitter to 10% of the local(refined) cell size
-    for( double & jitx : jitterX )
-    {
-        jitx = jitx * dxL1 * ratioDx_ ;
-    }
-
-    unsigned int ik_mum = 0 ;
-    for( const Particle & part : motherParticles )
-    {
-        double  mum_weight = part.getP_po() ;
-        double  mum_posx   = part.getP_qx() ;
-        std::array<double, 3> mum_vel = { {part.getP_vx(), part.getP_vy(), part.getP_vz()} } ;
-
-        switch( refineFactor )
-        {
-        case 2:
-        {
-            double weight = mum_weight/nb_children ;
-
-            // creation of particles 1 and 2
-            double posx1 = mum_posx + 0.5*jitterX[ik_mum] ;
-            double posx2 = mum_posx - 0.5*jitterX[ik_mum] ;
-
-            Particle partBaby1( weight, posx1, mum_vel) ;
-            Particle partBaby2( weight, posx2, mum_vel) ;
-            newParticles.push_back( partBaby1 );
-            newParticles.push_back( partBaby2 );
-            nbpart_L1 += 2 ;
-
-            // creation of particles 3 and 4
-            posx1 = mum_posx + 1.5*jitterX[ik_mum] ;
-            posx2 = mum_posx - 1.5*jitterX[ik_mum] ;
-
-            Particle partBaby1( weight, posx1, mum_vel) ;
-            Particle partBaby2( weight, posx2, mum_vel) ;
-            newParticles.push_back( partBaby1 );
-            newParticles.push_back( partBaby2 );
-            nbpart_L1 += 2 ;
-        }
-            break;
-
-        default:
-            std::cout << "Split particles : default case !" << std::endl ;
-            break;
-        }
-
-        ik_mum++ ;
-    }
-
-
-    std::cout << "Nombre de particules L0 = " << totalNbrParticles_ << "\n" << std::endl ;
-    std::cout << "Nombre de particules L1 = " << nbpart_L1 << "\n" << std::endl ;
-
-    return newParticles ;
 }
-
-
-
 
 

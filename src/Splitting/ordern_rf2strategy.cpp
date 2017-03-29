@@ -2,10 +2,6 @@
 
 #include "Splitting/ordern_rf2strategy.h"
 
-#include "Distributions/distribgenerator.h"
-#include "Distributions/distribstrategy.h"
-#include "Distributions/uniformstrategy.h"
-
 #include "multinomial.h"
 
 

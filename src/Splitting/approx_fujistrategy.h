@@ -7,14 +7,11 @@
 class Approx_FujiStrategy : public SplittingStrategy
 {
 protected:
-    double ratioDx_ ;
+    float jitterX_ ;
 
 public:
-    Approx_FujiStrategy( const std::string & splitMethod, double ratioDx );
+    Approx_FujiStrategy( const std::string & splitMethod );
 
-    virtual void split1D(
-            const Particle & mother,
-            std::vector<Particle> & childParticles ) const override ;
 };
 
 #endif // APPROXFUJISTRATEGY_H

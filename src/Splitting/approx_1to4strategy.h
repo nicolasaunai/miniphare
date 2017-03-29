@@ -3,17 +3,16 @@
 
 #include "Splitting/splittingstrategy.h"
 
+
 class Approx_1to4Strategy : public SplittingStrategy
 {
-protected:
-        double ratioDx_ ;
+private:
+    float jitterX_ ;
+
 
 public:
-    Approx_1to4Strategy( const std::string & splitMethod, double ratioDx );
+    Approx_1to4Strategy( const std::string & splitMethod );
 
-    virtual void split1D(
-            const Particle & mother,
-            std::vector<Particle> & childParticles ) const override ;
 };
 
 #endif // APPROX_1TO4STRATEGY_H
