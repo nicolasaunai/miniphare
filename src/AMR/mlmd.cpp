@@ -17,7 +17,7 @@ MLMD::MLMD(InitializerFactory const& initFactory)
                            PatchData{initFactory}  ) },
       interpolationOrders_{  initFactory.interpolationOrders() },
       pusher_{ initFactory.pusher() },
-      splitStrategy_{ initFactory.createSplittingStrategy() }
+      splitStrategies_{ initFactory.splittingStrategies() }
 {
     // will probably have to change the way objects are initialized.
     // if we want, at some point, start from an already existing hierarchy
@@ -68,7 +68,7 @@ void MLMD::evolveFullDomain()
     patchHierarchy_.updateHierarchy( refinementTable,
                                      refinementRatio_,
                                      interpolationOrders_, pusher_,
-                                     *splitStrategy_ ) ;
+                                     splitStrategies() ) ;
 #endif
 
 }

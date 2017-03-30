@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 
     std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv) ;
 
-    MLMD mlmdManager{*initFactory} ; //std::move(initFactory) } ;
+    MLMD mlmdManager{*initFactory} ;
 
     mlmdManager.initializeRootLevel() ;
 

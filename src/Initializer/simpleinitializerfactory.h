@@ -25,7 +25,6 @@ public:
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
-    virtual std::unique_ptr<SplittingStrategy> createSplittingStrategy() const override;
 
     virtual Box getBox() const override { return layout_.getBox() ; }
     virtual GridLayout const& gridLayout() const override { return layout_; }
@@ -34,7 +33,8 @@ public:
 
     virtual std::vector<uint32> const &
     interpolationOrders() const override { return interpolationOrders_; }
-
+    virtual std::vector<std::string> const &
+    splittingStrategies() const override { return splitMethods_; }
 
     // virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() = 0;
     // virtual std::unique_ptr<GridLayoutInitializer> createGridLayoutInitializer() = 0;
@@ -46,7 +46,7 @@ private:
 
     const std::vector<uint32>  interpolationOrders_ ;
     const std::string pusher_ ;
-    const std::string splitMethod_ ;
+    const std::vector<std::string> splitMethods_ ;
 
     void readInputFile();
 

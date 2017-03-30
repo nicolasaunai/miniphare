@@ -28,10 +28,14 @@ void MLMDInitializerFactory::buildIonsInitializer_(
 
     for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
     {
+        SplittingStrategy const & splitting =
+            *SplittingStrategyFactory::createSplittingStrategy(
+                        splitMethods_[ispe], interpolationOrders_[ispe], refinementRatio_);
+
         Species const& species = parentIons.species(ispe);
 
         std::unique_ptr<ParticleInitializer>
-                particleInit{new MLMDParticleInitializer{species, selector }};
+                particleInit{new MLMDParticleInitializer{species, selector , splitting}};
 
         ionInit.masses.push_back( parentIons.species(ispe).mass() );
         ionInit.particleInitializers.push_back( std::move(particleInit) );
@@ -196,24 +200,6 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
     return boundaryCondition;
 }
 
-
-
-/**
- * @brief MLMDInitializerFactory::createSplittingStrategy
- *
- * @return
- */
-std::unique_ptr<SplittingStrategy> MLMDInitializerFactory::createSplittingStrategy() const
-{
-
-    uint32 maxInterpOrder =
-            *std::max_element(interpolationOrders_.begin(),
-                              interpolationOrders_.end()   ) ;
-
-    return SplittingStrategyFactory::createSplittingStrategy(
-                splitMethod_, maxInterpOrder,
-                refinementRatio_ ) ;
-}
 
 
 

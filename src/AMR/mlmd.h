@@ -31,7 +31,7 @@ private:
     // WARNING: we assume the same SplittingStrategy
     // for all species, this is wrong if we use a different
     // interpolation order for each species
-    std::unique_ptr<SplittingStrategy> splitStrategy_ ;
+    std::vector<std::string> splitStrategies_ ;
 
 
 public:
@@ -41,6 +41,8 @@ public:
     void initializeRootLevel();
 
     void evolveFullDomain();
+
+    std::vector<std::string> const & splitStrategies() { return splitStrategies_ ; }
 
 //    Hierarchy & hierarchy() { return patchHierarchy_ ; }
 //    Hierarchy const & hierarchy() const { return patchHierarchy_ ; }

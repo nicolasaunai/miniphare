@@ -41,14 +41,13 @@ public:
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const = 0;
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const = 0;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const = 0;
-    virtual std::unique_ptr<SplittingStrategy> createSplittingStrategy() const = 0;
-
 
     virtual Box getBox() const = 0;
     virtual GridLayout const& gridLayout() const = 0 ;
     virtual double timeStep() const = 0 ;
     virtual std::string const & pusher() const = 0 ;
     virtual std::vector<uint32> const & interpolationOrders() const = 0 ;
+    virtual std::vector<std::string> const & splittingStrategies() const = 0 ;
 
     // virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() = 0;
     // virtual std::unique_ptr<GridLayoutInitializer> createGridLayoutInitializer() = 0;

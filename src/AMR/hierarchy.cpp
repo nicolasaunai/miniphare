@@ -109,7 +109,7 @@ void Hierarchy::updateHierarchy(
         uint32 const & refineFactorFromMLMD,
         std::vector<uint32> const & ordersFromMLMD,
         std::string const & pusherFromMLMD,
-        SplittingStrategy const & splitMethodFromMLMD )
+        std::vector<std::string> const & splitMethodFromMLMD )
 {
 
     uint32 nbrLevels = static_cast<uint32>(refinementTable.size()) ;
@@ -142,7 +142,7 @@ void Hierarchy::addNewPatch( RefinementInfo const & info,
                              uint32 const & refineFactorFromMLMD,
                              std::vector<uint32> const & ordersFromMLMD,
                              std::string const & pusherFromMLMD,
-                             SplittingStrategy const & splitMethodFromMLMD)
+                             std::vector<std::string> const & splitMethodFromMLMD)
 {
 
     std::shared_ptr<Patch> coarsePatch = info.parentPatch ;
@@ -157,7 +157,7 @@ void Hierarchy::addNewPatch( RefinementInfo const & info,
                                                   refinedLayout,
                                                   refineFactorFromMLMD,
                                                   ordersFromMLMD, pusherFromMLMD,
-                                                  splitMethodFromMLMD.name() ) } ;
+                                                  splitMethodFromMLMD ) } ;
 
     Patch theNewPatch{ refinedBox, refinedLayout, PatchData{*factory} };
 

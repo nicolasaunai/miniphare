@@ -70,13 +70,13 @@ public:
                           uint32 const & refineFactorFromMLMD,
                           std::vector<uint32> const & ordersFromMLMD,
                           std::string const & pusherFromMLMD,
-                          SplittingStrategy const & splitMethodFromMLMD ) ;
+                          std::vector<std::string> const & splitMethodFromMLMD ) ;
 
     void addNewPatch( RefinementInfo const & info,
                       uint32 const & refineFactorFromMLMD,
                       std::vector<uint32> const & ordersFromMLMD,
                       std::string const & pusherFromMLMD,
-                      SplittingStrategy const & splitMethodFromMLMD ) ;
+                      std::vector<std::string> const & splitMethodFromMLMD ) ;
 
 };
 

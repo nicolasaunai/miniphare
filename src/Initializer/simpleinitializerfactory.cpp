@@ -18,7 +18,7 @@ SimpleInitializerFactory::SimpleInitializerFactory()
       // hard-coded... will come from input somehow
       dt_{0.01}, interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
       pusher_{"modifiedBoris"},
-      splitMethod_{"splitOrderN_RF2"}
+      splitMethods_{"splitOrderN_RF2"}
 {
 
 }
@@ -27,9 +27,9 @@ SimpleInitializerFactory::SimpleInitializerFactory()
 SimpleInitializerFactory::SimpleInitializerFactory( const std::string & splitMethod )
     : layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
       // hard-coded... will come from input somehow
-      dt_{0.01}, interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
+      dt_{0.01}, interpolationOrders_{ std::vector<uint32>{2, interpOrderConstant} },
       pusher_{"modifiedBoris"},
-      splitMethod_{ splitMethod }
+      splitMethods_{ std::vector<std::string>{2, splitMethod} }
 {
 
 }
@@ -270,18 +270,6 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
     return eminit;
 }
 
-
-/**
- * @brief SimpleInitializerFactory::createSplittingStrategy
- * @return
- */
-std::unique_ptr<SplittingStrategy> SimpleInitializerFactory::createSplittingStrategy() const
-{
-
-    return SplittingStrategyFactory::createSplittingStrategy(
-                splitMethod_, interpOrderConstant,
-                refineFactorConstant ) ;
-}
 
 
 

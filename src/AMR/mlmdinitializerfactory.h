@@ -36,7 +36,7 @@ private:
     const uint32 refinementRatio_ ;
     const std::vector<uint32>  interpolationOrders_ ;
     const std::string pusher_ ;
-    const std::string splitMethod_ ;
+    const std::vector<std::string> splitMethods_ ;
 
     void buildIonsInitializer_( IonsInitializer & ionInit,
                                     ParticleSelector const & selector ) const ;
@@ -66,27 +66,29 @@ public:
                            uint32 const & refineFactor,
                            std::vector<uint32> const & orders,
                            std::string const & pusher,
-                           std::string const & splitMethod )
+                           std::vector<std::string> const & splitMethods )
         : parentPatch_{parentPatch}, newPatchCoords_{newPatchCoords},
           refinedLayout_{ refinedLayout },
           refinementRatio_{ refineFactor },
           interpolationOrders_{orders}, pusher_{pusher},
-          splitMethod_{splitMethod} {}
+          splitMethods_{splitMethods} {}
 
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const  override;
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const  override;
     virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
-    virtual std::unique_ptr<SplittingStrategy> createSplittingStrategy() const override;
 
     virtual Box getBox() const override { return refinedLayout_.getBox(); }
     virtual GridLayout const& gridLayout() const override { return refinedLayout_; }
     virtual double timeStep() const override { return dt_; }
     virtual std::string const & pusher() const override { return pusher_; }
-
     virtual std::vector<uint32> const &
     interpolationOrders() const override { return interpolationOrders_; }
+
+    virtual std::vector<std::string> const &
+    splittingStrategies() const override { return splitMethods_; }
+
 };
 
 #endif // MLMDINITIALIZERFACTORY_H
