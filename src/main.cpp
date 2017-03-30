@@ -10,7 +10,7 @@
 #include "AMR/patchdata.h"
 #include "AMR/hierarchy.h"
 #include "grid/gridlayout.h"
-#include "Diagnostics/diagnostics.h"
+#include "Diagnostics/diagnosticmanager.h"
 #include "Initializer/initializerfactory.h"
 
 
