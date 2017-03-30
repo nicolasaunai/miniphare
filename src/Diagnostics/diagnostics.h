@@ -31,10 +31,11 @@
 // or particle data (depends = id_particle; data = x,y,z,vx,vy,vz)
 // or 1 orbit data (depends=time; data=x,y,z)
 // etc.
-struct DiagData
+struct DiagPack
 {
-    std::unordered_map<std::string, std::vector<float>> depends;
-    std::unordered_map<std::string, std::vector<float>> data;
+    std::unordered_map<std::string, std::vector<float>>  depends;
+    std::unordered_map<std::string, std::vector<float>>  data;
+    std::unordered_map<std::string, std::array<uint32,3>> nbrNodes;
 };
 
 
@@ -49,23 +50,23 @@ class Diagnostic
 {
 protected:
     std::string name_;
-    std::unordered_map<std::string, DiagData> data_;
-    GridLayout layout_;
+    std::vector<DiagPack> diagPack_; // one diagData per patch
+    //GridLayout layout_;
 
 public:
-    Diagnostic(std::string name, GridLayout const& layout)
-        :name_{name}, layout_{layout} {}
+    Diagnostic(std::string name)
+        :name_{name}{}
 
     std::string const& name() const {return name_;}
 
-    std::unordered_map<std::string, DiagData> const& data() const
+    std::vector<DiagPack> const& data() const
     {
         std::cout << "getting Diganostic data" << std::endl;
-        return data_;
+        return diagPack_;
     }
 
 
-    virtual void compute(PatchData const& patchData) = 0;
+    virtual void compute(PatchData const& patchData, GridLayout const& layout) = 0;
 
 
 
@@ -75,73 +76,157 @@ public:
 
 
 
+class FieldDiagnostic : public Diagnostic
+{
+
+protected:
+
+
+
+    void fillDiagData1D_(Field const& field, GridLayout const& layout, DiagPack& pack)
+    {
+        // this function will add an element to the container of DiagData
+        // typically here this will be the data corresponding to a patch
+        uint32 iStart   = layout.physicalStartIndex(field, Direction::X);
+        uint32 iEnd     = layout.physicalEndIndex(field, Direction::X);
+        Point origin    = layout.origin();
+
+        for (uint32 ix=iStart; ix <= iEnd;  ++ix )
+        {
+            Point pos = layout.fieldNodeCoordinates(field, origin, ix, 0, 0);
+            pack.data[ field.name() ][ix] = static_cast<float>( field(ix) );
+            pack.depends["x_" + field.name()][ix] = static_cast<float>(pos.x_);
+        }
+    }
+
+
+
+    void fillDiagData2D_(Field const& field, GridLayout const& layout, DiagPack& pack)
+    {
+        (void)field;
+        throw std::runtime_error("Not Implemented");
+    }
+
+
+    void fillDiagData3D_(Field const& field, GridLayout const& layout, DiagPack& pack)
+    {
+        (void)field;
+        throw std::runtime_error("Not Implemented");
+    }
+
+
+
+    void addVecField_(VecField const& vecField,
+                      GridLayout const& layout,
+                      std::array<HybridQuantity,3> qty)
+    {
+        std::array<uint32, 3> nbrNodesFx = layout.nbrPhysicalNodes(qty[0]);
+        std::array<uint32, 3> nbrNodesFy = layout.nbrPhysicalNodes(qty[1]);
+        std::array<uint32, 3> nbrNodesFz = layout.nbrPhysicalNodes(qty[2]);
+
+        Field const& fx = vecField.component(VecField::VecX);
+        Field const& fy = vecField.component(VecField::VecY);
+        Field const& fz = vecField.component(VecField::VecZ);
+
+        DiagPack pack;
+        pack.depends.insert( {"x_" + fx.name(), std::vector<float>(nbrNodesFx[0])} );
+        pack.depends.insert( {"x_" + fy.name(), std::vector<float>(nbrNodesFy[0])} );
+        pack.depends.insert( {"x_" + fz.name(), std::vector<float>(nbrNodesFz[0])} );
+
+        uint64 totalSizeEx = nbrNodesFx[0]*nbrNodesFx[1]*nbrNodesFx[2];
+        uint64 totalSizeEy = nbrNodesFy[0]*nbrNodesFy[1]*nbrNodesFy[2];
+        uint64 totalSizeEz = nbrNodesFz[0]*nbrNodesFz[1]*nbrNodesFz[2];
+
+        pack.data.insert( {fx.name(), std::vector<float>(totalSizeEx)} );
+        pack.data.insert( {fy.name(), std::vector<float>(totalSizeEy)} );
+        pack.data.insert( {fz.name(), std::vector<float>(totalSizeEz)} );
+
+        pack.nbrNodes.insert( {"n_" + fx.name(), std::array<uint32,3>{ nbrNodesFx } } );
+        pack.nbrNodes.insert( {"n_" + fy.name(), std::array<uint32,3>{ nbrNodesFy } } );
+        pack.nbrNodes.insert( {"n_" + fz.name(), std::array<uint32,3>{ nbrNodesFz } } );
+
+        if (layout.nbDimensions() >= 2)
+        {
+            pack.depends.insert( {"y_" + fx.name(), std::vector<float>(nbrNodesFx[1])} );
+            pack.depends.insert( {"y_" + fy.name(), std::vector<float>(nbrNodesFy[1])} );
+            pack.depends.insert( {"y_" + fz.name(), std::vector<float>(nbrNodesFz[1])} );
+        }
+
+        if (layout.nbDimensions() == 3)
+        {
+            pack.depends.insert( {"z_" + fx.name(), std::vector<float>(nbrNodesFx[2])} );
+            pack.depends.insert( {"z_" + fy.name(), std::vector<float>(nbrNodesFy[2])} );
+            pack.depends.insert( {"z_" + fz.name(), std::vector<float>(nbrNodesFz[2])} );
+        }
+
+
+        switch (layout.nbDimensions() )
+        {
+            case 1:
+            fillDiagData1D_(vecField.component(0), layout, pack);
+            fillDiagData1D_(vecField.component(1), layout, pack);
+            fillDiagData1D_(vecField.component(2), layout, pack);
+            break;
+
+            case 2:
+            fillDiagData2D_(vecField.component(0), layout, pack);
+            fillDiagData2D_(vecField.component(1), layout, pack);
+            fillDiagData2D_(vecField.component(2), layout, pack);
+            break;
+
+            case 3:
+            fillDiagData3D_(vecField.component(0), layout, pack);
+            fillDiagData3D_(vecField.component(1), layout, pack);
+            fillDiagData3D_(vecField.component(2), layout, pack);
+            break;
+        }
+
+
+        diagPack_.push_back( std::move(pack) );
+
+    }
+
+    FieldDiagnostic(std::string diagName)
+        : Diagnostic{diagName}
+    {}
+
+};
+
+
+
+
 
 
 // an example of diagnostic for the electromagnetic field
 // the class implement compute() and data()
 // compute() will put EM data as a DiagData
 // data() return the reference to this DiagData
-class ElectromagDiagnostic : public Diagnostic
+class ElectromagDiagnostic : public FieldDiagnostic
 {
 private:
+    std::array<HybridQuantity, 3> Eqty_;
+    std::array<HybridQuantity, 3> Bqty_;
 
 public:
-    ElectromagDiagnostic(GridLayout const& layout)
-        : Diagnostic{"EM", layout}
-    {
 
-    }
+    // somehow we need to initialize data_
+    //
+    ElectromagDiagnostic()
+        : FieldDiagnostic{"EM"},
+          Eqty_{ {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
+          Bqty_{ {HybridQuantity::Bx, HybridQuantity::By, HybridQuantity::Bz} }
+    { }
 
-    virtual void compute(PatchData const& patchData) final
+
+
+
+    virtual void compute(PatchData const& patchData , GridLayout const& layout) final
     {
         std::cout << "computing EM diags" << std::endl;
         Electromag const& em = patchData.EMfields();
 
-        // may need layout at some point
-        // put all em data into the vector
-        // format is:
-        // x y z into data_[i].depends
-        // Ex, Ey Ez into data_[i].data
-        Field const& Ex = em.getEi(0);
-        Field const& Ey = em.getEi(1);
-        Field const& Ez = em.getEi(2);
-
-        Field const& Bx = em.getBi(0);
-        Field const& By = em.getBi(1);
-        Field const& Bz = em.getBi(2);
-
-        // get shapes, host nodes and remove ghost nodes
-        std::array<uint32, 3> ghostNodes; //get shape without ghost nodes
-        // and put data into 1D vectors
-        // also add a geometry attribute to DiagData so we can know
-        // the dimensionality and nbr of cells in each direction
-
-        switch (layout_.nbDimensions())
-        {
-            case 1:
-            auto centering  = layout_.fieldCentering(Ex, Direction::X);
-            uint32 nbrGhost = layout_.nbrGhostNodes(centering);
-
-            break;
-        }
-
-
-
-
-        DiagData diagData;
-        diagData.depends.insert( {"x", std::vector<float>(10) } );
-        diagData.depends.insert( {"y", std::vector<float>(10) } );
-        diagData.depends.insert( {"z", std::vector<float>(10) } );
-
-        diagData.data.insert( {"Ex", std::vector<float>(10) } );
-        diagData.data.insert( {"Ey", std::vector<float>(10) } );
-        diagData.data.insert( {"Ez", std::vector<float>(10) } );
-        diagData.data.insert( {"Bx", std::vector<float>(10) } );
-        diagData.data.insert( {"By", std::vector<float>(10) } );
-        diagData.data.insert( {"Bz", std::vector<float>(10) } );
-
-        data_.insert( {"HardCoded Patch", std::move(diagData)} );
-
+        addVecField_(em.getE(), layout, Eqty_);
+        addVecField_(em.getB(), layout, Bqty_);
     }
 
 
@@ -312,11 +397,11 @@ class DiagnosticFactory
 public:
 
     // for now no other option than the type.
-    static std::unique_ptr<Diagnostic> makeDiagnostic(DiagType type, GridLayout const& layout)
+    static std::unique_ptr<Diagnostic> makeDiagnostic(DiagType type)
     {
         if (type == DiagType::EM )
         {
-            return std::unique_ptr<Diagnostic> {new ElectromagDiagnostic{layout} };
+            return std::unique_ptr<Diagnostic> {new ElectromagDiagnostic{} };
         }
 
         return nullptr;
@@ -338,7 +423,6 @@ private:
     DiagUnorderedMap< DiagType, std::shared_ptr<Diagnostic> > diags_;
     std::unique_ptr<ExportStrategy> exportStrat_;
     DiagnosticScheduler scheduler_;
-    GridLayout layout_;
 
 public:
 
@@ -346,11 +430,10 @@ public:
     // hard coded for now in the initialization list
     // will have to have a add_diag() function at some point
     // this will come from the factory..
-    DiagnosticsManager(ExportStrategyType exportType, GridLayout const& layout)
+    DiagnosticsManager(ExportStrategyType exportType)
         : diags_{},
           exportStrat_{ExportStrategyFactory::makeExportStrategy(exportType)},
-          scheduler_{},
-          layout_{layout}
+          scheduler_{}
     {
 
     }
@@ -361,7 +444,7 @@ public:
                        std::vector<uint32> const& writingIterations)
     {
         // create a new diagnostic of type 'type'
-        std::shared_ptr<Diagnostic> newDiag = DiagnosticFactory::makeDiagnostic(type, layout_);
+        std::shared_ptr<Diagnostic> newDiag = DiagnosticFactory::makeDiagnostic(type);
         diags_.insert( {type, newDiag} );
 
         // register to the scheduler
@@ -370,16 +453,16 @@ public:
 
 
 
-    void compute(Time const& timeManager, PatchData const& patchData)
+    void compute(Time const& timeManager, PatchData const& patchData, GridLayout const& layout)
     {
         for (auto const& diagPair : diags_)
         {
             DiagType type    =  diagPair.first;
             Diagnostic& diag = *diagPair.second;
 
-            if (scheduler_.timeToCompute(timeManager, type))
+            if (scheduler_.timeToCompute(timeManager, type) )
             {
-                diag.compute(patchData);
+                diag.compute(patchData, layout);
             }
         }
     }

@@ -135,6 +135,34 @@ QtyCentering GridLayoutImplInternals::derivedCentering(HybridQuantity qty, Direc
 }
 
 
+std::array<uint32, NBR_COMPO>
+GridLayoutImplInternals::physicalNodeNbrFromCentering_( std::array<QtyCentering, NBR_COMPO> const & qtyCenterings ) const
+{
+    gridDataT data{} ;
+
+    uint32 nx = 1 ;
+    uint32 ny = 1 ;
+    uint32 nz = 1 ;
+
+    nx =  nbrPhysicalCells_[data.idirX] + 1
+               - isDual(qtyCenterings[data.idirX]);               ;
+
+    if(nbdims_ >= 2)
+    {
+        ny =  nbrPhysicalCells_[data.idirY] + 1
+                - isDual(qtyCenterings[data.idirY]);
+    }
+
+    if(nbdims_ == 3)
+    {
+        nz =  nbrPhysicalCells_[data.idirZ] + 1
+                - isDual(qtyCenterings[data.idirZ]);
+    }
+
+    return { {nx, ny, nz} } ;
+
+}
+
 
 
 
@@ -148,30 +176,21 @@ std::array<uint32, NBR_COMPO> GridLayoutImplInternals::nodeNbrFromCentering_(
         std::array<QtyCentering, NBR_COMPO> const & qtyCenterings ) const
 {
     gridDataT data{} ;
+    std::array<uint32, NBR_COMPO> nbrNodes = physicalNodeNbrFromCentering_(qtyCenterings);
 
-    uint32 nx = 1 ;
-    uint32 ny = 1 ;
-    uint32 nz = 1 ;
-
-    nx =  nbrPhysicalCells_[data.idirX] + 1
-               - isDual(qtyCenterings[data.idirX])
-               + 2*nbrGhosts( qtyCenterings[data.idirX] ) ;
+    nbrNodes[0] +=  2*nbrGhosts( qtyCenterings[data.idirX] ) ;
 
     if(nbdims_ >= 2)
     {
-        ny =  nbrPhysicalCells_[data.idirY] + 1
-                - isDual(qtyCenterings[data.idirY])
-                + 2*nbrGhosts( qtyCenterings[data.idirY] ) ;
+        nbrNodes[1] += 2*nbrGhosts( qtyCenterings[data.idirY] ) ;
     }
 
     if(nbdims_ == 3)
     {
-        nz =  nbrPhysicalCells_[data.idirZ] + 1
-                - isDual(qtyCenterings[data.idirZ])
-                + 2*nbrGhosts( qtyCenterings[data.idirZ] ) ;
+        nbrNodes[2] +=  2*nbrGhosts( qtyCenterings[data.idirZ] ) ;
     }
 
-    return { {nx, ny, nz} } ;
+    return nbrNodes;
 }
 
 

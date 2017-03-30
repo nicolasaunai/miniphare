@@ -140,6 +140,9 @@ public:
     QtyCentering fieldCentering(Field const& field, Direction dir) const;
 
     uint32 nbrGhostNodes( QtyCentering const& centering ) const;
+    uint32 nbrGhostNodes(Field const& field, Direction direction) const;
+    std::array<uint32, NBR_COMPO> nbrPhysicalNodes(Field const& field) const;
+    std::array<uint32, NBR_COMPO> nbrPhysicalNodes(HybridQuantity hybQty) const;
 
     Box  getBox() const;
 

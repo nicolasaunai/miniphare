@@ -37,10 +37,11 @@ private:
 
 
 
+
     // ------------------------------------------------------------------------
     //                             PROTECTED
     //
-    // this code will be shared by all concreteof GridLayoutImpl*
+    // this code will be shared by all concrete of GridLayoutImpl*
     // ------------------------------------------------------------------------
 protected:
 
@@ -79,6 +80,8 @@ protected:
 
     void computeNbrGhosts(uint32 ghostParameter ) ;
 
+    std::array<uint32, NBR_COMPO>
+    physicalNodeNbrFromCentering_( std::array<QtyCentering, NBR_COMPO> const & qtyCenterings ) const;
 
     uint32 physicalStartIndex_(Field const& field, Direction direction) const;
     uint32 physicalEndIndex_  (Field const& field, Direction direction) const;

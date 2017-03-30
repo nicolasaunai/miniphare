@@ -68,6 +68,8 @@ public:
     virtual QtyCentering fieldCentering(Field const & field, Direction dir) const = 0 ;
 
     virtual uint32 nbrGhostNodes( QtyCentering centering ) const = 0 ;
+    virtual std::array<uint32, NBR_COMPO> nbrPhysicalNodes(Field const& field) const = 0;
+    virtual std::array<uint32, NBR_COMPO> nbrPhysicalNodes(HybridQuantity hybQty) const = 0;
     virtual uint32 nbDimensions() const = 0;
 
     virtual ~GridLayoutImpl() = default;

@@ -93,7 +93,8 @@ public:
     virtual QtyCentering fieldCentering(Field const & field, Direction dir) const override ;
 
     virtual uint32 nbrGhostNodes( QtyCentering centering ) const override ;
-
+    virtual std::array<uint32, NBR_COMPO> nbrPhysicalNodes(Field const& field) const override;
+    virtual std::array<uint32, NBR_COMPO> nbrPhysicalNodes(HybridQuantity hybQty) const override;
 
     virtual LinearCombination const& momentsToEx() const override;
     virtual LinearCombination const& momentsToEy() const override;

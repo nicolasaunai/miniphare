@@ -449,6 +449,30 @@ uint32 GridLayoutImplYee::nbrGhostNodes( QtyCentering centering ) const
 }
 
 
+std::array<uint32, NBR_COMPO> GridLayoutImplYee::nbrPhysicalNodes(Field const& field) const
+{
+    std::array<QtyCentering, NBR_COMPO> centerings = { { fieldCentering_(field, Direction::X),
+                                                         fieldCentering_(field, Direction::Y),
+                                                         fieldCentering_(field, Direction::Z)  } };
+
+    return physicalNodeNbrFromCentering_(centerings);
+}
+
+
+std::array<uint32, NBR_COMPO> GridLayoutImplYee::nbrPhysicalNodes(HybridQuantity hybQty) const
+{
+    QtyCentering centerX = hybridQtyCentering_[static_cast<uint32>(hybQty)][static_cast<uint32>(Direction::X)];
+    QtyCentering centerY = hybridQtyCentering_[static_cast<uint32>(hybQty)][static_cast<uint32>(Direction::Y)];
+    QtyCentering centerZ = hybridQtyCentering_[static_cast<uint32>(hybQty)][static_cast<uint32>(Direction::Z)];
+
+    std::array<QtyCentering, NBR_COMPO> centerings = { { centerX, centerY, centerZ} };
+
+    return physicalNodeNbrFromCentering_(centerings);
+}
+
+
+
+
 /**
  * @brief GridLayoutImplYee::deriv1D It was decided to compute the
  * derivative on the entire physical domain.
