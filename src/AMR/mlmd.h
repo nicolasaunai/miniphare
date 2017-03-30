@@ -28,9 +28,6 @@ private:
     const std::vector<uint32>  interpolationOrders_ ;
     const std::string pusher_ ;
 
-    // WARNING: we assume the same SplittingStrategy
-    // for all species, this is wrong if we use a different
-    // interpolation order for each species
     std::vector<std::string> splitStrategies_ ;
 
 
