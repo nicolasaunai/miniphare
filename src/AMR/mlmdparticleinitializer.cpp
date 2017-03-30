@@ -10,20 +10,15 @@ void MLMDParticleInitializer::loadParticles( std::vector<Particle>& particlesArr
     // the ParticleInitializer has a private access to the ion of the Parent Patch
     for( Particle const & particle: particleSource_.particles() )
     {
-
-        // look if the particle is in the Patch domain
-        // the Patch hyperVolume can be represented as a "Box"
+        // look if the 'big' particle is within the Patch domain
         if( selector_(particle) )
         {
-
             std::vector<Particle> childParticles ;
-            // the big particle 'particle' is within the patch
-            // so we need to split it and grab its children
-            // TODO: add splitting algorithms
-//            childParticles[] = split(particle) ;
+            // We need to split particle and grab its children
+            strategy_.split1D(particle, childParticles) ;
 
-            // we add each child particles to the array to fill.
-            // this array is the particle array of the appropriate species of the new patch
+            // For the considered Species
+            // we fill the particle array of the new patch
             for( Particle const & child: childParticles)
             {
                 particlesArray.push_back(child) ;
