@@ -52,20 +52,15 @@ public:
 
     void registerDiagnostic(DiagType type,
                             std::vector<uint32> const& computingIterations,
-                            std::vector<uint32> const& writingIterations)
-    {
-        computingIterations_.insert({type, computingIterations}  );
-        writingIterations_.insert(  {type, writingIterations} );
-    }
+                            std::vector<uint32> const& writingIterations);
 
-
-    bool timeToWrite(Time const& timeManager, DiagType type)
+    inline bool timeToWrite(Time const& timeManager, DiagType type)
     {
         return writingIterations_[type][timeManager.currentIteration()];
     }
 
 
-    bool timeToCompute(Time const& timeManager, DiagType type)
+    inline bool timeToCompute(Time const& timeManager, DiagType type)
     {
         return computingIterations_[type][timeManager.currentIteration()];
     }

@@ -31,16 +31,7 @@ public:
     { }
 
 
-
-
-    virtual void compute(PatchData const& patchData , GridLayout const& layout) final
-    {
-        std::cout << "computing EM diags" << std::endl;
-        Electromag const& em = patchData.EMfields();
-
-        addVecField_(em.getE(), layout, Eqty_);
-        addVecField_(em.getB(), layout, Bqty_);
-    }
+    virtual void compute(PatchData const& patchData , GridLayout const& layout) final;
 
 
     virtual ~ElectromagDiagnostic() = default;

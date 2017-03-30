@@ -20,6 +20,7 @@
 class DiagnosticsManager
 {
 private:
+
     DiagUnorderedMap< DiagType, std::shared_ptr<Diagnostic> > diags_;
     std::unique_ptr<ExportStrategy> exportStrat_;
     DiagnosticScheduler scheduler_;
@@ -33,48 +34,15 @@ public:
     DiagnosticsManager(ExportStrategyType exportType)
         : diags_{},
           exportStrat_{ExportStrategyFactory::makeExportStrategy(exportType)},
-          scheduler_{}
-    {
-
-    }
-
+          scheduler_{} {}
 
     void newDiagnostic(DiagType type,
                        std::vector<uint32> const& computingIterations,
-                       std::vector<uint32> const& writingIterations)
-    {
-        // create a new diagnostic of type 'type'
-        std::shared_ptr<Diagnostic> newDiag = DiagnosticFactory::makeDiagnostic(type);
-        diags_.insert( {type, newDiag} );
+                       std::vector<uint32> const& writingIterations);
 
-        // register to the scheduler
-        scheduler_.registerDiagnostic(type, computingIterations, writingIterations);
-    }
+    void compute(Time const& timeManager, PatchData const& patchData, GridLayout const& layout);
 
-
-
-    void compute(Time const& timeManager, PatchData const& patchData, GridLayout const& layout)
-    {
-        for (auto const& diagPair : diags_)
-        {
-            DiagType type    =  diagPair.first;
-            Diagnostic& diag = *diagPair.second;
-
-            if (scheduler_.timeToCompute(timeManager, type) )
-            {
-                diag.compute(patchData, layout);
-            }
-        }
-    }
-
-
-    void save(Time const& timeManager)
-    {
-        for (auto const& diagPair : diags_)
-        {
-            exportStrat_->save(*diagPair.second, timeManager);
-        }
-    }
+    void save(Time const& timeManager);
 
     ~DiagnosticsManager() = default;
 };
