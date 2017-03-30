@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 #include <utility>
-
+#include <map>
 
 #include "Splitting/splittingstrategy.h"
 
@@ -21,9 +21,29 @@
 
 
 
+static std::map<std::string, SplittingStrategy* > strategyMap_ ;
+
 
 class SplittingStrategyFactory
 {
+private:
+
+    static void buildStrategyMap_( const std::string & splitMethod,
+                                   uint32 interpOrder, uint32 refineFactor )
+    {
+        strategyMap_.clear() ;
+
+        strategyMap_["ApproxFujimoto"] = new Approx_FujiStrategy(splitMethod) ;
+        strategyMap_["Approx1to4"] = new Approx_1to4Strategy(splitMethod) ;
+        strategyMap_["splitOrder1"] = new Order1_RF2Strategy(splitMethod) ;
+        strategyMap_["splitOrder2"] = new Order2_RF2Strategy(splitMethod) ;
+        strategyMap_["splitOrder3"] = new Order3_RF2Strategy(splitMethod) ;
+        strategyMap_["splitOrder1_RFn"] = new Order1_RFnStrategy(splitMethod, refineFactor) ;
+        strategyMap_["splitOrderN_RF2"] = new OrderN_RF2Strategy(splitMethod, interpOrder) ;
+        strategyMap_["splitOrderN_RF3"] = new OrderN_RF3Strategy(splitMethod, interpOrder) ;
+    }
+
+
 public:
 
     static std::unique_ptr<SplittingStrategy>
@@ -31,66 +51,18 @@ public:
                              uint32 interpOrder, uint32 refineFactor )
     {
 
-        bool isValid = false ;
-        std::unique_ptr<SplittingStrategy> split_strategy ;
+        buildStrategyMap_(splitMethod, interpOrder, refineFactor) ;
 
-        if( splitMethod.compare("ApproxFujimoto")==0 )
+        auto strategyPtr = strategyMap_.find(splitMethod) ;
+        if( strategyPtr != strategyMap_.end() )
         {
-            isValid = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> ( new Approx_FujiStrategy{splitMethod} );
+            std::cout << "Splitting strategy found: " << strategyPtr->first << std::endl ;
+        }
+        else {
+            throw std::runtime_error("Error SplittingStrategyFactory: no strategy found !");
         }
 
-        if( splitMethod.compare("Approx1to4")==0 )
-        {
-            isValid = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> ( new Approx_1to4Strategy{splitMethod} );
-        }
-
-        if( splitMethod.compare("splitOrder1")==0 )
-        {
-            isValid = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> ( new Order1_RF2Strategy{splitMethod} );
-        }
-
-        if( splitMethod.compare("splitOrder2")==0 )
-        {
-            isValid = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> ( new Order2_RF2Strategy{splitMethod} );
-        }
-
-        if( splitMethod.compare("splitOrder3")==0 )
-        {
-            isValid = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> ( new Order3_RF2Strategy{splitMethod} );
-        }
-
-        if( splitMethod.compare("splitOrder1_RFn")==0 )
-        {
-            isValid = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> (
-                        new Order1_RFnStrategy{splitMethod, refineFactor} );
-        }
-
-        if( splitMethod.compare("splitOrderN_RF2")==0 )
-        {
-            isValid = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> (
-                        new OrderN_RF2Strategy{splitMethod, interpOrder} );
-        }
-
-        if( splitMethod.compare("splitOrderN_RF3")==0 )
-        {
-            isValid = true ;
-            split_strategy = std::unique_ptr<SplittingStrategy> (
-                        new OrderN_RF3Strategy{splitMethod, interpOrder} );
-        }
-
-        if(!isValid)
-        {
-             throw std::runtime_error("Error : SplittingStrategyFactory - ");
-        }
-
-        return split_strategy ;
+        return std::unique_ptr<SplittingStrategy>( strategyPtr->second ) ;
     }
 
 

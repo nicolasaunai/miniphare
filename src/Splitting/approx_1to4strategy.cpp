@@ -19,7 +19,7 @@ const uint32 nbpts = 4 ;
  */
 Approx_1to4Strategy::Approx_1to4Strategy(const std::string & splitMethod)
     : SplittingStrategy(splitMethod, nbpts),
-      jitterX_{ 0. }
+      shiftX_{ 0. }
 {
 
     std::random_device randSeed;
@@ -28,18 +28,18 @@ Approx_1to4Strategy::Approx_1to4Strategy(const std::string & splitMethod)
     // We limit jitter to 10% of the local cell size
     std::uniform_real_distribution<float> randPosX(0., 0.1f);
 
-    // we prepare a random jitter for child particles
-    jitterX_ = randPosX(generator) ;
+    // we prepare a random shift for child particles
+    shiftX_ = randPosX(generator) ;
 
     child_icellx_[0] = -1 ;
     child_icellx_[1] = -1 ;
     child_icellx_[2] =  0 ;
     child_icellx_[3] =  0 ;
 
-    child_deltax_[0] = (1.0f - 1.5f*jitterX_) ;
-    child_deltax_[1] = (1.0f - 0.5f*jitterX_) ;
-    child_deltax_[2] = 0.5f * jitterX_ ;
-    child_deltax_[3] = 1.5f * jitterX_ ;
+    child_deltax_[0] = (1.0f - 1.5f*shiftX_) ;
+    child_deltax_[1] = (1.0f - 0.5f*shiftX_) ;
+    child_deltax_[2] = 0.5f * shiftX_ ;
+    child_deltax_[3] = 1.5f * shiftX_ ;
 
     double weight = 1./nbpts ;
     wtot_ = 1. ;

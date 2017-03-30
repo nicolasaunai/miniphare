@@ -7,7 +7,7 @@
 class Approx_1to4Strategy : public SplittingStrategy
 {
 private:
-    float jitterX_ ;
+    float shiftX_ ;
 
 
 public:
