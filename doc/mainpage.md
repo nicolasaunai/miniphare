@@ -49,12 +49,17 @@ MiniPHARE is developed by:
     * Doxygen
     * Graphviz
 * clang, gcc
-* 
+*
+
+
+
+## Main modules
+
+* [Diagnosics](diagnostics.md)
+
 
 
 ## FAQ
 
 * blah blah?
 * blah?
-
-

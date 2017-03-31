@@ -14,10 +14,11 @@
 
 /**
  * @brief The DiagnosticsManager class is the interface to manipulate all code diagnostics
+ *
  * Field, particle, global, etc. diagnostics are all registered in the DiagnosticManager.
- * The DiagnosticManager encapsulates diagnostics for all patches of the hierarchy
- * It also encapsulates a DiagnosticScheduler which knows wen to compute and write
- * each time of Diagnostic.
+ * It also encapsulates:
+ *  * a DiagnosticScheduler which knows wen to compute and write
+ *  * an ExportStrategy which knows how to write Diagnostic on disks
  */
 class DiagnosticsManager
 {
