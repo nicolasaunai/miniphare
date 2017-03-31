@@ -12,11 +12,13 @@
 #include "diagnosticscheduler.h"
 #include "diagnosticfactory.h"
 
-
 /**
- * @brief encapsulate all diagnostics (fields, particle, globals, etc.)
+ * @brief The DiagnosticsManager class is the interface to manipulate all code diagnostics
+ * Field, particle, global, etc. diagnostics are all registered in the DiagnosticManager.
+ * The DiagnosticManager encapsulates diagnostics for all patches of the hierarchy
+ * It also encapsulates a DiagnosticScheduler which knows wen to compute and write
+ * each time of Diagnostic.
  */
-
 class DiagnosticsManager
 {
 private:
@@ -27,10 +29,7 @@ private:
 
 public:
 
-
-    // hard coded for now in the initialization list
-    // will have to have a add_diag() function at some point
-    // this will come from the factory..
+    /** @brief DiagnosticsManager creates an empty DiagnosticManager with concrete ExportStrategy */
     DiagnosticsManager(ExportStrategyType exportType)
         : diags_{},
           exportStrat_{ExportStrategyFactory::makeExportStrategy(exportType)},

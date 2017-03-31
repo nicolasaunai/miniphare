@@ -2,7 +2,13 @@
 
 
 
-
+/**
+ * @brief DiagnosticsManager::newDiagnostic add a new kind of Diagnostic to the DiagnosticManager
+ * @param type is the kind of Diagnostic to be added
+ * @param computingIterations contains all iterations at which the Diagnostic
+ * will have to be calculated
+ * @param writingIterations contains all iterations at which the Diagnostic will be written to disk
+ */
 void DiagnosticsManager::newDiagnostic(DiagType type,
                                        std::vector<uint32> const& computingIterations,
                                        std::vector<uint32> const& writingIterations)
@@ -17,6 +23,13 @@ void DiagnosticsManager::newDiagnostic(DiagType type,
 
 
 
+
+/**
+ * @brief DiagnosticsManager::compute will calculate all diagnostics that need to be.
+ * @param timeManager is used to know the current time/iteration
+ * @param patchData owns the data used to get the Diagnotic calculated
+ * @param layout has all information about the grid
+ */
 void DiagnosticsManager::compute(Time const& timeManager,
                                  PatchData const& patchData, GridLayout const& layout)
 {
@@ -33,10 +46,22 @@ void DiagnosticsManager::compute(Time const& timeManager,
 }
 
 
+/**
+ * @brief DiagnosticsManager::save will save Diagnostics to the disk
+ *
+ * The function loop over all Diagnostic, ask the scheduler if it is time to
+ * save data to disk and calls the ExportStrategy if yes.
+ *
+ * @param timeManager is used to get the current time and iteration
+ */
 void DiagnosticsManager::save(Time const& timeManager)
 {
     for (auto const& diagPair : diags_)
     {
-        exportStrat_->save(*diagPair.second, timeManager);
+        DiagType type = diagPair.first;
+        if (scheduler_.timeToWrite(timeManager, type) )
+        {
+            exportStrat_->save(*diagPair.second, timeManager);
+        }
     }
 }
