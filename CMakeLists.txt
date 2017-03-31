@@ -39,6 +39,7 @@ if (test)
   add_subdirectory(tests/GridLayout)
   add_subdirectory(tests/Pusher)
   add_subdirectory(tests/IndexesAndWeights)
+  add_subdirectory(tests/Splitting)
   #add_subdirectory(tests/Plasma)
 
 endif()
