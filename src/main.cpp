@@ -33,18 +33,27 @@ int main(int argc, char *argv[])
 
     std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv) ;
 
+
     Time timeManager{initFactory->timeStep(), 0., 100};
     DiagnosticsManager diagnosticManager{ExportStrategyType::ASCII};
 
+
+    Hierarchy patchHierarchy{ std::make_shared<Patch>(initFactory->getBox(),
+                                                       initFactory->gridLayout(),
+                                                       PatchData{*initFactory}  ) };
+
     MLMD mlmdManager{*initFactory} ;
-    mlmdManager.initializeRootLevel() ;
+
+    mlmdManager.initializeRootLevel(patchHierarchy) ;
+
 
     for (uint32 it=0; it < timeManager.nbrIter(); ++it)
     {
-        mlmdManager.evolveFullDomain() ;
       //  diagScheduler.applyDiagnostics( timeManager);
-        timeManager.advance();
-
+        std::cout << it << std::endl;
         std::cout << timeManager.currentTime() << std::endl;
+
+        mlmdManager.evolveFullDomain(patchHierarchy) ;
+        timeManager.advance();
     }
 }

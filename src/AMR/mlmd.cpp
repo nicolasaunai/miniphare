@@ -12,9 +12,9 @@
 
 MLMD::MLMD(InitializerFactory const& initFactory)
     : baseLayout_{ GridLayout{initFactory.gridLayout()} },
-      patchHierarchy_{ std::make_shared<Patch>(
+      /*patchHierarchy_{ std::make_shared<Patch>(
                            initFactory.getBox(), baseLayout_,
-                           PatchData{initFactory}  ) },
+                           PatchData{initFactory}  ) },*/
       interpolationOrders_{  initFactory.interpolationOrders() },
       pusher_{ initFactory.pusher() }
 {
@@ -26,10 +26,10 @@ MLMD::MLMD(InitializerFactory const& initFactory)
 
 
 
-void MLMD::initializeRootLevel()
+void MLMD::initializeRootLevel(Hierarchy& patchHierarchy)
 {
     std::cout << "building root level...";
-    Patch& rootLevel = patchHierarchy_.root();
+    Patch& rootLevel = patchHierarchy.root();
     rootLevel.init();
     std::cout << " OK" << std::endl;
 
@@ -49,23 +49,21 @@ void MLMD::initializeRootLevel()
  *
  *
  */
-void MLMD::evolveFullDomain()
+void MLMD::evolveFullDomain(Hierarchy& patchHierarchy)
 {
 
     // evolve fields and particle for a time step
-    patchHierarchy_.evolveDomainForOneTimeStep() ;
+    patchHierarchy.evolveDomainForOneTimeStep() ;
 
-#if 1
     // Here, AMR patches will say whether they need refinement
     // the ouput of this method is used by updateHierarchy()
     // Note for later: will probably not be called every time step.
     std::vector< std::vector<RefinementInfo> > refinementTable
-            = patchHierarchy_.evaluateRefinementNeed( refinementRatio_, baseLayout_ ) ;
+            = patchHierarchy.evaluateRefinementNeed( refinementRatio_, baseLayout_ ) ;
 
     // New patches are created here if necessary
     // it depends on evaluateHierarchy()
-    patchHierarchy_.updateHierarchy( refinementTable, interpolationOrders_, pusher_ ) ;
-#endif
+    patchHierarchy.updateHierarchy( refinementTable, interpolationOrders_, pusher_ ) ;
 
 }
 
