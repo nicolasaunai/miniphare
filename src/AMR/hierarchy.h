@@ -60,6 +60,7 @@ public:
     Patch& root() { return *patchTable_[0][0]; }
 
     hierarchyType & patchTable() { return patchTable_; }
+    hierarchyType const& patchTable() const { return patchTable_; }
 
     void evolveDomainForOneTimeStep() ;
 

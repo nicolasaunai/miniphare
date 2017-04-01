@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "hybridenums.h"
-#include "amr/patchdata.h"
+#include "AMR/hierarchy.h"
 #include "fielddiagnostic.h"
 #include "Electromag/electromag.h"
 
@@ -31,7 +31,7 @@ public:
     { }
 
 
-    virtual void compute(PatchData const& patchData , GridLayout const& layout) final;
+    virtual void compute(Hierarchy const& hierarchy) final;
 
 
     virtual ~ElectromagDiagnostic() = default;

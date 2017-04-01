@@ -30,8 +30,7 @@ void DiagnosticsManager::newDiagnostic(DiagType type,
  * @param patchData owns the data used to get the Diagnotic calculated
  * @param layout has all information about the grid
  */
-void DiagnosticsManager::compute(Time const& timeManager,
-                                 PatchData const& patchData, GridLayout const& layout)
+void DiagnosticsManager::compute(Time const& timeManager, Hierarchy const& hierarchy)
 {
     for (auto const& diagPair : diags_)
     {
@@ -40,7 +39,7 @@ void DiagnosticsManager::compute(Time const& timeManager,
 
         if (scheduler_.timeToCompute(timeManager, type) )
         {
-            diag.compute(patchData, layout);
+            diag.compute(hierarchy);
         }
     }
 }

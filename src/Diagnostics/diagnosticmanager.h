@@ -40,7 +40,7 @@ public:
                        std::vector<uint32> const& computingIterations,
                        std::vector<uint32> const& writingIterations);
 
-    void compute(Time const& timeManager, PatchData const& patchData, GridLayout const& layout);
+    void compute(Time const& timeManager, Hierarchy const& hierarchy);
 
     void save(Time const& timeManager);
 

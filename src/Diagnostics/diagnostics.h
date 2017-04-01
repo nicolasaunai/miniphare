@@ -12,8 +12,8 @@
 #include "types.h"
 #include "Time/time.h"
 #include "Field/field.h"
+#include "AMR/hierarchy.h"
 #include "utilityphare.h"
-#include "amr/patchdata.h"
 #include "grid/gridlayout.h"
 #include "vecfield/vecfield.h"
 #include "Plasmas/particles.h"
@@ -66,7 +66,7 @@ public:
     }
 
 
-    virtual void compute(PatchData const& patchData, GridLayout const& layout) = 0;
+    virtual void compute(Hierarchy const& hierarchy) = 0;
 
 
 
