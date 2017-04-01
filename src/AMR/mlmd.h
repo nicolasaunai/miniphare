@@ -21,7 +21,7 @@ private:
     // TODO: should be initialized by reading inputs parameters
     uint32 refinementRatio_ {2};   // temporary hard-coded refinement strategy
     GridLayout baseLayout_ ;
-    Hierarchy patchHierarchy_;
+    //Hierarchy patchHierarchy_;
 
     const std::vector<uint32>  interpolationOrders_ ;
     const std::string pusher_ ;
@@ -30,9 +30,9 @@ public:
 
     MLMD(InitializerFactory const& initFactory);
 
-    void initializeRootLevel();
+    void initializeRootLevel(Hierarchy& patchHierarchy);
 
-    void evolveFullDomain();
+    void evolveFullDomain(Hierarchy& patchHierarchy);
 
 //    Hierarchy & hierarchy() { return patchHierarchy_ ; }
 //    Hierarchy const & hierarchy() const { return patchHierarchy_ ; }

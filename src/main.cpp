@@ -34,13 +34,17 @@ int main(int argc, char *argv[])
 
     std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv) ;
 
-    MLMD mlmdManager{*initFactory} ; //std::move(initFactory) } ;
+    Hierarchy patchHierarchy{ std::make_shared<Patch>(initFactory->getBox(),
+                                                       initFactory->gridLayout(),
+                                                       PatchData{*initFactory}  ) };
 
-    mlmdManager.initializeRootLevel() ;
+    MLMD mlmdManager{*initFactory} ;
+
+    mlmdManager.initializeRootLevel(patchHierarchy) ;
 
     for (uint32 it=0; it < 1000; ++it)
     {
-        mlmdManager.evolveFullDomain() ;
+        mlmdManager.evolveFullDomain(patchHierarchy) ;
         std::cout << it << std::endl;
     }
 
