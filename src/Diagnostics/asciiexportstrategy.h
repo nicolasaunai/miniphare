@@ -2,7 +2,7 @@
 #define ASCIIEXPORTSTRATEGY_H
 
 #include "exportstrategy.h"
-
+#include "Diagnostics/diagnostics.h"
 
 // a concrete ExportStrategy is to write Ascii files
 // here we will write one file per time step and per diagnostic
