@@ -106,10 +106,10 @@ Hierarchy::evaluateRefinementNeed( uint32 refineRatio,
  */
 void Hierarchy::updateHierarchy(
         std::vector< std::vector<RefinementInfo> > const & refinementTable,
-        uint32 const & refineFactorFromMLMD,
-        std::vector<uint32> const & ordersFromMLMD,
-        std::string const & pusherFromMLMD,
-        std::vector<std::string> const & splitMethodFromMLMD )
+        uint32 const & refineFactor,
+        std::vector<uint32> const & orders,
+        std::string const & pusher,
+        std::vector<std::string> const & splitMethod )
 {
 
     uint32 nbrLevels = static_cast<uint32>(refinementTable.size()) ;
@@ -124,9 +124,9 @@ void Hierarchy::updateHierarchy(
             RefinementInfo const & info = refinementTable[iLevel][iPatch] ;
 
             // create new Patch and update Hierarchy
-            addNewPatch( info, refineFactorFromMLMD,
-                         ordersFromMLMD, pusherFromMLMD,
-                         splitMethodFromMLMD ) ;
+            addNewPatch( info, refineFactor,
+                         orders, pusher,
+                         splitMethod ) ;
 
             // TODO: call patch.init to initialize patch content
 

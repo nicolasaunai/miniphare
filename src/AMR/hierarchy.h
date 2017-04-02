@@ -67,16 +67,16 @@ public:
     evaluateRefinementNeed( uint32 refineRatio, GridLayout const & baseLayout ) ;
 
     void updateHierarchy( std::vector< std::vector<RefinementInfo> > const & refinementTable,
-                          uint32 const & refineFactorFromMLMD,
-                          std::vector<uint32> const & ordersFromMLMD,
-                          std::string const & pusherFromMLMD,
-                          std::vector<std::string> const & splitMethodFromMLMD ) ;
+                          uint32 const & refineFactor,
+                          std::vector<uint32> const & orders,
+                          std::string const & pusher,
+                          std::vector<std::string> const & splitMethod ) ;
 
     void addNewPatch( RefinementInfo const & info,
-                      uint32 const & refineFactorFromMLMD,
-                      std::vector<uint32> const & ordersFromMLMD,
-                      std::string const & pusherFromMLMD,
-                      std::vector<std::string> const & splitMethodFromMLMD ) ;
+                      uint32 const & refineFactor,
+                      std::vector<uint32> const & orders,
+                      std::string const & pusher,
+                      std::vector<std::string> const & splitMethod ) ;
 
 };
 
