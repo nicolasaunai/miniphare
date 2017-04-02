@@ -21,11 +21,10 @@ void ElectricDiagnostic::compute(Hierarchy const& hierarchy )
             Electromag const& em = patchData.EMfields();
             GridLayout const& layout = patch->layout();
 
-            // ajoute 2 DiagPack par patch
-            //std::string patchID{patch->getID()};
-            std::string patchID{0};
-            // TODO add patch ID to string
-            addVecField_("patch_"+patchID+"_", em.getE(), layout);
+            std::stringstream ss;
+            ss << patch->getID();
+            std::string patchID{ ss.str() };
+            addVecField_("patch_"+ patchID + "_", em.getE(), layout);
         }
     }
 }
