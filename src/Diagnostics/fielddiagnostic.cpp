@@ -62,13 +62,13 @@ void FieldDiagnostic::addVecField_(VecField const& vecField,
     pack.depends.insert( {"x_" + fy.name(), std::vector<float>(nbrNodesFy[0])} );
     pack.depends.insert( {"x_" + fz.name(), std::vector<float>(nbrNodesFz[0])} );
 
-    uint64 totalSizeEx = nbrNodesFx[0]*nbrNodesFx[1]*nbrNodesFx[2];
-    uint64 totalSizeEy = nbrNodesFy[0]*nbrNodesFy[1]*nbrNodesFy[2];
-    uint64 totalSizeEz = nbrNodesFz[0]*nbrNodesFz[1]*nbrNodesFz[2];
+    uint64 totalSizeFx = nbrNodesFx[0]*nbrNodesFx[1]*nbrNodesFx[2];
+    uint64 totalSizeFy = nbrNodesFy[0]*nbrNodesFy[1]*nbrNodesFy[2];
+    uint64 totalSizeFz = nbrNodesFz[0]*nbrNodesFz[1]*nbrNodesFz[2];
 
-    pack.data.insert( {fx.name(), std::vector<float>(totalSizeEx)} );
-    pack.data.insert( {fy.name(), std::vector<float>(totalSizeEy)} );
-    pack.data.insert( {fz.name(), std::vector<float>(totalSizeEz)} );
+    pack.data.insert( {fx.name(), std::vector<float>(totalSizeFx)} );
+    pack.data.insert( {fy.name(), std::vector<float>(totalSizeFy)} );
+    pack.data.insert( {fz.name(), std::vector<float>(totalSizeFz)} );
 
     pack.nbrNodes.insert( {"n_" + fx.name(), std::array<uint32,3>{ nbrNodesFx } } );
     pack.nbrNodes.insert( {"n_" + fy.name(), std::array<uint32,3>{ nbrNodesFy } } );
