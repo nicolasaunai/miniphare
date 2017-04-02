@@ -19,7 +19,7 @@ protected:
     void fillDiagData2D_(Field const& field, GridLayout const& layout, DiagPack& pack);
     void fillDiagData3D_(Field const& field, GridLayout const& layout, DiagPack& pack);
 
-    void addVecField_(VecField const& vecField, GridLayout const& layout, std::array<HybridQuantity,3> qty);
+    void addVecField_(VecField const& vecField, GridLayout const& layout);
 
     FieldDiagnostic(std::string diagName)
         : Diagnostic{diagName} {}

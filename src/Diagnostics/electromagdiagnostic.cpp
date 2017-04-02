@@ -17,8 +17,8 @@ void ElectromagDiagnostic::compute(Hierarchy const& hierarchy )
             Electromag const& em = patchData.EMfields();
             GridLayout const& layout = patch->layout();
 
-            addVecField_(em.getE(), layout, Eqty_);
-            addVecField_(em.getB(), layout, Bqty_);
+            addVecField_(em.getE(), layout);
+            addVecField_(em.getB(), layout);
         }
     }
 }

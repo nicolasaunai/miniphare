@@ -16,18 +16,12 @@
 // data() return the reference to this DiagData
 class ElectromagDiagnostic : public FieldDiagnostic
 {
-private:
-    std::array<HybridQuantity, 3> Eqty_;
-    std::array<HybridQuantity, 3> Bqty_;
-
 public:
 
     // somehow we need to initialize data_
     //
     ElectromagDiagnostic()
-        : FieldDiagnostic{"EM"},
-          Eqty_{ {HybridQuantity::Ex, HybridQuantity::Ey, HybridQuantity::Ez} },
-          Bqty_{ {HybridQuantity::Bx, HybridQuantity::By, HybridQuantity::Bz} }
+        : FieldDiagnostic{"EM"}
     { }
 
 
