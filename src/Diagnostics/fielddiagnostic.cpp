@@ -38,7 +38,8 @@ void FieldDiagnostic::fillDiagData3D_(Field const& field, GridLayout const& layo
 
 
 
-void FieldDiagnostic::addVecField_(VecField const& vecField,
+void FieldDiagnostic::addVecField_(std::string const& id,
+                                   VecField const& vecField,
                                    GridLayout const& layout)
 {
     Field const& fx = vecField.component(VecField::VecX);
@@ -58,34 +59,34 @@ void FieldDiagnostic::addVecField_(VecField const& vecField,
 
 
     DiagPack pack;
-    pack.depends.insert( {"x_" + fx.name(), std::vector<float>(nbrNodesFx[0])} );
-    pack.depends.insert( {"x_" + fy.name(), std::vector<float>(nbrNodesFy[0])} );
-    pack.depends.insert( {"x_" + fz.name(), std::vector<float>(nbrNodesFz[0])} );
+    pack.depends.insert( {id + "x_" + fx.name(), std::vector<float>(nbrNodesFx[0])} );
+    pack.depends.insert( {id + "x_" + fy.name(), std::vector<float>(nbrNodesFy[0])} );
+    pack.depends.insert( {id + "x_" + fz.name(), std::vector<float>(nbrNodesFz[0])} );
 
     uint64 totalSizeFx = nbrNodesFx[0]*nbrNodesFx[1]*nbrNodesFx[2];
     uint64 totalSizeFy = nbrNodesFy[0]*nbrNodesFy[1]*nbrNodesFy[2];
     uint64 totalSizeFz = nbrNodesFz[0]*nbrNodesFz[1]*nbrNodesFz[2];
 
-    pack.data.insert( {fx.name(), std::vector<float>(totalSizeFx)} );
-    pack.data.insert( {fy.name(), std::vector<float>(totalSizeFy)} );
-    pack.data.insert( {fz.name(), std::vector<float>(totalSizeFz)} );
+    pack.data.insert( {id + fx.name(), std::vector<float>(totalSizeFx)} );
+    pack.data.insert( {id + fy.name(), std::vector<float>(totalSizeFy)} );
+    pack.data.insert( {id + fz.name(), std::vector<float>(totalSizeFz)} );
 
-    pack.nbrNodes.insert( {"n_" + fx.name(), std::array<uint32,3>{ nbrNodesFx } } );
-    pack.nbrNodes.insert( {"n_" + fy.name(), std::array<uint32,3>{ nbrNodesFy } } );
-    pack.nbrNodes.insert( {"n_" + fz.name(), std::array<uint32,3>{ nbrNodesFz } } );
+    pack.nbrNodes.insert( {id + "n_" + fx.name(), std::array<uint32,3>{ nbrNodesFx } } );
+    pack.nbrNodes.insert( {id + "n_" + fy.name(), std::array<uint32,3>{ nbrNodesFy } } );
+    pack.nbrNodes.insert( {id + "n_" + fz.name(), std::array<uint32,3>{ nbrNodesFz } } );
 
     if (layout.nbDimensions() >= 2)
     {
-        pack.depends.insert( {"y_" + fx.name(), std::vector<float>(nbrNodesFx[1])} );
-        pack.depends.insert( {"y_" + fy.name(), std::vector<float>(nbrNodesFy[1])} );
-        pack.depends.insert( {"y_" + fz.name(), std::vector<float>(nbrNodesFz[1])} );
+        pack.depends.insert( {id + "y_" + fx.name(), std::vector<float>(nbrNodesFx[1])} );
+        pack.depends.insert( {id + "y_" + fy.name(), std::vector<float>(nbrNodesFy[1])} );
+        pack.depends.insert( {id + "y_" + fz.name(), std::vector<float>(nbrNodesFz[1])} );
     }
 
     if (layout.nbDimensions() == 3)
     {
-        pack.depends.insert( {"z_" + fx.name(), std::vector<float>(nbrNodesFx[2])} );
-        pack.depends.insert( {"z_" + fy.name(), std::vector<float>(nbrNodesFy[2])} );
-        pack.depends.insert( {"z_" + fz.name(), std::vector<float>(nbrNodesFz[2])} );
+        pack.depends.insert( {id + "z_" + fx.name(), std::vector<float>(nbrNodesFx[2])} );
+        pack.depends.insert( {id + "z_" + fy.name(), std::vector<float>(nbrNodesFy[2])} );
+        pack.depends.insert( {id + "z_" + fz.name(), std::vector<float>(nbrNodesFz[2])} );
     }
 
 

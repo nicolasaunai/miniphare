@@ -14,22 +14,46 @@
 // the class implement compute() and data()
 // compute() will put EM data as a DiagData
 // data() return the reference to this DiagData
-class ElectromagDiagnostic : public FieldDiagnostic
+class ElectricDiagnostic : public FieldDiagnostic
 {
 public:
 
     // somehow we need to initialize data_
     //
-    ElectromagDiagnostic()
-        : FieldDiagnostic{"EM"}
+    ElectricDiagnostic()
+        : FieldDiagnostic{"Electric"}
     { }
 
 
     virtual void compute(Hierarchy const& hierarchy) final;
 
 
-    virtual ~ElectromagDiagnostic() = default;
+    virtual ~ElectricDiagnostic() = default;
 };
+
+
+
+
+
+class MagneticDiagnostic : public FieldDiagnostic
+{
+public:
+
+    // somehow we need to initialize data_
+    //
+    MagneticDiagnostic()
+        : FieldDiagnostic{"Magnetic"}
+    { }
+
+
+    virtual void compute(Hierarchy const& hierarchy) final;
+
+
+    virtual ~MagneticDiagnostic() = default;
+};
+
+
+
 
 
 

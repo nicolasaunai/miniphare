@@ -8,7 +8,7 @@
 
 
 
-enum class DiagType {EM, Ni};
+enum class DiagType {E, B, Ni};
 
 
 
