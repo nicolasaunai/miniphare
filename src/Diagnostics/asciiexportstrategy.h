@@ -14,21 +14,8 @@ class AsciiExportStrategy : public ExportStrategy
 public:
 
 
-    virtual void save(Diagnostic const& diag, Time const& timeManager) final
-    {
-        std::string const& name = diag.name();
-        double time = timeManager.currentTime();
-       // std::vector<DiagData> const& data = diag.data();
-
-
-        // open file
-
-        // now write data
-       // fprintf(fp, "", di);
-
-        // close file
-
-    }
+    virtual void save(Diagnostic const& diag, Time const& timeManager) final;
+    virtual ~AsciiExportStrategy() = default;
 };
 
 

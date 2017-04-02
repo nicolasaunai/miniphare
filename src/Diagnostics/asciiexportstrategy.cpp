@@ -4,7 +4,6 @@
 #include "asciiexportstrategy.h"
 
 
-
 void AsciiExportStrategy::save(Diagnostic const& diag, Time const& timeManager)
 {
 

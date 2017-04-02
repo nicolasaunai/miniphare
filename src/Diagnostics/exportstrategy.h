@@ -22,6 +22,8 @@ private:
 public:
     virtual void save(Diagnostic const& diag, Time const& timeManager) = 0;
 
+    virtual ~ExportStrategy() = default;
+
 };
 
 

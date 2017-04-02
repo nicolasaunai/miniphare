@@ -39,12 +39,8 @@ void FieldDiagnostic::fillDiagData3D_(Field const& field, GridLayout const& layo
 
 
 void FieldDiagnostic::addVecField_(VecField const& vecField,
-                                   GridLayout const& layout
+                                   GridLayout const& layout)
 {
-    std::array<uint32, 3> nbrNodesFx = layout.nbrPhysicalNodes(qty[0]);
-    std::array<uint32, 3> nbrNodesFy = layout.nbrPhysicalNodes(qty[1]);
-    std::array<uint32, 3> nbrNodesFz = layout.nbrPhysicalNodes(qty[2]);
-
     Field const& fx = vecField.component(VecField::VecX);
     Field const& fy = vecField.component(VecField::VecY);
     Field const& fz = vecField.component(VecField::VecZ);
@@ -54,6 +50,12 @@ void FieldDiagnostic::addVecField_(VecField const& vecField,
     hybQties[0]= fx.hybridQty();
     hybQties[1]= fy.hybridQty();
     hybQties[2]= fz.hybridQty();
+
+    std::array<uint32, 3> nbrNodesFx = layout.nbrPhysicalNodes(hybQties[0]);
+    std::array<uint32, 3> nbrNodesFy = layout.nbrPhysicalNodes(hybQties[1]);
+    std::array<uint32, 3> nbrNodesFz = layout.nbrPhysicalNodes(hybQties[2]);
+
+
 
     DiagPack pack;
     pack.depends.insert( {"x_" + fx.name(), std::vector<float>(nbrNodesFx[0])} );
