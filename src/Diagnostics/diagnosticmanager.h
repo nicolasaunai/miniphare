@@ -11,6 +11,8 @@
 #include "Diagnostics/diagtype.h"
 #include "diagnosticscheduler.h"
 #include "diagnosticfactory.h"
+#include "exportstrategyfactory.h"
+#include "exportstrategy.h"
 
 /**
  * @brief The DiagnosticsManager class is the interface to manipulate all code diagnostics
