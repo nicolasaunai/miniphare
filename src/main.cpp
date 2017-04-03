@@ -55,5 +55,6 @@ int main(int argc, char *argv[])
         mlmdManager.evolveFullDomain(patchHierarchy) ;
         timeManager.advance();
         diagnosticManager.compute(timeManager, patchHierarchy);
+        diagnosticManager.save(timeManager);
     }
 }

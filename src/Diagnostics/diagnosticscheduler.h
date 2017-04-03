@@ -40,9 +40,6 @@ class DiagnosticScheduler
 {
 private:
 
-    //std::unordered_map< uint32, std::vector<uint32> > computingIterations_;
-    //std::unordered_map< uint32, std::vector<uint32> > writingIterations_;
-
     DiagUnorderedMap<DiagType, std::vector<uint32> > computingIterations_;
     DiagUnorderedMap<DiagType, std::vector<uint32> > writingIterations_;
     DiagUnorderedMap<DiagType, uint32> nextComputingIterationIndex_;
@@ -61,10 +58,15 @@ public:
         uint32 it = timeManager.currentIteration();
         bool ret = false;
         uint32 index = nextWritingIterationIndex_[type];
-        if (writingIterations_[type][index] == it)
+
+        // if index == size it means we've done all the compute already
+        if (index != writingIterations_[type].size())
         {
-            ret = true;
-            nextWritingIterationIndex_[type]++;
+            if (writingIterations_[type][index] == it)
+            {
+                ret = true;
+                nextWritingIterationIndex_[type]++;
+            }
         }
         return ret;
     }
@@ -75,10 +77,16 @@ public:
         uint32 it = timeManager.currentIteration();
         bool ret = false;
         uint32 index = nextComputingIterationIndex_[type];
-        if (computingIterations_[type][index] == it)
+
+        // if index is == to the size it means we've done
+        // all the write already
+        if (index != writingIterations_[type].size())
         {
-            ret = true;
-            nextComputingIterationIndex_[type]++;
+            if (computingIterations_[type][index] == it)
+            {
+                ret = true;
+                nextComputingIterationIndex_[type]++;
+            }
         }
         return ret;
     }
