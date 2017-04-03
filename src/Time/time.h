@@ -40,10 +40,10 @@ public:
     }
 
     uint32 time2iter(double time) const {return static_cast<uint32>((time-startTime_)/dt_); }
-    uint32 currentIteration() const {return time2iter(currentTime_);}
+    uint32 currentIteration() const {return iteration_;}
     uint32 nbrIter() const {return nbrIterations_;}
     double currentTime() const {return currentTime_;}
-    void advance() {currentTime_ += dt_;}
+    void advance() {currentTime_ += dt_; iteration_++;}
 
 
 };
