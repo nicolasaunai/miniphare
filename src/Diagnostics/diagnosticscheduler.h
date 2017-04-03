@@ -45,6 +45,8 @@ private:
 
     DiagUnorderedMap<DiagType, std::vector<uint32> > computingIterations_;
     DiagUnorderedMap<DiagType, std::vector<uint32> > writingIterations_;
+    DiagUnorderedMap<DiagType, uint32> nextComputingIterationIndex_;
+    DiagUnorderedMap<DiagType, uint32> nextWritingIterationIndex_;
 
 public:
 
@@ -56,13 +58,29 @@ public:
 
     inline bool timeToWrite(Time const& timeManager, DiagType type)
     {
-        return writingIterations_[type][timeManager.currentIteration()];
+        uint32 it = timeManager.currentIteration();
+        bool ret = false;
+        uint32 index = nextWritingIterationIndex_[type];
+        if (writingIterations_[type][index] == it)
+        {
+            ret = true;
+            nextWritingIterationIndex_[type]++;
+        }
+        return ret;
     }
 
 
     inline bool timeToCompute(Time const& timeManager, DiagType type)
     {
-        return computingIterations_[type][timeManager.currentIteration()];
+        uint32 it = timeManager.currentIteration();
+        bool ret = false;
+        uint32 index = nextComputingIterationIndex_[type];
+        if (computingIterations_[type][index] == it)
+        {
+            ret = true;
+            nextComputingIterationIndex_[type]++;
+        }
+        return ret;
     }
 
 };
