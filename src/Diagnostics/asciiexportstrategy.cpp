@@ -1,8 +1,11 @@
 
 #include <string>
 #include <iostream>
-#include "asciiexportstrategy.h"
+#include <sstream>
 #include <stdio.h>
+#include <iomanip>
+
+#include "asciiexportstrategy.h"
 
 
 
@@ -10,6 +13,8 @@ void AsciiExportStrategy::save(Diagnostic const& diag, Time const& timeManager)
 {
     std::string const& name = diag.name();
     double time = timeManager.currentTime();
+    std::stringstream ss;
+    ss << std::setw(6) << std::setfill('0') << time;
 
     for (DiagPack const& pack : diag.data())
     {
@@ -42,7 +47,8 @@ void AsciiExportStrategy::save(Diagnostic const& diag, Time const& timeManager)
 
         for (uint32 iDataset=0; iDataset < datasets.size(); ++iDataset)
         {
-            std::string  filename = dataKeys[iDataset] + ".txt";
+            std::string  filename = dataKeys[iDataset] ;
+            filename += ss.str() + ".txt";
             std::cout << filename << std::endl;
 
             FILE *fp = fopen(filename.c_str(), "w");
