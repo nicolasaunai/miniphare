@@ -2,7 +2,10 @@
 
 
 
-void FieldDiagnostic::fillDiagData1D_(Field const& field, GridLayout const& layout, DiagPack& pack)
+void FieldDiagnostic::fillDiagData1D_(Field const& field,
+                                      GridLayout const& layout,
+                                      std::string const& id,
+                                      DiagPack& pack)
 {
     // this function will add an element to the container of DiagData
     // typically here this will be the data corresponding to a patch
@@ -10,11 +13,11 @@ void FieldDiagnostic::fillDiagData1D_(Field const& field, GridLayout const& layo
     uint32 iEnd     = layout.physicalEndIndex(field, Direction::X);
     Point origin    = layout.origin();
 
-    for (uint32 ix=iStart; ix <= iEnd;  ++ix )
+    for (uint32 ixField=iStart, ixData=0; ixField <= iEnd;  ++ixField, ++ixData )
     {
-        Point pos = layout.fieldNodeCoordinates(field, origin, ix, 0, 0);
-        pack.data[ field.name() ][ix] = static_cast<float>( field(ix) );
-        pack.depends["x_" + field.name()][ix] = static_cast<float>(pos.x_);
+        Point pos = layout.fieldNodeCoordinates(field, origin, ixField, 0, 0);
+        pack.data[ id + field.name() ][ixData] = static_cast<float>( field(ixField) );
+        pack.depends[id + "x_" + field.name()][ixData] = static_cast<float>(pos.x_);
     }
 }
 
@@ -22,14 +25,20 @@ void FieldDiagnostic::fillDiagData1D_(Field const& field, GridLayout const& layo
 
 
 
-void FieldDiagnostic::fillDiagData2D_(Field const& field, GridLayout const& layout, DiagPack& pack)
+void FieldDiagnostic::fillDiagData2D_(Field const& field,
+                                      GridLayout const& layout,
+                                      std::string const& id,
+                                      DiagPack& pack)
 {
     (void)field;
     throw std::runtime_error("Not Implemented");
 }
 
 
-void FieldDiagnostic::fillDiagData3D_(Field const& field, GridLayout const& layout, DiagPack& pack)
+void FieldDiagnostic::fillDiagData3D_(Field const& field,
+                                      GridLayout const& layout,
+                                      std::string const& id,
+                                      DiagPack& pack)
 {
     (void)field;
     throw std::runtime_error("Not Implemented");
@@ -93,21 +102,21 @@ void FieldDiagnostic::addVecField_(std::string const& id,
     switch (layout.nbDimensions() )
     {
         case 1:
-        fillDiagData1D_(vecField.component(0), layout, pack);
-        fillDiagData1D_(vecField.component(1), layout, pack);
-        fillDiagData1D_(vecField.component(2), layout, pack);
+        fillDiagData1D_(vecField.component(0), layout, id, pack);
+        fillDiagData1D_(vecField.component(1), layout, id, pack);
+        fillDiagData1D_(vecField.component(2), layout, id, pack);
         break;
 
         case 2:
-        fillDiagData2D_(vecField.component(0), layout, pack);
-        fillDiagData2D_(vecField.component(1), layout, pack);
-        fillDiagData2D_(vecField.component(2), layout, pack);
+        fillDiagData2D_(vecField.component(0), layout, id, pack);
+        fillDiagData2D_(vecField.component(1), layout, id, pack);
+        fillDiagData2D_(vecField.component(2), layout, id, pack);
         break;
 
         case 3:
-        fillDiagData3D_(vecField.component(0), layout, pack);
-        fillDiagData3D_(vecField.component(1), layout, pack);
-        fillDiagData3D_(vecField.component(2), layout, pack);
+        fillDiagData3D_(vecField.component(0), layout, id, pack);
+        fillDiagData3D_(vecField.component(1), layout, id, pack);
+        fillDiagData3D_(vecField.component(2), layout, id, pack);
         break;
     }
 

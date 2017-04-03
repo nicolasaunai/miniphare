@@ -49,11 +49,11 @@ int main(int argc, char *argv[])
 
     for (uint32 it=0; it < timeManager.nbrIter(); ++it)
     {
-      //  diagScheduler.applyDiagnostics( timeManager);
         std::cout << it << std::endl;
         std::cout << timeManager.currentTime() << std::endl;
 
         mlmdManager.evolveFullDomain(patchHierarchy) ;
         timeManager.advance();
+        diagnosticManager.compute(timeManager, patchHierarchy);
     }
 }

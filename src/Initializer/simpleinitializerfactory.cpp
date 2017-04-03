@@ -277,6 +277,8 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
 {
     std::unique_ptr<DiagnosticInitializer> initializer{ new DiagnosticInitializer};
 
+    initializer->exportType = ExportStrategyType::ASCII;
+
     initializer->diagTypes.push_back(DiagType::E);
     initializer->diagTypes.push_back(DiagType::B);
 
@@ -292,6 +294,7 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
     initializer->writingIterations.push_back(std::move(writingIterationsE));
     initializer->writingIterations.push_back(std::move(writingIterationsB));
 
+    return initializer;
 }
 
 
