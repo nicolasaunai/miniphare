@@ -68,6 +68,7 @@ void DiagnosticsManager::compute(Time const& timeManager, Hierarchy const& hiera
  *
  * The function loop over all Diagnostic, ask the scheduler if it is time to
  * save data to disk and calls the ExportStrategy if yes.
+ * As soon as data is written, we get rid of it.
  *
  * @param timeManager is used to get the current time and iteration
  */
@@ -79,6 +80,9 @@ void DiagnosticsManager::save(Time const& timeManager)
         if (scheduler_.timeToWrite(timeManager, type) )
         {
             exportStrat_->save(*diagPair.second, timeManager);
+
+            // we've written data on disk, packs can now be removed
+            diagPair.second->flushDiagPacks();
         }
     }
 }

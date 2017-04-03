@@ -7,6 +7,7 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
+#include <algorithm>
 #include <unordered_map>
 
 #include "types.h"
@@ -68,7 +69,7 @@ public:
 
     virtual void compute(Hierarchy const& hierarchy) = 0;
 
-
+    void flushDiagPacks() {std::vector<DiagPack> tmp;  std::swap(tmp,diagPack_);}
 
     virtual ~Diagnostic() = default;
 
