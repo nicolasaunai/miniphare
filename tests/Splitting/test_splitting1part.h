@@ -19,6 +19,8 @@ struct Split1PartParams
 
     uint32 interpOrder ;
 
+    uint32 refineFactor ;
+
     uint32 referenceNode ;
 
 
@@ -27,10 +29,12 @@ struct Split1PartParams
     Split1PartParams( std::array<double, 3> dxdydz, std::array<uint32, 3> nbrCells,
                       uint32 nbDim, std::string layout,
                       Point origin, uint32 interpOrder,
+                      uint32 refineFactor,
                       uint32 referenceNode ):
         dxdydz{dxdydz}, nbrCells{nbrCells},
         nbDim{nbDim}, layout{layout},
         origin{origin}, interpOrder{interpOrder},
+        refineFactor{refineFactor},
         referenceNode{referenceNode} {}
 
     ~Split1PartParams() = default ;

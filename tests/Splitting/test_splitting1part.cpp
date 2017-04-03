@@ -22,8 +22,8 @@ std::unique_ptr<IndexesAndWeights>  getIndexesAndWeights( uint32 const & order )
 
 
 Split1PartParams split1ParticleInputs[] = {
-    //                dxdydz            nbrCellx y z    layout  origin             order   refNode
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 1, 1}}, 1, "yee" , Point{0., 0., 0.}, 1     , 10)
+    //                dxdydz            nbrCellx y z    layout  origin             order  RF    refNode
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 1, 1}}, 1, "yee" , Point{0., 0., 0.}, 1    , 2   , 10)
 
 };
 
@@ -53,12 +53,45 @@ public:
         // we need an IndexesAndWeights object
         std::unique_ptr<IndexesAndWeights> indexAndWeights { getIndexesAndWeights(inputs.interpOrder) } ;
 
-        // we now initialize a Particle at the reference node
-        Particle partic(
-                    10., 1., {{refNode, 1, 1}},
-                    {{0., 0., 0.}}, {{0., 0., 0.}} );
+        uint32 discreteNbr = 10 ;
 
-        // Now, starts the algorithm
+        // number of points depending on the order
+        uint32 nbPts = discreteNbr*(inputs.interpOrder +1) ;
+
+        std::vector<double> weightsArray(nbPts, 0.) ;
+
+        float deltaMin = -0.5*static_cast<float>(inputs.interpOrder +1) ;
+
+
+        for( uint32 ik=0 ; ik<nbPts ; ik++ )
+        {
+            float delta = deltaMin + static_cast<float>(ik)/static_cast<float>(discreteNbr) ;
+
+            // check the validity of delta (0 <= delta <= 1)
+            // and do auto-correction
+            float iCell = std::floor(delta) ;
+            delta = delta - iCell ;
+
+            // update the logical node
+            uint32 shiftedNode =  static_cast<uint32>(iCell) + refNode;
+
+
+            // we now initialize a Particle at the reference node
+            Particle partic(
+                        10., 1., {{shiftedNode, 1, 1}},
+            {{delta, 0., 0.}}, {{0., 0., 0.}} );
+
+            double reducedX = static_cast<double>(partic.icell[0])
+                    + static_cast<double>(partic.delta[0]) ;
+
+            // Now, starts the algorithm
+            std::vector<uint32> const & indexes = indexAndWeights->computeIndexes( reducedX ) ;
+            std::vector<double> const & weights = indexAndWeights->computeWeights( reducedX ) ;
+
+            std::vector<uint32>::const_iterator low ;
+            low = std::lower_bound (indexes.begin(), indexes.end(), refNode) ;
+
+        }
 
 
     }
