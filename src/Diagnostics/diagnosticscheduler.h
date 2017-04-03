@@ -60,7 +60,7 @@ public:
         uint32 index = nextWritingIterationIndex_[type];
 
         // if index == size it means we've done all the compute already
-        if (index != writingIterations_[type].size())
+        if (index != writingIterations_[type].size()+1)
         {
             if (writingIterations_[type][index] == it)
             {
@@ -80,7 +80,7 @@ public:
 
         // if index is == to the size it means we've done
         // all the write already
-        if (index != writingIterations_[type].size())
+        if (index != writingIterations_[type].size()+1)
         {
             if (computingIterations_[type][index] == it)
             {
