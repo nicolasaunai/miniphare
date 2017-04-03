@@ -47,9 +47,9 @@ void MagneticDiagnostic::compute(Hierarchy const& hierarchy )
             Electromag const& em = patchData.EMfields();
             GridLayout const& layout = patch->layout();
 
-            //std::string patchID{patch->getID()};
-            std::string patchID{0};
-            // TODO add patch ID to string
+            std::stringstream ss;
+            ss << patch->getID();
+            std::string patchID{ ss.str() };
             addVecField_("patch_"+patchID+"_", em.getB(), layout);
         }
     }

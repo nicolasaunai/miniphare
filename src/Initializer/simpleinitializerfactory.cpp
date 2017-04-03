@@ -221,7 +221,7 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
 
     std::unique_ptr<ElectromagInitializer> eminit {new ElectromagInitializer{layout_,
                     electricField,
-                    magneticField, "_EMField", "_EMFields"} };
+                    magneticField, "_EField", "_BField"} };
 
     std::cout << "creating Simple ElectromagInitializer" << std::endl;
     Point origin{0,0,0};
