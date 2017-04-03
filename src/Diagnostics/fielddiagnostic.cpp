@@ -124,3 +124,54 @@ void FieldDiagnostic::addVecField_(std::string const& id,
     diagPack_.push_back( std::move(pack) );
 
 }
+
+
+
+
+
+void FieldDiagnostic::addField_(std::string const& id,
+                                Field const& field,
+                                GridLayout const& layout)
+{
+
+    HybridQuantity hybQty;
+
+    hybQty= field.hybridQty();
+
+    std::array<uint32, 3> nbrNodes = layout.nbrPhysicalNodes(hybQty);
+
+    DiagPack pack;
+    pack.depends.insert( {id + "x_" + field.name(), std::vector<float>(nbrNodes[0])} );
+
+    uint64 totalSize = nbrNodes[0]*nbrNodes[1]*nbrNodes[2];
+
+    pack.data.insert( {id + field.name(), std::vector<float>(totalSize)} );
+    pack.nbrNodes.insert( {id + "n_" + field.name(), std::array<uint32,3>{ nbrNodes } } );
+
+    if (layout.nbDimensions() >= 2)
+    {
+        pack.depends.insert( {id + "y_" + field.name(), std::vector<float>(nbrNodes[1])} );
+    }
+
+    if (layout.nbDimensions() == 3)
+    {
+        pack.depends.insert( {id + "z_" + field.name(), std::vector<float>(nbrNodes[2])} );
+    }
+
+
+    switch (layout.nbDimensions() )
+    {
+        case 1:
+        fillDiagData1D_(field, layout, id, pack);
+        break;
+
+        case 2:
+        fillDiagData2D_(field, layout, id, pack);
+        break;
+
+        case 3:
+        fillDiagData3D_(field, layout, id, pack);
+        break;
+    }
+    diagPack_.push_back( std::move(pack) );
+}

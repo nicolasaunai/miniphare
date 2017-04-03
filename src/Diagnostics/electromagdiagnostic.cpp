@@ -19,12 +19,17 @@ void ElectricDiagnostic::compute(Hierarchy const& hierarchy )
         {
             PatchData const& patchData = patch->data();
             Electromag const& em = patchData.EMfields();
+            Field const& Ex = em.getEi(0);
+            Field const& Ey = em.getEi(1);
+            Field const& Ez = em.getEi(2);
             GridLayout const& layout = patch->layout();
 
             std::stringstream ss;
             ss << patch->getID();
             std::string patchID{ ss.str() };
-            addVecField_("patch_"+ patchID + "_", em.getE(), layout);
+            addField_("patch_"+ patchID + "_", Ex, layout);
+            addField_("patch_"+ patchID + "_", Ey, layout);
+            addField_("patch_"+ patchID + "_", Ez, layout);
         }
     }
 }
@@ -45,12 +50,17 @@ void MagneticDiagnostic::compute(Hierarchy const& hierarchy )
         {
             PatchData const& patchData = patch->data();
             Electromag const& em = patchData.EMfields();
+            Field const& Bx = em.getBi(0);
+            Field const& By = em.getBi(1);
+            Field const& Bz = em.getBi(2);
             GridLayout const& layout = patch->layout();
 
             std::stringstream ss;
             ss << patch->getID();
             std::string patchID{ ss.str() };
-            addVecField_("patch_"+patchID+"_", em.getB(), layout);
+            addField_("patch_"+ patchID + "_", Bx, layout);
+            addField_("patch_"+ patchID + "_", By, layout);
+            addField_("patch_"+ patchID + "_", Bz, layout);
         }
     }
 }

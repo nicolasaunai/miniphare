@@ -7,6 +7,7 @@
 #include "Field/field.h"
 #include "grid/gridlayout.h"
 #include "vecfield/vecfield.h"
+#include "Field/field.h"
 #include "Diagnostics/diagnostics.h"
 
 
@@ -32,6 +33,8 @@ protected:
                          DiagPack& pack);
 
     void addVecField_(std::string const& id, VecField const& vecField, GridLayout const& layout);
+
+    void addField_(std::string const& id, Field const& vecField, GridLayout const& layout);
 
     FieldDiagnostic(std::string diagName)
         : Diagnostic{diagName} {}
