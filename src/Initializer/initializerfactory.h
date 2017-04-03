@@ -5,11 +5,11 @@
 #include <memory>
 #include <string>
 
-#include "ionsinitializer.h"
-#include "electromaginitializer.h"
 #include "ohminitializer.h"
+#include "ionsinitializer.h"
 #include "solverinitializer.h"
-
+#include "electromaginitializer.h"
+#include "diagnosticinitializer.h"
 
 
 /**
@@ -57,10 +57,6 @@ public:
 
 };
 
-
-
-
-std::unique_ptr<InitializerFactory> fromCommandLine(int argc, char** argv);
 
 
 /* ----------------------------------------------------------------------------

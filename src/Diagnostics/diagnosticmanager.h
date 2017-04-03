@@ -7,12 +7,13 @@
 
 #include "AMR/patchdata.h"
 #include "exportstrategy.h"
-#include "grid/gridlayout.h"
-#include "Diagnostics/diagtype.h"
-#include "diagnosticscheduler.h"
-#include "diagnosticfactory.h"
-#include "exportstrategyfactory.h"
 #include "exportstrategy.h"
+#include "grid/gridlayout.h"
+#include "diagnosticfactory.h"
+#include "diagnosticscheduler.h"
+#include "Diagnostics/diagtype.h"
+#include "exportstrategyfactory.h"
+#include "Initializer/diagnosticinitializer.h"
 
 /**
  * @brief The DiagnosticsManager class is the interface to manipulate all code diagnostics
@@ -33,10 +34,8 @@ private:
 public:
 
     /** @brief DiagnosticsManager creates an empty DiagnosticManager with concrete ExportStrategy */
-    DiagnosticsManager(ExportStrategyType exportType)
-        : diags_{},
-          exportStrat_{ExportStrategyFactory::makeExportStrategy(exportType)},
-          scheduler_{} {}
+    DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> initializer);
+
 
     void newDiagnostic(DiagType type,
                        std::vector<uint32> const& computingIterations,

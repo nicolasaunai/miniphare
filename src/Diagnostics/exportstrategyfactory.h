@@ -5,8 +5,7 @@
 
 #include "exportstrategy.h"
 #include "asciiexportstrategy.h"
-
-enum class ExportStrategyType {ASCII /*, HDF5NATIVE, OPENPMD*/ };
+#include "Diagnostics/exportstrategytypes.h"
 
 
 class ExportStrategyFactory

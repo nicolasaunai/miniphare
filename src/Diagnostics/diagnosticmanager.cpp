@@ -2,6 +2,24 @@
 
 
 
+DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> initializer)
+    : diags_{},
+      exportStrat_{ExportStrategyFactory::makeExportStrategy(initializer->exportType)},
+      scheduler_{}
+{
+    for (uint32 iDiag=0; iDiag < initializer->diagTypes.size(); ++iDiag)
+    {
+        newDiagnostic( initializer->diagTypes[iDiag],
+                       initializer->computingIterations[iDiag],
+                       initializer->writingIterations[iDiag]);
+    }
+}
+
+
+
+
+
+
 /**
  * @brief DiagnosticsManager::newDiagnostic add a new kind of Diagnostic to the DiagnosticManager
  * @param type is the kind of Diagnostic to be added

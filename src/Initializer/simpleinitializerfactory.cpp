@@ -259,6 +259,41 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
 
 
 
+/**
+ * @brief SimpleInitializerFactory::createDiagnosticInitializer is a hard-coded DiagnosticInitializer
+ *
+ *
+
+struct DiagnosticInitializer
+{
+    std::vector<DiagType> diagTypes;
+    std::vector< std::vector<uint32> > computingIterations;
+    std::vector<std::vector<uint32> > writingIterations;
+    ExportStrategyType exportType;
+};
+
+ */
+std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosticInitializer() const
+{
+    std::unique_ptr<DiagnosticInitializer> initializer{ new DiagnosticInitializer};
+
+    initializer->diagTypes.push_back(DiagType::E);
+    initializer->diagTypes.push_back(DiagType::B);
+
+    std::vector<uint32> computingIterationsE{1, 10, 20, 22};
+    std::vector<uint32> computingIterationsB{2, 11, 24, 54};
+
+    std::vector<uint32> writingIterationsE{1, 10, 20, 22};
+    std::vector<uint32> writingIterationsB{2, 11, 24, 54};
+
+    initializer->computingIterations.push_back(std::move(computingIterationsE));
+    initializer->computingIterations.push_back(std::move(computingIterationsB));
+
+    initializer->writingIterations.push_back(std::move(writingIterationsE));
+    initializer->writingIterations.push_back(std::move(writingIterationsB));
+
+}
+
 
 
 std::unique_ptr<OhmInitializer> SimpleInitializerFactory::createOhmInitializer() const

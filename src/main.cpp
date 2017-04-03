@@ -11,7 +11,7 @@
 #include "AMR/hierarchy.h"
 #include "grid/gridlayout.h"
 #include "Diagnostics/diagnosticmanager.h"
-#include "Initializer/initializerfactory.h"
+#include "Initializer/simulationinitializerfactory.h"
 
 
 
@@ -31,11 +31,11 @@ int main(int argc, char *argv[])
 
 
 
-    std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv) ;
+    std::unique_ptr<SimulationInitializerFactory> initFactory = fromCommandLine(argc, argv) ;
 
 
     Time timeManager{initFactory->timeStep(), 0., 100};
-    DiagnosticsManager diagnosticManager{ExportStrategyType::ASCII};
+    DiagnosticsManager diagnosticManager{initFactory->createDiagnosticInitializer()};
 
 
     Hierarchy patchHierarchy{ std::make_shared<Patch>(initFactory->getBox(),
