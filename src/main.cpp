@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     std::unique_ptr<SimulationInitializerFactory> initFactory = fromCommandLine(argc, argv) ;
 
 
-    Time timeManager{initFactory->timeStep(), 0., 100};
+    std::unique_ptr<Time> timeManager{initFactory->createTimeManager()};
     DiagnosticsManager diagnosticManager{initFactory->createDiagnosticInitializer()};
 
 
@@ -47,14 +47,14 @@ int main(int argc, char *argv[])
     mlmdManager.initializeRootLevel(patchHierarchy) ;
 
 
-    for (uint32 it=0; it < timeManager.nbrIter(); ++it)
+    for (uint32 it=0; it < timeManager->nbrIter(); ++it)
     {
         std::cout << it << std::endl;
-        std::cout << timeManager.currentTime() << std::endl;
+        std::cout << timeManager->currentTime() << std::endl;
 
         mlmdManager.evolveFullDomain(patchHierarchy) ;
-        timeManager.advance();
-        diagnosticManager.compute(timeManager, patchHierarchy);
-        diagnosticManager.save(timeManager);
+        timeManager->advance();
+        diagnosticManager.compute(*timeManager, patchHierarchy);
+        diagnosticManager.save(*timeManager);
     }
 }

@@ -25,10 +25,11 @@ public:
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
     virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() const override;
+    virtual std::unique_ptr<Time> createTimeManager() const override;
 
     virtual Box getBox() const override { return layout_.getBox() ; }
     virtual GridLayout const& gridLayout() const override { return layout_; }
-    virtual double timeStep() const override { return dt_; }
+    virtual double timeStep() const override { return createTimeManager()->timeStep(); }
     virtual std::string const & pusher() const override { return pusher_; }
 
     virtual std::vector<uint32> const &
@@ -41,7 +42,7 @@ public:
 private:
 
     GridLayout layout_;
-    double dt_;
+    Time timeManager_;
 
     const std::vector<uint32>  interpolationOrders_ ;
     const std::string pusher_ ;

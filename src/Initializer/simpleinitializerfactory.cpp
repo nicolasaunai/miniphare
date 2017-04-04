@@ -12,9 +12,9 @@ static const uint32 interpOrderConstant = 3;
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
+    : timeManager_{0.01, 0., 10.} ,layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
       // hard-coded... will come from input somehow
-      dt_{0.01}, interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
+      interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
       pusher_{"modifiedBoris"}
 {
 
@@ -306,6 +306,9 @@ std::unique_ptr<OhmInitializer> SimpleInitializerFactory::createOhmInitializer()
 
 
 
-
+std::unique_ptr<Time> SimpleInitializerFactory::createTimeManager() const
+{
+    return std::unique_ptr<Time>{new Time{0.01, 0., 1.}};
+}
 
 

@@ -27,21 +27,19 @@ public:
           endTime_{startTime + duration},
           duration_{duration},
           currentTime_{startTime},
-          nbrIterations_{},
-          times_{}
+          nbrIterations_{}
     {
         nbrIterations_ = static_cast<uint32>(static_cast<std::size_t>(duration/dt_) + 1);
-        times_.resize(nbrIterations_);
-
-        for (uint32 it=0; it < nbrIterations_; ++it)
-        {
-            times_[it] = startTime + it*dt_;
-        }
     }
+
+    Time(Time&& source) = default;
+    Time(Time& source) = default;
+
 
     uint32 time2iter(double time) const {return static_cast<uint32>((time-startTime_)/dt_); }
     uint32 currentIteration() const {return iteration_;}
     uint32 nbrIter() const {return nbrIterations_;}
+    double timeStep() const {return dt_;}
     double currentTime() const {return currentTime_;}
     void advance() {currentTime_ += dt_; iteration_++;}
 
