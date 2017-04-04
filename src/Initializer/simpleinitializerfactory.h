@@ -22,7 +22,7 @@ public:
 
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const override;
-    virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
+
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
 

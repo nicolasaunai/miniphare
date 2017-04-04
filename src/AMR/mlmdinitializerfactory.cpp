@@ -28,14 +28,14 @@ void MLMDInitializerFactory::buildIonsInitializer_(
 
     for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
     {
-        SplittingStrategy const & splitting =
-            *SplittingStrategyFactory::createSplittingStrategy(
-                        splitMethods_[ispe], interpolationOrders_[ispe], refinementRatio_);
+        std::unique_ptr<SplittingStrategy> splitting
+        {SplittingStrategyFactory::createSplittingStrategy(
+                        splitMethods_[ispe], interpolationOrders_[ispe], refinementRatio_)} ;
 
         Species const& species = parentIons.species(ispe);
 
         std::unique_ptr<ParticleInitializer>
-                particleInit{new MLMDParticleInitializer{species, selector , splitting}};
+                particleInit{new MLMDParticleInitializer{species, selector , *splitting}};
 
         ionInit.masses.push_back( parentIons.species(ispe).mass() );
         ionInit.particleInitializers.push_back( std::move(particleInit) );
@@ -110,10 +110,6 @@ std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializ
 }
 
 
-std::unique_ptr<OhmInitializer> MLMDInitializerFactory::createOhmInitializer() const
-{
-    return nullptr;
-}
 
 
 /**

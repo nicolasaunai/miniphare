@@ -273,13 +273,3 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
 
 
 
-std::unique_ptr<OhmInitializer> SimpleInitializerFactory::createOhmInitializer() const
-{
-    return nullptr;
-}
-
-
-
-
-
-
