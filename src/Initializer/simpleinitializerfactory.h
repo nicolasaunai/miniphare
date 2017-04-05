@@ -48,9 +48,6 @@ private:
     const std::string pusher_ ;
     const std::vector<std::string> splitMethods_ ;
 
-    void readInputFile();
-
-
 };
 
 
