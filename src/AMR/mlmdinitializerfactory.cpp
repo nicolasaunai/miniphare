@@ -28,9 +28,12 @@ void MLMDInitializerFactory::buildIonsInitializer_(
 
     for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
     {
-        std::unique_ptr<SplittingStrategy> splitting
-        {SplittingStrategyFactory::createSplittingStrategy(
-                        splitMethods_[ispe], interpolationOrders_[ispe], refinementRatio_)} ;
+        SplittingStrategyFactory factory(splitMethods_[ispe],
+                                         interpolationOrders_[ispe],
+                                         refinementRatio_) ;
+
+        std::unique_ptr<SplittingStrategy>
+                splitting = factory.createSplittingStrategy() ;
 
         Species const& species = parentIons.species(ispe);
 
