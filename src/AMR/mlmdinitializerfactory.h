@@ -39,7 +39,7 @@ private:
     const std::vector<std::string> splitMethods_ ;
 
     void buildIonsInitializer_( IonsInitializer & ionInit,
-                                    ParticleSelector const & selector ) const ;
+                                std::unique_ptr<ParticleSelector> selector ) const ;
 
     uint32 PRAHalfWidth_( GridLayout const & layout ) const ;
 

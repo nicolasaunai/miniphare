@@ -28,7 +28,7 @@ private:
     const std::vector<uint32>  interpolationOrders_ ;
     const std::string pusher_ ;
 
-    std::vector<std::string> splitStrategies_ ;
+    const std::vector<std::string> splitStrategies_ ;
 
 
 public:

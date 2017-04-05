@@ -21,7 +21,7 @@
 
 void MLMDInitializerFactory::buildIonsInitializer_(
         IonsInitializer & ionInit,
-        ParticleSelector const & selector ) const
+        std::unique_ptr<ParticleSelector> selector ) const
 {
 
     Ions const& parentIons = parentPatch_->ions();
@@ -35,7 +35,8 @@ void MLMDInitializerFactory::buildIonsInitializer_(
         Species const& species = parentIons.species(ispe);
 
         std::unique_ptr<ParticleInitializer>
-                particleInit{new MLMDParticleInitializer{species, selector , *splitting}};
+                particleInit{new MLMDParticleInitializer
+            { species, std::move(selector), std::move(splitting) }};
 
         ionInit.masses.push_back( parentIons.species(ispe).mass() );
         ionInit.particleInitializers.push_back( std::move(particleInit) );
@@ -55,7 +56,7 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
                     newPatchCoords_,
                     parentPatch_->layout().dxdydz()} };
 
-    buildIonsInitializer_( *ionInitPtr, *selectorPtr ) ;
+    buildIonsInitializer_( *ionInitPtr, std::move(selectorPtr) ) ;
 
     return ionInitPtr;
 }
@@ -163,7 +164,7 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
                         praEdgeLayout.getBox(),
                         parentPatch_->layout().dxdydz()} } ;
 
-        buildIonsInitializer_( *ionInitPtr, *selectorPtr ) ;
+        buildIonsInitializer_( *ionInitPtr, std::move(selectorPtr) ) ;
 
         // We need the electromagnetic field on the PRA layout
         // of the adequate Patch boundary
