@@ -33,6 +33,11 @@ Split1PartParams split1ParticleInputs[] = {
 class Split1ParticleTest: public ::testing::TestWithParam<Split1PartParams>
 {
 public:
+    std::vector<double> expected_weights ;
+
+    std::vector<double> actual_weights ;
+
+
     Split1PartParams inputs;
 
 
@@ -53,16 +58,45 @@ public:
         // we need an IndexesAndWeights object
         std::unique_ptr<IndexesAndWeights> indexAndWeights { getIndexesAndWeights(inputs.interpOrder) } ;
 
+
+//        SplittingStrategyFactory factory(splitMethods_[ispe],
+//                                         interpolationOrders_[ispe],
+//                                         refinementRatio_) ;
+
+//        std::unique_ptr<SplittingStrategy>
+//                splitting = factory.createSplittingStrategy() ;
+
+
+
+        // the spatial step dx is discretized into
+        // discreteNbr points
         uint32 discreteNbr = 10 ;
 
-        // number of points depending on the order
-        uint32 nbPts = discreteNbr*(inputs.interpOrder +1) ;
-
-        std::vector<double> weightsArray(nbPts, 0.) ;
+        // number of cells depending on the order
+        // 1st order shape function covers 2*dx
+        // 2nd order shape function covers 3*dx
+        // 3rd order shape function covers 4*dx ...
+        uint32 nbCells = discreteNbr*(inputs.interpOrder +1) ;
+        uint32 nbPts = nbCells+1 ;
 
         float deltaMin = -0.5*static_cast<float>(inputs.interpOrder +1) ;
 
+        expected_weights.assign( nbPts, 0. ) ;
+        actual_weights.assign(nbPts, 0.) ;
 
+        /* ------------------------------------------------- */
+        /* Expected weights are obtained by moving           */
+        /* a mother particle (evolving on the coarse mesh)   */
+        /* ------------------------------------------------- */
+
+        // We now create the array of expected weights at a reference node.
+        // To this sake we compute the contribution of a mother particle
+        // at this reference node and next we move it slightly
+        // delta += ik/discreteNbr
+        //
+        // Repeating this process nbPts times, we cover the variation
+        // domain of the shape function
+        //
         for( uint32 ik=0 ; ik<nbPts ; ik++ )
         {
             float delta = deltaMin + static_cast<float>(ik)/static_cast<float>(discreteNbr) ;
@@ -72,15 +106,16 @@ public:
             float iCell = std::floor(delta) ;
             delta = delta - iCell ;
 
-            // update the logical node
+            // compute the shifted logical node
+            // due to iCell displacement
             uint32 shiftedNode =  static_cast<uint32>(iCell) + refNode;
 
-
             // we now initialize a Particle at the reference node
-            Particle partic(
-                        10., 1., {{shiftedNode, 1, 1}},
-            {{delta, 0., 0.}}, {{0., 0., 0.}} );
+            // Particle( weight, charge, icells, deltas, velocities )
+            Particle partic( 10., 1., {{shiftedNode, 1, 1}},
+                           {{delta, 0., 0.}}, {{0., 0., 0.}} );
 
+            // normalized x coordinate
             double reducedX = static_cast<double>(partic.icell[0])
                     + static_cast<double>(partic.delta[0]) ;
 
@@ -90,6 +125,14 @@ public:
 
             std::vector<uint32>::const_iterator low ;
             low = std::lower_bound (indexes.begin(), indexes.end(), refNode) ;
+
+            expected_weights[ik] = weights[*low] ;
+
+
+
+
+
+
 
         }
 
