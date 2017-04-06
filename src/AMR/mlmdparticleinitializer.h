@@ -17,16 +17,17 @@ class MLMDParticleInitializer : public ParticleInitializer
 
 private:
     Species const& particleSource_;
-    ParticleSelector const & selector_;
-    SplittingStrategy const & strategy_;
+
+    std::unique_ptr<ParticleSelector>   selector_;
+    std::unique_ptr<SplittingStrategy>  strategy_;
 
 public:
     MLMDParticleInitializer( Species const& particleSource,
-                             ParticleSelector const & selector,
-                             SplittingStrategy const & strategy )
+                             std::unique_ptr<ParticleSelector> selector,
+                             std::unique_ptr<SplittingStrategy> strategy )
                         : particleSource_{particleSource},
-                          selector_{selector},
-                          strategy_{strategy} {}
+                          selector_{ std::move(selector) },
+                          strategy_{ std::move(strategy) } {}
 
     virtual ~MLMDParticleInitializer() = default;
 

@@ -22,7 +22,7 @@ public:
 
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const override;
-    virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
+
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
 
@@ -47,9 +47,6 @@ private:
     const std::vector<uint32>  interpolationOrders_ ;
     const std::string pusher_ ;
     const std::vector<std::string> splitMethods_ ;
-
-    void readInputFile();
-
 
 };
 

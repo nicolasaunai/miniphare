@@ -39,7 +39,7 @@ private:
     const std::vector<std::string> splitMethods_ ;
 
     void buildIonsInitializer_( IonsInitializer & ionInit,
-                                    ParticleSelector const & selector ) const ;
+                                std::unique_ptr<ParticleSelector> selector ) const ;
 
     uint32 PRAHalfWidth_( GridLayout const & layout ) const ;
 
@@ -75,8 +75,8 @@ public:
 
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const  override;
+
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const  override;
-    virtual std::unique_ptr<OhmInitializer> createOhmInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
 
     virtual Box getBox() const override { return refinedLayout_.getBox(); }
