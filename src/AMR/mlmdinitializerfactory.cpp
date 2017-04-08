@@ -37,6 +37,8 @@ void MLMDInitializerFactory::buildIonsInitializer_(
 
         Species const& species = parentIons.species(ispe);
 
+        selector->interpOrder = interpolationOrders_[ispe] ;
+
         std::unique_ptr<ParticleInitializer>
                 particleInit{new MLMDParticleInitializer
             { species, std::move(selector), std::move(splitting),
