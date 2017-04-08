@@ -21,13 +21,21 @@ private:
     std::unique_ptr<ParticleSelector>   selector_;
     std::unique_ptr<SplittingStrategy>  strategy_;
 
+    GridLayout refinedLayout_;
+
+    const uint32 refinementRatio_ ;
+
 public:
     MLMDParticleInitializer( Species const& particleSource,
                              std::unique_ptr<ParticleSelector> selector,
-                             std::unique_ptr<SplittingStrategy> strategy )
+                             std::unique_ptr<SplittingStrategy> strategy,
+                             GridLayout const & refinedLayout,
+                             uint32 refinementRatio )
                         : particleSource_{particleSource},
                           selector_{ std::move(selector) },
-                          strategy_{ std::move(strategy) } {}
+                          strategy_{ std::move(strategy) },
+                          refinedLayout_{refinedLayout},
+                          refinementRatio_{refinementRatio} {}
 
     virtual ~MLMDParticleInitializer() = default;
 

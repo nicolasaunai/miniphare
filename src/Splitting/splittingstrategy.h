@@ -10,11 +10,13 @@
 #include "utilityphare.h"
 
 #include "Plasmas/particles.h"
+#include "grid/gridlayout.h"
 
 
 
 class SplittingStrategy
 {
+
 public:
 
     SplittingStrategy( std::string name, uint32 nbpts );
