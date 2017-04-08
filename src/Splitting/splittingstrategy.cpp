@@ -39,3 +39,28 @@ void SplittingStrategy::split1D(
 
 
 
+void SplittingStrategy::normalizeMotherPosition1D(
+        const GridLayout & coarseLayout,
+        const GridLayout & refinedLayout,
+        const uint32 refinementRatio,
+        const Particle & mother, Particle & normalizedMother )
+{
+    normalizedMother = mother ;
+
+    double origL0_x = coarseLayout.origin().x_ ;
+    double origL1_x = refinedLayout.origin().x_ ;
+
+    double normDif_x = (origL0_x - origL1_x)/refinedLayout.dx() ;
+
+
+    uint32 icellMother_x = mother.icell[0] * refinementRatio
+                         + static_cast<uint32>(normDif_x) ;
+
+    float deltaMother_x = mother.delta[0] * refinementRatio ;
+
+    normalizedMother.icell[0] = icellMother_x ;
+    normalizedMother.delta[0] = deltaMother_x ;
+
+}
+
+

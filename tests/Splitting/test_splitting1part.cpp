@@ -134,6 +134,10 @@ public:
 
             expected_weights[ik] = weights[*low] ;
 
+            SplittingStrategy::normalizeMotherPosition1D(
+                        refinedLayout_, refinementRatio_,
+                        mother, normalizedMother) ;
+
             std::vector<Particle> childParticles ;
             strategy->split1D( motherParticle, childParticles ) ;
 

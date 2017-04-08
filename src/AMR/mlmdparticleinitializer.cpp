@@ -5,11 +5,6 @@
 
 
 
-void normalizeMotherPosition1D( const GridLayout & refinedLayout,
-                               const uint32 refinementRatio,
-                               const Particle & mother,
-                               Particle & normalizedMother ) ;
-
 
 void MLMDParticleInitializer::loadParticles( std::vector<Particle>& particlesArray ) const
 {
@@ -23,9 +18,10 @@ void MLMDParticleInitializer::loadParticles( std::vector<Particle>& particlesArr
         // look if the 'big' particle is within the Patch domain
         if( selector(mother) )
         {
-            normalizeMotherPosition1D( refinedLayout_,
-                                     refinementRatio_,
-                                     mother, normalizedMother) ;
+            SplittingStrategy::normalizeMotherPosition1D(
+                        coarseLayout_, refinedLayout_,
+                        refinementRatio_,
+                        mother, normalizedMother) ;
 
             std::vector<Particle> childParticles ;
             // We need to split particle and grab its children
@@ -40,28 +36,6 @@ void MLMDParticleInitializer::loadParticles( std::vector<Particle>& particlesArr
         }
     }
 
-
-}
-
-
-void normalizeMotherPosition1D( const GridLayout & refinedLayout,
-                              const uint32 refinementRatio,
-                              const Particle & mother,
-                              Particle & normalizedMother )
-{
-    normalizedMother = mother ;
-
-    double origX = refinedLayout.origin().x_/refinedLayout.dx() ;
-
-    uint32 icellRefinedOrigX = static_cast<uint32>( std::floor(origX) ) ;
-
-    uint32 icellMother_x = mother.icell[0] * refinementRatio
-                         - icellRefinedOrigX ;
-
-    float deltaMother_x = mother.delta[0] * refinementRatio ;
-
-    normalizedMother.icell[0] = icellMother_x ;
-    normalizedMother.delta[0] = deltaMother_x ;
 
 }
 

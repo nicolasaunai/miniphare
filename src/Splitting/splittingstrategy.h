@@ -28,6 +28,12 @@ public:
     void split1D( const Particle & mother,
                   std::vector<Particle> & childParticles ) const ;
 
+    static void normalizeMotherPosition1D(
+            const GridLayout & coarseLayout,
+            const GridLayout & refinedLayout,
+            const uint32 refinementRatio,
+            const Particle & mother, Particle & normalizedMother ) ;
+
 protected:
 
     std::string splitMethod_ ;
