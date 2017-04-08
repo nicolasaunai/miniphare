@@ -10,6 +10,9 @@
 #include "IndexesAndWeights/indexesandweightso3.h"
 #include "IndexesAndWeights/indexesandweightso4.h"
 
+#include "Splitting/splittingstrategy.h"
+#include "Splitting/splittingstrategyfactory.h"
+
 #include "test_commons.h"
 #include "test_splitting1part.h"
 
@@ -17,13 +20,15 @@
 
 std::vector<Split1PartParams> getSplit1ParticleParamsFromFile() ;
 
-std::unique_ptr<IndexesAndWeights>  getIndexesAndWeights( uint32 const & order ) ;
+std::unique_ptr<IndexesAndWeights>  createIndexesAndWeights( uint32 const & order ) ;
 
 
 
 Split1PartParams split1ParticleInputs[] = {
-    //                dxdydz            nbrCellx y z    layout  origin             order  RF    refNode
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 1, 1}}, 1, "yee" , Point{0., 0., 0.}, 1    , 2   , 10)
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 1, 1}},    // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                // dim, layout, origin
+        1, 2, "splitOrder1", 10)                     // order, RF, splitMethod, refNode
 
 };
 
@@ -56,15 +61,16 @@ public:
         uint32 refNode = inputs.referenceNode ;
 
         // we need an IndexesAndWeights object
-        std::unique_ptr<IndexesAndWeights> indexAndWeights { getIndexesAndWeights(inputs.interpOrder) } ;
+        std::unique_ptr<IndexesAndWeights> indexAndWeights
+                     { createIndexesAndWeights(inputs.interpOrder) } ;
 
 
-//        SplittingStrategyFactory factory(splitMethods_[ispe],
-//                                         interpolationOrders_[ispe],
-//                                         refinementRatio_) ;
+        SplittingStrategyFactory factory(inputs.splitMethod,
+                                         inputs.interpOrder,
+                                         inputs.refineFactor ) ;
 
-//        std::unique_ptr<SplittingStrategy>
-//                splitting = factory.createSplittingStrategy() ;
+        std::unique_ptr<SplittingStrategy>
+                strategy = factory.createSplittingStrategy() ;
 
 
 
@@ -112,12 +118,12 @@ public:
 
             // we now initialize a Particle at the reference node
             // Particle( weight, charge, icells, deltas, velocities )
-            Particle partic( 10., 1., {{shiftedNode, 1, 1}},
+            Particle motherParticle( 10., 1., {{shiftedNode, 1, 1}},
                            {{delta, 0., 0.}}, {{0., 0., 0.}} );
 
             // normalized x coordinate
-            double reducedX = static_cast<double>(partic.icell[0])
-                    + static_cast<double>(partic.delta[0]) ;
+            double reducedX = static_cast<double>(motherParticle.icell[0])
+                    + static_cast<double>(motherParticle.delta[0]) ;
 
             // Now, starts the algorithm
             std::vector<uint32> const & indexes = indexAndWeights->computeIndexes( reducedX ) ;
@@ -127,6 +133,9 @@ public:
             low = std::lower_bound (indexes.begin(), indexes.end(), refNode) ;
 
             expected_weights[ik] = weights[*low] ;
+
+            std::vector<Particle> childParticles ;
+            strategy->split1D( motherParticle, childParticles ) ;
 
 
 
@@ -144,7 +153,7 @@ public:
 
 
 
-std::unique_ptr<IndexesAndWeights>  getIndexesAndWeights( uint32 const & order )
+std::unique_ptr<IndexesAndWeights>  createIndexesAndWeights( uint32 const & order )
 {
     std::unique_ptr<IndexesAndWeights> indexAndWeight_ptr {nullptr} ;
 

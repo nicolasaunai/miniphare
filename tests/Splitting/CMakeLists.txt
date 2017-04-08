@@ -10,6 +10,15 @@ set(SOURCES
      ../../src/grid/gridlayoutimplinternals.cpp
      ../../src/vecfield/vecfield.cpp
      ../../src/Field/field.cpp
+     ../../Splitting/splittingstrategy.cpp
+     ../../Splitting/approx_1to4strategy.cpp
+     ../../Splitting/approx_fujistrategy.cpp
+     ../../Splitting/order1_rf2strategy.cpp
+     ../../Splitting/order2_rf2strategy.cpp
+     ../../Splitting/order3_rf2strategy.cpp
+     ../../Splitting/order1_rfnstrategy.cpp
+     ../../Splitting/ordern_rf2strategy.cpp
+     ../../Splitting/ordern_rf3strategy.cpp
      test_splitting1part.cpp
      test_utilities.cpp
      test_commons.cpp
