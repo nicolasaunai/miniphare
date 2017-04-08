@@ -22,13 +22,16 @@ std::vector<Split1PartParams> getSplit1ParticleParamsFromFile() ;
 
 std::unique_ptr<IndexesAndWeights>  createIndexesAndWeights( uint32 const & order ) ;
 
+GridLayout buildRefinedLayout( Split1PartParams const & inputs ) ;
+
+
 
 
 Split1PartParams split1ParticleInputs[] = {
 
     Split1PartParams({{0.1, 0., 0.}}, {{100, 1, 1}},    // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                // dim, layout, origin
-        1, 2, "splitOrder1", 10)                     // order, RF, splitMethod, refNode
+        1, 2, "splitOrder1", 20)                     // order, RF, splitMethod, refNode
 
 };
 
@@ -52,10 +55,13 @@ public:
     {
         inputs = GetParam();
 
-        // we need a layout
-        GridLayout layout{ inputs.dxdydz, inputs.nbrCells,
-                    inputs.nbDim, inputs.layout,
-                    inputs.origin, inputs.interpOrder} ;
+        GridLayout coarseLayout{ inputs.dxdydz, inputs.nbrCells,
+                                 inputs.nbDim , inputs.layout,
+                                 inputs.origin, inputs.interpOrder} ;
+
+
+        GridLayout refinedLayout{ buildRefinedLayout(inputs) } ;
+
 
         // we need a reference node
         uint32 refNode = inputs.referenceNode ;
@@ -90,6 +96,8 @@ public:
         expected_weights.assign( nbPts, 0. ) ;
         actual_weights.assign(nbPts, 0.) ;
 
+        Particle normalizedMother ;
+
         /* ------------------------------------------------- */
         /* Expected weights are obtained by moving           */
         /* a mother particle (evolving on the coarse mesh)   */
@@ -118,12 +126,12 @@ public:
 
             // we now initialize a Particle at the reference node
             // Particle( weight, charge, icells, deltas, velocities )
-            Particle motherParticle( 10., 1., {{shiftedNode, 1, 1}},
+            Particle mother( 10., 1., {{shiftedNode, 1, 1}},
                            {{delta, 0., 0.}}, {{0., 0., 0.}} );
 
             // normalized x coordinate
-            double reducedX = static_cast<double>(motherParticle.icell[0])
-                    + static_cast<double>(motherParticle.delta[0]) ;
+            double reducedX = static_cast<double>(mother.icell[0])
+                    + static_cast<double>(mother.delta[0]) ;
 
             // Now, starts the algorithm
             std::vector<uint32> const & indexes = indexAndWeights->computeIndexes( reducedX ) ;
@@ -134,12 +142,14 @@ public:
 
             expected_weights[ik] = weights[*low] ;
 
+
             SplittingStrategy::normalizeMotherPosition1D(
-                        refinedLayout_, refinementRatio_,
+                        coarseLayout, refinedLayout,
+                        inputs.refineFactor,
                         mother, normalizedMother) ;
 
             std::vector<Particle> childParticles ;
-            strategy->split1D( motherParticle, childParticles ) ;
+            strategy->split1D( normalizedMother, childParticles ) ;
 
 
 
@@ -153,6 +163,25 @@ public:
     }
 
 };
+
+
+
+
+GridLayout buildRefinedLayout( Split1PartParams const & inputs )
+{
+    uint32 RF = inputs.refineFactor ;
+
+    std::array<double, 3> dxdydz = inputs.dxdydz ;
+
+    dxdydz[0] = inputs.dxdydz[0]/RF ;
+    dxdydz[1] = inputs.dxdydz[1]/RF ;
+    dxdydz[2] = inputs.dxdydz[2]/RF ;
+
+    return GridLayout { dxdydz, inputs.nbrCells,
+                inputs.nbDim , inputs.layout,
+                Point{10*inputs.dxdydz[0], 0., 0.},
+                inputs.interpOrder} ;
+}
 
 
 
