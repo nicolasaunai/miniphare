@@ -2,22 +2,27 @@
 
 
 
-void FieldDiagnostic::fillDiagData1D_(Field const& field,
+
+
+/**
+ * @brief FieldDiagnosticComputeStrategy::fillDiagData1D_ takes data in a field
+ * excluding ghost nodes and fill a FieldPack.data field with it
+ * @param field is the Field from which data is taken
+ * @param layout is the GridLayout on which the Field is defined
+ * @param pack is the FieldPack to be filled.
+ */
+void FieldDiagnosticComputeStrategy::fillDiagData1D_(Field const& field,
                                       GridLayout const& layout,
-                                      std::string const& id,
-                                      DiagPack& pack)
+                                      FieldPack& pack)
 {
     // this function will add an element to the container of DiagData
     // typically here this will be the data corresponding to a patch
     uint32 iStart   = layout.physicalStartIndex(field, Direction::X);
     uint32 iEnd     = layout.physicalEndIndex(field, Direction::X);
-    Point origin    = layout.origin();
 
     for (uint32 ixField=iStart, ixData=0; ixField <= iEnd;  ++ixField, ++ixData )
     {
-        Point pos = layout.fieldNodeCoordinates(field, origin, ixField, 0, 0);
-        pack.data[ id + field.name() ][ixData] = static_cast<float>( field(ixField) );
-        pack.depends[id + "x_" + field.name()][ixData] = static_cast<float>(pos.x_);
+        pack.data[ixData] = static_cast<float>( field(ixField) );
     }
 }
 
@@ -25,20 +30,14 @@ void FieldDiagnostic::fillDiagData1D_(Field const& field,
 
 
 
-void FieldDiagnostic::fillDiagData2D_(Field const& field,
-                                      GridLayout const& layout,
-                                      std::string const& id,
-                                      DiagPack& pack)
-{
-    (void)field;
-    throw std::runtime_error("Not Implemented");
-}
 
-
-void FieldDiagnostic::fillDiagData3D_(Field const& field,
+/**
+ * @brief FieldDiagnosticComputeStrategy::fillDiagData2D_ serves the same goal
+ * as fillDiagData1D_ but in 2D. The data in the FieldPack is flattened
+ */
+void FieldDiagnosticComputeStrategy::fillDiagData2D_(Field const& field,
                                       GridLayout const& layout,
-                                      std::string const& id,
-                                      DiagPack& pack)
+                                      FieldPack& pack)
 {
     (void)field;
     throw std::runtime_error("Not Implemented");
@@ -47,131 +46,81 @@ void FieldDiagnostic::fillDiagData3D_(Field const& field,
 
 
 
-void FieldDiagnostic::addVecField_(std::string const& id,
-                                   VecField const& vecField,
-                                   GridLayout const& layout)
+
+
+/**
+ * @brief FieldDiagnosticComputeStrategy::fillDiagData3D_ serves the same goal
+ * as fillDiagData1D_ but in 3D. The data in the FieldPack is flattened
+ */
+void FieldDiagnosticComputeStrategy::fillDiagData3D_(Field const& field,
+                                      GridLayout const& layout,
+                                      FieldPack& pack)
 {
-    Field const& fx = vecField.component(VecField::VecX);
-    Field const& fy = vecField.component(VecField::VecY);
-    Field const& fz = vecField.component(VecField::VecZ);
-
-    std::array<HybridQuantity,3> hybQties;
-
-    hybQties[0]= fx.hybridQty();
-    hybQties[1]= fy.hybridQty();
-    hybQties[2]= fz.hybridQty();
-
-    std::array<uint32, 3> nbrNodesFx = layout.nbrPhysicalNodes(hybQties[0]);
-    std::array<uint32, 3> nbrNodesFy = layout.nbrPhysicalNodes(hybQties[1]);
-    std::array<uint32, 3> nbrNodesFz = layout.nbrPhysicalNodes(hybQties[2]);
-
-
-
-    DiagPack pack;
-    pack.depends.insert( {id + "x_" + fx.name(), std::vector<float>(nbrNodesFx[0])} );
-    pack.depends.insert( {id + "x_" + fy.name(), std::vector<float>(nbrNodesFy[0])} );
-    pack.depends.insert( {id + "x_" + fz.name(), std::vector<float>(nbrNodesFz[0])} );
-
-    uint64 totalSizeFx = nbrNodesFx[0]*nbrNodesFx[1]*nbrNodesFx[2];
-    uint64 totalSizeFy = nbrNodesFy[0]*nbrNodesFy[1]*nbrNodesFy[2];
-    uint64 totalSizeFz = nbrNodesFz[0]*nbrNodesFz[1]*nbrNodesFz[2];
-
-    pack.data.insert( {id + fx.name(), std::vector<float>(totalSizeFx)} );
-    pack.data.insert( {id + fy.name(), std::vector<float>(totalSizeFy)} );
-    pack.data.insert( {id + fz.name(), std::vector<float>(totalSizeFz)} );
-
-    pack.nbrNodes.insert( {id + "n_" + fx.name(), std::array<uint32,3>{ nbrNodesFx } } );
-    pack.nbrNodes.insert( {id + "n_" + fy.name(), std::array<uint32,3>{ nbrNodesFy } } );
-    pack.nbrNodes.insert( {id + "n_" + fz.name(), std::array<uint32,3>{ nbrNodesFz } } );
-
-    if (layout.nbDimensions() >= 2)
-    {
-        pack.depends.insert( {id + "y_" + fx.name(), std::vector<float>(nbrNodesFx[1])} );
-        pack.depends.insert( {id + "y_" + fy.name(), std::vector<float>(nbrNodesFy[1])} );
-        pack.depends.insert( {id + "y_" + fz.name(), std::vector<float>(nbrNodesFz[1])} );
-    }
-
-    if (layout.nbDimensions() == 3)
-    {
-        pack.depends.insert( {id + "z_" + fx.name(), std::vector<float>(nbrNodesFx[2])} );
-        pack.depends.insert( {id + "z_" + fy.name(), std::vector<float>(nbrNodesFy[2])} );
-        pack.depends.insert( {id + "z_" + fz.name(), std::vector<float>(nbrNodesFz[2])} );
-    }
-
-
-    switch (layout.nbDimensions() )
-    {
-        case 1:
-        fillDiagData1D_(vecField.component(0), layout, id, pack);
-        fillDiagData1D_(vecField.component(1), layout, id, pack);
-        fillDiagData1D_(vecField.component(2), layout, id, pack);
-        break;
-
-        case 2:
-        fillDiagData2D_(vecField.component(0), layout, id, pack);
-        fillDiagData2D_(vecField.component(1), layout, id, pack);
-        fillDiagData2D_(vecField.component(2), layout, id, pack);
-        break;
-
-        case 3:
-        fillDiagData3D_(vecField.component(0), layout, id, pack);
-        fillDiagData3D_(vecField.component(1), layout, id, pack);
-        fillDiagData3D_(vecField.component(2), layout, id, pack);
-        break;
-    }
-
-
-    diagPack_.push_back( std::move(pack) );
-
+    (void)field;
+    throw std::runtime_error("Not Implemented");
 }
 
 
 
 
 
-void FieldDiagnostic::addField_(std::string const& id,
-                                Field const& field,
-                                GridLayout const& layout)
+
+
+
+/**
+ * @brief fillPack_ knows how to extract information from a field and
+ * a layout to fill a FieldPack correctly.
+ */
+void FieldDiagnosticComputeStrategy::fillPack_(FieldPack& pack, Field const& field, GridLayout const& layout)
 {
+    HybridQuantity hybQty = field.hybridQty();
+    pack.nbrNodes = layout.nbrPhysicalNodes(hybQty);
+    uint64 totalSize = pack.nbrNodes[0]*pack.nbrNodes[1]*pack.nbrNodes[2];
+    pack.centerings[0] = layout.fieldCentering(field, Direction::X);
+    pack.centerings[1] = layout.fieldCentering(field, Direction::Y);
+    pack.centerings[2] = layout.fieldCentering(field, Direction::Z);
+    pack.nbrDimensions = layout.nbDimensions();
+    pack.data.reserve(totalSize);
+    pack.origin = layout.origin();
 
-    HybridQuantity hybQty;
-
-    hybQty= field.hybridQty();
-
-    std::array<uint32, 3> nbrNodes = layout.nbrPhysicalNodes(hybQty);
-
-    DiagPack pack;
-    pack.depends.insert( {id + "x_" + field.name(), std::vector<float>(nbrNodes[0])} );
-
-    uint64 totalSize = nbrNodes[0]*nbrNodes[1]*nbrNodes[2];
-
-    pack.data.insert( {id + field.name(), std::vector<float>(totalSize)} );
-    pack.nbrNodes.insert( {id + "n_" + field.name(), std::array<uint32,3>{ nbrNodes } } );
-
-    if (layout.nbDimensions() >= 2)
+    switch (layout.nbDimensions())
     {
-        pack.depends.insert( {id + "y_" + field.name(), std::vector<float>(nbrNodes[1])} );
-    }
-
-    if (layout.nbDimensions() == 3)
-    {
-        pack.depends.insert( {id + "z_" + field.name(), std::vector<float>(nbrNodes[2])} );
-    }
-
-
-    switch (layout.nbDimensions() )
-    {
-        case 1:
-        fillDiagData1D_(field, layout, id, pack);
+    case 1:
+        fillDiagData1D_(field, layout, pack);
         break;
-
-        case 2:
-        fillDiagData2D_(field, layout, id, pack);
+    case 2:
+        fillDiagData2D_(field, layout, pack);
         break;
-
-        case 3:
-        fillDiagData3D_(field, layout, id, pack);
+    case 3:
+        fillDiagData3D_(field, layout, pack);
         break;
     }
-    diagPack_.push_back( std::move(pack) );
+}
+
+
+
+
+
+
+/**
+ * @brief compute loops over a Hierarchy and for each Patch call the abstract
+ * FieldDiagnosticComputeStrategy::compute() method. From this methods it gets
+ * a FieldPack that is added to the FieldPack vector.
+ */
+void FieldDiagnostic:: compute(Hierarchy const& hierarchy)
+{
+    FieldPack pack;
+    if (strat_ == nullptr)
+        throw std::runtime_error("FieldDiagnostic Error - No compute Strategy");
+
+
+    auto const& patchTable  = hierarchy.patchTable();
+    for (auto const& level : patchTable)
+    {
+        for (auto const& patch : level)
+        {
+            pack = strat_->compute(*patch);
+        }
+    }
+    packs_.push_back(std::move(pack));
 }

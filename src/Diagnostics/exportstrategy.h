@@ -4,7 +4,9 @@
 
 #include "Time/time.h"
 #include "Diagnostics/diagnostics.h"
-
+#include "Diagnostics/fluiddiagnostic.h"
+#include "Diagnostics/emdiagnostic.h"
+//#include "Diagnostics/
 
 
 
@@ -20,7 +22,8 @@ class ExportStrategy
 private:
 
 public:
-    virtual void save(Diagnostic const& diag, Time const& timeManager) = 0;
+    virtual void saveEMDiagnostic(EMDiagnostic const& diag, Time const& timeManager) = 0;
+    virtual void saveFluidDiagnostic(FluidDiagnostic const& diag, Time const& timeManager) = 0;
 
     virtual ~ExportStrategy() = default;
 

@@ -22,27 +22,6 @@
 #include "Electromag/electromag.h"
 
 
-// all data that will ever be written by PHARE
-// will have to be put in there.
-// this is the most general form of data we
-// can use, that enable ExportStrategy to write
-// any kind of concrete Diagnostic
-// and therefore be implemented as a Bridge pattern
-
-// this can take field data (depends=x, y, z; data= Ex, Ey, Ez)
-// or particle data (depends = id_particle; data = x,y,z,vx,vy,vz)
-// or 1 orbit data (depends=time; data=x,y,z)
-// etc.
-struct DiagPack
-{
-    std::unordered_map<std::string, std::vector<float>>  depends;
-    std::unordered_map<std::string, std::vector<float>>  data;
-    std::unordered_map<std::string, std::array<uint32,3>> nbrNodes;
-};
-
-
-
-
 
 // that's the standard Diagnostic interface
 // all diagnostics must respect this
@@ -51,30 +30,21 @@ class Diagnostic
 {
 protected:
     std::string name_;
-    std::vector<DiagPack> diagPack_; // one diagData per patch
+    uint32 id_;
+    //std::vector<DiagPack> diagPack_; // one diagData per patch
     //GridLayout layout_;
 
 public:
-    Diagnostic(std::string name)
-        :name_{name}{}
+    Diagnostic(uint32 id, std::string name)
+        :name_{name}, id_{id} {}
 
     std::string const& name() const {return name_;}
-
-    std::vector<DiagPack> const& data() const
-    {
-        std::cout << "getting Diganostic data" << std::endl;
-        return diagPack_;
-    }
-
-
+    uint32 id() const {return id_;}
     virtual void compute(Hierarchy const& hierarchy) = 0;
-
-    void flushDiagPacks() {std::vector<DiagPack> tmp;  std::swap(tmp,diagPack_);}
 
     virtual ~Diagnostic() = default;
 
 };
-
 
 
 

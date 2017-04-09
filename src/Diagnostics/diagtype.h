@@ -8,7 +8,7 @@
 
 
 
-enum class DiagType {E, B, Ni};
+enum class DiagType {EM, FLUID, PARTICLE, ORBIT, PROBE};
 
 
 

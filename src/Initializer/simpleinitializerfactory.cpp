@@ -279,20 +279,16 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
 
     initializer->exportType = ExportStrategyType::ASCII;
 
-    initializer->diagTypes.push_back(DiagType::E);
-    initializer->diagTypes.push_back(DiagType::B);
+    EMDiagInitializer emDiag;
+    emDiag.computingIterations.push_back({1, 10, 20, 22});
+    emDiag.writingIterations.push_back({1, 10, 20, 22});
+    initializer->emInitializers.push_back(std::move(emDiag));
 
-    std::vector<uint32> computingIterationsE{1, 10, 20, 22};
-    std::vector<uint32> computingIterationsB{2, 11, 24, 54};
-
-    std::vector<uint32> writingIterationsE{1, 10, 20, 22};
-    std::vector<uint32> writingIterationsB{2, 11, 24, 54};
-
-    initializer->computingIterations.push_back(std::move(computingIterationsE));
-    initializer->computingIterations.push_back(std::move(computingIterationsB));
-
-    initializer->writingIterations.push_back(std::move(writingIterationsE));
-    initializer->writingIterations.push_back(std::move(writingIterationsB));
+    FluidDiagInitializer fluidDiag;
+    fluidDiag.speciesName = "proton1";
+    fluidDiag.computingIterations.push_back({2, 11, 24, 54});
+    fluidDiag.writingIterations.push_back({2, 11, 24, 54});
+    initializer->fluidInitializers.push_back(std::move(fluidDiag));
 
     return initializer;
 }

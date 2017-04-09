@@ -9,11 +9,13 @@
 #include "exportstrategy.h"
 #include "exportstrategy.h"
 #include "grid/gridlayout.h"
-#include "diagnosticfactory.h"
 #include "diagnosticscheduler.h"
 #include "Diagnostics/diagtype.h"
 #include "exportstrategyfactory.h"
+#include "Diagnostics/emdiagnostic.h"
+#include "Diagnostics/fluiddiagnostic.h"
 #include "Initializer/diagnosticinitializer.h"
+
 
 /**
  * @brief The DiagnosticsManager class is the interface to manipulate all code diagnostics
@@ -27,7 +29,13 @@ class DiagnosticsManager
 {
 private:
 
-    DiagUnorderedMap< DiagType, std::shared_ptr<Diagnostic> > diags_;
+    static uint32 id;
+    std::vector<std::unique_ptr<FluidDiagnostic> > fluidDiags_;
+    std::vector<std::unique_ptr<EMDiagnostic> > emDiags_;
+    //std::vector<ParticleDiagnostic> partDiags_;
+    //std::vector<OrbitDiagnostic> orbitDiags_;
+    //std::vector<ProbeDiagnostic> probeDiags_;
+    //std::vector<GlobalDiagnostic> globalDiags_;
     std::unique_ptr<ExportStrategy> exportStrat_;
     DiagnosticScheduler scheduler_;
 
@@ -37,9 +45,14 @@ public:
     DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> initializer);
 
 
-    void newDiagnostic(DiagType type,
-                       std::vector<uint32> const& computingIterations,
-                       std::vector<uint32> const& writingIterations);
+    void newFluidDiagnostic(std::string speciesName,
+                            std::vector<uint32> const& computingIterations,
+                            std::vector<uint32> const& writingIterations);
+
+    void newEMDiagnostic(std::vector<uint32> const& computingIterations,
+                         std::vector<uint32> const& writingIterations);
+
+
 
     void compute(Time const& timeManager, Hierarchy const& hierarchy);
 

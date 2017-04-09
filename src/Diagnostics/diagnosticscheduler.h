@@ -40,52 +40,52 @@ class DiagnosticScheduler
 {
 private:
 
-    DiagUnorderedMap<DiagType, std::vector<uint32> > computingIterations_;
-    DiagUnorderedMap<DiagType, std::vector<uint32> > writingIterations_;
-    DiagUnorderedMap<DiagType, uint32> nextComputingIterationIndex_;
-    DiagUnorderedMap<DiagType, uint32> nextWritingIterationIndex_;
+    DiagUnorderedMap<uint32, std::vector<uint32> > computingIterations_;
+    DiagUnorderedMap<uint32, std::vector<uint32> > writingIterations_;
+    DiagUnorderedMap<uint32, uint32> nextComputingIterationIndex_;
+    DiagUnorderedMap<uint32, uint32> nextWritingIterationIndex_;
 
 public:
 
     DiagnosticScheduler() = default;
 
-    void registerDiagnostic(DiagType type,
+    void registerDiagnostic(uint32 id,
                             std::vector<uint32> const& computingIterations,
                             std::vector<uint32> const& writingIterations);
 
-    inline bool timeToWrite(Time const& timeManager, DiagType type)
+    inline bool isTimeToWrite(Time const& timeManager, uint32 diagID)
     {
         uint32 it = timeManager.currentIteration();
         bool ret = false;
-        uint32 index = nextWritingIterationIndex_[type];
+        uint32 index = nextWritingIterationIndex_[diagID];
 
         // if index == size it means we've done all the compute already
-        if (index != writingIterations_[type].size()+1)
+        if (index != writingIterations_[diagID].size()+1)
         {
-            if (writingIterations_[type][index] == it)
+            if (writingIterations_[diagID][index] == it)
             {
                 ret = true;
-                nextWritingIterationIndex_[type]++;
+                nextWritingIterationIndex_[diagID]++;
             }
         }
         return ret;
     }
 
 
-    inline bool timeToCompute(Time const& timeManager, DiagType type)
+    inline bool isTimeToCompute(Time const& timeManager, uint32 diagID)
     {
         uint32 it = timeManager.currentIteration();
         bool ret = false;
-        uint32 index = nextComputingIterationIndex_[type];
+        uint32 index = nextComputingIterationIndex_[diagID];
 
         // if index is == to the size it means we've done
         // all the write already
-        if (index != writingIterations_[type].size()+1)
+        if (index != writingIterations_[diagID].size()+1)
         {
-            if (computingIterations_[type][index] == it)
+            if (computingIterations_[diagID][index] == it)
             {
                 ret = true;
-                nextComputingIterationIndex_[type]++;
+                nextComputingIterationIndex_[diagID]++;
             }
         }
         return ret;

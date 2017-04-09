@@ -1,17 +1,26 @@
 #include "diagnosticmanager.h"
 
 
+uint32 DiagnosticsManager::id = 0;
+
 
 DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> initializer)
-    : diags_{},
+    : fluidDiags_{},
+      emDiags_{},
       exportStrat_{ExportStrategyFactory::makeExportStrategy(initializer->exportType)},
       scheduler_{}
 {
-    for (uint32 iDiag=0; iDiag < initializer->diagTypes.size(); ++iDiag)
+    for (uint32 iDiag=0; iDiag < initializer->emInitializers.size(); ++iDiag)
     {
-        newDiagnostic( initializer->diagTypes[iDiag],
-                       initializer->computingIterations[iDiag],
-                       initializer->writingIterations[iDiag]);
+        newEMDiagnostic(initializer->emInitializers[iDiag].computingIterations[iDiag],
+                        initializer->emInitializers[iDiag].writingIterations[iDiag]);
+    }
+
+    for (uint32 iDiag=0; iDiag < initializer->fluidInitializers.size(); ++iDiag)
+    {
+        newFluidDiagnostic(initializer->fluidInitializers[iDiag].speciesName,
+                           initializer->fluidInitializers[iDiag].computingIterations[iDiag],
+                           initializer->fluidInitializers[iDiag].writingIterations[iDiag]);
     }
 }
 
@@ -20,24 +29,28 @@ DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> in
 
 
 
-/**
- * @brief DiagnosticsManager::newDiagnostic add a new kind of Diagnostic to the DiagnosticManager
- * @param type is the kind of Diagnostic to be added
- * @param computingIterations contains all iterations at which the Diagnostic
- * will have to be calculated
- * @param writingIterations contains all iterations at which the Diagnostic will be written to disk
- */
-void DiagnosticsManager::newDiagnostic(DiagType type,
-                                       std::vector<uint32> const& computingIterations,
-                                       std::vector<uint32> const& writingIterations)
+//TODO : add 'id' to diagnostic fields too so that each of them
+// know their id.
+void DiagnosticsManager::newFluidDiagnostic(std::string speciesName,
+                                           std::vector<uint32> const& computingIterations,
+                                           std::vector<uint32> const& writingIterations)
 {
-    // create a new diagnostic of type 'type'
-    std::shared_ptr<Diagnostic> newDiag = DiagnosticFactory::makeDiagnostic(type);
-    diags_.insert( {type, newDiag} );
-
-    // register to the scheduler
-    scheduler_.registerDiagnostic(type, computingIterations, writingIterations);
+    id ++; // new diagnostic identifier
+    fluidDiags_.push_back(std::unique_ptr<FluidDiagnostic> { new FluidDiagnostic{id, speciesName}});
+    scheduler_.registerDiagnostic(id++, computingIterations, writingIterations);
 }
+
+
+
+void DiagnosticsManager::newEMDiagnostic(std::vector<uint32> const& computingIterations,
+                                         std::vector<uint32> const& writingIterations)
+{
+    id ++; // new diagnostic identifier
+    emDiags_.push_back(std::unique_ptr<EMDiagnostic> { new EMDiagnostic{id}});
+    scheduler_.registerDiagnostic(id++, computingIterations, writingIterations);
+}
+
+
 
 
 
@@ -50,16 +63,20 @@ void DiagnosticsManager::newDiagnostic(DiagType type,
  */
 void DiagnosticsManager::compute(Time const& timeManager, Hierarchy const& hierarchy)
 {
-    for (auto const& diagPair : diags_)
-    {
-        DiagType type    =  diagPair.first;
-        Diagnostic& diag = *diagPair.second;
+   for (auto& diag : emDiags_)
+   {
+       if ( scheduler_.isTimeToCompute(timeManager, diag->id()) )
+            diag->compute(hierarchy);
+   }
 
-        if (scheduler_.timeToCompute(timeManager, type) )
-        {
-            diag.compute(hierarchy);
-        }
-    }
+   for (auto& diag : fluidDiags_)
+   {
+       if ( scheduler_.isTimeToCompute(timeManager, diag->id()) )
+            diag->compute(hierarchy);
+   }
+
+   // other kind of diagnostics here...
+
 }
 
 
@@ -74,15 +91,17 @@ void DiagnosticsManager::compute(Time const& timeManager, Hierarchy const& hiera
  */
 void DiagnosticsManager::save(Time const& timeManager)
 {
-    for (auto const& diagPair : diags_)
-    {
-        DiagType type = diagPair.first;
-        if (scheduler_.timeToWrite(timeManager, type) )
-        {
-            exportStrat_->save(*diagPair.second, timeManager);
 
-            // we've written data on disk, packs can now be removed
-            diagPair.second->flushDiagPacks();
-        }
+    for (auto& diag : emDiags_)
+    {
+        if (scheduler_.isTimeToWrite(timeManager, diag->id()))
+             exportStrat_->saveEMDiagnostic(*diag, timeManager);
+    }
+
+
+    for (auto& diag : fluidDiags_)
+    {
+        if (scheduler_.isTimeToWrite(timeManager, diag->id()))
+             exportStrat_->saveFluidDiagnostic(*diag, timeManager);
     }
 }
