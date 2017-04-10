@@ -9,25 +9,6 @@
 
 
 
-// trick seen here
-// http://stackoverflow.com/questions/18837857/cant-use-enum-class-as-unordered-map-key
-// to use an enum class as a key in unordered_map
-struct EnumClassHash
-{
-    template <typename T>
-    std::size_t operator()(T t) const
-    {
-        return static_cast<std::size_t>(t);
-    }
-};
-
-
-template <typename Key>
-using HashType = typename std::conditional<std::is_enum<Key>::value, EnumClassHash, std::hash<Key>>::type;
-
-template <typename Key, typename T>
-using DiagUnorderedMap = std::unordered_map<Key, T, HashType<Key>>;
-
 
 
 // this object is in charge of saying TRUE or FALSE if a particular
@@ -40,10 +21,10 @@ class DiagnosticScheduler
 {
 private:
 
-    DiagUnorderedMap<uint32, std::vector<uint32> > computingIterations_;
-    DiagUnorderedMap<uint32, std::vector<uint32> > writingIterations_;
-    DiagUnorderedMap<uint32, uint32> nextComputingIterationIndex_;
-    DiagUnorderedMap<uint32, uint32> nextWritingIterationIndex_;
+    std::unordered_map<uint32, std::vector<uint32> > computingIterations_;
+    std::unordered_map<uint32, std::vector<uint32> > writingIterations_;
+    std::unordered_map<uint32, uint32> nextComputingIterationIndex_;
+    std::unordered_map<uint32, uint32> nextWritingIterationIndex_;
 
 public:
 
