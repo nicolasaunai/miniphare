@@ -106,8 +106,10 @@ protected:
     std::vector<float> data(FieldPack const& data) const;
     uint32 nbrDimensions(FieldPack const& pack) const;
 
+    void flushPacks() {std::vector<FieldPack> tmp; std::swap(tmp, packs_);}
 
     virtual void compute(Hierarchy const& hierarchy) final;
+
 
 
 };
