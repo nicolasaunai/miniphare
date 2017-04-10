@@ -6,7 +6,7 @@
 
 #include "types.h"
 #include "Diagnostics/diagtype.h"
-#include "Diagnostics/exportstrategytypes.h"
+#include "Diagnostics/Export/exportstrategytypes.h"
 
 
 

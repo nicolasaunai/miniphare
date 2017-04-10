@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "AMR/patch.h"
-#include "Diagnostics/fielddiagnostic.h"
+#include "Diagnostics/FieldDiagnostics/fielddiagnostic.h"
 
 
 class EMDiagnostic : public FieldDiagnostic

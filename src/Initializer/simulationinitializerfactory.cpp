@@ -1,7 +1,10 @@
 
-#include "simulationinitializerfactory.h"
+#include <memory>
+
 #include "pythoninitializerfactory.h"
 #include "simpleinitializerfactory.h"
+#include "simulationinitializerfactory.h"
+
 
 
 

@@ -6,15 +6,18 @@
 #include <vector>
 
 #include "AMR/patchdata.h"
-#include "exportstrategy.h"
-#include "exportstrategy.h"
 #include "grid/gridlayout.h"
+
 #include "diagnosticscheduler.h"
 #include "Diagnostics/diagtype.h"
-#include "exportstrategyfactory.h"
-#include "Diagnostics/emdiagnostic.h"
-#include "Diagnostics/fluiddiagnostic.h"
+
 #include "Initializer/diagnosticinitializer.h"
+
+#include "Diagnostics/Export/exportstrategy.h"
+#include "Diagnostics/Export/exportstrategyfactory.h"
+
+#include "Diagnostics/FieldDiagnostics/Fluid/fluiddiagnostic.h"
+#include "Diagnostics/FieldDiagnostics/Electromag/emdiagnostic.h"
 
 
 /**

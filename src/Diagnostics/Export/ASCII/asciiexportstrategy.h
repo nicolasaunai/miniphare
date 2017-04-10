@@ -1,7 +1,7 @@
 #ifndef ASCIIEXPORTSTRATEGY_H
 #define ASCIIEXPORTSTRATEGY_H
 
-#include "exportstrategy.h"
+#include "Diagnostics/Export/exportstrategy.h"
 #include "Diagnostics/diagnostics.h"
 
 // a concrete ExportStrategy is to write Ascii files

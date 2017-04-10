@@ -4,8 +4,8 @@
 
 #include "Time/time.h"
 #include "Diagnostics/diagnostics.h"
-#include "Diagnostics/fluiddiagnostic.h"
-#include "Diagnostics/emdiagnostic.h"
+#include "Diagnostics/FieldDiagnostics/Fluid/fluiddiagnostic.h"
+#include "Diagnostics/FieldDiagnostics/Electromag/emdiagnostic.h"
 //#include "Diagnostics/
 
 

@@ -8,7 +8,7 @@
 #include "Field/field.h"
 #include "AMR/patchdata.h"
 #include "Plasmas/species.h"
-#include "Diagnostics/fielddiagnostic.h"
+#include "Diagnostics/FieldDiagnostics/fielddiagnostic.h"
 
 
 

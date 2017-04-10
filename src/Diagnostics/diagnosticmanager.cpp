@@ -1,5 +1,7 @@
+
+
 #include "diagnosticmanager.h"
-#include "Diagnostics/fluiddiagnostic.h"
+#include "Diagnostics/FieldDiagnostics/Fluid/fluiddiagnostic.h"
 
 
 uint32 DiagnosticsManager::id = 0;

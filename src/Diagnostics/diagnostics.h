@@ -31,8 +31,6 @@ class Diagnostic
 protected:
     std::string name_;
     uint32 id_;
-    //std::vector<DiagPack> diagPack_; // one diagData per patch
-    //GridLayout layout_;
 
 public:
     Diagnostic(uint32 id, std::string name)
@@ -40,6 +38,7 @@ public:
 
     std::string const& name() const {return name_;}
     uint32 id() const {return id_;}
+
     virtual void compute(Hierarchy const& hierarchy) = 0;
 
     virtual ~Diagnostic() = default;
