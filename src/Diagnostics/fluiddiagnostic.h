@@ -20,8 +20,10 @@ private:
 
 public:
 
-    FluidDiagnostic(uint32 id, std::string speciesName)
-        : FieldDiagnostic{id, "fluid_"+speciesName},
+    FluidDiagnostic(uint32 id,
+                    std::string speciesName,
+                    std::unique_ptr<FieldDiagnosticComputeStrategy> strat)
+        : FieldDiagnostic{id, "fluid_"+speciesName, std::move(strat)},
           speciesName_{speciesName} {}
 
     std::string const& speciesName() {return speciesName_;}
@@ -29,36 +31,50 @@ public:
 
 
 
-struct FieldPack2
-{
-    std::vector<float> data_;
-    std::array<uint32, 3> nbrNodes_;
-    std::array<QtyCentering,3> centerings_;
-    uint32 nbrDimensions_;
-};
 
-
-
-class RhoSpeciesDiag : FieldDiagnosticComputeStrategy
+class RhoSpeciesDiag : public FieldDiagnosticComputeStrategy
 {
 private:
-    uint32 speciesID_;
+    std::string speciesName_;
 
 public:
-    RhoSpeciesDiag(uint32 id) : speciesID_{id}{}
+    RhoSpeciesDiag(std::string speciesName) : speciesName_{speciesName}{}
 
     FieldPack virtual compute(Patch const& patch) override
     {
-        std::cout << "computing RhoSpeciesDiag for species " << speciesID_ << std::endl;
+        std::cout << "computing RhoSpeciesDiag for species " << speciesName_ << std::endl;
         FieldPack pack;
 
         PatchData const& patchData = patch.data();
-        Field const& rho_s = patchData.ions().species(speciesID_).rho();
+        Field const& rho_s = patchData.ions().species(speciesName_).rho();
         GridLayout const& layout = patch.layout();
 
         fillPack_(pack, rho_s, layout);
 
         return pack;
+    }
+};
+
+
+
+
+class FluidDiagnosticFactory
+{
+public:
+    static std::unique_ptr<FluidDiagnostic> createFluidDiagnostic(uint32 id, std::string type,
+                                                                  std::string speciesName)
+    {
+
+        if (type == "rho_s")
+        {
+            std::unique_ptr<FieldDiagnosticComputeStrategy> strat{new RhoSpeciesDiag{speciesName}};
+
+            std::unique_ptr<FluidDiagnostic> ptr{new FluidDiagnostic{id ,speciesName,
+                                                                     std::move(strat) } };
+
+            return ptr;
+        }
+        return nullptr;
     }
 };
 

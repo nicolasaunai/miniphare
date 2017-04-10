@@ -2,11 +2,13 @@
 #define IONS_H
 
 #include <vector>
+#include <string>
+#include <unordered_map>
 
+#include "types.h"
 #include "species.h"
 #include "Field/field.h"
 #include "grid/gridlayout.h"
-#include "types.h"
 #include "Initializer/ionsinitializer.h"
 
 
@@ -29,6 +31,7 @@ class Ions
 private:
 
     std::vector <Species> speciesArray_;
+    std::unordered_map<std::string, uint32> name2ID_;
     GridLayout layout_;
     Field rho_;
     VecField bulkVel_;
@@ -48,10 +51,17 @@ public:
     void resetBulkMoments(){rho_.zero(); bulkVel_.zero();}
     void resetSpeciesMoments(){for (Species& spe : speciesArray_) spe.resetMoments();}
 
-
     uint32 nbrSpecies() const {return static_cast<uint32>(speciesArray_.size()) ;}
+
+    uint32 speciesID(std::string name) const {auto search =  name2ID_.find(name);
+                                              if (search != name2ID_.end()) return search->second;
+                                              else throw std::runtime_error("No Such Species");}
+
     Species& species(uint32 index);
     Species const& species(uint32 index) const;
+    Species const& species(std::string name) const;
+    Species& species(std::string name);
+
     //std::vector<Species>& species() {return speciesArray_;}
 
     Field& rho() {return rho_;}

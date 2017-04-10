@@ -45,11 +45,12 @@ public:
     DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> initializer);
 
 
-    void newFluidDiagnostic(std::string speciesName,
+    void newFluidDiagnostic(std::string type, std::string speciesName,
                             std::vector<uint32> const& computingIterations,
                             std::vector<uint32> const& writingIterations);
 
-    void newEMDiagnostic(std::vector<uint32> const& computingIterations,
+    void newEMDiagnostic(std::string type,
+                         std::vector<uint32> const& computingIterations,
                          std::vector<uint32> const& writingIterations);
 
 

@@ -213,7 +213,8 @@ std::unique_ptr<BoundaryCondition> SimpleInitializerFactory::createBoundaryCondi
 
 
 /**
- * @brief SimpleInitializerFactory::createElectromagInitializer return a ElectromagInitializer for 1D periodic simulation. Bx=1, By=Bz=Ex=Ey=Ez=0.
+ * @brief SimpleInitializerFactory::createElectromagInitializer return a ElectromagInitializer
+ * for 1D periodic simulation.
  * @return
  */
 std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectromagInitializer() const
@@ -261,17 +262,6 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
 
 /**
  * @brief SimpleInitializerFactory::createDiagnosticInitializer is a hard-coded DiagnosticInitializer
- *
- *
-
-struct DiagnosticInitializer
-{
-    std::vector<DiagType> diagTypes;
-    std::vector< std::vector<uint32> > computingIterations;
-    std::vector<std::vector<uint32> > writingIterations;
-    ExportStrategyType exportType;
-};
-
  */
 std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosticInitializer() const
 {
@@ -279,13 +269,15 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
 
     initializer->exportType = ExportStrategyType::ASCII;
 
-    EMDiagInitializer emDiag;
+    /*EMDiagInitializer emDiag;
     emDiag.computingIterations.push_back({1, 10, 20, 22});
     emDiag.writingIterations.push_back({1, 10, 20, 22});
     initializer->emInitializers.push_back(std::move(emDiag));
+    */
 
     FluidDiagInitializer fluidDiag;
     fluidDiag.speciesName = "proton1";
+    fluidDiag.typeName = "rho_s";
     fluidDiag.computingIterations.push_back({2, 11, 24, 54});
     fluidDiag.writingIterations.push_back({2, 11, 24, 54});
     initializer->fluidInitializers.push_back(std::move(fluidDiag));

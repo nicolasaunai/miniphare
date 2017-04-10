@@ -91,8 +91,10 @@ protected:
     std::unique_ptr<FieldDiagnosticComputeStrategy> strat_;
 
 
-    FieldDiagnostic(uint32 id, std::string diagName)
-        : Diagnostic{id, diagName} {}
+    FieldDiagnostic(uint32 id, std::string diagName, std::unique_ptr<FieldDiagnosticComputeStrategy> strat)
+        : Diagnostic{id, diagName},
+          strat_{std::move(strat)}
+    {}
 
 
  public:

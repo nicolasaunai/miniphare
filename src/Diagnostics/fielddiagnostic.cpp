@@ -107,7 +107,7 @@ void FieldDiagnosticComputeStrategy::fillPack_(FieldPack& pack, Field const& fie
  * FieldDiagnosticComputeStrategy::compute() method. From this methods it gets
  * a FieldPack that is added to the FieldPack vector.
  */
-void FieldDiagnostic:: compute(Hierarchy const& hierarchy)
+void FieldDiagnostic::compute(Hierarchy const& hierarchy)
 {
     FieldPack pack;
     if (strat_ == nullptr)

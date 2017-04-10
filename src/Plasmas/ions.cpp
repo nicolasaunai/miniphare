@@ -43,6 +43,8 @@
                                                  std::move(ionInitializer->particleInitializers[speciesIndex]),
                                                  ionInitializer->names[speciesIndex]} );
 
+         name2ID_.insert({ionInitializer->names[speciesIndex], speciesIndex});
+
      }
  }
 
@@ -62,6 +64,20 @@
  {
     return speciesArray_[index];
  }
+
+
+ Species const& Ions::species(std::string name) const
+ {
+    return speciesArray_[speciesID(name)];
+ }
+
+
+ Species& Ions::species(std::string name)
+ {
+    return speciesArray_[speciesID(name)];
+ }
+
+
 
 
  /**

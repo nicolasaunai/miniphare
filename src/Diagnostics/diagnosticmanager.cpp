@@ -1,4 +1,5 @@
 #include "diagnosticmanager.h"
+#include "Diagnostics/fluiddiagnostic.h"
 
 
 uint32 DiagnosticsManager::id = 0;
@@ -12,13 +13,15 @@ DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> in
 {
     for (uint32 iDiag=0; iDiag < initializer->emInitializers.size(); ++iDiag)
     {
-        newEMDiagnostic(initializer->emInitializers[iDiag].computingIterations[iDiag],
+        newEMDiagnostic(initializer->emInitializers[iDiag].typeName,
+                        initializer->emInitializers[iDiag].computingIterations[iDiag],
                         initializer->emInitializers[iDiag].writingIterations[iDiag]);
     }
 
     for (uint32 iDiag=0; iDiag < initializer->fluidInitializers.size(); ++iDiag)
     {
-        newFluidDiagnostic(initializer->fluidInitializers[iDiag].speciesName,
+        newFluidDiagnostic(initializer->fluidInitializers[iDiag].typeName,
+                           initializer->fluidInitializers[iDiag].speciesName,
                            initializer->fluidInitializers[iDiag].computingIterations[iDiag],
                            initializer->fluidInitializers[iDiag].writingIterations[iDiag]);
     }
@@ -31,23 +34,26 @@ DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> in
 
 //TODO : add 'id' to diagnostic fields too so that each of them
 // know their id.
-void DiagnosticsManager::newFluidDiagnostic(std::string speciesName,
+void DiagnosticsManager::newFluidDiagnostic(std::string type, std::string speciesName,
                                            std::vector<uint32> const& computingIterations,
                                            std::vector<uint32> const& writingIterations)
 {
+    std::unique_ptr<FluidDiagnostic> fd = FluidDiagnosticFactory::createFluidDiagnostic(id, type, speciesName);
+    fluidDiags_.push_back(std::move(fd));
+    scheduler_.registerDiagnostic(id, computingIterations, writingIterations);
     id ++; // new diagnostic identifier
-    fluidDiags_.push_back(std::unique_ptr<FluidDiagnostic> { new FluidDiagnostic{id, speciesName}});
-    scheduler_.registerDiagnostic(id++, computingIterations, writingIterations);
 }
 
 
 
-void DiagnosticsManager::newEMDiagnostic(std::vector<uint32> const& computingIterations,
+void DiagnosticsManager::newEMDiagnostic(std::string type,
+                                         std::vector<uint32> const& computingIterations,
                                          std::vector<uint32> const& writingIterations)
 {
+    std::unique_ptr<EMDiagnostic> emd = EMDiagnosticFactory::createEMDiagnostic(id,type);
+    emDiags_.push_back(std::move(emd));
+    scheduler_.registerDiagnostic(id, computingIterations, writingIterations);
     id ++; // new diagnostic identifier
-    emDiags_.push_back(std::unique_ptr<EMDiagnostic> { new EMDiagnostic{id}});
-    scheduler_.registerDiagnostic(id++, computingIterations, writingIterations);
 }
 
 
