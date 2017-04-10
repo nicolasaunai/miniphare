@@ -12,5 +12,10 @@
 
 
 
+::testing::AssertionResult AreVectorsEqual(
+        const std::vector<double> & expected_vector,
+        const std::vector<double> & actual_vector  ,
+        double precision  ) ;
+
 
 #endif // TEST_COMMONS_H

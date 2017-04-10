@@ -1,5 +1,7 @@
 
 #include <memory>
+#include <limits>
+
 
 #include "Plasmas/particles.h"
 
@@ -24,12 +26,17 @@ std::unique_ptr<IndexesAndWeights>  createIndexesAndWeights( uint32 const & orde
 
 GridLayout buildRefinedLayout( Split1PartParams const & inputs ) ;
 
+void normalizeRefNodePosition1D(
+        GridLayout const & coarseLayout,
+        GridLayout const & refinedLayout,
+        uint32 const refinementRatio,
+        uint32 const & refNode, uint32 & normalizedRefNode ) ;
 
 
 
 Split1PartParams split1ParticleInputs[] = {
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 1, 1}},    // dxdydz, nbrCellxyz
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},    // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                // dim, layout, origin
         1, 2, "splitOrder1", 20)                     // order, RF, splitMethod, refNode
 
@@ -44,6 +51,8 @@ public:
     std::vector<double> expected_weights ;
 
     std::vector<double> actual_weights ;
+
+    const double precision = std::numeric_limits<float>::epsilon() ;
 
 
     Split1PartParams inputs;
@@ -97,6 +106,7 @@ public:
         actual_weights.assign(nbPts, 0.) ;
 
         Particle normalizedMother ;
+        uint32   normalizedRefNode ;
 
         /* ------------------------------------------------- */
         /* Expected weights are obtained by moving           */
@@ -129,20 +139,27 @@ public:
             Particle mother( 10., 1., {{shiftedNode, 1, 1}},
                            {{delta, 0., 0.}}, {{0., 0., 0.}} );
 
-            // normalized x coordinate
-            double reducedX = static_cast<double>(mother.icell[0])
+            // mother particle x coordinate
+            double motherX = static_cast<double>(mother.icell[0])
                     + static_cast<double>(mother.delta[0]) ;
 
             // Now, starts the algorithm
-            std::vector<uint32> const & indexes = indexAndWeights->computeIndexes( reducedX ) ;
-            std::vector<double> const & weights = indexAndWeights->computeWeights( reducedX ) ;
+            std::vector<uint32> const & indexes = indexAndWeights->computeIndexes( motherX ) ;
+            std::vector<double> const & weights = indexAndWeights->computeWeights( motherX ) ;
 
             std::vector<uint32>::const_iterator low ;
             low = std::lower_bound (indexes.begin(), indexes.end(), refNode) ;
 
-            expected_weights[ik] = weights[*low] ;
+            uint32 low_at = std::distance( indexes.begin(), low ) ;
+
+            // Did we find normalizedRefNode ?
+            if( low != indexes.end() ) {
+                expected_weights[ik] = weights[low_at] ;
+            }
 
 
+            // compute the node index
+            // on the refined layout
             SplittingStrategy::normalizeMotherPosition1D(
                         coarseLayout, refinedLayout,
                         inputs.refineFactor,
@@ -151,6 +168,32 @@ public:
             std::vector<Particle> childParticles ;
             strategy->split1D( normalizedMother, childParticles ) ;
 
+            normalizeRefNodePosition1D(
+                    coarseLayout, refinedLayout,
+                    inputs.refineFactor,
+                    refNode, normalizedRefNode ) ;
+
+
+            actual_weights[ik] = 0. ;
+            for( Particle const & child : childParticles )
+            {
+                double childX = static_cast<double>(child.icell[0])
+                        + static_cast<double>(child.delta[0]) ;
+
+                std::vector<uint32> const & childIndexes = indexAndWeights->computeIndexes( childX ) ;
+                std::vector<double> const & childWeights = indexAndWeights->computeWeights( childX ) ;
+
+                std::vector<uint32>::const_iterator found ;
+                found = std::lower_bound (childIndexes.begin(),
+                                             childIndexes.end(), normalizedRefNode) ;
+
+                uint32 found_at = std::distance( indexes.begin(), found ) ;
+
+                // Did we find normalizedRefNode ?
+                if( found != childIndexes.end() ) {
+                    actual_weights[ik] += childWeights[found_at] ;
+                }
+            }
 
 
 
@@ -167,20 +210,42 @@ public:
 
 
 
+void normalizeRefNodePosition1D(
+        GridLayout const & coarseLayout,
+        GridLayout const & refinedLayout,
+        uint32 const refinementRatio,
+        uint32 const & refNode, uint32 & normalizedRefNode )
+{
+    double origL0_x = coarseLayout.origin().x_ ;
+    double origL1_x = refinedLayout.origin().x_ ;
+
+    double normDif_x = (origL0_x - origL1_x)/refinedLayout.dx() ;
+
+    normalizedRefNode = static_cast<uint32>(normDif_x) + refNode*refinementRatio ;
+
+}
+
+
+
 GridLayout buildRefinedLayout( Split1PartParams const & inputs )
 {
     uint32 RF = inputs.refineFactor ;
 
-    std::array<double, 3> dxdydz = inputs.dxdydz ;
+    std::array<double, 3> dxdydz ;
 
     dxdydz[0] = inputs.dxdydz[0]/RF ;
     dxdydz[1] = inputs.dxdydz[1]/RF ;
     dxdydz[2] = inputs.dxdydz[2]/RF ;
 
-    return GridLayout { dxdydz, inputs.nbrCells,
+    std::array<uint32, 3> nbrCells ;
+
+    nbrCells[0] = inputs.nbrCells[0]*RF ;
+    nbrCells[1] = inputs.nbrCells[1]*RF ;
+    nbrCells[2] = inputs.nbrCells[2]*RF ;
+
+    return GridLayout { dxdydz, nbrCells,
                 inputs.nbDim , inputs.layout,
-                Point{10*inputs.dxdydz[0], 0., 0.},
-                inputs.interpOrder} ;
+                inputs.origin, inputs.interpOrder} ;
 }
 
 
@@ -215,6 +280,7 @@ std::unique_ptr<IndexesAndWeights>  createIndexesAndWeights( uint32 const & orde
 TEST_P(Split1ParticleTest, shapes)
 {
 
+    EXPECT_TRUE( AreVectorsEqual(expected_weights, actual_weights, precision ) );
 
 }
 

@@ -40,10 +40,10 @@ void SplittingStrategy::split1D(
 
 
 void SplittingStrategy::normalizeMotherPosition1D(
-        const GridLayout & coarseLayout,
-        const GridLayout & refinedLayout,
-        const uint32 refinementRatio,
-        const Particle & mother, Particle & normalizedMother )
+        GridLayout const & coarseLayout,
+        GridLayout const & refinedLayout,
+        uint32 const refinementRatio,
+        Particle const & mother, Particle & normalizedMother )
 {
     normalizedMother = mother ;
 
