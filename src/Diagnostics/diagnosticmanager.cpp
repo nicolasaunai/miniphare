@@ -11,6 +11,7 @@ DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> in
       exportStrat_{ExportStrategyFactory::makeExportStrategy(initializer->exportType)},
       scheduler_{}
 {
+    // first initialize all electromagnetic diagnostics
     for (uint32 iDiag=0; iDiag < initializer->emInitializers.size(); ++iDiag)
     {
         newEMDiagnostic(initializer->emInitializers[iDiag].typeName,
@@ -18,6 +19,7 @@ DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> in
                         initializer->emInitializers[iDiag].writingIterations[iDiag]);
     }
 
+    // then initialize all Fluid diagnostics
     for (uint32 iDiag=0; iDiag < initializer->fluidInitializers.size(); ++iDiag)
     {
         newFluidDiagnostic(initializer->fluidInitializers[iDiag].typeName,
@@ -25,6 +27,8 @@ DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> in
                            initializer->fluidInitializers[iDiag].computingIterations[iDiag],
                            initializer->fluidInitializers[iDiag].writingIterations[iDiag]);
     }
+
+    // then initialize all particle, orbit, probes, etc. diagnostics
 }
 
 
@@ -101,13 +105,19 @@ void DiagnosticsManager::save(Time const& timeManager)
     for (auto& diag : emDiags_)
     {
         if (scheduler_.isTimeToWrite(timeManager, diag->id()))
+        {
              exportStrat_->saveEMDiagnostic(*diag, timeManager);
+             diag->flushPacks();
+        }
     }
 
 
     for (auto& diag : fluidDiags_)
     {
         if (scheduler_.isTimeToWrite(timeManager, diag->id()))
+        {
              exportStrat_->saveFluidDiagnostic(*diag, timeManager);
+             diag->flushPacks();
+        }
     }
 }
