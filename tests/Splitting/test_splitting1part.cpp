@@ -75,10 +75,6 @@ public:
         // we need a reference node
         uint32 refNode = inputs.referenceNode ;
 
-        // we need an IndexesAndWeights object
-        std::unique_ptr<IndexesAndWeights> indexAndWeights
-                     { createIndexesAndWeights(inputs.interpOrder) } ;
-
 
         SplittingStrategyFactory factory(inputs.splitMethod,
                                          inputs.interpOrder,
@@ -143,6 +139,10 @@ public:
             double motherX = static_cast<double>(mother.icell[0])
                     + static_cast<double>(mother.delta[0]) ;
 
+            // we need an IndexesAndWeights object
+            std::unique_ptr<IndexesAndWeights> indexAndWeights
+                         { createIndexesAndWeights(inputs.interpOrder) } ;
+
             // Now, starts the algorithm
             std::vector<uint32> const & indexes = indexAndWeights->computeIndexes( motherX ) ;
             std::vector<double> const & weights = indexAndWeights->computeWeights( motherX ) ;
@@ -173,35 +173,35 @@ public:
                     inputs.refineFactor,
                     refNode, normalizedRefNode ) ;
 
-
-            actual_weights[ik] = 0. ;
-            for( Particle const & child : childParticles )
             {
-                double childX = static_cast<double>(child.icell[0])
-                        + static_cast<double>(child.delta[0]) ;
+                // we need an IndexesAndWeights object
+                std::unique_ptr<IndexesAndWeights> childIndexAndWeights
+                { createIndexesAndWeights(inputs.interpOrder) } ;
 
-                std::vector<uint32> const & childIndexes = indexAndWeights->computeIndexes( childX ) ;
-                std::vector<double> const & childWeights = indexAndWeights->computeWeights( childX ) ;
+                actual_weights[ik] = 0. ;
+                for( Particle const & child : childParticles )
+                {
+                    double childX = static_cast<double>(child.icell[0])
+                            + static_cast<double>(child.delta[0]) ;
 
-                std::vector<uint32>::const_iterator found ;
-                found = std::lower_bound (childIndexes.begin(),
-                                             childIndexes.end(), normalizedRefNode) ;
+                    std::vector<uint32> const & childIndexes = childIndexAndWeights->computeIndexes( childX ) ;
+                    std::vector<double> const & childWeights = childIndexAndWeights->computeWeights( childX ) ;
 
-                uint32 found_at = std::distance( indexes.begin(), found ) ;
+                    std::vector<uint32>::const_iterator found ;
+                    found = std::lower_bound (childIndexes.begin(),
+                                              childIndexes.end(), normalizedRefNode) ;
 
-                // Did we find normalizedRefNode ?
-                if( found != childIndexes.end() ) {
-                    actual_weights[ik] += childWeights[found_at] ;
+                    uint32 found_at = std::distance( childIndexes.begin(), found ) ;
+
+                    // Did we find normalizedRefNode ?
+                    if( found != childIndexes.end() ) {
+                        actual_weights[ik] += childWeights[found_at] ;
+                    }
                 }
             }
 
 
-
-
-
-
         }
-
 
     }
 
