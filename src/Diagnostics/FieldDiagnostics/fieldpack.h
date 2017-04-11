@@ -15,11 +15,12 @@
  */
 struct FieldPack
 {
+    std::vector<std::string> keys;
     std::unordered_map<std::string, std::vector<float> > data;
-    std::array<uint32, 3> nbrNodes;
-    std::array<QtyCentering,3> centerings;
-    uint32 nbrDimensions;
-    Point origin;
+    std::unordered_map<std::string, std::array<uint32, 3> > nbrNodes;
+    std::unordered_map<std::string, std::array<QtyCentering,3> > centerings;
+    std::unordered_map<std::string, uint32> nbrDimensions;
+    std::unordered_map<std::string, Point> origin;
 };
 
 

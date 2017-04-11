@@ -2,6 +2,9 @@
 
 #include "diagnosticmanager.h"
 #include "Diagnostics/FieldDiagnostics/Fluid/fluiddiagnostic.h"
+#include "Diagnostics/FieldDiagnostics/Fluid/fluiddiagnosticfactory.h"
+#include "Diagnostics/FieldDiagnostics/Electromag/emdiagnostic.h"
+#include "Diagnostics/FieldDiagnostics/Electromag/emdiagnosticfactory.h"
 
 
 uint32 DiagnosticsManager::id = 0;

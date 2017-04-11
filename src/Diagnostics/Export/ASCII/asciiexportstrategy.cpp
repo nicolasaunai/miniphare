@@ -67,44 +67,50 @@ void AsciiExportStrategy::saveFluidDiagnostic(FluidDiagnostic const& diag, Time 
 
 
     uint32 pacthID=0;
+    // there is one FieldPack per Patch
+    // we save one file per Patch.
     for (FieldPack const& pack : diag.getPacks())
     {
         std::string filename = getFluidFilename(pacthID, diag, timeManager);
         FILE *file = fopen(filename.c_str(), "w");
 
-        fprintf(file, "#nbrDimensions\n");
-        fprintf(file, "%d", pack.nbrDimensions);
-        fprintf(file, "\n\n\n");
-
-
-        fprintf(file, "# Origin\n");
-        fprintf(file, "%f %f %f", pack.origin.x_, pack.origin.y_, pack.origin.z_);
-        fprintf(file, "\n\n\n");
-
-
-        fprintf(file, "# nbrNodes x y z\n");
-        for (uint32 n : pack.nbrNodes)
+        for (uint32 iField = 0; iField < pack.data.size();  ++iField)
         {
-            fprintf(file, "%d ", n);
-        }
-        fprintf(file, "\n\n\n");
+            std::string key = pack.keys[iField];
 
+            fprintf(file, "#nbrDimensions\n");
+            auto nbdims = pack.nbrDimensions.find(key); // [] cannot be used for const unordered_map
+            fprintf(file, "%d", nbdims->second);
+            fprintf(file, "\n\n\n");
 
-        fprintf(file, "# centering x y z\n");
-        for (auto centering : pack.centerings)
-        {
-            fprintf(file, "%f ", centering2float(centering));
-        }
-        fprintf(file, "\n\n\n");
+            fprintf(file, "# Origin\n");
+            auto itOri = pack.origin.find(key);
+            fprintf(file, "%f %f %f", itOri->second.x_, itOri->second.y_, itOri->second.z_);
+            fprintf(file, "\n\n\n");
 
-
-        fprintf(file, "# data\n");
-        for (auto const& dataPair : pack.data)
-        {
-            fprintf(file, "#%s %d \n", dataPair.first.c_str());
-            for (uint i=0; i < dataPair.second.size(); ++i)
+            fprintf(file, "# nbrNoxdes x y z\n");
+            auto itNbrNodes = pack.nbrNodes.find(key);
+            for (uint32 n : itNbrNodes->second)
             {
-                fprintf(file, "%f\n", dataPair.second[i]);
+                fprintf(file, "%d ", n);
+            }
+            fprintf(file, "\n\n\n");
+
+            fprintf(file, "# centering x y z\n");
+            auto itCentering = pack.centerings.find(key);
+            for (auto centering : itCentering->second)
+            {
+                fprintf(file, "%f ", centering2float(centering));
+            }
+            fprintf(file, "\n\n\n");
+
+
+            fprintf(file, "# data\n");
+            auto itData = pack.data.find(key);
+            fprintf(file, "#%s %d \n", itData->first.c_str());
+            for (uint i=0; i < itData->second.size(); ++i)
+            {
+                fprintf(file, "%f\n", itData->second[i]);
             }
         }
         fclose(file);

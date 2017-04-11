@@ -72,15 +72,27 @@ void FieldDiagnosticComputeStrategy::fillDiagData3D_(Field const& field,
  */
 void FieldDiagnosticComputeStrategy::fillPack_(FieldPack& pack, Field const& field, GridLayout const& layout)
 {
+    std::string key = field.name();
+
+    pack.keys.push_back(key);
+
     HybridQuantity hybQty = field.hybridQty();
-    pack.nbrNodes = layout.nbrPhysicalNodes(hybQty);
-    uint64 totalSize = pack.nbrNodes[0]*pack.nbrNodes[1]*pack.nbrNodes[2];
-    pack.centerings[0] = layout.fieldCentering(field, Direction::X);
-    pack.centerings[1] = layout.fieldCentering(field, Direction::Y);
-    pack.centerings[2] = layout.fieldCentering(field, Direction::Z);
-    pack.nbrDimensions = layout.nbDimensions();
+    pack.nbrNodes[key] = layout.nbrPhysicalNodes(hybQty);
+
+
+    uint64 totalSize = pack.nbrNodes[key][0]
+                     * pack.nbrNodes[key][1]
+                     * pack.nbrNodes[key][2];
+
+    pack.centerings[key][0] = layout.fieldCentering(field, Direction::X);
+    pack.centerings[key][1] = layout.fieldCentering(field, Direction::Y);
+    pack.centerings[key][2] = layout.fieldCentering(field, Direction::Z);
+
+    pack.nbrDimensions[key] = layout.nbDimensions();
+
     pack.data.insert({field.name(), std::vector<float>(totalSize)});
-    pack.origin = layout.origin();
+
+    pack.origin[key] = layout.origin();
 
     switch (layout.nbDimensions())
     {

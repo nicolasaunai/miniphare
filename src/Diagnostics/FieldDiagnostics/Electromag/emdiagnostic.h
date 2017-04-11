@@ -33,27 +33,17 @@ public:
         PatchData const& patchData = patch.data();
         Electromag const& EMFields = patchData.EMfields();
         GridLayout const& layout = patch.layout();
+        Field const& Ex = EMFields.getEi(0);
+        Field const& Ey = EMFields.getEi(1);
+        Field const& Ez = EMFields.getEi(2);
 
-        //fillPack_(pack, rho_s, layout);
+        fillPack_(pack, Ex, layout);
+        fillPack_(pack, Ey, layout);
+        fillPack_(pack, Ez, layout);
 
         return pack;
     }
 };
-
-
-class EMDiagnosticFactory
-{
-public:
-    static std::unique_ptr<EMDiagnostic> createEMDiagnostic(uint32 id, std::string type)
-    {
-        if (type=="E")
-        {
-            std::unique_ptr<FieldDiagnosticComputeStrategy> strat{new ElectricDiag{}};
-            std::unique_ptr<EMDiagnostic> ptr{new EMDiagnostic{id, std::move(strat)}};
-        }
-    }
-};
-
 
 
 
