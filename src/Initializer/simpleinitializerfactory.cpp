@@ -269,11 +269,12 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
 
     initializer->exportType = ExportStrategyType::ASCII;
 
-    /*EMDiagInitializer emDiag;
+    EMDiagInitializer emDiag;
+    emDiag.typeName = "E";
     emDiag.computingIterations.push_back({1, 10, 20, 22});
     emDiag.writingIterations.push_back({1, 10, 20, 22});
     initializer->emInitializers.push_back(std::move(emDiag));
-    */
+
 
     FluidDiagInitializer fluidDiag;
     fluidDiag.speciesName = "proton1";

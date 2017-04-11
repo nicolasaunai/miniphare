@@ -18,7 +18,9 @@ public:
         {
             std::unique_ptr<FieldDiagnosticComputeStrategy> strat{new ElectricDiag{}};
             std::unique_ptr<EMDiagnostic> ptr{new EMDiagnostic{id, std::move(strat)}};
+            return ptr;
         }
+        return nullptr;
     }
 };
 
