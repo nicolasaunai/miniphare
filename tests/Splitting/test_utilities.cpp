@@ -5,18 +5,19 @@
 #include "types.h"
 
 
-#include "test_splitting1part.h"
+#include "test_exactsplitting1part.h"
+#include "test_approxsplitting1part.h"
 
 
 
 
-std::vector<Split1PartParams> getSplit1ParticleParamsFromFile()
+std::vector<exactSplit1PartParams> getSplit1ParticleParamsFromFile()
 {
 
     uint32 nbrTestCases = 0 ;
 
 
-    std::vector<Split1PartParams> params(nbrTestCases);
+    std::vector<exactSplit1PartParams> params(nbrTestCases);
 
     // reading parameters relative to the test cases
     for (uint32 i=0 ; i < nbrTestCases ; ++i)

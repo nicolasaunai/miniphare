@@ -20,7 +20,8 @@ set(SOURCES
      ../../src/Splitting/ordern_rf2strategy.cpp
      ../../src/Splitting/ordern_rf3strategy.cpp
      ../../src/Splitting/multinomial.cpp
-     test_splitting1part.cpp
+     test_exactsplitting1part.cpp
+     test_approxsplitting1part.cpp
      test_utilities.cpp
      test_commons.cpp
      test_main.cpp

@@ -6,7 +6,7 @@
 #include "types.h"
 
 
-struct Split1PartParams
+struct exactSplit1PartParams
 {
     std::array<double, 3> dxdydz ;
     std::array<uint32, 3> nbrCells ;
@@ -26,9 +26,9 @@ struct Split1PartParams
     uint32 referenceNode ;
 
 
-    Split1PartParams() = default ;
+    exactSplit1PartParams() = default ;
 
-    Split1PartParams( std::array<double, 3> dxdydz, std::array<uint32, 3> nbrCells,
+    exactSplit1PartParams( std::array<double, 3> dxdydz, std::array<uint32, 3> nbrCells,
                       uint32 nbDim, std::string layout,
                       Point origin, uint32 interpOrder,
                       uint32 refineFactor,
@@ -41,7 +41,7 @@ struct Split1PartParams
         splitMethod{splitMethod},
         referenceNode{referenceNode} {}
 
-    ~Split1PartParams() = default ;
+    ~exactSplit1PartParams() = default ;
 
 };
 

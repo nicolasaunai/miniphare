@@ -16,15 +16,15 @@
 #include "Splitting/splittingstrategyfactory.h"
 
 #include "test_commons.h"
-#include "test_splitting1part.h"
+#include "test_exactsplitting1part.h"
 
 
 
-std::vector<Split1PartParams> getSplit1ParticleParamsFromFile() ;
+std::vector<exactSplit1PartParams> getSplit1ParticleParamsFromFile() ;
 
 std::unique_ptr<IndexesAndWeights>  createIndexesAndWeights( uint32 const & order ) ;
 
-GridLayout buildRefinedLayout( Split1PartParams const & inputs ) ;
+GridLayout buildRefinedLayout( exactSplit1PartParams const & inputs ) ;
 
 void normalizeRefNodePosition1D(
         GridLayout const & coarseLayout,
@@ -34,69 +34,69 @@ void normalizeRefNodePosition1D(
 
 
 
-Split1PartParams split1ParticleInputs[] = {
+exactSplit1PartParams split1ParticleInputs[] = {
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         1, 2, "splitOrder1", 20),                       // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         2, 2, "splitOrder2", 20),                       // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         3, 2, "splitOrder3", 20),                       // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         1, 2, "splitOrder1_RFn", 20),                  // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         1, 3, "splitOrder1_RFn", 20),                  // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         1, 4, "splitOrder1_RFn", 20),                  // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         1, 5, "splitOrder1_RFn", 20),                  // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         1, 10, "splitOrder1_RFn", 20),                  // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         1, 2, "splitOrderN_RF2", 20),                  // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         2, 2, "splitOrderN_RF2", 20),                  // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         3, 2, "splitOrderN_RF2", 20),                  // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         4, 2, "splitOrderN_RF2", 20),                  // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         1, 3, "splitOrderN_RF3", 20),                  // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         2, 3, "splitOrderN_RF3", 20),                  // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         3, 3, "splitOrderN_RF3", 20),                  // order, RF, splitMethod, refNode
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         4, 3, "splitOrderN_RF3", 20)                   // order, RF, splitMethod, refNode
 
@@ -105,7 +105,7 @@ Split1PartParams split1ParticleInputs[] = {
 
 
 
-class ExactSplitting1Particle: public ::testing::TestWithParam<Split1PartParams>
+class ExactSplitting1Particle: public ::testing::TestWithParam<exactSplit1PartParams>
 {
 public:
     std::vector<double> expected_weights ;
@@ -115,7 +115,7 @@ public:
     const double precision = std::numeric_limits<float>::epsilon() ;
 
 
-    Split1PartParams inputs;
+    exactSplit1PartParams inputs;
 
 
     ~ExactSplitting1Particle() = default ;
@@ -302,7 +302,7 @@ void normalizeRefNodePosition1D(
  * @param inputs
  * @return
  */
-GridLayout buildRefinedLayout( Split1PartParams const & inputs )
+GridLayout buildRefinedLayout( exactSplit1PartParams const & inputs )
 {
     uint32 RF = inputs.refineFactor ;
 
