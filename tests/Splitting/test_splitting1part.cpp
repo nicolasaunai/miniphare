@@ -36,9 +36,65 @@ void normalizeRefNodePosition1D(
 
 Split1PartParams split1ParticleInputs[] = {
 
-    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},    // dxdydz, nbrCellxyz
-        1, "yee" , Point{0., 0., 0.},                // dim, layout, origin
-        1, 2, "splitOrder1", 20)                     // order, RF, splitMethod, refNode
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        1, 2, "splitOrder1", 20),                       // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        2, 2, "splitOrder2", 20),                       // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        3, 2, "splitOrder3", 20),                       // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        1, 2, "splitOrder1_RFn", 20),                  // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        1, 3, "splitOrder1_RFn", 20),                  // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        1, 4, "splitOrder1_RFn", 20),                  // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        1, 5, "splitOrder1_RFn", 20),                  // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        1, 2, "splitOrderN_RF2", 20),                  // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        2, 2, "splitOrderN_RF2", 20),                  // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        3, 2, "splitOrderN_RF2", 20),                  // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        4, 2, "splitOrderN_RF2", 20),                  // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        1, 3, "splitOrderN_RF3", 20),                  // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        2, 3, "splitOrderN_RF3", 20),                  // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        3, 3, "splitOrderN_RF3", 20),                  // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        4, 3, "splitOrderN_RF3", 20)                   // order, RF, splitMethod, refNode
 
 };
 
@@ -77,13 +133,14 @@ public:
 
 
         SplittingStrategyFactory factory(inputs.splitMethod,
-                                         inputs.interpOrder,
-                                         inputs.refineFactor ) ;
+                                         inputs.refineFactor,
+                                         inputs.interpOrder ) ;
 
         std::unique_ptr<SplittingStrategy>
                 strategy = factory.createSplittingStrategy() ;
 
 
+        const double motherWeight = 1. ;
 
         // the spatial step dx is discretized into
         // discreteNbr points
@@ -132,7 +189,7 @@ public:
 
             // we now initialize a Particle at the reference node
             // Particle( weight, charge, icells, deltas, velocities )
-            Particle mother( 10., 1., {{shiftedNode, 1, 1}},
+            Particle mother( motherWeight, 1., {{shiftedNode, 1, 1}},
                            {{delta, 0., 0.}}, {{0., 0., 0.}} );
 
             // mother particle x coordinate
@@ -275,13 +332,13 @@ std::unique_ptr<IndexesAndWeights>  createIndexesAndWeights( uint32 const & orde
         indexAndWeight_ptr = std::unique_ptr<IndexesAndWeightsO1>( new IndexesAndWeightsO1(order) ) ;
         break;
     case 2:
-        indexAndWeight_ptr = std::unique_ptr<IndexesAndWeightsO1>( new IndexesAndWeightsO1(order) ) ;
+        indexAndWeight_ptr = std::unique_ptr<IndexesAndWeightsO2>( new IndexesAndWeightsO2(order) ) ;
         break;
     case 3:
-        indexAndWeight_ptr = std::unique_ptr<IndexesAndWeightsO1>( new IndexesAndWeightsO1(order) ) ;
+        indexAndWeight_ptr = std::unique_ptr<IndexesAndWeightsO3>( new IndexesAndWeightsO3(order) ) ;
         break;
     case 4:
-        indexAndWeight_ptr = std::unique_ptr<IndexesAndWeightsO1>( new IndexesAndWeightsO1(order) ) ;
+        indexAndWeight_ptr = std::unique_ptr<IndexesAndWeightsO4>( new IndexesAndWeightsO4(order) ) ;
         break;
     }
 
