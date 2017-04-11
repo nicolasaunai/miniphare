@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "AMR/patch.h"
+#include "Electromag/electromag.h"
 #include "Diagnostics/FieldDiagnostics/fielddiagnostic.h"
 
 
@@ -26,7 +27,16 @@ public:
 
     FieldPack virtual compute(Patch const& patch) override
     {
+        std::cout << "computing ElectricDiag " << std::endl;
+        FieldPack pack;
 
+        PatchData const& patchData = patch.data();
+        Electromag const& EMFields = patchData.EMfields();
+        GridLayout const& layout = patch.layout();
+
+        //fillPack_(pack, rho_s, layout);
+
+        return pack;
     }
 };
 

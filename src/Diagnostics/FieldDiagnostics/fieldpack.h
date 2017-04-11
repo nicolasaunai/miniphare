@@ -1,8 +1,10 @@
 #ifndef FIELDPACK_H
 #define FIELDPACK_H
 
-#include <vector>
 #include <array>
+#include <vector>
+#include <string>
+#include <unordered_map>
 
 #include "types.h"
 #include "grid/gridlayoutdefs.h"
@@ -13,7 +15,7 @@
  */
 struct FieldPack
 {
-    std::vector<float> data;
+    std::unordered_map<std::string, std::vector<float> > data;
     std::array<uint32, 3> nbrNodes;
     std::array<QtyCentering,3> centerings;
     uint32 nbrDimensions;

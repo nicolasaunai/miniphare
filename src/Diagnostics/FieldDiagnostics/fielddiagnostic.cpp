@@ -1,7 +1,6 @@
+
+
 #include "fielddiagnostic.h"
-
-
-
 
 
 
@@ -26,4 +25,11 @@ void FieldDiagnostic::compute(Hierarchy const& hierarchy)
         }
     }
     packs_.push_back(std::move(pack));
+}
+
+
+void FieldDiagnostic::flushPacks()
+{
+    std::vector<FieldPack> tmp;
+    std::swap(tmp, packs_);
 }

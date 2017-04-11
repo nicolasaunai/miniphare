@@ -19,9 +19,9 @@ void FieldDiagnosticComputeStrategy::fillDiagData1D_(Field const& field,
     uint32 iStart   = layout.physicalStartIndex(field, Direction::X);
     uint32 iEnd     = layout.physicalEndIndex(field, Direction::X);
 
-    for (uint32 ixField=iStart; ixField <= iEnd;  ++ixField)
+    for (uint32 ixField=iStart, ixData=0; ixField <= iEnd;  ++ixField, ++ixData)
     {
-        pack.data.push_back(static_cast<float>( field(ixField) ) );
+        pack.data[field.name()][ixData] = static_cast<float>( field(ixField) ) ;
     }
 }
 
@@ -79,7 +79,7 @@ void FieldDiagnosticComputeStrategy::fillPack_(FieldPack& pack, Field const& fie
     pack.centerings[1] = layout.fieldCentering(field, Direction::Y);
     pack.centerings[2] = layout.fieldCentering(field, Direction::Z);
     pack.nbrDimensions = layout.nbDimensions();
-    pack.data.reserve(totalSize);
+    pack.data.insert({field.name(), std::vector<float>(totalSize)});
     pack.origin = layout.origin();
 
     switch (layout.nbDimensions())

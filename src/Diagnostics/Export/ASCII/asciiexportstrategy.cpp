@@ -99,9 +99,13 @@ void AsciiExportStrategy::saveFluidDiagnostic(FluidDiagnostic const& diag, Time 
 
 
         fprintf(file, "# data\n");
-        for (uint i=0; i < pack.data.size(); ++i)
+        for (auto const& dataPair : pack.data)
         {
-            fprintf(file, "%f\n", pack.data[i]);
+            fprintf(file, "#%s %d \n", dataPair.first.c_str());
+            for (uint i=0; i < dataPair.second.size(); ++i)
+            {
+                fprintf(file, "%f\n", dataPair.second[i]);
+            }
         }
         fclose(file);
         pacthID++;

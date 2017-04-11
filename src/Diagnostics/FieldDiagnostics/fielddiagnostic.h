@@ -46,7 +46,7 @@ protected:
 
     // routines used to access the diagnostic data per patch by export strat.
     std::vector<FieldPack> const& getPacks() const {return packs_;}
-    void flushPacks() {std::vector<FieldPack> tmp; std::swap(tmp, packs_);}
+    void flushPacks();
     std::string const& stratName() const {return strat_->name();}
 
     virtual void compute(Hierarchy const& hierarchy) final;
