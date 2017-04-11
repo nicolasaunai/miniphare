@@ -105,7 +105,7 @@ Split1PartParams split1ParticleInputs[] = {
 
 
 
-class Split1ParticleTest: public ::testing::TestWithParam<Split1PartParams>
+class ExactSplitting1Particle: public ::testing::TestWithParam<Split1PartParams>
 {
 public:
     std::vector<double> expected_weights ;
@@ -118,7 +118,7 @@ public:
     Split1PartParams inputs;
 
 
-    ~Split1ParticleTest() = default ;
+    ~ExactSplitting1Particle() = default ;
 
     void SetUp()
     {
@@ -352,7 +352,7 @@ std::unique_ptr<IndexesAndWeights>  createIndexesAndWeights( uint32 const & orde
 
 
 
-TEST_P(Split1ParticleTest, shapes)
+TEST_P(ExactSplitting1Particle, shapes)
 {
 
     EXPECT_TRUE( AreVectorsEqual(expected_weights, actual_weights, precision ) );
@@ -361,6 +361,6 @@ TEST_P(Split1ParticleTest, shapes)
 
 
 
-INSTANTIATE_TEST_CASE_P(Split1ParticleTest, Split1ParticleTest,
+INSTANTIATE_TEST_CASE_P(ExactSplitting1Particle, ExactSplitting1Particle,
                         testing::ValuesIn( split1ParticleInputs ) );
 
