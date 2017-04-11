@@ -170,7 +170,8 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
 
 
 /**
- * @brief SimpleInitializerFactory::createSolverInitializer creates a SolverInitializer for simpled 1D simulation with 2 species with 2nd order interpolation and modified Boris pushers
+ * @brief SimpleInitializerFactory::createSolverInitializer creates a SolverInitializer
+ * for simpled 1D simulation with 2 species with 2nd order interpolation and modified Boris pushers
  * @return
  */
 std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitializer() const
@@ -188,7 +189,8 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
 
 
 /**
- * @brief SimpleInitializerFactory::createBoundaryCondition creates a BoundaryCondition that is a simple periodic domain boundary condition for 1D run.
+ * @brief SimpleInitializerFactory::createBoundaryCondition creates a
+ * BoundaryCondition that is a simple periodic domain boundary condition for 1D run.
  * @return
  */
 std::unique_ptr<BoundaryCondition> SimpleInitializerFactory::createBoundaryCondition() const
@@ -213,8 +215,8 @@ std::unique_ptr<BoundaryCondition> SimpleInitializerFactory::createBoundaryCondi
 
 
 /**
- * @brief SimpleInitializerFactory::createElectromagInitializer return a ElectromagInitializer
- * for 1D periodic simulation.
+ * @brief SimpleInitializerFactory::createElectromagInitializer return
+ *  a ElectromagInitializer for 1D periodic simulation.
  * @return
  */
 std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectromagInitializer() const
@@ -274,6 +276,13 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
     emDiag.computingIterations.push_back({1, 10, 20, 22});
     emDiag.writingIterations.push_back({1, 10, 20, 22});
     initializer->emInitializers.push_back(std::move(emDiag));
+
+    EMDiagInitializer BDiag;
+    BDiag.typeName = "B";
+    BDiag.computingIterations.push_back({1, 10, 20, 22});
+    BDiag.writingIterations.push_back({1, 10, 20, 22});
+    initializer->emInitializers.push_back(std::move(BDiag));
+
 
 
     FluidDiagInitializer fluidDiag;

@@ -48,4 +48,32 @@ public:
 
 
 
+class MagneticDiag : public FieldDiagnosticComputeStrategy
+{
+public:
+    MagneticDiag() : FieldDiagnosticComputeStrategy{"B"} {}
+
+    FieldPack virtual compute(Patch const& patch) override
+    {
+        std::cout << "computing MagneticDiag " << std::endl;
+        FieldPack pack;
+
+        PatchData const& patchData = patch.data();
+        Electromag const& EMFields = patchData.EMfields();
+        GridLayout const& layout = patch.layout();
+        Field const& Bx = EMFields.getBi(0);
+        Field const& By = EMFields.getBi(1);
+        Field const& Bz = EMFields.getBi(2);
+
+        fillPack_(pack, Bx, layout);
+        fillPack_(pack, By, layout);
+        fillPack_(pack, Bz, layout);
+
+        return pack;
+    }
+};
+
+
+
+
 #endif // EMDIAGNOSTIC_H

@@ -20,6 +20,14 @@ public:
             std::unique_ptr<EMDiagnostic> ptr{new EMDiagnostic{id, std::move(strat)}};
             return ptr;
         }
+
+        if (type=="B")
+        {
+            std::unique_ptr<FieldDiagnosticComputeStrategy> strat{new MagneticDiag{}};
+            std::unique_ptr<EMDiagnostic> ptr{new EMDiagnostic{id, std::move(strat)}};
+            return ptr;
+        }
+
         return nullptr;
     }
 };
