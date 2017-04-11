@@ -18,6 +18,8 @@ class FieldDiagnosticComputeStrategy
 
 protected:
 
+    std::string stratName_;
+
     void fillDiagData1D_(Field const& field,
                          GridLayout const& layout,
                          FieldPack& pack);
@@ -36,6 +38,9 @@ protected:
 
 public:
 
+    FieldDiagnosticComputeStrategy(std::string name)
+        :stratName_{name}{}
+
     /**
      * @brief compute is overriden by a concrete FieldDiagnosticCompute class
      * to extract from a Patch the relevant field and give it to fillPack_.
@@ -44,6 +49,8 @@ public:
      * over the whole Hierarchy, and thus will be called once per patch.
      */
     FieldPack virtual compute(Patch const& patch) = 0;
+
+    std::string const& name() const {return stratName_;}
 };
 
 

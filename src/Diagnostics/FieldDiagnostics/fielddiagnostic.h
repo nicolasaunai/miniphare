@@ -45,16 +45,11 @@ protected:
  public:
 
     // routines used to access the diagnostic data per patch by export strat.
-    LogicalBox getLogicalBox(FieldPack const & pack) const;
-    Box getPhysicalBox(FieldPack const &pack) const;
-    std::array<uint32,3> nbrNodes(FieldPack const& pack) const;
-    std::vector<float> data(FieldPack const& data) const;
-    uint32 nbrDimensions(FieldPack const& pack) const;
-
+    std::vector<FieldPack> const& getPacks() const {return packs_;}
     void flushPacks() {std::vector<FieldPack> tmp; std::swap(tmp, packs_);}
+    std::string const& stratName() const {return strat_->name();}
 
     virtual void compute(Hierarchy const& hierarchy) final;
-
 
 
 };

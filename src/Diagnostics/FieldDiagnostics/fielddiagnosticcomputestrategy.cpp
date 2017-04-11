@@ -19,9 +19,9 @@ void FieldDiagnosticComputeStrategy::fillDiagData1D_(Field const& field,
     uint32 iStart   = layout.physicalStartIndex(field, Direction::X);
     uint32 iEnd     = layout.physicalEndIndex(field, Direction::X);
 
-    for (uint32 ixField=iStart, ixData=0; ixField <= iEnd;  ++ixField, ++ixData )
+    for (uint32 ixField=iStart; ixField <= iEnd;  ++ixField)
     {
-        pack.data[ixData] = static_cast<float>( field(ixField) );
+        pack.data.push_back(static_cast<float>( field(ixField) ) );
     }
 }
 

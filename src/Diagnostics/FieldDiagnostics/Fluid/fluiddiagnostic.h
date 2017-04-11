@@ -26,7 +26,7 @@ public:
         : FieldDiagnostic{id, "fluid_"+speciesName, std::move(strat)},
           speciesName_{speciesName} {}
 
-    std::string const& speciesName() {return speciesName_;}
+    std::string const& speciesName() const {return speciesName_;}
 };
 
 
@@ -38,7 +38,9 @@ private:
     std::string speciesName_;
 
 public:
-    RhoSpeciesDiag(std::string speciesName) : speciesName_{speciesName}{}
+    RhoSpeciesDiag(std::string speciesName)
+        : FieldDiagnosticComputeStrategy{"rho_s"},
+          speciesName_{speciesName}{}
 
     FieldPack virtual compute(Patch const& patch) override
     {

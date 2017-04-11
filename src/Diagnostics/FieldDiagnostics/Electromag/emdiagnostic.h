@@ -22,6 +22,8 @@ public:
 class ElectricDiag : public FieldDiagnosticComputeStrategy
 {
 public:
+    ElectricDiag() : FieldDiagnosticComputeStrategy{"E"} {}
+
     FieldPack virtual compute(Patch const& patch) override
     {
 
