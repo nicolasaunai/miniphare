@@ -66,6 +66,10 @@ Split1PartParams split1ParticleInputs[] = {
 
     Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        1, 10, "splitOrder1_RFn", 20),                  // order, RF, splitMethod, refNode
+
+    Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         1, 2, "splitOrderN_RF2", 20),                  // order, RF, splitMethod, refNode
 
     Split1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
