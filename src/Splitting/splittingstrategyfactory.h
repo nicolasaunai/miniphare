@@ -38,6 +38,12 @@ public:
     }
 
 
+    /**
+     * @brief createSplittingStrategy is a factory pattern
+     *
+     *
+     * @return
+     */
     std::unique_ptr<SplittingStrategy> createSplittingStrategy()
     {
         std::unique_ptr<SplittingStrategy> strategyPtr{nullptr} ;
@@ -48,6 +54,9 @@ public:
             StrategyFonctor const & fonctor = *(mapIterator->second) ;
             strategyPtr = fonctor.createStrategy() ;
             std::cout << "Splitting strategy found: " << mapIterator->first << std::endl ;
+            std::cout << "With arguments:" << std::endl ;
+            std::cout << "------> interpOrder  = " << fonctor.interpOrder() << std::endl ;
+            std::cout << "------> refineFactor = " << fonctor.refineFactor() << std::endl ;
         }
         else {
             throw std::runtime_error("Error SplittingStrategyFactory: no strategy found !");

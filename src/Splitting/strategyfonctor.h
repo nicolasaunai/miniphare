@@ -38,6 +38,10 @@ public:
 
     virtual std::unique_ptr<SplittingStrategy> createStrategy() const = 0 ;
 
+    uint32 refineFactor() const { return refineFactor_ ; }
+
+    uint32 interpOrder () const { return interpOrder_ ; }
+
 };
 
 
