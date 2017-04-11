@@ -132,7 +132,7 @@ public:
 
             // we now initialize a Particle at the reference node
             // Particle( weight, charge, icells, deltas, velocities )
-            Particle mother( 1., 1., {{shiftedNode, 1, 1}},
+            Particle mother( 10., 1., {{shiftedNode, 1, 1}},
                            {{delta, 0., 0.}}, {{0., 0., 0.}} );
 
             // mother particle x coordinate
@@ -144,18 +144,19 @@ public:
                          { createIndexesAndWeights(inputs.interpOrder) } ;
 
             // Now, starts the algorithm
-            std::vector<uint32> const & indexes = indexAndWeights->computeIndexes( motherX ) ;
-            std::vector<double> const & weights = indexAndWeights->computeWeights( motherX ) ;
+            std::vector<uint32> const & motherInds  = indexAndWeights->computeIndexes( motherX ) ;
+            std::vector<double> const & motherPonds = indexAndWeights->computeWeights( motherX ) ;
 
             std::vector<uint32>::const_iterator low ;
-            low = std::lower_bound (indexes.begin(), indexes.end(), refNode) ;
+            low = std::lower_bound (motherInds.begin(), motherInds.end(), refNode) ;
 
-            // Did we find normalizedRefNode ?
-            if( low != indexes.end() ) {
+            // We compute expected_weights[ik]
+            // using the mother's contribution
+            if( low != motherInds.end() ) {
                 if( *low == refNode ) {
-                    uint32 low_at = static_cast<uint32>( std::distance( indexes.begin(), low ) ) ;
+                    uint32 low_at = static_cast<uint32>( std::distance( motherInds.begin(), low ) ) ;
 
-                    expected_weights[ik] = weights[low_at] ;
+                    expected_weights[ik] = motherPonds[low_at] * mother.weight ;
                 }
             }
 
@@ -185,19 +186,20 @@ public:
                 double childX = static_cast<double>(child.icell[0])
                         + static_cast<double>(child.delta[0]) ;
 
-                std::vector<uint32> const & indsChild = childIndexAndWeights->computeIndexes( childX ) ;
-                std::vector<double> const & weightsChild = childIndexAndWeights->computeWeights( childX ) ;
+                std::vector<uint32> const & childInds  = childIndexAndWeights->computeIndexes( childX ) ;
+                std::vector<double> const & childPonds = childIndexAndWeights->computeWeights( childX ) ;
 
                 std::vector<uint32>::const_iterator found ;
-                found = std::lower_bound (indsChild.begin(),
-                                          indsChild.end(), normalizedRefNode) ;
+                found = std::lower_bound (childInds .begin(),
+                                          childInds .end(), normalizedRefNode) ;
 
-                // Did we find normalizedRefNode ?
-                if( found != indsChild.end() ) {
+                // We compute actual_weights[ik]
+                // using the children's contributions
+                if( found != childInds .end() ) {
                     if( *found == normalizedRefNode ) {
-                        uint32 found_at = static_cast<uint32>( std::distance(indsChild.begin(), found) ) ;
+                        uint32 found_at = static_cast<uint32>( std::distance(childInds .begin(), found) ) ;
 
-                        actual_weights[ik] += weightsChild[found_at] * child.weight * inputs.refineFactor ;
+                        actual_weights[ik] += childPonds[found_at] * child.weight * inputs.refineFactor ;
                     }
                 }
             }
@@ -228,7 +230,17 @@ void normalizeRefNodePosition1D(
 }
 
 
-
+/**
+ * @brief buildRefinedLayout return a refined GridLayout
+ * In this method we just build a refined mesh covering the same
+ * physical domain, with the same origin.
+ * The number of cells depends on the refinement factor.
+ * The spatial step sizes depend on the refinement factor.
+ *
+ *
+ * @param inputs
+ * @return
+ */
 GridLayout buildRefinedLayout( Split1PartParams const & inputs )
 {
     uint32 RF = inputs.refineFactor ;
