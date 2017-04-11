@@ -132,7 +132,7 @@ public:
 
             // we now initialize a Particle at the reference node
             // Particle( weight, charge, icells, deltas, velocities )
-            Particle mother( 10., 1., {{shiftedNode, 1, 1}},
+            Particle mother( 1., 1., {{shiftedNode, 1, 1}},
                            {{delta, 0., 0.}}, {{0., 0., 0.}} );
 
             // mother particle x coordinate
@@ -150,11 +150,13 @@ public:
             std::vector<uint32>::const_iterator low ;
             low = std::lower_bound (indexes.begin(), indexes.end(), refNode) ;
 
-            uint32 low_at = std::distance( indexes.begin(), low ) ;
-
             // Did we find normalizedRefNode ?
             if( low != indexes.end() ) {
-                expected_weights[ik] = weights[low_at] ;
+                if( *low == refNode ) {
+                    uint32 low_at = static_cast<uint32>( std::distance( indexes.begin(), low ) ) ;
+
+                    expected_weights[ik] = weights[low_at] ;
+                }
             }
 
 
@@ -173,29 +175,29 @@ public:
                     inputs.refineFactor,
                     refNode, normalizedRefNode ) ;
 
+            // we need an IndexesAndWeights object
+            std::unique_ptr<IndexesAndWeights> childIndexAndWeights
+            { createIndexesAndWeights(inputs.interpOrder) } ;
+
+            actual_weights[ik] = 0. ;
+            for( Particle const & child : childParticles )
             {
-                // we need an IndexesAndWeights object
-                std::unique_ptr<IndexesAndWeights> childIndexAndWeights
-                { createIndexesAndWeights(inputs.interpOrder) } ;
+                double childX = static_cast<double>(child.icell[0])
+                        + static_cast<double>(child.delta[0]) ;
 
-                actual_weights[ik] = 0. ;
-                for( Particle const & child : childParticles )
-                {
-                    double childX = static_cast<double>(child.icell[0])
-                            + static_cast<double>(child.delta[0]) ;
+                std::vector<uint32> const & indsChild = childIndexAndWeights->computeIndexes( childX ) ;
+                std::vector<double> const & weightsChild = childIndexAndWeights->computeWeights( childX ) ;
 
-                    std::vector<uint32> const & childIndexes = childIndexAndWeights->computeIndexes( childX ) ;
-                    std::vector<double> const & childWeights = childIndexAndWeights->computeWeights( childX ) ;
+                std::vector<uint32>::const_iterator found ;
+                found = std::lower_bound (indsChild.begin(),
+                                          indsChild.end(), normalizedRefNode) ;
 
-                    std::vector<uint32>::const_iterator found ;
-                    found = std::lower_bound (childIndexes.begin(),
-                                              childIndexes.end(), normalizedRefNode) ;
+                // Did we find normalizedRefNode ?
+                if( found != indsChild.end() ) {
+                    if( *found == normalizedRefNode ) {
+                        uint32 found_at = static_cast<uint32>( std::distance(indsChild.begin(), found) ) ;
 
-                    uint32 found_at = std::distance( childIndexes.begin(), found ) ;
-
-                    // Did we find normalizedRefNode ?
-                    if( found != childIndexes.end() ) {
-                        actual_weights[ik] += childWeights[found_at] ;
+                        actual_weights[ik] += weightsChild[found_at] * child.weight * inputs.refineFactor ;
                     }
                 }
             }
