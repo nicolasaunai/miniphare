@@ -9,11 +9,26 @@
 #include "asciiexportstrategy.h"
 
 
+/* ----------------------------------------------------------------------------
+
+                         ELECTROMAGNETIC DIAGNOSTICS
+
+   ---------------------------------------------------------------------------- */
 
 void AsciiExportStrategy::saveEMDiagnostic(EMDiagnostic const& diag, Time const& timeManager)
 {
 
 }
+
+
+
+/* ----------------------------------------------------------------------------
+
+                             FLUID DIAGNOSTICS
+
+   ---------------------------------------------------------------------------- */
+
+
 
 
 
@@ -61,10 +76,10 @@ void AsciiExportStrategy::saveFluidDiagnostic(FluidDiagnostic const& diag, Time 
         fprintf(file, "%d", pack.nbrDimensions);
         fprintf(file, "\n\n\n");
 
+
         fprintf(file, "# Origin\n");
         fprintf(file, "%f %f %f", pack.origin.x_, pack.origin.y_, pack.origin.z_);
         fprintf(file, "\n\n\n");
-
 
 
         fprintf(file, "# nbrNodes x y z\n");
@@ -81,9 +96,6 @@ void AsciiExportStrategy::saveFluidDiagnostic(FluidDiagnostic const& diag, Time 
             fprintf(file, "%f ", centering2float(centering));
         }
         fprintf(file, "\n\n\n");
-
-
-
 
 
         fprintf(file, "# data\n");

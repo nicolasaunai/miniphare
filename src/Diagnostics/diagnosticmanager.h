@@ -16,8 +16,8 @@
 #include "Diagnostics/Export/exportstrategy.h"
 #include "Diagnostics/Export/exportstrategyfactory.h"
 
-#include "Diagnostics/FieldDiagnostics/Fluid/fluiddiagnostic.h"
 #include "Diagnostics/FieldDiagnostics/Electromag/emdiagnostic.h"
+#include "Diagnostics/FieldDiagnostics/Fluid/fluiddiagnosticfactory.h"
 
 
 /**
