@@ -20,8 +20,8 @@ DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> in
     for (uint32 iDiag=0; iDiag < initializer->emInitializers.size(); ++iDiag)
     {
         newEMDiagnostic(initializer->emInitializers[iDiag].typeName,
-                        initializer->emInitializers[iDiag].computingIterations[iDiag],
-                        initializer->emInitializers[iDiag].writingIterations[iDiag]);
+                        initializer->emInitializers[iDiag].computingIterations,
+                        initializer->emInitializers[iDiag].writingIterations);
     }
 
     // then initialize all Fluid diagnostics
@@ -29,8 +29,8 @@ DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> in
     {
         newFluidDiagnostic(initializer->fluidInitializers[iDiag].typeName,
                            initializer->fluidInitializers[iDiag].speciesName,
-                           initializer->fluidInitializers[iDiag].computingIterations[iDiag],
-                           initializer->fluidInitializers[iDiag].writingIterations[iDiag]);
+                           initializer->fluidInitializers[iDiag].computingIterations,
+                           initializer->fluidInitializers[iDiag].writingIterations);
     }
 
     // then initialize all particle, orbit, probes, etc. diagnostics

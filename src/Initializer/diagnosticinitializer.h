@@ -14,15 +14,15 @@ struct FluidDiagInitializer
 {
     std::string speciesName;
     std::string typeName;
-    std::vector< std::vector<uint32> > computingIterations;
-    std::vector<std::vector<uint32> > writingIterations;
+    std::vector<uint32> computingIterations;
+    std::vector<uint32>  writingIterations;
 };
 
 struct EMDiagInitializer
 {
     std::string typeName;
-    std::vector< std::vector<uint32> > computingIterations;
-    std::vector<std::vector<uint32> > writingIterations;
+    std::vector<uint32> computingIterations;
+    std::vector<uint32> writingIterations;
 };
 
 

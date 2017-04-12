@@ -273,14 +273,14 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
 
     EMDiagInitializer emDiag;
     emDiag.typeName = "E";
-    emDiag.computingIterations.push_back({1, 10, 20, 22});
-    emDiag.writingIterations.push_back({1, 10, 20, 22});
+    emDiag.computingIterations.push_back(1);
+    emDiag.writingIterations.push_back(1);
     initializer->emInitializers.push_back(std::move(emDiag));
 
     EMDiagInitializer BDiag;
     BDiag.typeName = "B";
-    BDiag.computingIterations.push_back({1, 10, 20, 22});
-    BDiag.writingIterations.push_back({1, 10, 20, 22});
+    BDiag.computingIterations.push_back(1);
+    BDiag.writingIterations.push_back(1);
     initializer->emInitializers.push_back(std::move(BDiag));
 
 
@@ -288,8 +288,8 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
     FluidDiagInitializer fluidDiag;
     fluidDiag.speciesName = "proton1";
     fluidDiag.typeName = "rho_s";
-    fluidDiag.computingIterations.push_back({2, 11, 24, 54});
-    fluidDiag.writingIterations.push_back({2, 11, 24, 54});
+    fluidDiag.computingIterations.push_back(2);
+    fluidDiag.writingIterations.push_back(2);
     initializer->fluidInitializers.push_back(std::move(fluidDiag));
 
     return initializer;
