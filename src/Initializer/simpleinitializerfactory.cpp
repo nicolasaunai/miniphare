@@ -273,24 +273,34 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
 
     EMDiagInitializer emDiag;
     emDiag.typeName = "E";
-    emDiag.computingIterations.push_back(1);
-    emDiag.writingIterations.push_back(1);
+    emDiag.computingIterations.insert(emDiag.computingIterations.end(), {1,10,20,25});
+    emDiag.writingIterations.insert(emDiag.writingIterations.end(), {1,10,20,25});
     initializer->emInitializers.push_back(std::move(emDiag));
 
     EMDiagInitializer BDiag;
     BDiag.typeName = "B";
-    BDiag.computingIterations.push_back(1);
-    BDiag.writingIterations.push_back(1);
+    BDiag.computingIterations.insert(BDiag.computingIterations.end(), {1,10,20,25});
+    BDiag.writingIterations.insert(BDiag.writingIterations.end(), {1,10,20,25});
     initializer->emInitializers.push_back(std::move(BDiag));
-
 
 
     FluidDiagInitializer fluidDiag;
     fluidDiag.speciesName = "proton1";
     fluidDiag.typeName = "rho_s";
-    fluidDiag.computingIterations.push_back(2);
-    fluidDiag.writingIterations.push_back(2);
+    fluidDiag.computingIterations.insert(fluidDiag.computingIterations.end(), {1,10,20,25});
+    fluidDiag.writingIterations.insert(fluidDiag.writingIterations.end(), {1,10,20,25});
     initializer->fluidInitializers.push_back(std::move(fluidDiag));
+
+
+    FluidDiagInitializer fluidDiag2;
+    fluidDiag2.speciesName = "proton1";
+    fluidDiag2.typeName = "flux_s";
+    fluidDiag2.computingIterations.insert(fluidDiag2.computingIterations.end(), {1,10,20,25});
+    fluidDiag2.writingIterations.insert(fluidDiag2.writingIterations.end(), {1,10,20,25});
+    initializer->fluidInitializers.push_back(std::move(fluidDiag2));
+
+
+
 
     return initializer;
 }

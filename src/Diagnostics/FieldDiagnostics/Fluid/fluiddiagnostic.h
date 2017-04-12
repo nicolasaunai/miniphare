@@ -42,21 +42,27 @@ public:
         : FieldDiagnosticComputeStrategy{"rho_s"},
           speciesName_{speciesName}{}
 
-    FieldPack virtual compute(Patch const& patch) override
-    {
-        std::cout << "computing RhoSpeciesDiag for species " << speciesName_ << std::endl;
-        FieldPack pack;
+    FieldPack virtual compute(Patch const& patch) override;
 
-        PatchData const& patchData = patch.data();
-        Field const& rho_s = patchData.ions().species(speciesName_).rho();
-        GridLayout const& layout = patch.layout();
-
-        fillPack_(pack, rho_s, layout);
-
-        return pack;
-    }
 };
 
+
+
+
+
+
+class FluxSpeciesDiag : public FieldDiagnosticComputeStrategy
+{
+private:
+    std::string speciesName_;
+
+public:
+    FluxSpeciesDiag(std::string speciesName)
+        : FieldDiagnosticComputeStrategy{"flux_s"},
+          speciesName_{speciesName}{}
+
+    FieldPack virtual compute(Patch const& patch) override;
+};
 
 
 

@@ -28,15 +28,15 @@ void fillFile(FieldPack const& pack, FILE* file)
     {
         std::string key = pack.keys[iField];
 
-        fprintf(file, "#nbrDimensions\n");
+        fprintf(file, "# nbrDimensions\n");
         auto nbdims = pack.nbrDimensions.find(key); // [] cannot be used for const unordered_map
         fprintf(file, "%d", nbdims->second);
-        fprintf(file, "\n\n\n");
+        fprintf(file, "\n");
 
         fprintf(file, "# Origin\n");
         auto itOri = pack.origin.find(key);
         fprintf(file, "%f %f %f", itOri->second.x_, itOri->second.y_, itOri->second.z_);
-        fprintf(file, "\n\n\n");
+        fprintf(file, "\n");
 
         fprintf(file, "# nbrNoxdes x y z\n");
         auto itNbrNodes = pack.nbrNodes.find(key);
@@ -44,7 +44,7 @@ void fillFile(FieldPack const& pack, FILE* file)
         {
             fprintf(file, "%d ", n);
         }
-        fprintf(file, "\n\n\n");
+        fprintf(file, "\n");
 
         fprintf(file, "# centering x y z\n");
         auto itCentering = pack.centerings.find(key);
@@ -52,7 +52,7 @@ void fillFile(FieldPack const& pack, FILE* file)
         {
             fprintf(file, "%f ", centering2float(centering));
         }
-        fprintf(file, "\n\n\n");
+        fprintf(file, "\n");
 
 
         fprintf(file, "# data\n");

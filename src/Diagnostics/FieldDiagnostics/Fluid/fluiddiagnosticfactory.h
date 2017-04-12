@@ -28,6 +28,18 @@ public:
 
             return ptr;
         }
+
+        if (type == "flux_s")
+        {
+            std::unique_ptr<FieldDiagnosticComputeStrategy> strat{new FluxSpeciesDiag{speciesName}};
+
+            std::unique_ptr<FluidDiagnostic> ptr{new FluidDiagnostic{id ,speciesName,
+                                                                     std::move(strat) } };
+
+            return ptr;
+        }
+
+
         return nullptr;
     }
 };
