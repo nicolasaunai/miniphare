@@ -46,6 +46,10 @@ exactSplit1PartParams split1ParticleInputs[] = {
 
     exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
         1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
+        2, 2, "splitOrder2", 30),                       // order, RF, splitMethod, refNode
+
+    exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
+        1, "yee" , Point{0., 0., 0.},                  // dim, layout, origin
         3, 2, "splitOrder3", 20),                       // order, RF, splitMethod, refNode
 
     exactSplit1PartParams({{0.1, 0., 0.}}, {{100, 0, 0}},   // dxdydz, nbrCellxyz
