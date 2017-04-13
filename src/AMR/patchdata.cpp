@@ -18,13 +18,28 @@ PatchData::PatchData(const InitializerFactory &initFactory)
 }
 
 
-void PatchData::init()
+void PatchData::initPhysicalDomain()
 {
     std::cout << "Initializing PatchData..." << std::endl;
     ions_.loadParticles();
     solver_.init(ions_, *boundaryCondition_);
     //EMfields_.init(EMInitializer_.get());
     std::cout << "PatchData initialized!" << std::endl;
+}
+
+
+/**
+ * @brief PatchData::initPRA will trigger the initialization of
+ * the Particle Repopulation Area, contained in
+ * boundaryCondition_ attribute
+ *
+ */
+void PatchData::initPRA()
+{
+    // we have to trigger loadParticles() method of Ions,
+    // the latter will call loadParticles() of Species
+
+
 }
 
 
