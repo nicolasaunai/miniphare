@@ -5,6 +5,7 @@
 
 #include "BoundaryConditions/boundary_conditions.h"
 #include "BoundaryConditions/boundary.h"
+#include "BoundaryConditions/patchboundary.h"
 
 #include "Initializer/initializerfactory.h"
 #include "AMR/MLMD/pra.h"
@@ -33,12 +34,12 @@ private:
     GridLayout coarseLayout_;
 
     // these boundaries know what they are : patchboundary
-    std::vector<std::unique_ptr<Boundary>> boundaries_;
+    std::vector<std::unique_ptr<PatchBoundary>> boundaries_;
 
 public:
     PatchBoundaryCondition( PRA const & refinedPRA, std::shared_ptr<Patch> coarsePatch,
                             GridLayout const & coarseLayout,
-                            std::vector<std::unique_ptr<Boundary>> boundaries ) ;
+                            std::vector<std::unique_ptr<PatchBoundary>> boundaries ) ;
 
     virtual void applyMagneticBC(VecField& B) const override;
     virtual void applyElectricBC(VecField& E) const override;
@@ -47,6 +48,8 @@ public:
     virtual void applyBulkBC(VecField& Vi)    const override;
     virtual void applyParticleBC(std::vector<Particle>& particleArray,
                                  LeavingParticles const& leavingParticles)  const override;
+
+    virtual void initializeGhostArea() override ;
 
 };
 

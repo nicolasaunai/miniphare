@@ -2,6 +2,14 @@
 
 
 
+void PatchBoundary::initPRAParticles()
+{
+    // we trigger actual loading of particles
+    ions_.loadParticles() ;
+
+}
+
+
 void PatchBoundary::applyElectricBC(VecField& E, GridLayout const& layout) const
 {
 

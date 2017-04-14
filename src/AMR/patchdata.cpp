@@ -41,10 +41,7 @@ void PatchData::initPRA()
     {
         // we have to trigger loadParticles() method of Ions,
         // the latter will call loadParticles() of Species
-
-
-
-
+        boundaryCondition_->initializeGhostArea() ;
     }
 
 }

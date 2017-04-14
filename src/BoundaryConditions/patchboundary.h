@@ -35,6 +35,9 @@ public:
     virtual void applyParticleBC(std::vector<Particle>& particleArray,
                                  LeavingParticles const& leavingParticles)  const override ;
 
+    void initPRAParticles() ;
+
+
 };
 
 

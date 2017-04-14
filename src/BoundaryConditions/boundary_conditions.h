@@ -37,6 +37,8 @@ public:
     virtual void applyParticleBC(std::vector<Particle>& particleArray,
                                  LeavingParticles const& leavingParticles) const = 0;
 
+    virtual void initializeGhostArea() = 0;
+
     bool isPatchBC() { return isPatchBC_ ; }
 
 };

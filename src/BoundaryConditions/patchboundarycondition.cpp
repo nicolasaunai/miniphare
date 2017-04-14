@@ -15,12 +15,29 @@
 PatchBoundaryCondition::PatchBoundaryCondition(
         PRA const & refinedPRA, std::shared_ptr<Patch> coarsePatch,
         GridLayout const & coarseLayout,
-        std::vector<std::unique_ptr<Boundary>> boundaries )
+        std::vector<std::unique_ptr<PatchBoundary>> boundaries )
     : BoundaryCondition( true ),
       refinedPRA_{refinedPRA}, parent_{coarsePatch},
       coarseLayout_{coarseLayout},
       boundaries_{std::move(boundaries)}
 {
+
+}
+
+
+/**
+ * @brief PatchBoundaryCondition::initializeGhostArea
+ * In the case of a PatchBoundaryCondition this method
+ * will initialize the PRA of the Patch.
+ *
+ *
+ */
+void PatchBoundaryCondition::initializeGhostArea()
+{
+    for( auto & boundary: boundaries_ )
+    {
+        boundary->initPRAParticles() ;
+    }
 
 }
 

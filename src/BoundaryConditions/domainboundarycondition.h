@@ -42,7 +42,10 @@ public:
     virtual void applyParticleBC(std::vector<Particle>& particleArray,
                                  LeavingParticles const& leavingParticles)  const override;
 
+    virtual void initializeGhostArea() override ;
+
     virtual ~DomainBoundaryCondition();
+
 };
 
 

@@ -21,6 +21,16 @@ DomainBoundaryCondition::DomainBoundaryCondition(GridLayout layout, std::vector<
 }
 
 
+void DomainBoundaryCondition::initializeGhostArea()
+{
+    // nothing to implement for now
+    // This method might be used to handle a flow
+    // of incoming plasma
+
+
+
+}
+
 
 void DomainBoundaryCondition::applyMagneticBC(VecField& B) const
 {
