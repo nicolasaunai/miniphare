@@ -36,7 +36,15 @@ void PatchBoundaryCondition::initializeGhostArea()
 {
     for( auto & boundary: boundaries_ )
     {
+        // effectively load the particles into Ions attribute of
+        // PatchBoundary object using
+        // the ParticleInitializer of each Species object stored
+        // Ions instance
         boundary->initPRAParticles() ;
+
+        // the electro-magnetic field has already been
+        // initialized by PatchBoundary constructor !
+        // Nothing to code :-)
     }
 
 }
