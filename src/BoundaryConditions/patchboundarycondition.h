@@ -38,10 +38,7 @@ private:
 public:
     PatchBoundaryCondition( PRA const & refinedPRA, std::shared_ptr<Patch> coarsePatch,
                             GridLayout const & coarseLayout,
-                            std::vector<std::unique_ptr<Boundary>> boundaries )
-        : refinedPRA_{refinedPRA}, parent_{coarsePatch},
-          coarseLayout_{coarseLayout},
-          boundaries_{std::move(boundaries)} {}
+                            std::vector<std::unique_ptr<Boundary>> boundaries ) ;
 
     virtual void applyMagneticBC(VecField& B) const override;
     virtual void applyElectricBC(VecField& E) const override;

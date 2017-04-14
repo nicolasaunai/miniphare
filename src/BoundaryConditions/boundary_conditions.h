@@ -20,7 +20,15 @@ enum class BoundaryType{ Periodic };
  */
 class BoundaryCondition
 {
+private:
+    bool isPatchBC_ ;
+
 public:
+    explicit BoundaryCondition( bool isPatchBC )
+        : isPatchBC_{isPatchBC} {}
+
+    virtual ~BoundaryCondition() = default;
+
     virtual void applyMagneticBC(VecField& B) const = 0;
     virtual void applyElectricBC(VecField& E) const = 0;
     virtual void applyCurrentBC(VecField& J)  const = 0;
@@ -29,7 +37,8 @@ public:
     virtual void applyParticleBC(std::vector<Particle>& particleArray,
                                  LeavingParticles const& leavingParticles) const = 0;
 
-    virtual ~BoundaryCondition() = default;
+    bool isPatchBC() { return isPatchBC_ ; }
+
 };
 
 

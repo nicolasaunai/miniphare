@@ -2,6 +2,18 @@
 
 
 
+void Patch::init()
+{
+    std::cout << "init Patch...";
+    data_.initPhysicalDomain();
+    std::cout << " Patch initialization: OK\n" ;
+
+    data_.initPRA();
+    std::cout << " PRA initialization: OK\n" ;
+}
+
+
+
 void Patch::evolve()
 {
 

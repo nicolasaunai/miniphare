@@ -3,8 +3,16 @@
 #include "domainboundaryfactory.h"
 
 
+/**
+ * @brief DomainBoundaryCondition::DomainBoundaryCondition
+ * we initialize isPatchBC = false
+ *
+ *
+ * @param layout
+ * @param boundaryInfos
+ */
 DomainBoundaryCondition::DomainBoundaryCondition(GridLayout layout, std::vector<BoundaryInfo> boundaryInfos)
-: layout_{std::move(layout)}
+: BoundaryCondition( false ), layout_{std::move(layout)}
 {
     for (BoundaryInfo boundary : boundaryInfos)
     {

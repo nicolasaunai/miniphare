@@ -56,7 +56,7 @@ public:
 
     ~Patch() = default;
 
-    void init() { std::cout << "init Patch...";  data_.initPhysicalDomain(); std::cout << " patch initialized OK\n";}
+    void init() ;
 
     void evolve() ;
 
