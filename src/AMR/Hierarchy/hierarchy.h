@@ -60,9 +60,16 @@ public:
 
 
     void evolveDomainForOneTimeStep() ;
-    void addNewPatch(RefinementInfo const& refineInfo, PatchInfo const& patchInfo) ;
     void refine(std::vector< std::vector<RefinementInfo> > const& refinementTable, PatchInfo const& patchInfo);
     RefinementInfoTable evaluateRefinementNeed(uint32 refineRatio, GridLayout const& baseLayout) ;
+
+    std::shared_ptr<Patch>
+    addNewPatch( RefinementInfo const & info,
+                 uint32 const & refineFactor,
+                 std::vector<uint32> const & orders,
+                 std::string const & pusher,
+                 std::vector<std::string> const & splitMethod ) ;
+
 
 };
 
