@@ -31,7 +31,7 @@ private:
 public:
 
 
-    explicit Faraday(double dt, GridLayout const& layout);
+    Faraday(double dt, GridLayout const& layout);
 
     // Faraday is a move-only object.
     Faraday(Faraday const& source) = delete;

@@ -36,7 +36,7 @@ void DomainBoundaryCondition::applyCurrentBC(VecField& J) const
 {
     for (auto&& bc : boundaries_)
     {
-        bc->applyMagneticBC(J, layout_);
+        bc->applyCurrentBC(J, layout_);
     }
 }
 
