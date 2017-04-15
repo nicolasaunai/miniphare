@@ -63,7 +63,7 @@ public:
         {
             startEndIndices[2].firstCellIndex = layout.physicalStartIndex(QtyCentering::primal,
                                                                            Direction::Z);
-            startEndIndices[3].lastCellIndex  = layout.physicalEndIndex(QtyCentering::primal,
+            startEndIndices[2].lastCellIndex  = layout.physicalEndIndex(QtyCentering::primal,
                                                                          Direction::Z)-1;
         }
 
