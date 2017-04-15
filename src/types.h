@@ -18,9 +18,11 @@ enum class Edge{ Xmin, Xmax, Ymin, Ymax, Zmin, Zmax } ;
 
 struct AllocSizeT{
 
-    uint32 nx_ ;
-    uint32 ny_ ;
-    uint32 nz_ ;
+    uint32 nx_ = 0;
+    uint32 ny_ = 0;
+    uint32 nz_ = 0;
+
+    AllocSizeT() = default;
 
     AllocSizeT( uint32 nx , uint32 ny,
                uint32 nz )
