@@ -19,41 +19,45 @@
 
 
 
-class StrategyFonctor
+class StrategyFunctor
 {
 protected:
     std::string strategy_ ;
-
     uint32 refineFactor_ ;
     uint32 interpOrder_ ;
 
 public:
-    explicit StrategyFonctor( std::string const & strategy,
-                              uint32 refineFactor,
-                              uint32 interpOrder )
-        : strategy_{strategy}, refineFactor_{refineFactor},
-          interpOrder_{interpOrder} {}
+    StrategyFunctor(std::string const & strategy,
+                    uint32 refineFactor,
+                    uint32 interpOrder)
+        : strategy_{strategy},
+          refineFactor_{refineFactor},
+          interpOrder_{interpOrder}
+    {}
 
-    virtual ~StrategyFonctor() = default ;
+    virtual ~StrategyFunctor() = default ;
 
     virtual std::unique_ptr<SplittingStrategy> createStrategy() const = 0 ;
 
-    uint32 refineFactor() const { return refineFactor_ ; }
-
-    uint32 interpOrder () const { return interpOrder_ ; }
+    uint32 refineFactor() const {return refineFactor_;}
+    uint32 interpOrder () const {return interpOrder_; }
 
 };
 
 
 
-class FonctorApprox1to4 : public StrategyFonctor
+
+
+
+
+class FonctorApprox1to4 : public StrategyFunctor
 {
 
 public:
-    explicit FonctorApprox1to4( std::string const & strategy,
+    explicit FonctorApprox1to4( std::string const& strategy,
                                 uint32 refineFactor,
                                 uint32 interpOrder )
-        : StrategyFonctor(strategy, refineFactor, interpOrder) {}
+        : StrategyFunctor(strategy, refineFactor, interpOrder) {}
 
     virtual std::unique_ptr<SplittingStrategy> createStrategy() const override
     {
@@ -62,14 +66,17 @@ public:
 };
 
 
-class FonctorApproxFuji : public StrategyFonctor
-{
 
+
+
+
+class FonctorApproxFuji : public StrategyFunctor
+{
 public:
-    explicit FonctorApproxFuji( std::string const & strategy,
-                                uint32 refineFactor,
-                                uint32 interpOrder )
-        : StrategyFonctor(strategy, refineFactor, interpOrder) {}
+    FonctorApproxFuji(std::string const& strategy,
+                      uint32 refineFactor,
+                      uint32 interpOrder)
+        : StrategyFunctor(strategy, refineFactor, interpOrder) {}
 
     virtual std::unique_ptr<SplittingStrategy> createStrategy() const override
     {
@@ -78,14 +85,17 @@ public:
 };
 
 
-class FonctorOrder1_RF2 : public StrategyFonctor
-{
 
+
+
+
+class FonctorOrder1_RF2 : public StrategyFunctor
+{
 public:
-    explicit FonctorOrder1_RF2( std::string const & strategy,
-                                uint32 refineFactor,
-                                uint32 interpOrder )
-        : StrategyFonctor(strategy, refineFactor, interpOrder) {}
+    FonctorOrder1_RF2(std::string const& strategy,
+                      uint32 refineFactor,
+                      uint32 interpOrder)
+        : StrategyFunctor(strategy, refineFactor, interpOrder) {}
 
     virtual std::unique_ptr<SplittingStrategy> createStrategy() const override
     {
@@ -94,82 +104,96 @@ public:
 };
 
 
-class FonctorOrder2_RF2 : public StrategyFonctor
-{
 
+
+
+class FonctorOrder2_RF2 : public StrategyFunctor
+{
 public:
-    explicit FonctorOrder2_RF2( std::string const & strategy,
-                                uint32 refineFactor,
-                                uint32 interpOrder )
-        : StrategyFonctor(strategy, refineFactor, interpOrder) {}
+    FonctorOrder2_RF2(std::string const& strategy,
+                      uint32 refineFactor,
+                      uint32 interpOrder)
+        : StrategyFunctor(strategy, refineFactor, interpOrder) {}
 
     virtual std::unique_ptr<SplittingStrategy> createStrategy() const override
     {
-        return std::unique_ptr<SplittingStrategy>( new Order2_RF2Strategy(strategy_) );
+        return std::unique_ptr<SplittingStrategy>(new Order2_RF2Strategy(strategy_));
     }
 };
 
 
-class FonctorOrder3_RF2 : public StrategyFonctor
-{
 
+
+
+
+class FonctorOrder3_RF2 : public StrategyFunctor
+{
 public:
-    explicit FonctorOrder3_RF2( std::string const & strategy,
-                                uint32 refineFactor,
-                                uint32 interpOrder )
-        : StrategyFonctor(strategy, refineFactor, interpOrder) {}
+    FonctorOrder3_RF2(std::string const & strategy,
+                      uint32 refineFactor,
+                      uint32 interpOrder)
+        : StrategyFunctor(strategy, refineFactor, interpOrder) {}
 
     virtual std::unique_ptr<SplittingStrategy> createStrategy() const override
     {
-        return std::unique_ptr<SplittingStrategy>( new Order3_RF2Strategy(strategy_) );
+        return std::unique_ptr<SplittingStrategy>(new Order3_RF2Strategy(strategy_));
     }
 };
 
 
-class FonctorOrder1_RFn : public StrategyFonctor
-{
 
+
+
+
+class FonctorOrder1_RFn : public StrategyFunctor
+{
 public:
-    explicit FonctorOrder1_RFn( std::string const & strategy,
-                                uint32 refineFactor,
-                                uint32 interpOrder )
-        : StrategyFonctor(strategy, refineFactor, interpOrder) {}
+    FonctorOrder1_RFn(std::string const & strategy,
+                      uint32 refineFactor,
+                      uint32 interpOrder)
+        : StrategyFunctor(strategy, refineFactor, interpOrder) {}
 
     virtual std::unique_ptr<SplittingStrategy> createStrategy() const override
     {
-        return std::unique_ptr<SplittingStrategy>( new Order1_RFnStrategy(strategy_, refineFactor_) );
+        return std::unique_ptr<SplittingStrategy>(new Order1_RFnStrategy(strategy_, refineFactor_));
     }
 };
 
 
-class FonctorOrderN_RF2 : public StrategyFonctor
-{
 
+
+
+class FonctorOrderN_RF2 : public StrategyFunctor
+{
 public:
-    explicit FonctorOrderN_RF2( std::string const & strategy,
-                                uint32 refineFactor,
-                                uint32 interpOrder )
-        : StrategyFonctor(strategy, refineFactor, interpOrder) {}
+    FonctorOrderN_RF2(std::string const & strategy,
+                      uint32 refineFactor,
+                      uint32 interpOrder)
+        : StrategyFunctor(strategy, refineFactor, interpOrder) {}
 
     virtual std::unique_ptr<SplittingStrategy> createStrategy() const override
     {
-        return std::unique_ptr<SplittingStrategy>( new OrderN_RF2Strategy(strategy_, interpOrder_) );
+        return std::unique_ptr<SplittingStrategy>(new OrderN_RF2Strategy(strategy_, interpOrder_));
     }
 };
 
 
-class FonctorOrderN_RF3 : public StrategyFonctor
+
+
+
+
+class FonctorOrderN_RF3 : public StrategyFunctor
 {
 
 public:
-    explicit FonctorOrderN_RF3( std::string const & strategy,
-                                uint32 refineFactor,
-                                uint32 interpOrder )
-        : StrategyFonctor(strategy, refineFactor, interpOrder) {}
+    FonctorOrderN_RF3(std::string const & strategy,
+                      uint32 refineFactor,
+                      uint32 interpOrder)
+        : StrategyFunctor(strategy, refineFactor, interpOrder) {}
 
     virtual std::unique_ptr<SplittingStrategy> createStrategy() const override
     {
-        return std::unique_ptr<SplittingStrategy>( new OrderN_RF3Strategy(strategy_, interpOrder_) );
+        return std::unique_ptr<SplittingStrategy>(new OrderN_RF3Strategy(strategy_, interpOrder_));
     }
 };
 

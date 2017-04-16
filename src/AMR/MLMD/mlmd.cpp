@@ -1,24 +1,26 @@
 
 #include <cmath>
 
-#include "mlmd.h"
-#include "hierarchy.h"
-#include "patch.h"
-#include "patchdata.h"
 #include "Solver/solver.h"
+
+#include "AMR/patch.h"
+#include "AMR/patchdata.h"
+#include "AMR/MLMD/mlmd.h"
+#include "AMR/Hierarchy/hierarchy.h"
 
 
 
 
 MLMD::MLMD(InitializerFactory const& initFactory)
-    : baseLayout_{ GridLayout{initFactory.gridLayout()} },
+    : baseLayout_{ GridLayout{initFactory.gridLayout()} }
       /*patchHierarchy_{ std::make_shared<Patch>(
                            initFactory.getBox(), baseLayout_,
                            PatchData{initFactory}  ) },*/
-      interpolationOrders_{  initFactory.interpolationOrders() },
-      pusher_{ initFactory.pusher() },
-      splitStrategies_{ initFactory.splittingStrategies() }
 {
+    patchInfos_.interpOrders = initFactory.interpolationOrders();
+    patchInfos_.pusher = initFactory.pusher();
+    patchInfos_.splitStrategies = initFactory.splittingStrategies();
+    patchInfos_.refinementRatio = 2;
     // will probably have to change the way objects are initialized.
     // if we want, at some point, start from an already existing hierarchy
     // (in case of restart for e.g.
@@ -60,14 +62,11 @@ void MLMD::evolveFullDomain(Hierarchy& patchHierarchy)
     // the ouput of this method is used by updateHierarchy()
     // Note for later: will probably not be called every time step.
     std::vector< std::vector<RefinementInfo> > refinementTable
-            = patchHierarchy.evaluateRefinementNeed( refinementRatio_, baseLayout_ ) ;
+            = patchHierarchy.evaluateRefinementNeed(patchInfos_.refinementRatio, baseLayout_ ) ;
 
     // New patches are created here if necessary
     // it depends on evaluateHierarchy()
-    patchHierarchy.updateHierarchy( refinementTable,
-                                    refinementRatio_,
-                                    interpolationOrders_, pusher_,
-                                    splitStrategies() ) ;
+    patchHierarchy.refine(refinementTable, patchInfos_);
 
 }
 

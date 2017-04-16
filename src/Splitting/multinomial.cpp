@@ -21,7 +21,7 @@ int64 binomial(int64 n, int64 k)
     if(n<0 || k<0 || k>n)
         coef = 0 ;
     else
-        coef = factorial(n) / factorial(k) / factorial(n-k) ;
+        coef = static_cast<int64>(factorial(n) / factorial(k) / factorial(n-k));
 
     return coef;
 }

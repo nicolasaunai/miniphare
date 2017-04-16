@@ -6,9 +6,9 @@
 #include "types.h"
 
 #include "AMR/patch.h"
+#include "AMR/MLMD/mlmd.h"
 #include "AMR/patchdata.h"
-#include "AMR/hierarchy.h"
-#include "AMR/mlmd.h"
+#include "AMR/Hierarchy/hierarchy.h"
 
 #include "grid/gridlayout.h"
 
