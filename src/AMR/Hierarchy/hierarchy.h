@@ -1,9 +1,11 @@
 #ifndef HIERARCHY_H
 #define HIERARCHY_H
 
-#include "AMR/patch.h"
 #include <vector>
 #include <memory>
+
+#include "AMR/patch.h"
+#include "AMR/patchinfo.h"
 
 
 
@@ -37,17 +39,15 @@ struct RefinementInfo
  */
 class Hierarchy
 {
-
 private:
 
-    std::vector< std::vector< std::shared_ptr<Patch> > > patchTable_ ;
-
-    GridLayout  buildLayout_( RefinementInfo const & info ) ;
+    std::vector< std::vector< std::shared_ptr<Patch> > > patchTable_;
+    GridLayout  buildLayout_(RefinementInfo const & info);
 
 public:
 
-    using hierarchyType =
-    std::vector< std::vector< std::shared_ptr<Patch> > > ;
+    using hierarchyType = std::vector< std::vector< std::shared_ptr<Patch> > > ;
+    using RefinementInfoTable = std::vector< std::vector<RefinementInfo> >;
 
 
     explicit Hierarchy(std::shared_ptr<Patch> root)
@@ -55,25 +55,15 @@ public:
         patchTable_.push_back(std::vector< std::shared_ptr<Patch> >{std::move(root)});
     }
 
-
-
     Patch& root() { return *patchTable_[0][0]; }
-
     hierarchyType & patchTable() { return patchTable_; }
     hierarchyType const& patchTable() const { return patchTable_; }
 
+
     void evolveDomainForOneTimeStep() ;
-
-    std::vector< std::vector<RefinementInfo> >
-    evaluateRefinementNeed( uint32 refineRatio, GridLayout const & baseLayout ) ;
-
-    void updateHierarchy( std::vector< std::vector<RefinementInfo> > const & refinementTable,
-                          std::vector<uint32> const & ordersFromMLMD,
-                          std::string const & pusherFromMLMD ) ;
-
-    void addNewPatch( RefinementInfo const & info,
-                      std::vector<uint32> const & ordersFromMLMD,
-                      std::string const & pusherFromMLMD ) ;
+    void addNewPatch(RefinementInfo const& refineInfo, PatchInfo const& patchInfo) ;
+    void refine(std::vector< std::vector<RefinementInfo> > const& refinementTable, PatchInfo const& patchInfo);
+    RefinementInfoTable evaluateRefinementNeed(uint32 refineRatio, GridLayout const& baseLayout) ;
 
 };
 

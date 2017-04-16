@@ -7,6 +7,7 @@
 #include "BoundaryConditions/boundary.h"
 
 #include "Initializer/initializerfactory.h"
+#include "AMR/MLMD/pra.h"
 
 #include <memory>
 

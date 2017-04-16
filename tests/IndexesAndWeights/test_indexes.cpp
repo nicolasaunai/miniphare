@@ -80,7 +80,7 @@ public:
         inputs = GetParam();
         print(inputs) ;
 
-//        GridLayout layout{ inputs.dxdydz, inputs.nbrCells, \
+//        GridLayout layout{ inputs.dxdydz, inputs.nbrCells,
 //                    inputs.nbDim, inputs.lattice, inputs.interpOrder  };
 
 

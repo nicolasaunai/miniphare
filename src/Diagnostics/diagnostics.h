@@ -13,13 +13,13 @@
 #include "types.h"
 #include "Time/time.h"
 #include "Field/field.h"
-#include "AMR/hierarchy.h"
 #include "utilityphare.h"
 #include "grid/gridlayout.h"
 #include "vecfield/vecfield.h"
 #include "Plasmas/particles.h"
 #include "Diagnostics/diagtype.h"
 #include "Electromag/electromag.h"
+#include "AMR/Hierarchy/hierarchy.h"
 
 
 

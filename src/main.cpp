@@ -5,10 +5,12 @@
 
 #include "types.h"
 #include "Time/time.h"
+
 #include "AMR/patch.h"
-#include "AMR/mlmd.h"
+#include "AMR/MLMD/mlmd.h"
 #include "AMR/patchdata.h"
-#include "AMR/hierarchy.h"
+#include "AMR/Hierarchy/hierarchy.h"
+
 #include "grid/gridlayout.h"
 #include "Diagnostics/diagnosticmanager.h"
 #include "Initializer/simulationinitializerfactory.h"
