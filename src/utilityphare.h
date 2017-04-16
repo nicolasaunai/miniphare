@@ -55,23 +55,17 @@ struct Box
  */
 struct LogicalBox
 {
-    uint32 ix0, ix1, iy0, iy1, iz0, iz1;
+    uint32 ix0=1, ix1=1, iy0=1, iy1=1, iz0=1, iz1=1;
 
-    LogicalBox():
-        ix0{1}, ix1{1},
-        iy0{1}, iy1{1},
-        iz0{1}, iz1{1} {}
+    LogicalBox() {}
 
     LogicalBox(uint32 ix0, uint32 ix1):
-        ix0{ix0}, ix1{ix1},
-        iy0{1}, iy1{1},
-        iz0{1}, iz1{1} {}
+        ix0{ix0}, ix1{ix1} {}
 
     LogicalBox(uint32 ix0, uint32 ix1,
                uint32 iy0, uint32 iy1):
         ix0{ix0}, ix1{ix1},
-        iy0{iy0}, iy1{iy1},
-        iz0{1}, iz1{1} {}
+        iy0{iy0}, iy1{iy1} {}
 
     LogicalBox(uint32 ix0, uint32 ix1,
                uint32 iy0, uint32 iy1,
@@ -79,26 +73,8 @@ struct LogicalBox
         ix0{ix0}, ix1{ix1},
         iy0{iy0}, iy1{iy1},
         iz0{iz0}, iz1{iz1} {}
-
 };
 
-
-struct PRA
-{
-    std::array<uint32, 3> PRAwidth ;
-
-    std::vector<LogicalBox> logicDecomposition;
-    std::vector<Box> boxDecomposition;
-
-    PRA() {}
-
-    PRA( std::array<uint32, 3> PRAwidth,
-         std::vector<LogicalBox> logicBoxes,
-         std::vector<Box> boxes )
-        : PRAwidth{PRAwidth},
-          logicDecomposition{logicBoxes},
-          boxDecomposition{boxes} {}
-};
 
 
 #endif // UTILITYPHARE_H

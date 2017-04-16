@@ -2,9 +2,15 @@
 #define MLMD_H
 
 
-#include "hierarchy.h"
-#include "Initializer/initializerfactory.h"
 #include "grid/gridlayout.h"
+
+#include "AMR/patchinfo.h"
+#include "AMR/Hierarchy/hierarchy.h"
+
+#include "Splitting/splittingstrategy.h"
+#include "Initializer/initializerfactory.h"
+
+
 
 
 /**
@@ -19,19 +25,14 @@ class MLMD
 {
 private:
     // TODO: should be initialized by reading inputs parameters
-    uint32 refinementRatio_ {2};   // temporary hard-coded refinement strategy
     GridLayout baseLayout_ ;
-    //Hierarchy patchHierarchy_;
+    PatchInfo patchInfos_;
 
-    const std::vector<uint32>  interpolationOrders_ ;
-    const std::string pusher_ ;
 
 public:
 
     MLMD(InitializerFactory const& initFactory);
-
     void initializeRootLevel(Hierarchy& patchHierarchy);
-
     void evolveFullDomain(Hierarchy& patchHierarchy);
 
 //    Hierarchy & hierarchy() { return patchHierarchy_ ; }

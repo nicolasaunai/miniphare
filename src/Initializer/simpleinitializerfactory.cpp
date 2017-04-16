@@ -1,25 +1,38 @@
 
 #include <memory>
 
-#include "simpleinitializerfactory.h"
+#include "Initializer/simpleinitializerfactory.h"
 #include "Initializer/fluidparticleinitializer.h"
 #include "BoundaryConditions/domainboundarycondition.h"
 #include "BoundaryConditions/periodicdomainboundary.h"
 
+#include "Splitting/splittingstrategyfactory.h"
 
 
-static const uint32 interpOrderConstant = 3;
+static const uint32 interpOrderConstant  = 3 ;
+static const uint32 refineFactorConstant = 2 ;
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
     : layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
       // hard-coded... will come from input somehow
       dt_{0.01}, interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
-      pusher_{"modifiedBoris"}
+      pusher_{"modifiedBoris"},
+      splitMethods_{"splitOrderN_RF2"}
 {
 
 }
 
+
+SimpleInitializerFactory::SimpleInitializerFactory( const std::string & splitMethod )
+    : layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
+      // hard-coded... will come from input somehow
+      dt_{0.01}, interpolationOrders_{ std::vector<uint32>{2, interpOrderConstant} },
+      pusher_{"modifiedBoris"},
+      splitMethods_{ std::vector<std::string>{2, splitMethod} }
+{
+
+}
 
 
 /* below are just stupid functions to make this initializer work
@@ -256,17 +269,6 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
 
     return eminit;
 }
-
-
-
-
-
-std::unique_ptr<OhmInitializer> SimpleInitializerFactory::createOhmInitializer() const
-{
-    return nullptr;
-}
-
-
 
 
 

@@ -22,20 +22,17 @@ std::unique_ptr<ElectromagInitializer> PythonInitializerFactory::createElectroma
 }
 
 
-std::unique_ptr<OhmInitializer> PythonInitializerFactory::createOhmInitializer() const
-{
-    return nullptr;
-}
-
 std::unique_ptr<SolverInitializer> PythonInitializerFactory::createSolverInitializer() const
 {
     return nullptr;
 }
 
+
 GridLayout const& PythonInitializerFactory::gridLayout() const
 {
     return layout_;
 }
+
 
 double PythonInitializerFactory::timeStep() const
 {
