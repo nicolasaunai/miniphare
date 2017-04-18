@@ -13,6 +13,11 @@ This document is a **developer** documentation. Its aim is to explain the projec
 * [Official Repository] (https://hephaistos.lpp.polytechnique.fr/rhodecode/GIT_REPOSITORIES/LPP/phare/miniphare/miniphare) (restricted access)
 * [Coding Rules](codingrules.md)
 
+## Algorithms and numerical methods
+
+* [About B-splines and refinement](markdown/exactSplitting/BSplines.md)
+
+
 
 ## Contribution policy
 
@@ -49,12 +54,10 @@ MiniPHARE is developed by:
     * Doxygen
     * Graphviz
 * clang, gcc
-* 
+*
 
 
 ## FAQ
 
 * blah blah?
 * blah?
-
-
