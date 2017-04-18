@@ -7,7 +7,7 @@
 
 
 
-std::vector<InterpPushParams> getInterpPushParamsFromFile()
+std::vector<InterpPushParams> getPush1dParamsFromFile()
 {
 
     std::string filename{"../Pusher/odepush_summary.txt"};

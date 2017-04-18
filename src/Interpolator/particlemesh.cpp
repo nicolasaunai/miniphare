@@ -62,7 +62,7 @@ void fieldAtParticle2D(Interpolator const& interp,
     (void) B;
     (void) layout;
     (void)particles;
-    throw std::runtime_error("NOT IMPLEMENTED");
+    throw std::runtime_error("fieldAtParticle2D - NOT IMPLEMENTED");
 }
 
 
@@ -78,7 +78,7 @@ void fieldAtParticle3D(Interpolator const& interp,
     (void) B;
     (void) layout;
     (void)particles;
-    throw std::runtime_error("NOT IMPLEMENTED");
+    throw std::runtime_error("fieldAtParticle3D - NOT IMPLEMENTED");
 }
 
 
@@ -99,7 +99,7 @@ void fieldsAtParticles(Interpolator const& interp,
         fieldAtParticle3D(interp, E, B, layout, particles);
         break;
     default:
-        throw std::runtime_error("wrong dimensionality");
+        throw std::runtime_error("fieldsAtParticles - wrong dimensionality");
     }
 }
 

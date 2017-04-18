@@ -15,7 +15,7 @@
 struct InterpPushParams;
 
 
-std::vector<InterpPushParams>  getInterpPushParamsFromFile() ;
+std::vector<InterpPushParams>  getPush1dParamsFromFile() ;
 
 
 

@@ -367,7 +367,7 @@ void print(InterpPushParams const& inputs)
 /* */
 /*                                                         */
 /***********************************************************/
-TEST_P(PusherTest, xVxyzCompo)
+TEST_P(PusherTest, pusher1Dx3Dv)
 {
     // it might look dirty to have 4 EXPECT_TRUE
     // but DO NOT change this !!
@@ -385,6 +385,6 @@ TEST_P(PusherTest, xVxyzCompo)
 
 
 INSTANTIATE_TEST_CASE_P(Interpolate1DTest, PusherTest,
-                        testing::ValuesIn( getInterpPushParamsFromFile() ) );
+                        testing::ValuesIn( getPush1dParamsFromFile() ) );
 
 
