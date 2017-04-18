@@ -12,10 +12,10 @@
 
 
 
-struct InterpPushParams;
+struct Push1dParams;
 
 
-std::vector<InterpPushParams>  getPush1dParamsFromFile() ;
+std::vector<Push1dParams>  getPush1dParamsFromFile() ;
 
 
 
@@ -27,7 +27,7 @@ std::vector<InterpPushParams>  getPush1dParamsFromFile() ;
  *                       the index list
  * ---------------------------------------------------------------------------- */
 
-struct InterpPushParams
+struct Push1dParams
 {
 
     double tbegin, tend ;
@@ -57,7 +57,7 @@ struct InterpPushParams
 
     uint32 interpOrder = 1 ;
 
-    InterpPushParams(): testId{ testCaseNbr }
+    Push1dParams(): testId{ testCaseNbr }
      { ++testCaseNbr ; }
 
 };

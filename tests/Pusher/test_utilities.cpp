@@ -2,12 +2,12 @@
 #include <fstream>
 
 
-#include "test_interpolate1d.h"
+#include "test_pusher1d.h"
 
 
 
 
-std::vector<InterpPushParams> getPush1dParamsFromFile()
+std::vector<Push1dParams> getPush1dParamsFromFile()
 {
 
     std::string filename{"../Pusher/odepush_summary.txt"};
@@ -23,7 +23,7 @@ std::vector<InterpPushParams> getPush1dParamsFromFile()
     uint32 nbrTestCases = 0 ;
     ifs1 >> nbrTestCases ;
 
-    std::vector<InterpPushParams> params(nbrTestCases);
+    std::vector<Push1dParams> params(nbrTestCases);
 
 
     // reading parameters relative to the test cases

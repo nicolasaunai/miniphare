@@ -19,7 +19,7 @@ set(SOURCES
      test_main.cpp
      test_utilities.cpp
      test_commons.cpp
-     test_interpolate1d.cpp
+     test_pusher1d.cpp
     )
 
 

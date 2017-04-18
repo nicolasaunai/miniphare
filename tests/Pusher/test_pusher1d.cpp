@@ -8,7 +8,7 @@
 
 #include "test_commons.h"
 
-#include "test_interpolate1d.h"
+#include "test_pusher1d.h"
 
 #include "Plasmas/particles.h"
 
@@ -23,7 +23,7 @@
 
 
 
-void print(InterpPushParams const& inputs) ;
+void print(Push1dParams const& inputs) ;
 
 std::unique_ptr<BoundaryCondition> createBoundary( GridLayout const & layout ) ;
 
@@ -37,18 +37,18 @@ void initEVecField( VecField & E_out,
 void initBVecField( VecField & B_out,
                     double Bx, double By, double Bz ) ;
 
-void readFieldsOnTheMesh(InterpPushParams const & inputs,
+void readFieldsOnTheMesh(Push1dParams const & inputs,
                         GridLayout const & layout,
                         VecField & field, uint32 ik  ) ;
 
 
-uint32 InterpPushParams::testCaseNbr = 0 ;
+uint32 Push1dParams::testCaseNbr = 0 ;
 
 
-class PusherTest: public ::testing::TestWithParam<InterpPushParams>
+class Pusher1DTest: public ::testing::TestWithParam<Push1dParams>
 {
 public:
-    InterpPushParams inputs;
+    Push1dParams inputs;
 
     double precision_x ;
     double precision_v ;
@@ -64,7 +64,7 @@ public:
     std::vector<double> actual_vz_part ;
 
 
-    ~PusherTest() = default ;
+    ~Pusher1DTest() = default ;
 
     void SetUp()
     {
@@ -297,7 +297,7 @@ void initBVecField( VecField & B_out,
 
 
 
-void readFieldsOnTheMesh(InterpPushParams const & inputs,
+void readFieldsOnTheMesh(Push1dParams const & inputs,
                         GridLayout const & layout,
                         VecField & vecfield, uint32 ik  )
 {
@@ -334,7 +334,7 @@ void readFieldsOnTheMesh(InterpPushParams const & inputs,
 
 
 
-void print(InterpPushParams const& inputs)
+void print(Push1dParams const& inputs)
 {
     std::cout << "tbegin = " << inputs.tbegin
               << " tend  = " << inputs.tend
@@ -367,7 +367,7 @@ void print(InterpPushParams const& inputs)
 /* */
 /*                                                         */
 /***********************************************************/
-TEST_P(PusherTest, pusher1Dx3Dv)
+TEST_P(Pusher1DTest, pusher1Dx3Dv)
 {
     // it might look dirty to have 4 EXPECT_TRUE
     // but DO NOT change this !!
@@ -384,7 +384,7 @@ TEST_P(PusherTest, pusher1Dx3Dv)
 }
 
 
-INSTANTIATE_TEST_CASE_P(Interpolate1DTest, PusherTest,
+INSTANTIATE_TEST_CASE_P(Pusher1DTests, Pusher1DTest,
                         testing::ValuesIn( getPush1dParamsFromFile() ) );
 
 
