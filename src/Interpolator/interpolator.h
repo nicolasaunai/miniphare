@@ -23,6 +23,7 @@ private:
     std::unique_ptr<IndexesAndWeights> impl_ ;
 
 
+
     /**
         * @brief interpolateFieldOntoPoint is used to interpolate
         * 'meshField' onto a point denoted by reducedCoord
@@ -141,6 +142,9 @@ public:
 
 
 
+
+
+
     /**
      * @brief operator () this overload is used to interpolate
      * the fields from a coarse patch into a refined patch
@@ -154,8 +158,6 @@ public:
     }
 
 
-
-
     /**
      * @brief operator () this overload is used to interpolate 'meshField' onto 'particle'
      * @return the meshField interpolated at the particle position
@@ -165,7 +167,7 @@ public:
                              QtyCentering centering) const
     {
         uint32 idir = static_cast<uint32>(direction) ;
-        double reducedCoord = particle.icell[idir] + static_cast<double>(particle.delta[idir]) ;
+        double reducedCoord = particle.icell[idir] + static_cast<double>(particle.delta[idir]);
 
         return interpolateFieldOnto1DPoint_(reducedCoord, meshField, centering) ;
     }
