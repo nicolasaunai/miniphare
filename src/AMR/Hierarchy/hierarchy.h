@@ -59,7 +59,9 @@ public:
     hierarchyType & patchTable() { return patchTable_; }
 
 
-    void evolveDomainForOneTimeStep() ;
+    void evolvePlasma() ;
+    std::shared_ptr<Patch> addNewPatch(RefinementInfo const& refineInfo,
+                                       PatchInfo const& patchInfo) ;
     void refine(std::vector< std::vector<RefinementInfo> > const& refinementTable, PatchInfo const& patchInfo);
     RefinementInfoTable evaluateRefinementNeed(uint32 refineRatio, GridLayout const& baseLayout) ;
 

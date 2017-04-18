@@ -56,7 +56,7 @@ void MLMD::evolveFullDomain(Hierarchy& patchHierarchy)
 {
 
     // evolve fields and particle for a time step
-    patchHierarchy.evolveDomainForOneTimeStep() ;
+    patchHierarchy.evolvePlasma() ;
 
     // Here, AMR patches will say whether they need refinement
     // the ouput of this method is used by updateHierarchy()

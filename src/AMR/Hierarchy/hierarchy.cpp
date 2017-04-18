@@ -22,7 +22,7 @@
  * evolve fields and particle for a time step
  *
  */
-void Hierarchy::evolveDomainForOneTimeStep()
+void Hierarchy::evolvePlasma()
 {
     uint32 nbrLevels = static_cast<uint32>(patchTable_.size());
 

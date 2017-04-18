@@ -43,7 +43,19 @@ MLMDInitializerFactory::MLMDInitializerFactory(std::shared_ptr<Patch> parentPatc
 
 
 
-
+/**
+ * @brief MLMDInitializerFactory::buildIonsInitializer_
+ *
+ * We build the private attributes of MLMDParticleInitializer,
+ * among those attributes the following depend on
+ * the species:
+ * - the particle source (known from the parent)
+ * - the splitting strategy, because each species has its
+ * own interpolation order
+ *
+ * @param ionInit
+ * @param selector
+ */
 void MLMDInitializerFactory::buildIonsInitializer_(IonsInitializer & ionInit,
                                                    std::unique_ptr<ParticleSelector> selector) const
 {
@@ -52,9 +64,9 @@ void MLMDInitializerFactory::buildIonsInitializer_(IonsInitializer & ionInit,
 
     for (uint32 ispe=0; ispe < parentIons.nbrSpecies(); ++ispe)
     {
-        SplittingStrategyFactory factory(splitMethods_[ispe],
+        SplittingStrategyFactory factory{splitMethods_[ispe],
                                          interpolationOrders_[ispe],
-                                         refinementRatio_) ;
+                                         refinementRatio_} ;
 
         std::unique_ptr<SplittingStrategy>
                 splitting = factory.createSplittingStrategy() ;
@@ -76,9 +88,18 @@ void MLMDInitializerFactory::buildIonsInitializer_(IonsInitializer & ionInit,
 
 
 
-
-
-
+/**
+ * @brief MLMDInitializerFactory::createIonsInitializer creates an
+ * IonsInitializer, it will contain a ParticleInitializer for
+ * each ion species we need to initialize.
+ *
+ * Operations related to the construction of ParticleInitializer
+ * objects are handled by
+ * MLMDInitializerFactory::buildIonsInitializer_(...)
+ *
+ *
+ * @return
+ */
 std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer() const
 {
     /* this routine creates an ion initializer with a Patch Choice function. */
