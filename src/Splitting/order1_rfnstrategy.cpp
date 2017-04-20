@@ -13,6 +13,8 @@
  * 3, 5, 7 children particles when the refinement factor
  * equals 2, 3, 4
  *
+ * See: miniphare/doc/html/md_markdown_exactSplitting_BSplines.html
+ *
  * @param splitMethod
  * @param refineFactor
  * @param interpOrder

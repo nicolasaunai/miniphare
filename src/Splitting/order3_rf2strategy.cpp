@@ -13,6 +13,7 @@ const uint32 refineFactor = 2 ;
  * This splitting strategy is exact, it works for 3rd order and
  * a refinement factor of 2.
  *
+ * See: miniphare/doc/html/md_markdown_exactSplitting_BSplines.html
  *
  * @param splitMethod
  */

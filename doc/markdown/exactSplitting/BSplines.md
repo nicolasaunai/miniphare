@@ -10,14 +10,16 @@ provide the theoretical basis of this document.
 
 [zorin_2000]: https://mrl.nyu.edu/publications/subdiv-course2000/coursenotes00.pdf
 
-In 1D, a mother macro-particle will give birth to \f$nb_{1d}\f$ daughter macro-particles :
+In this document the **refinement factor** is denoted by \f$\alpha\f$, and the **interpolation order** by \f$\mu\f$.
+
+In 1D, a mother macro-particle will give birth to \f$N_{1d}\f$ daughter macro-particles :
 \f[
-nb_{1d} = (2*RF - 1) + (RF-1)*(order-1)
+N_{1d} = (2\alpha - 1) + (\alpha -1)(\mu -1)
 \f]
 
-In 3D, a mother macro-particle will give birth to \f$nb_{3d}\f$ daughter macro-particles :
+In 3D, a mother macro-particle will give birth to \f$N_{3d}\f$ daughter macro-particles :
 \f[
-nb_{3d} = [ (2*RF - 1) + (RF-1)*(order-1) ] ^ 3
+N_{3d} = [ (2\alpha - 1) + (\alpha -1)(\mu -1) ] ^ 3
 \f]
 
 # Refinement of B-splines
@@ -51,8 +53,8 @@ f(2t)\otimes g(2t)     & = & \frac{1}{2}m(2t)
 
 Let us denote the refinement factor \f$\alpha\f$.
 
-##Arbitrary spline order with \f$\alpha = 2\f$
-\f$B_1\f$ can be formally derived using [eq.](#eq_spline_l) , we get
+##Arbitrary spline order and \f$\alpha = 2\f$
+The **1st order spline** decomposition can be formally derived using [eq.](#eq_spline_l) , we get
 \f[
 \begin{eqnarray}
 B_1(t) & = & B_0(t) \otimes B_0(t) \\
@@ -62,7 +64,8 @@ B_1(t) & = & B_0(t) \otimes B_0(t) \\
 \end{eqnarray}
 \f]
 
-When the refinement factor is equal to 2, we can prove by recurrence the following relation
+We can prove by recurrence
+the following relation for the **\f$\mu\f$th order spline** decomposition
 \f[
 \begin{equation}
 B_{\mu} (t) = \frac{1}{2^{\mu}} \sum_{k=0}^{\mu +1} \binom{\mu +1}{k}
@@ -70,7 +73,7 @@ B_{\mu} (2t - k)
 \end{equation}
 \f]
 
-##Arbitrary spline order with \f$\alpha = 3\f$
+##Arbitrary spline order and \f$\alpha = 3\f$
 In this case the B-Spline of degree 0 is defined by
 \f[
 \begin{equation}
@@ -78,7 +81,7 @@ B_0(t) = B_0(3t) + B_0(3t-1) + B_0(3t-2).
 \end{equation}
 \f]
 
-\f$B_1\f$ can be formally derived using [eq.](#eq_spline_l), we get
+The **1st order spline** decomposition can be formally derived using [eq.](#eq_spline_l), we get
 \f[
 \begin{eqnarray}
 B_1(t) & = & B_0(t) \otimes B_0(t) \\
@@ -90,7 +93,8 @@ B_1(t) & = & B_0(t) \otimes B_0(t) \\
 \end{eqnarray}
 \f]
 
-When the refinement factor is equal to 3, we can prove by recurrence the following relation
+We can prove by recurrence
+the following relation for the **\f$\mu\f$th order spline** decomposition
 \f[
 \begin{equation}
 B_{\mu} (t) = \frac{1}{3^{\mu}} \sum_{k=0}^{2(\mu +1)} \binom{\mu +1}{k}_2
@@ -118,7 +122,7 @@ n=4:&  1 &  4  &  10 & 16 &  19 & 16 & 10 & 4 & 1 \\
 \f]
 
 
-## Arbitrary spline order with arbitrary \f$\alpha \in \mathcal{Z}^*\f$
+## Arbitrary spline order with arbitrary \f$\alpha \in \mathcal{Z}^{\star}\f$
 
 The general case must be ruled by the following formula
 \f[
@@ -128,7 +132,7 @@ B_{\mu} (\alpha t - k)
 \end{equation}
 \f]
 
-## Special case : arbitrary \f$\alpha \in \mathbb{Z}^*\f$ with \f$\mu = 1\f$ (piecewise linear)
+## Special case : arbitrary \f$\alpha \in \mathbb{Z}^{\star}\f$ with \f$\mu = 1\f$ (piecewise linear)
 
 In general, computing the multinomial coefficients can be quite puzzling.
 But, we note that the 2nd line of a multinomial triangle is straightforward

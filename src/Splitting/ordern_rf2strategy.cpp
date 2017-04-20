@@ -15,7 +15,7 @@ const uint32 refineFactor = 2 ;
  * One mother Particle is split into:
  * 3, 4, 5, 6 children particles depending on order 1, 2, 3, 4
  *
- * See https://hephaistos.lpp.polytechnique.fr/redmine/projects/hyb-par/wiki/Bsplines
+ * See: miniphare/doc/html/md_markdown_exactSplitting_BSplines.html
  * for algebraic details.
  * The polynomial decomposition requires to compute binomial coefficients.
  *
