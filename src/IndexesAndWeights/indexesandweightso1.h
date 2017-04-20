@@ -21,6 +21,19 @@ public:
      *
      * Inputs: indexList_, reducedCoord_
      * Output: weightList_
+     *
+     * \f[
+       \begin{equation}
+       S_1(\xi) = \left\{ \begin{array}{ll}
+       \xi+1 & \textrm{ if } -1 \le \xi \le 0 \\
+       1-\xi & \textrm{ if }  0 \le \xi \le 1 \\
+           0 & \textrm{ elsewhere }
+       \end{array} \right.
+       \end{equation}
+       \f]
+     *
+     * Some tricks are used to optimize computation
+     *
      */
     inline virtual std::vector<double> const& computeWeights(double reducedCoord) final
     {

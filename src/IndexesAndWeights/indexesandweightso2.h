@@ -23,6 +23,18 @@ public:
      * Output: weightList_
      *
      *
+     * \f[
+       \begin{equation}
+       S_2(\xi) = \left\{ \begin{array}{ll}
+       \frac{1}{2}\left( \frac{3}{2} + \xi\right)^2 & \textrm{ if } -3/2 \le \xi \le -1/2 \\
+       \frac{3}{4} -\xi^2 & \textrm{ if }  -1/2 \le \xi \le 1/2 \\
+       \frac{1}{2}\left( \frac{3}{2} - \xi\right)^2 & \textrm{ if } 1/2 \le \xi \le 3/2 \\
+           0 & \textrm{ elsewhere }
+       \end{array} \right.
+       \end{equation}
+       \f]
+     *
+     *
      */
     virtual std::vector<double> const& computeWeights( double reducedCoord ) final
     {

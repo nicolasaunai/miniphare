@@ -23,6 +23,18 @@ public:
      * Inputs: indexList_, reducedCoord_
      * Output: weightList_
      *
+     * \f[
+       \begin{equation}
+       S_4(\xi) = \left\{ \begin{array}{ll}
+       \frac{1}{24}\left( \frac{5}{2} + \xi \right)^4 & \textrm{ if } -5/2 \le \xi \le -3/2 \\
+       \frac{1}{96}\left( 55 - 20\xi - 120\xi^2 - 80 \xi^3 - 16 \xi^4 \right) & \textrm{ if } -3/2 \le \xi \le -1/2 \\
+       \frac{1}{192}\left( 115 - 120\xi^2 + 48\xi^4 \right) & \textrm{ if } -1/2 \le \xi \le 1/2 \\
+       \frac{1}{96}\left( 55 + 20\xi - 120\xi^2 + 80 \xi^3 - 16 \xi^4 \right) & \textrm{ if } 1/2 \le \xi \le 3/2 \\
+       \frac{1}{24}\left( \frac{5}{2} - \xi \right)^4 & \textrm{ if } 3/2 \le \xi \le 5/2 \\
+           0 & \textrm{ elsewhere }
+       \end{array} \right.
+       \end{equation}
+     * \f]
      *
      */
     virtual std::vector<double> const& computeWeights( double reducedCoord ) final

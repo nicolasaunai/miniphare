@@ -23,6 +23,18 @@ public:
      * Inputs: indexList_, reducedCoord_
      * Output: weightList_
      *
+     * \f[
+       \begin{equation}
+       S_3(\xi) = \left\{ \begin{array}{ll}
+       \frac{4}{3}\left( 1 + \frac{\xi}{2}\right)^3 & \textrm{ if } -2 \le \xi \le -1 \\
+       -\frac{\xi^3}{2} -\xi^2 +2/3 & \textrm{ if }  -1 \le \xi \le 0 \\
+        \frac{\xi^3}{2} -\xi^2 +2/3 & \textrm{ if }   0 \le \xi \le 1 \\
+       \frac{4}{3}\left( 1 - \frac{\xi}{2}\right)^3 & \textrm{ if } 1 \le \xi \le 2 \\
+           0 & \textrm{ elsewhere }
+       \end{array} \right.
+       \end{equation}
+       \f]
+     *
      *
      */
     virtual std::vector<double> const& computeWeights(double reducedCoord) final
