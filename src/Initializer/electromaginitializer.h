@@ -16,6 +16,19 @@ private:
     VectorFunction electricField;
     VectorFunction magneticField;
 
+    void init1D_(GridLayout const& layout);
+    void init2D_(GridLayout const& layout);
+    void init3D_(GridLayout const& layout);
+
+    void init1D_Ecomponent_(GridLayout const& layout, Field& Ei, uint32 iComponent);
+    void init1D_Bcomponent_(GridLayout const& layout, Field& Bi, uint32 iComponent);
+
+    void init2D_Ecomponent_(GridLayout const& layout, Field& Ei, uint32 iComponent);
+    void init2D_Bcomponent_(GridLayout const& layout, Field& Bi, uint32 iComponent);
+
+    void init3D_Ecomponent_(GridLayout const& layout, Field& Ei, uint32 iComponent);
+    void init3D_Bcomponent_(GridLayout const& layout, Field& Bi, uint32 iComponent);
+
 public:
     VecField E_;
     VecField B_;
