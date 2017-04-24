@@ -16,8 +16,7 @@ PatchBoundaryCondition::PatchBoundaryCondition(
         PRA const & refinedPRA, std::shared_ptr<Patch> coarsePatch,
         GridLayout const & coarseLayout,
         std::vector<std::unique_ptr<PatchBoundary>> boundaries )
-    : BoundaryCondition( true ),
-      refinedPRA_{refinedPRA}, parent_{coarsePatch},
+    : refinedPRA_{refinedPRA}, parent_{coarsePatch},
       coarseLayout_{coarseLayout},
       boundaries_{std::move(boundaries)}
 {

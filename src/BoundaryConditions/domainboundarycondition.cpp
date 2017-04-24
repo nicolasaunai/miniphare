@@ -12,7 +12,7 @@
  * @param boundaryInfos
  */
 DomainBoundaryCondition::DomainBoundaryCondition(GridLayout layout, std::vector<BoundaryInfo> boundaryInfos)
-: BoundaryCondition( false ), layout_{std::move(layout)}
+: layout_{std::move(layout)}
 {
     for (BoundaryInfo boundary : boundaryInfos)
     {

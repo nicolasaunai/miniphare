@@ -36,13 +36,9 @@ void PatchData::initPhysicalDomain()
  */
 void PatchData::initPRA()
 {
-    // Do we handle domain or patch boundary conditions ?
-    if( boundaryCondition_->isPatchBC() )
-    {
-        // we have to trigger loadParticles() method of Ions,
-        // the latter will call loadParticles() of Species
-        boundaryCondition_->initializeGhostArea() ;
-    }
+    // we have to trigger loadParticles() method of Ions,
+    // the latter will call loadParticles() of Species
+    boundaryCondition_->initializeGhostArea() ;
 
 }
 

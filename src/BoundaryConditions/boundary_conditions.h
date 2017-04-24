@@ -20,12 +20,9 @@ enum class BoundaryType{ Periodic };
  */
 class BoundaryCondition
 {
-private:
-    bool isPatchBC_ ;
 
 public:
-    explicit BoundaryCondition( bool isPatchBC )
-        : isPatchBC_{isPatchBC} {}
+    BoundaryCondition() {} ;
 
     virtual ~BoundaryCondition() = default;
 
@@ -38,8 +35,6 @@ public:
                                  LeavingParticles const& leavingParticles) const = 0;
 
     virtual void initializeGhostArea() = 0;
-
-    bool isPatchBC() { return isPatchBC_ ; }
 
 };
 

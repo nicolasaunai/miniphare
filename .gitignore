@@ -86,6 +86,7 @@ miniphare
 # DOCUMENTATION FILES
 # ------------------
 doc/html
+doc/latex
 *.bak
 
 
