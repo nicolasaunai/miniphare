@@ -6,4 +6,5 @@ Field::Field(const AllocSizeT &allocSize, HybridQuantity qtyType, std::string na
       size_{shape_[0]*shape_[1]*shape_[2]}
 {
     data_.resize(size_);
+    data_.assign(size_, 0.);
 }
