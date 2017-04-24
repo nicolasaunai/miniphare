@@ -194,7 +194,11 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
     Interpolator interpolator( *std::max_element(interpolationOrders_.begin(),
                                                  interpolationOrders_.end()));
     PRA refinedPRA{ buildPRA(refinedLayout_)} ;
-    std::vector<std::unique_ptr<Boundary>> boundaries{} ;
+
+    // We know we are dealing with PatchBoundary objects
+    // because we are in a MLMDInitializerFactory method
+    std::vector<std::unique_ptr<PatchBoundary>> boundaries{} ;
+
 
 
 
@@ -224,7 +228,7 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
                             praEdgeLayout, *emInitPtr);
 
         // For each boundary build the PatchBoundary object
-        std::unique_ptr<Boundary>
+        std::unique_ptr<PatchBoundary>
                 boundaryPtr{ new PatchBoundary{praEdgeLayout,
                                                std::move(ionInitPtr), std::move(emInitPtr)}};
 

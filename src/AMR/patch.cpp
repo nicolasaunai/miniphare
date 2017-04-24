@@ -5,10 +5,10 @@
 void Patch::init()
 {
     std::cout << "init Patch...";
-    data_.initPhysicalDomain();
+    data_.initPatchPhysicalDomain();
     std::cout << " Patch initialization: OK\n" ;
 
-    data_.initPRA();
+    data_.initPatchGhostDomain();
     std::cout << " PRA initialization: OK\n" ;
 }
 

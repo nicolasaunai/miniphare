@@ -18,7 +18,7 @@ PatchData::PatchData(const InitializerFactory &initFactory)
 }
 
 
-void PatchData::initPhysicalDomain()
+void PatchData::initPatchPhysicalDomain()
 {
     std::cout << "Initializing PatchData..." << std::endl;
     ions_.loadParticles();
@@ -34,7 +34,7 @@ void PatchData::initPhysicalDomain()
  * boundaryCondition_ attribute
  *
  */
-void PatchData::initPRA()
+void PatchData::initPatchGhostDomain()
 {
     // we have to trigger loadParticles() method of Ions,
     // the latter will call loadParticles() of Species

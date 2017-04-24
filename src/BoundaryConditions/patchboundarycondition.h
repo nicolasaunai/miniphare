@@ -33,7 +33,7 @@ private:
     std::shared_ptr<Patch> parent_;
     GridLayout coarseLayout_;
 
-    // these boundaries know what they are : patchboundary
+    // We know we are dealing with PatchBoundary objects
     std::vector<std::unique_ptr<PatchBoundary>> boundaries_;
 
 public:

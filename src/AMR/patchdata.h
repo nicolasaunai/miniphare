@@ -44,9 +44,9 @@ public:
     PatchData(PatchData&& source) = default;
     PatchData& operator=(PatchData&& source) = default;
 
-    void initPhysicalDomain();
+    void initPatchPhysicalDomain();
 
-    void initPRA();
+    void initPatchGhostDomain();
 
     Electromag const& EMfields() const {return EMfields_;}
 

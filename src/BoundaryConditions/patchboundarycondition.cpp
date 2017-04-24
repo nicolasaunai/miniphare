@@ -41,9 +41,11 @@ void PatchBoundaryCondition::initializeGhostArea()
         // Ions instance
         boundary->initPRAParticles() ;
 
-        // the electro-magnetic field has already been
-        // initialized by PatchBoundary constructor !
-        // Nothing to code :-)
+        // the electro-magnetic field has been
+        // initialized by PatchBoundary constructor
+
+        // the EM field will be further modified by
+        // MLMD mecanisms
     }
 
 }
