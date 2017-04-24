@@ -51,7 +51,7 @@ Solver::Solver( GridLayout const& layout, double dt,
     for( uint32 ik=0 ; ik<size ; ++ik )
     {
         uint32 order = solverInitializer->interpolationOrders[ik] ;
-        interpolators_.push_back( std::unique_ptr<Interpolator>(new Interpolator(order)) ) ;
+        interpolators_.push_back(Interpolator{order}) ;
     }
 
     const std::string pusherType = solverInitializer->pusherType ;
@@ -76,7 +76,7 @@ void Solver::init(Ions& ions, BoundaryCondition const& boundaryCondition) const
     {
         Species& species                 = ions.species(iSpe);
         std::vector<Particle>& particles = species.particles();
-        Interpolator& interpolator       = *interpolators_[iSpe];
+        Interpolator const& interpolator = interpolators_[iSpe];
 
         computeChargeDensityAndFlux(interpolator, species, layout_, particles);
     }
@@ -265,7 +265,7 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
     {
         Species& species                 = ions.species(ispe);
         std::vector<Particle>& particles = species.particles();
-        Interpolator& interpolator       = *interpolators_[ispe];
+        Interpolator& interpolator       = interpolators_[ispe];
 
 
         // at the first predictor step we must not overwrite particles

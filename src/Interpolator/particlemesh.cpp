@@ -176,7 +176,7 @@ void fieldsAtParticles(Interpolator const& interp,
    ---------------------------------------------------------------------------- */
 
 
-void compute1DChargeDensityAndFlux(Interpolator& interpolator,
+void compute1DChargeDensityAndFlux(Interpolator const& interpolator,
                                   Species& species,
                                   GridLayout const& layout,
                                   std::vector<Particle>& particles)
@@ -201,7 +201,7 @@ void compute1DChargeDensityAndFlux(Interpolator& interpolator,
 }
 
 
-void compute2DChargeDensityAndFlux(Interpolator& interpolator,
+void compute2DChargeDensityAndFlux(Interpolator const& interpolator,
                                   Species& species,
                                   GridLayout const& layout,
                                   std::vector<Particle>& particles)
@@ -216,7 +216,7 @@ void compute2DChargeDensityAndFlux(Interpolator& interpolator,
 }
 
 
-void compute3DChargeDensityAndFlux(Interpolator& interpolator,
+void compute3DChargeDensityAndFlux(Interpolator const& interpolator,
                                   Species& species,
                                   GridLayout const& layout,
                                   std::vector<Particle>& particles)
@@ -231,7 +231,7 @@ void compute3DChargeDensityAndFlux(Interpolator& interpolator,
 }
 
 
-void computeChargeDensityAndFlux(Interpolator& interpolator,
+void computeChargeDensityAndFlux(Interpolator const& interpolator,
                                  Species& species,
                                  GridLayout const& layout,
                                  std::vector<Particle>& particles)

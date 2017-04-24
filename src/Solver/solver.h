@@ -57,7 +57,7 @@ private:
     Faraday faraday_;
     Ampere  ampere_;
     Ohm ohm_;
-    std::vector< std::unique_ptr<Interpolator> > interpolators_ ;
+    std::vector<Interpolator> interpolators_ ;
     std::unique_ptr<Pusher> pusher_ ;
 
     void moveIons_(VecField const& E, VecField const& B, Ions& ions,
