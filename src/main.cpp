@@ -45,7 +45,6 @@ int main(int argc, char *argv[])
                                                        PatchData{*initFactory}  ) };
 
     MLMD mlmdManager{*initFactory} ;
-
     mlmdManager.initializeRootLevel(patchHierarchy) ;
 
 
