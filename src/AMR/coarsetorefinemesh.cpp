@@ -33,7 +33,7 @@
  * @param newE
  * @param newB
  */
-void fieldAtRefinedNodes1D(Interpolator const& interp,
+void fieldAtRefinedNodes1D(Interpolator& interp,
                            GridLayout const & coarseLayout,
                            VecField const & Ecoarse , VecField const & Bcoarse,
                            GridLayout const & refinedLayout,
@@ -111,7 +111,7 @@ void fieldAtRefinedNodes1D(Interpolator const& interp,
 
 
 
-void fieldAtRefinedNodes2D(Interpolator const& interp,
+void fieldAtRefinedNodes2D(Interpolator& interp,
                            GridLayout const & coarseLayout,
                            VecField const & Ecoarse , VecField const & Bcoarse,
                            GridLayout const & refinedLayout,
@@ -129,7 +129,7 @@ void fieldAtRefinedNodes2D(Interpolator const& interp,
 
 
 
-void fieldAtRefinedNodes3D(Interpolator const& interp,
+void fieldAtRefinedNodes3D(Interpolator& interp,
                            GridLayout const & coarseLayout,
                            VecField const & Ecoarse , VecField const & Bcoarse,
                            GridLayout const & refinedLayout,
@@ -146,7 +146,7 @@ void fieldAtRefinedNodes3D(Interpolator const& interp,
 }
 
 
-void fieldAtRefinedNodes( Interpolator const& interpolator,
+void fieldAtRefinedNodes( Interpolator& interpolator,
                           GridLayout const & coarseLayout,
                           Electromag const & parentElectromag ,
                           GridLayout const & refinedLayout,

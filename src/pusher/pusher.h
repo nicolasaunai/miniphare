@@ -49,7 +49,7 @@ public:
                       double m,
                       VecField const & E ,
                       VecField const & B ,
-                      Interpolator const& interpolator,
+                      Interpolator& interpolator,
                       BoundaryCondition const& boundaryCondition) = 0 ;
 
     std::string const & pusherType() const { return pusherType_; }

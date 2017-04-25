@@ -25,12 +25,12 @@ public:
 
     virtual ~ModifiedBoris() {}
 
-    virtual void move( std::vector<Particle> const& partIn ,
+    virtual void move(std::vector<Particle> const& partIn ,
                        std::vector<Particle> & partOut,
                        double m,
                        VecField const & E ,
                        VecField const & B ,
-                       Interpolator const& interpolator,
+                       Interpolator &interpolator,
                        BoundaryCondition const&  boundaryCondition) override ;
 
 };

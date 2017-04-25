@@ -35,11 +35,11 @@ public:
      * Some tricks are used to optimize computation
      *
      */
-    inline virtual std::vector<double> const& computeWeights(double reducedCoord) final
+    inline virtual void computeWeights( double reducedCoord ,std::vector<uint32> const& indexList,
+                                        std::vector<double>& weightList) final
     {
-        weightList_[1] = reducedCoord - static_cast<double> (indexList_[0]) ;
-        weightList_[0] = 1. - weightList_[1] ;
-        return weightList_;
+        weightList[1] = reducedCoord - static_cast<double> (indexList[0]) ;
+        weightList[0] = 1. - weightList[1] ;
     }
 
 

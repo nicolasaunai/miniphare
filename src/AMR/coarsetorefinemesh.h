@@ -15,7 +15,7 @@
 
    ---------------------------------------------------------------------------- */
 
-void fieldAtRefinedNodes( Interpolator const& interpolator,
+void fieldAtRefinedNodes( Interpolator& interpolator,
                           GridLayout const & coarseLayout,
                           Electromag const & parentElectromag ,
                           GridLayout const & refinedLayout,

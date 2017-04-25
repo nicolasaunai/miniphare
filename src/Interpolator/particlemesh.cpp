@@ -9,7 +9,7 @@
    ---------------------------------------------------------------------------- */
 
 
-void fieldAtParticle1D(Interpolator const& interp,
+void fieldAtParticle1D(Interpolator & interp,
                        VecField const & E , VecField const & B,
                        GridLayout const & layout,
                        std::vector<Particle>& particles)
@@ -47,7 +47,7 @@ void fieldAtParticle1D(Interpolator const& interp,
 
 
 
-void fieldAtParticle2D(Interpolator const& interp,
+void fieldAtParticle2D(Interpolator & interp,
                        VecField const & E , VecField const & B,
                        GridLayout const & layout,
                        std::vector<Particle>& particles)
@@ -93,7 +93,7 @@ void fieldAtParticle2D(Interpolator const& interp,
 
 
 
-void fieldAtParticle3D(Interpolator const& interp,
+void fieldAtParticle3D(Interpolator & interp,
                        VecField const & E , VecField const & B,
                        GridLayout const & layout,
                        std::vector<Particle>& particles)
@@ -146,7 +146,7 @@ void fieldAtParticle3D(Interpolator const& interp,
 
 
 
-void fieldsAtParticles(Interpolator const& interp,
+void fieldsAtParticles(Interpolator & interp,
                        VecField const& E, VecField const& B,
                        GridLayout const& layout,
                        std::vector<Particle>& particles)

@@ -19,6 +19,13 @@ private:
 
     uint32 order_ ;
     double dualOffset_ ;
+    std::vector<uint32> xIndexes_;
+    std::vector<uint32> yIndexes_;
+    std::vector<uint32> zIndexes_;
+
+    std::vector<double> xWeights_;
+    std::vector<double> yWeights_;
+    std::vector<double> zWeights_;
 
     std::unique_ptr<IndexesAndWeights> impl_ ;
 
@@ -35,7 +42,7 @@ private:
         * @return
         */
        inline double interpolateFieldOnto1DPoint_(double reducedCoord, Field const& meshField,
-                                                  QtyCentering const & centering) const
+                                                  QtyCentering const & centering)
        {
            // we might interpolate a field from
            // a primal or a dual mesh
@@ -44,14 +51,14 @@ private:
                reducedCoord += dualOffset_;
            }
 
-           std::vector<uint32> const& indexes = impl_->computeIndexes(reducedCoord);
-           std::vector<double> const& weights = impl_->computeWeights(reducedCoord);
+           impl_->computeIndexes(reducedCoord, xIndexes_);
+           impl_->computeWeights(reducedCoord, xIndexes_, xWeights_);
 
            double particleField = 0;
 
-           for(uint32 ik=0 ; ik<indexes.size() ; ++ik)
+           for(uint32 ik=0 ; ik<xIndexes_.size() ; ++ik)
            {
-               particleField += meshField(indexes[ik]) * weights[ik];
+               particleField += meshField(xIndexes_[ik]) * xWeights_[ik];
            }
            return particleField;
        }
@@ -63,26 +70,26 @@ private:
        inline double interpolateFieldOnto2DPoint_(double Xreduced, double Yreduced,
                                                   Field const& meshField,
                                                   QtyCentering const& Xcentering,
-                                                  QtyCentering const& Ycentering) const
+                                                  QtyCentering const& Ycentering)
        {
            // we might interpolate a field from a primal or a dual mesh
            if(Xcentering == QtyCentering::dual) Xreduced += dualOffset_;
            if(Ycentering == QtyCentering::dual) Yreduced += dualOffset_;
 
-           std::vector<uint32> const& Xindexes = impl_->computeIndexes(Xreduced);
-           std::vector<double> const& Xweights = impl_->computeWeights(Xreduced);
-           std::vector<uint32> const& Yindexes = impl_->computeIndexes(Yreduced);
-           std::vector<double> const& Yweights = impl_->computeWeights(Yreduced);
+           impl_->computeIndexes(Xreduced,xIndexes_);
+           impl_->computeIndexes(Yreduced,yIndexes_);
+           impl_->computeWeights(Xreduced,xIndexes_, xWeights_);
+           impl_->computeWeights(Yreduced,yIndexes_, yWeights_);
 
            double fieldAtParticle = 0. ;
-           for(uint32 iy=0 ; iy < Yindexes.size() ; ++iy)
+           for(uint32 iy=0 ; iy < yIndexes_.size() ; ++iy)
            {
                double Xinterp = 0.;
-               for(uint32 ix=0 ; ix < Xindexes.size() ; ++ix)
+               for(uint32 ix=0 ; ix < xIndexes_.size() ; ++ix)
                {
-                   Xinterp += meshField(Xindexes[ix], Yindexes[iy]) * Xweights[ix];
+                   Xinterp += meshField(xIndexes_[ix], yIndexes_[iy]) * xWeights_[ix];
                }
-               fieldAtParticle += Xinterp * Yweights[iy] ;
+               fieldAtParticle += Xinterp * yWeights_[iy] ;
            }
            return fieldAtParticle ;
        }
@@ -98,7 +105,7 @@ private:
                                                   Field const& meshField,
                                                   QtyCentering const & Xcentering,
                                                   QtyCentering const & Ycentering,
-                                                  QtyCentering const & Zcentering ) const
+                                                  QtyCentering const & Zcentering )
        {
            // we might interpolate a field from
            // a primal or a dual mesh
@@ -106,27 +113,27 @@ private:
            if(Ycentering == QtyCentering::dual) Yreduced += dualOffset_;
            if(Zcentering == QtyCentering::dual) Zreduced += dualOffset_;
 
-           std::vector<uint32> const& Xindexes = impl_->computeIndexes(Xreduced);
-           std::vector<uint32> const& Yindexes = impl_->computeIndexes(Yreduced);
-           std::vector<uint32> const& Zindexes = impl_->computeIndexes(Zreduced);
-           std::vector<double> const& Xweights = impl_->computeWeights(Xreduced);
-           std::vector<double> const& Yweights = impl_->computeWeights(Yreduced);
-           std::vector<double> const& Zweights = impl_->computeWeights(Zreduced);
+           impl_->computeIndexes(Xreduced,xIndexes_);
+           impl_->computeIndexes(Yreduced,yIndexes_);
+           impl_->computeIndexes(Zreduced,zIndexes_);
+           impl_->computeWeights(Xreduced,xIndexes_, xWeights_);
+           impl_->computeWeights(Yreduced,yIndexes_, yWeights_);
+           impl_->computeWeights(Zreduced,zIndexes_, zWeights_);
 
            double fieldAtParticle = 0. ;
-           for(uint32 iz=0 ; iz<Zindexes.size() ; ++iz)
+           for(uint32 iz=0 ; iz<zIndexes_.size() ; ++iz)
            {
                double Yinterp = 0. ;
-               for(uint32 iy=0 ; iy<Yindexes.size() ; ++iy)
+               for(uint32 iy=0 ; iy<yIndexes_.size() ; ++iy)
                {
                    double Xinterp = 0. ;
-                   for(uint32 ix=0 ; ix<Xindexes.size() ; ++ix)
+                   for(uint32 ix=0 ; ix<xIndexes_.size() ; ++ix)
                    {
-                       Xinterp += meshField(Xindexes[ix], Yindexes[iy], Zindexes[iz]) * Xweights[ix];
+                       Xinterp += meshField(xIndexes_[ix], yIndexes_[iy], zIndexes_[iz]) * xWeights_[ix];
                    }
-                   Yinterp += Xinterp*Yweights[iy];
+                   Yinterp += Xinterp*yWeights_[iy];
                }
-               fieldAtParticle += Yinterp * Zweights[iz];
+               fieldAtParticle += Yinterp * zWeights_[iz];
            }
            return fieldAtParticle;
        }
@@ -152,7 +159,7 @@ public:
      * @return the meshField interpolated at the particle position
      */
     inline double operator()(double reducedCoord, Field const& meshField,
-                             QtyCentering centering) const
+                             QtyCentering centering)
     {
         return interpolateFieldOnto1DPoint_(reducedCoord, meshField, centering) ;
     }
@@ -164,7 +171,7 @@ public:
      */
     inline double operator()(Particle const& particle, Field const& meshField,
                              Direction direction,
-                             QtyCentering centering) const
+                             QtyCentering centering)
     {
         uint32 idir = static_cast<uint32>(direction) ;
         double reducedCoord = particle.icell[idir] + static_cast<double>(particle.delta[idir]);
@@ -186,7 +193,7 @@ public:
      */
     inline double operator()(Particle const& particle, Field const& meshField,
                              QtyCentering Xcentering,
-                             QtyCentering Ycentering) const
+                             QtyCentering Ycentering)
     {
         uint32 dirX = static_cast<uint32>(Direction::X) ;
         uint32 dirY = static_cast<uint32>(Direction::Y) ;
@@ -214,7 +221,7 @@ public:
     inline double operator()(Particle const& particle, Field const& meshField,
                              QtyCentering Xcentering,
                              QtyCentering Ycentering,
-                             QtyCentering Zcentering) const
+                             QtyCentering Zcentering)
     {
         uint32 dirX = static_cast<uint32>(Direction::X) ;
         uint32 dirY = static_cast<uint32>(Direction::Y) ;
@@ -234,7 +241,7 @@ public:
      */
     inline void operator()(Particle const& particle, double cellVolumeInverse,
                            Field& rho, Field& xFlux, Field& yFlux, Field& zFlux,
-                           Direction direction) const
+                           Direction direction)
     {
         uint32 idir = static_cast<uint32>(direction) ;
         double reducedCoord = particle.icell[idir] + static_cast<double>(particle.delta[idir]);
@@ -245,15 +252,15 @@ public:
         double partVy  = weightOncellVolume * particle.v[1] ;
         double partVz  = weightOncellVolume * particle.v[2] ;
 
-        std::vector<uint32> const& indexes = impl_->computeIndexes(reducedCoord);
-        std::vector<double> const& weights = impl_->computeWeights(reducedCoord);
+        impl_->computeIndexes(reducedCoord, xIndexes_);
+        impl_->computeWeights(reducedCoord, xIndexes_, xWeights_);
 
-        for(uint32 ik=0 ; ik<indexes.size() ; ++ik)
+        for(uint32 ik=0 ; ik<xIndexes_.size() ; ++ik)
         {
-            rho(   indexes[ik] ) += partRho * weights[ik] ;
-            xFlux( indexes[ik] ) += partVx  * weights[ik] ;
-            yFlux( indexes[ik] ) += partVy  * weights[ik] ;
-            zFlux( indexes[ik] ) += partVz  * weights[ik] ;
+            rho(   xIndexes_[ik] ) += partRho * xWeights_[ik] ;
+            xFlux( xIndexes_[ik] ) += partVx  * xWeights_[ik] ;
+            yFlux( xIndexes_[ik] ) += partVy  * xWeights_[ik] ;
+            zFlux( xIndexes_[ik] ) += partVz  * xWeights_[ik] ;
         }
     }
 

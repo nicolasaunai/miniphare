@@ -17,7 +17,7 @@
 
    ---------------------------------------------------------------------------- */
 
-void fieldsAtParticles(Interpolator const& interp,
+void fieldsAtParticles(Interpolator &interp,
                        VecField const& E, VecField const& B,
                        GridLayout const& layout,
                        std::vector<Particle>& particles);

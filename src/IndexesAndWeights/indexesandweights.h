@@ -43,17 +43,10 @@ class IndexesAndWeights
 private:
       uint32  order_ ;
 
-
-protected:
-      std::vector<uint32> indexList_ ;
-      std::vector<double> weightList_ ;
-
 public:
       IndexesAndWeights( uint32 order )
           : order_{order}
       {
-          indexList_.assign( order_+1, 0 ) ;
-          weightList_.assign( order_+1, 0. ) ;
       }
 
       IndexesAndWeights( const IndexesAndWeights & ) = default ;
@@ -63,10 +56,6 @@ public:
       // or move operations won't be generated
       virtual ~IndexesAndWeights() = default ;
 
-      std::vector<uint32> indexList() const { return indexList_ ; }
-
-      std::vector<double> weightList() const { return weightList_ ; }
-
       /**
        * @brief IndexesAndWeights::computeIndexes computes
        * the grid point indexes (indList), providing data
@@ -74,23 +63,22 @@ public:
        *
        *
        */
-      inline std::vector<uint32> const& computeIndexes(double reducedCoord)
+      inline void computeIndexes(double reducedCoord, std::vector<uint32> & indexList)
       {
           // Compute primal integer mesh coordinates of the particle
           uint64 i_min = static_cast<uint64> \
-                  ((reducedCoord - (static_cast<double> (order_)-1.)/2.) ) ;
+                  ((reducedCoord - (static_cast<double> (order_)-1.)/2.) );
 
           for( uint64 ik=0 ; ik<order_+1 ; ik++ )
           {
-              indexList_[ik] = i_min + ik ;
+              indexList[ik] = i_min + ik ;
           }
-          return indexList_;
       }
 
 
       // this method depends on the interpolation order
-      virtual std::vector<double> const& computeWeights( double reducedCoord ) = 0 ;
-
+      virtual void computeWeights( double reducedCoord , std::vector<uint32> const& indexList,
+                                                         std::vector<double> & weightList) = 0;
 };
 
 #endif // INDEXESANDWEIGHTS_H

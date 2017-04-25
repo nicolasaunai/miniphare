@@ -36,19 +36,19 @@ public:
      *
      *
      */
-    virtual std::vector<double> const& computeWeights( double reducedCoord ) final
+    virtual void computeWeights( double reducedCoord, std::vector<uint32> const&indexList,
+                                    std::vector<double> & weightList) final
     {
         double coef1, coef2, coef3;
 
-        coef1 = 0.5 + (static_cast<double>(indexList_[1]) - reducedCoord);
-        coef2 = static_cast<double>(indexList_[1]) - reducedCoord;
-        coef3 = 0.5 - (static_cast<double>(indexList_[1]) - reducedCoord);
+        coef1 = 0.5 + (static_cast<double>(indexList[1]) - reducedCoord);
+        coef2 = static_cast<double>(indexList[1]) - reducedCoord;
+        coef3 = 0.5 - (static_cast<double>(indexList[1]) - reducedCoord);
 
-        weightList_[0] = 0.5 * coef1 * coef1;
-        weightList_[1] = 0.75 -coef2 * coef2;
-        weightList_[2] = 0.5 * coef3 * coef3;
+        weightList[0] = 0.5 * coef1 * coef1;
+        weightList[1] = 0.75 -coef2 * coef2;
+        weightList[2] = 0.5 * coef3 * coef3;
 
-        return weightList_;
     }
 };
 

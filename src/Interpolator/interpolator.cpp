@@ -11,7 +11,15 @@
 
 
 Interpolator::Interpolator(uint32 order)
-    : order_{order}, impl_{ nullptr}
+    : order_{order},
+      xIndexes_(order + 1),
+      yIndexes_(order + 1),
+      zIndexes_(order + 1),
+      xWeights_(order + 1),
+      yWeights_(order + 1),
+      zWeights_(order + 1),
+      impl_{ nullptr}
+
 {
 
     // for each interpolation order there is a specific way to calculate
