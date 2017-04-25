@@ -26,25 +26,22 @@ void fieldAtParticle1D(Interpolator const& interp,
     Field const & By = B.component(idirY) ;
     Field const & Bz = B.component(idirZ) ;
 
-    QtyCentering centeringEx = layout.fieldCentering(Ex, Direction::X ) ;
-    QtyCentering centeringEy = layout.fieldCentering(Ey, Direction::X ) ;
-    QtyCentering centeringEz = layout.fieldCentering(Ez, Direction::X ) ;
-    QtyCentering centeringBx = layout.fieldCentering(Bx, Direction::X ) ;
-    QtyCentering centeringBy = layout.fieldCentering(By, Direction::X ) ;
-    QtyCentering centeringBz = layout.fieldCentering(Bz, Direction::X ) ;
+    QtyCentering ctrEx_x = layout.fieldCentering(Ex, Direction::X ) ;
+    QtyCentering ctrEy_x = layout.fieldCentering(Ey, Direction::X ) ;
+    QtyCentering ctrEz_x = layout.fieldCentering(Ez, Direction::X ) ;
+    QtyCentering ctrBx_x = layout.fieldCentering(Bx, Direction::X ) ;
+    QtyCentering ctrBy_x = layout.fieldCentering(By, Direction::X ) ;
+    QtyCentering ctrBz_x = layout.fieldCentering(Bz, Direction::X ) ;
 
 
-    for (uint32 iPart=0; iPart < particles.size(); ++iPart)
+    for(Particle& part : particles)
     {
-        Particle& part = particles[iPart];
-
-        part.Ex = interp(part, Ex, Direction::X, centeringEx);
-        part.Ey = interp(part, Ey, Direction::X, centeringEy);
-        part.Ez = interp(part, Ez, Direction::X, centeringEz);
-
-        part.Bx = interp(part, Bx, Direction::X, centeringBx);
-        part.By = interp(part, By, Direction::X, centeringBy);
-        part.Bz = interp(part, Bz, Direction::X, centeringBz);
+        part.Ex = interp(part, Ex, Direction::X, ctrEx_x);
+        part.Ey = interp(part, Ey, Direction::X, ctrEy_x);
+        part.Ez = interp(part, Ez, Direction::X, ctrEz_x);
+        part.Bx = interp(part, Bx, Direction::X, ctrBx_x);
+        part.By = interp(part, By, Direction::X, ctrBy_x);
+        part.Bz = interp(part, Bz, Direction::X, ctrBz_x);
     }// end loop on particles
 }
 
@@ -55,15 +52,45 @@ void fieldAtParticle2D(Interpolator const& interp,
                        GridLayout const & layout,
                        std::vector<Particle>& particles)
 {
-    // not implemented function
-    // void unused variables
-    (void) interp;
-    (void) E;
-    (void) B;
-    (void) layout;
-    (void)particles;
-    throw std::runtime_error("fieldAtParticle2D - NOT IMPLEMENTED");
+    uint32 idirX = static_cast<uint32>(Direction::X) ;
+    uint32 idirY = static_cast<uint32>(Direction::Y) ;
+    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
+
+    Field const & Ex = E.component(idirX) ;
+    Field const & Ey = E.component(idirY) ;
+    Field const & Ez = E.component(idirZ) ;
+
+    Field const & Bx = B.component(idirX) ;
+    Field const & By = B.component(idirY) ;
+    Field const & Bz = B.component(idirZ) ;
+
+    QtyCentering ctrEx_x = layout.fieldCentering(Ex, Direction::X ) ;
+    QtyCentering ctrEy_x = layout.fieldCentering(Ey, Direction::X ) ;
+    QtyCentering ctrEz_x = layout.fieldCentering(Ez, Direction::X ) ;
+    QtyCentering ctrBx_x = layout.fieldCentering(Bx, Direction::X ) ;
+    QtyCentering ctrBy_x = layout.fieldCentering(By, Direction::X ) ;
+    QtyCentering ctrBz_x = layout.fieldCentering(Bz, Direction::X ) ;
+
+    QtyCentering ctrEx_y = layout.fieldCentering(Ex, Direction::Y ) ;
+    QtyCentering ctrEy_y = layout.fieldCentering(Ey, Direction::Y ) ;
+    QtyCentering ctrEz_y = layout.fieldCentering(Ez, Direction::Y ) ;
+    QtyCentering ctrBx_y = layout.fieldCentering(Bx, Direction::Y ) ;
+    QtyCentering ctrBy_y = layout.fieldCentering(By, Direction::Y ) ;
+    QtyCentering ctrBz_y = layout.fieldCentering(Bz, Direction::Y ) ;
+
+
+    for(Particle& part : particles)
+    {
+        part.Ex = interp(part, Ex, ctrEx_x, ctrEx_y);
+        part.Ey = interp(part, Ey, ctrEy_x, ctrEy_y);
+        part.Ez = interp(part, Ez, ctrEz_x, ctrEz_y);
+
+        part.Bx = interp(part, Bx, ctrBx_x, ctrBx_y);
+        part.By = interp(part, By, ctrBy_x, ctrBy_y);
+        part.Bz = interp(part, Bz, ctrBz_x, ctrBz_y);
+    }// end loop on particles
 }
+
 
 
 void fieldAtParticle3D(Interpolator const& interp,
@@ -71,15 +98,52 @@ void fieldAtParticle3D(Interpolator const& interp,
                        GridLayout const & layout,
                        std::vector<Particle>& particles)
 {
-    // not implemented function
-    // void unused variables
-    (void) interp;
-    (void) E;
-    (void) B;
-    (void) layout;
-    (void)particles;
-    throw std::runtime_error("fieldAtParticle3D - NOT IMPLEMENTED");
+    uint32 idirX = static_cast<uint32>(Direction::X) ;
+    uint32 idirY = static_cast<uint32>(Direction::Y) ;
+    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
+
+    Field const & Ex = E.component(idirX) ;
+    Field const & Ey = E.component(idirY) ;
+    Field const & Ez = E.component(idirZ) ;
+
+    Field const & Bx = B.component(idirX) ;
+    Field const & By = B.component(idirY) ;
+    Field const & Bz = B.component(idirZ) ;
+
+    QtyCentering ctrEx_x = layout.fieldCentering(Ex, Direction::X ) ;
+    QtyCentering ctrEy_x = layout.fieldCentering(Ey, Direction::X ) ;
+    QtyCentering ctrEz_x = layout.fieldCentering(Ez, Direction::X ) ;
+    QtyCentering ctrBx_x = layout.fieldCentering(Bx, Direction::X ) ;
+    QtyCentering ctrBy_x = layout.fieldCentering(By, Direction::X ) ;
+    QtyCentering ctrBz_x = layout.fieldCentering(Bz, Direction::X ) ;
+
+    QtyCentering ctrEx_y = layout.fieldCentering(Ex, Direction::Y ) ;
+    QtyCentering ctrEy_y = layout.fieldCentering(Ey, Direction::Y ) ;
+    QtyCentering ctrEz_y = layout.fieldCentering(Ez, Direction::Y ) ;
+    QtyCentering ctrBx_y = layout.fieldCentering(Bx, Direction::Y ) ;
+    QtyCentering ctrBy_y = layout.fieldCentering(By, Direction::Y ) ;
+    QtyCentering ctrBz_y = layout.fieldCentering(Bz, Direction::Y ) ;
+
+    QtyCentering ctrEx_z = layout.fieldCentering(Ex, Direction::Z ) ;
+    QtyCentering ctrEy_z = layout.fieldCentering(Ey, Direction::Z ) ;
+    QtyCentering ctrEz_z = layout.fieldCentering(Ez, Direction::Z ) ;
+    QtyCentering ctrBx_z = layout.fieldCentering(Bx, Direction::Z ) ;
+    QtyCentering ctrBy_z = layout.fieldCentering(By, Direction::Z ) ;
+    QtyCentering ctrBz_z = layout.fieldCentering(Bz, Direction::Z ) ;
+
+
+    for(Particle& part : particles)
+    {
+        part.Ex = interp(part, Ex, ctrEx_x, ctrEx_y, ctrEx_z);
+        part.Ey = interp(part, Ey, ctrEy_x, ctrEy_y, ctrEy_z);
+        part.Ez = interp(part, Ez, ctrEz_x, ctrEz_y, ctrEz_z);
+
+        part.Bx = interp(part, Bx, ctrBx_x, ctrBx_y, ctrBx_z);
+        part.By = interp(part, By, ctrBy_x, ctrBy_y, ctrBy_z);
+        part.Bz = interp(part, Bz, ctrBz_x, ctrBz_y, ctrBz_z);
+    }// end loop on particles
 }
+
 
 
 void fieldsAtParticles(Interpolator const& interp,
