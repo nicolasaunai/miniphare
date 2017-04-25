@@ -117,9 +117,14 @@ void Hierarchy::refine(std::vector< std::vector<RefinementInfo> > const& refinem
         for(uint32 iPatch=0 ; iPatch<nbrPatches ; ++iPatch)
         {
             RefinementInfo const& refineInfo = refinementTable[iLevel][iPatch] ;
-            addNewPatch(refineInfo, patchInfo);
 
-            // TODO: call patch.init to initialize patch content
+              std::shared_ptr<Patch> newPatch{nullptr} ;
+
+             // create new Patch and update Hierarchy
+            newPatch = addNewPatch(refineInfo, patchInfo);
+
+            // trigger initialization of the patch content
+            newPatch->init() ;
         }
     }// end level loop
 }
@@ -132,7 +137,7 @@ void Hierarchy::refine(std::vector< std::vector<RefinementInfo> > const& refinem
  * @brief Hierarchy::addNewPatch adds a patch to the Hierarchy
  * The new Patch is built from a MLMDInitializerFactory
  */
-void Hierarchy::addNewPatch(RefinementInfo const& refineInfo,
+std::shared_ptr<Patch>  Hierarchy::addNewPatch(RefinementInfo const& refineInfo,
                             PatchInfo const& patchInfo)
 {
 
@@ -150,6 +155,8 @@ void Hierarchy::addNewPatch(RefinementInfo const& refineInfo,
     std::shared_ptr<Patch> patchPtr = std::make_shared<Patch>(std::move(theNewPatch));
     coarsePatch->updateChildren(patchPtr);
     patchTable_[refinedLevel].push_back(patchPtr);
+
+    return patchPtr ;
 
 }
 
