@@ -28,6 +28,7 @@ MiniPHARE is developed by:
 * [Andrea Ciardi](https://sites.google.com/site/andreaciardihomepage/home) (LERMA)
 * [Mathieu Drouin](https://www.scholar.live/citations?user=RplJJEQAAAAJ&hl=en)  (LERMA / PLAS\@PAR)
 * [Roch Smets](http://www.lpp.fr/-Roch-Smets,264-) (LPP)
+* Thibault Payet (LPP)
 
 
 ## Recommended contributor setup
