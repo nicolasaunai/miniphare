@@ -112,6 +112,22 @@ void PeriodicDomainBoundary::makeFieldPeriodic3D_(VecField& vecField, GridLayout
 
 
 
+void PeriodicDomainBoundary::applyDensityBC(Field& Ni, GridLayout const& layout) const
+{
+    makeMomentPeriodic_(Ni, layout);
+}
+
+
+
+
+void PeriodicDomainBoundary::applyBulkBC(VecField& Vi, GridLayout const& layout) const
+{
+    for (Field& component : Vi.components())
+    {
+        makeMomentPeriodic_(component, layout);
+    }
+}
+
 
 // moments have to have their own method (makeMomentPeriodic_) and cannot use
 // makeFieldPeriodic_ because the treatment of moments is slightly different from
@@ -135,22 +151,6 @@ void PeriodicDomainBoundary::makeMomentPeriodic_(Field& moment, GridLayout const
     }
 }
 
-
-void PeriodicDomainBoundary::applyDensityBC(Field& Ni, GridLayout const& layout) const
-{
-    makeMomentPeriodic_(Ni, layout);
-}
-
-
-
-
-void PeriodicDomainBoundary::applyBulkBC(VecField& Vi, GridLayout const& layout) const
-{
-    for (Field& component : Vi.components())
-    {
-        makeMomentPeriodic_(component, layout);
-    }
-}
 
 
 
