@@ -204,15 +204,20 @@ public:
             double motherX = static_cast<double>(mother.icell[0])
                     + static_cast<double>(mother.delta[0]) ;
 
+            uint32 order = inputs.interpOrder ;
+
             // we need an IndexesAndWeights object
             std::unique_ptr<IndexesAndWeights> indexAndWeights
-                         { createIndexesAndWeights(inputs.interpOrder) } ;
+                         { createIndexesAndWeights(order) } ;
 
             // Now, starts the algorithm
-            std::vector<uint32> const & motherInds  = indexAndWeights->computeIndexes( motherX ) ;
-            std::vector<double> const & motherPonds = indexAndWeights->computeWeights( motherX ) ;
+            std::vector<uint32> motherInds (order+1, 0 ) ;
+            std::vector<double> motherPonds(order+1, 0.) ;
 
-            std::vector<uint32>::const_iterator low ;
+            indexAndWeights->computeIndexes( motherX, motherInds ) ;
+            indexAndWeights->computeWeights( motherX, motherInds, motherPonds ) ;
+
+            std::vector<uint32>::iterator low ;
             low = std::lower_bound (motherInds.begin(), motherInds.end(), refNode) ;
 
             // We compute expected_weights[ik]
@@ -251,10 +256,13 @@ public:
                 double childX = static_cast<double>(child.icell[0])
                         + static_cast<double>(child.delta[0]) ;
 
-                std::vector<uint32> const & childInds  = childIndexAndWeights->computeIndexes( childX ) ;
-                std::vector<double> const & childPonds = childIndexAndWeights->computeWeights( childX ) ;
+                std::vector<uint32> childInds (order+1, 0 ) ;
+                std::vector<double> childPonds(order+1, 0.) ;
 
-                std::vector<uint32>::const_iterator found ;
+                childIndexAndWeights->computeIndexes( childX, childInds ) ;
+                childIndexAndWeights->computeWeights( childX, childInds, childPonds ) ;
+
+                std::vector<uint32>::iterator found ;
                 found = std::lower_bound (childInds .begin(),
                                           childInds .end(), normalizedRefNode) ;
 

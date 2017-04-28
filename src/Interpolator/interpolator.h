@@ -32,111 +32,113 @@ private:
 
 
     /**
-        * @brief interpolateFieldOntoPoint is used to interpolate
-        * 'meshField' onto a point denoted by reducedCoord
-        *
-        *
-        * @param reducedCoord
-        * @param meshField
-        * @param centering
-        * @return
-        */
-       inline double interpolateFieldOnto1DPoint_(double reducedCoord, Field const& meshField,
-                                                  QtyCentering const & centering)
-       {
-           // we might interpolate a field from
-           // a primal or a dual mesh
-           if(centering == QtyCentering::dual) // TODO this if is probably slowing us down
-           {
-               reducedCoord += dualOffset_;
-           }
+     * @brief interpolateFieldOntoPoint is used to interpolate
+     * 'meshField' onto a point denoted by reducedCoord
+     *
+     *
+     * @param reducedCoord
+     * @param meshField
+     * @param centering
+     * @return
+     */
+    inline double interpolateFieldOnto1DPoint_(double reducedCoord, Field const& meshField,
+                                               QtyCentering const & centering)
+    {
+        // we might interpolate a field from
+        // a primal or a dual mesh
+        if(centering == QtyCentering::dual) // TODO this if is probably slowing us down
+        {
+            reducedCoord += dualOffset_;
+        }
 
-           impl_->computeIndexes(reducedCoord, xIndexes_);
-           impl_->computeWeights(reducedCoord, xIndexes_, xWeights_);
+        impl_->computeIndexes(reducedCoord, xIndexes_);
+        impl_->computeWeights(reducedCoord, xIndexes_, xWeights_);
 
-           double particleField = 0;
+        double particleField = 0;
 
-           for(uint32 ik=0 ; ik<xIndexes_.size() ; ++ik)
-           {
-               particleField += meshField(xIndexes_[ik]) * xWeights_[ik];
-           }
-           return particleField;
-       }
-
-
-
-
-
-       inline double interpolateFieldOnto2DPoint_(double Xreduced, double Yreduced,
-                                                  Field const& meshField,
-                                                  QtyCentering const& Xcentering,
-                                                  QtyCentering const& Ycentering)
-       {
-           // we might interpolate a field from a primal or a dual mesh
-           if(Xcentering == QtyCentering::dual) Xreduced += dualOffset_;
-           if(Ycentering == QtyCentering::dual) Yreduced += dualOffset_;
-
-           impl_->computeIndexes(Xreduced,xIndexes_);
-           impl_->computeIndexes(Yreduced,yIndexes_);
-           impl_->computeWeights(Xreduced,xIndexes_, xWeights_);
-           impl_->computeWeights(Yreduced,yIndexes_, yWeights_);
-
-           double fieldAtParticle = 0. ;
-           for(uint32 iy=0 ; iy < yIndexes_.size() ; ++iy)
-           {
-               double Xinterp = 0.;
-               for(uint32 ix=0 ; ix < xIndexes_.size() ; ++ix)
-               {
-                   Xinterp += meshField(xIndexes_[ix], yIndexes_[iy]) * xWeights_[ix];
-               }
-               fieldAtParticle += Xinterp * yWeights_[iy] ;
-           }
-           return fieldAtParticle ;
-       }
+        for(uint32 ik=0 ; ik<xIndexes_.size() ; ++ik)
+        {
+            particleField += meshField(xIndexes_[ik]) * xWeights_[ik];
+        }
+        return particleField;
+    }
 
 
 
 
 
+    inline double interpolateFieldOnto2DPoint_(double Xreduced, double Yreduced,
+                                               Field const& meshField,
+                                               QtyCentering const& Xcentering,
+                                               QtyCentering const& Ycentering)
+    {
+        // we might interpolate a field from a primal or a dual mesh
+        if(Xcentering == QtyCentering::dual) Xreduced += dualOffset_;
+        if(Ycentering == QtyCentering::dual) Yreduced += dualOffset_;
 
-       inline double interpolateFieldOnto3DPoint_(double Xreduced,
-                                                  double Yreduced,
-                                                  double Zreduced,
-                                                  Field const& meshField,
-                                                  QtyCentering const & Xcentering,
-                                                  QtyCentering const & Ycentering,
-                                                  QtyCentering const & Zcentering )
-       {
-           // we might interpolate a field from
-           // a primal or a dual mesh
-           if(Xcentering == QtyCentering::dual) Xreduced += dualOffset_;
-           if(Ycentering == QtyCentering::dual) Yreduced += dualOffset_;
-           if(Zcentering == QtyCentering::dual) Zreduced += dualOffset_;
+        impl_->computeIndexes(Xreduced,xIndexes_);
+        impl_->computeIndexes(Yreduced,yIndexes_);
+        impl_->computeWeights(Xreduced,xIndexes_, xWeights_);
+        impl_->computeWeights(Yreduced,yIndexes_, yWeights_);
 
-           impl_->computeIndexes(Xreduced,xIndexes_);
-           impl_->computeIndexes(Yreduced,yIndexes_);
-           impl_->computeIndexes(Zreduced,zIndexes_);
-           impl_->computeWeights(Xreduced,xIndexes_, xWeights_);
-           impl_->computeWeights(Yreduced,yIndexes_, yWeights_);
-           impl_->computeWeights(Zreduced,zIndexes_, zWeights_);
+        double fieldAtParticle = 0. ;
+        for(uint32 ix=0 ; ix < xIndexes_.size() ; ++ix)
+        {
+            double Yinterp = 0. ;
+            for(uint32 iy=0 ; iy < yIndexes_.size() ; ++iy)
+            {
+                Yinterp += meshField(xIndexes_[ix], yIndexes_[iy]) * yWeights_[iy];
+            }
+            fieldAtParticle += Yinterp * xWeights_[ix] ;
+        }
 
-           double fieldAtParticle = 0. ;
-           for(uint32 iz=0 ; iz<zIndexes_.size() ; ++iz)
-           {
-               double Yinterp = 0. ;
-               for(uint32 iy=0 ; iy<yIndexes_.size() ; ++iy)
-               {
-                   double Xinterp = 0. ;
-                   for(uint32 ix=0 ; ix<xIndexes_.size() ; ++ix)
-                   {
-                       Xinterp += meshField(xIndexes_[ix], yIndexes_[iy], zIndexes_[iz]) * xWeights_[ix];
-                   }
-                   Yinterp += Xinterp*yWeights_[iy];
-               }
-               fieldAtParticle += Yinterp * zWeights_[iz];
-           }
-           return fieldAtParticle;
-       }
+        return fieldAtParticle ;
+    }
+
+
+
+
+
+
+    inline double interpolateFieldOnto3DPoint_(double Xreduced,
+                                               double Yreduced,
+                                               double Zreduced,
+                                               Field const& meshField,
+                                               QtyCentering const & Xcentering,
+                                               QtyCentering const & Ycentering,
+                                               QtyCentering const & Zcentering )
+    {
+        // we might interpolate a field from
+        // a primal or a dual mesh
+        if(Xcentering == QtyCentering::dual) Xreduced += dualOffset_;
+        if(Ycentering == QtyCentering::dual) Yreduced += dualOffset_;
+        if(Zcentering == QtyCentering::dual) Zreduced += dualOffset_;
+
+        impl_->computeIndexes(Xreduced,xIndexes_);
+        impl_->computeIndexes(Yreduced,yIndexes_);
+        impl_->computeIndexes(Zreduced,zIndexes_);
+        impl_->computeWeights(Xreduced,xIndexes_, xWeights_);
+        impl_->computeWeights(Yreduced,yIndexes_, yWeights_);
+        impl_->computeWeights(Zreduced,zIndexes_, zWeights_);
+
+        double fieldAtParticle = 0. ;
+        for(uint32 ix=0 ; ix<xIndexes_.size() ; ++ix)
+        {
+            double Yinterp = 0. ;
+            for(uint32 iy=0 ; iy<yIndexes_.size() ; ++iy)
+            {
+                double Zinterp = 0. ;
+                for(uint32 iz=0 ; iz<zIndexes_.size() ; ++iz)
+                {
+                    Zinterp += meshField(xIndexes_[ix], yIndexes_[iy], zIndexes_[iz]) * zWeights_[iz];
+                }
+                Yinterp += Zinterp*yWeights_[iy];
+            }
+            fieldAtParticle += Yinterp * xWeights_[ix];
+        }
+
+        return fieldAtParticle;
+    }
 
 
 

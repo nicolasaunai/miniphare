@@ -16,6 +16,8 @@
 #include "IndexesAndWeights/indexesandweightso3.h"
 #include "IndexesAndWeights/indexesandweightso4.h"
 
+#include "Interpolator/interpolator.h"
+
 
 
 class Weights1DTest: public ::testing::TestWithParam<WeightParams>
@@ -39,12 +41,12 @@ public:
         inputs = GetParam();
         print(inputs) ;
 
-//        GridLayout layout{ inputs.dxdydz, inputs.nbrCells,
-//                    inputs.nbDim, inputs.lattice, inputs.interpOrder  };
-
         // get the node coordinate and the delta
         double icell = 0. ;
         double delta = std::modf(inputs.xpart/inputs.dx, &icell)  ;
+
+        // test particle coordinate
+        double Xreduced = icell + delta ;
 
         uint32 order = inputs.interpOrder ;
 
@@ -64,30 +66,24 @@ public:
             break;
         }
 
-        // test particle coordinate
-        double reduced = icell + delta ;
+        std::vector<uint32> xIndexes(order+1, 0 ) ;
+        std::vector<double> xWeights(order+1, 0.) ;
 
         // We build the index List
-        impl->computeIndexes(reduced) ;
+        impl->computeIndexes(Xreduced, xIndexes) ;
 
         // We build the weight list
-        impl->computeWeights(reduced) ;
-
-        // We copy the index table
-        indexTable = impl->indexList() ;
-
-        // We copy the weight table
-        weightTable = impl->weightList() ;
+        impl->computeWeights(Xreduced, xIndexes, xWeights) ;
 
         weightSum = 0. ;
-        for(uint32 ik=0 ; ik<weightTable.size() ; ik++)
+        for(uint32 ik=0 ; ik<xWeights.size() ; ik++)
         {
-            weightSum += weightTable[ik] ;
+            weightSum += xWeights[ik] ;
         }
 
-        printIndexTable( indexTable ) ;
+        printIndexTable( xIndexes ) ;
 
-        printWeightTable( weightTable ) ;
+        printWeightTable( xWeights ) ;
 
     }
 

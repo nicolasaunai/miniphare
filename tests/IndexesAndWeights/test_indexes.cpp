@@ -33,6 +33,10 @@ uint32 IndexesParams::testCaseNbr = 0 ;
     {
         ::testing::AssertionResult sizeFailure = ::testing::AssertionFailure();
 
+        sizeFailure << "Size failure" << "\n" ;
+        sizeFailure << "expected_indexes.size() = " << expected_indexes.size() << "\n" ;
+        sizeFailure << "actual_indexes.size() = " << actual_indexes.size() << "\n" ;
+
         return sizeFailure ;
     }
 
@@ -125,12 +129,12 @@ public:
         }
 
         // test particle coordinate
-        double reduced = icell + delta ;
+        double Xreduced = icell + delta ;
+
+        actual_indexes.assign(order+1, 0) ;
 
         // We build the actual index List
-        impl->computeIndexes(reduced) ;
-
-        actual_indexes = impl->indexList() ;
+        impl->computeIndexes(Xreduced, actual_indexes) ;
     }
 
 
