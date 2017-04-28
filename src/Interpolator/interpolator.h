@@ -165,20 +165,24 @@ public:
     }
 
 
+
     /**
-     * @brief operator () this overload is used to interpolate 'meshField' onto 'particle'
-     * @return the meshField interpolated at the particle position
+     * @brief operator () this 1D overload is used to interpolate
+     * 'meshField' onto 'particle'
+     *
+     * @param centering 1st direction centering
+     *
+     * @return
      */
     inline double operator()(Particle const& particle, Field const& meshField,
-                             Direction direction,
-                             QtyCentering centering)
+                             QtyCentering Xcentering)
     {
-        uint32 idir = static_cast<uint32>(direction) ;
-        double reducedCoord = particle.icell[idir] + static_cast<double>(particle.delta[idir]);
+        uint32 dirX = static_cast<uint32>(Direction::X) ;
 
-        return interpolateFieldOnto1DPoint_(reducedCoord, meshField, centering) ;
+        double Xreduced = particle.icell[dirX] + static_cast<double>(particle.delta[dirX]) ;
+
+        return interpolateFieldOnto1DPoint_(Xreduced, meshField, Xcentering) ;
     }
-
 
 
 

@@ -36,12 +36,12 @@ void fieldAtParticle1D(Interpolator & interp,
 
     for(Particle& part : particles)
     {
-        part.Ex = interp(part, Ex, Direction::X, ctrEx_x);
-        part.Ey = interp(part, Ey, Direction::X, ctrEy_x);
-        part.Ez = interp(part, Ez, Direction::X, ctrEz_x);
-        part.Bx = interp(part, Bx, Direction::X, ctrBx_x);
-        part.By = interp(part, By, Direction::X, ctrBy_x);
-        part.Bz = interp(part, Bz, Direction::X, ctrBz_x);
+        part.Ex = interp(part, Ex, ctrEx_x);
+        part.Ey = interp(part, Ey, ctrEy_x);
+        part.Ez = interp(part, Ez, ctrEz_x);
+        part.Bx = interp(part, Bx, ctrBx_x);
+        part.By = interp(part, By, ctrBy_x);
+        part.Bz = interp(part, Bz, ctrBz_x);
     }// end loop on particles
 }
 
