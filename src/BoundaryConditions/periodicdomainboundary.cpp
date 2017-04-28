@@ -248,7 +248,7 @@ void makeParticlesPeriodic(std::vector<Particle>& particleArray,
 void PeriodicDomainBoundary::applyParticleBC(std::vector<Particle>& particleArray,
                                              LeavingParticles const& leavingParticles) const
 {
-    if (edge_ == Edge::Xmin)
+    if (edge_ == Edge::Xmin || edge_ == Edge::Ymin || edge_ == Edge::Zmin)
     {
         makeParticlesPeriodic(particleArray, leavingParticles);
     }
