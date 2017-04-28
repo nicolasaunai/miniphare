@@ -9,8 +9,9 @@ set(SOURCES
     ../../src/Plasmas/particles.cpp
     test_main.cpp
     test_utilities.cpp
-    test_weights.cpp
+    test_weightsum.cpp
     test_indexes.cpp
+    test_exactweights.cpp
     )
 
 

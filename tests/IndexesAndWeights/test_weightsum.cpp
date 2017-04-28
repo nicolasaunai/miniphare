@@ -8,7 +8,7 @@
 
 #include "Plasmas/particles.h"
 
-#include "test_weights.h"
+#include "test_weightsum.h"
 
 #include "IndexesAndWeights/indexesandweights.h"
 #include "IndexesAndWeights/indexesandweightso1.h"
