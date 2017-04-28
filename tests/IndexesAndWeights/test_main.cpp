@@ -1,4 +1,6 @@
 #include "test_indexes.h"
+#include "test_weightsum.h"
+#include "test_exactweights.h"
 
 
 

@@ -84,10 +84,6 @@ public:
         inputs = GetParam();
         print(inputs) ;
 
-//        GridLayout layout{ inputs.dxdydz, inputs.nbrCells,
-//                    inputs.nbDim, inputs.lattice, inputs.interpOrder  };
-
-
         std::string filename{"../IndexesAndWeights/indexes_testCase"
                     + std::to_string(inputs.testId) + ".txt"};
 
@@ -100,8 +96,10 @@ public:
             exit(-1);
         }
 
-        expected_indexes.assign( inputs.interpOrder+1, 0 ) ;
-        for(uint32 ik=0 ; ik< (inputs.interpOrder+1) ; ik++)
+        uint32 order = inputs.interpOrder ;
+
+        expected_indexes.assign( order+1, 0 ) ;
+        for(uint32 ik=0 ; ik< (order+1) ; ik++)
         {
             ifs2 >> expected_indexes[ik] ;
         }
@@ -109,8 +107,6 @@ public:
         // get the node coordinate and the delta
         double icell = 0. ;
         double delta = std::modf(inputs.xpart/inputs.dx, &icell)  ;
-
-        uint32 order = inputs.interpOrder ;
 
         std::unique_ptr<IndexesAndWeights> impl  ;
         switch(order){

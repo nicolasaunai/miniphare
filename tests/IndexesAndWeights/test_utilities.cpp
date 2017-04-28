@@ -3,6 +3,7 @@
 
 
 #include "test_indexes.h"
+#include "test_exactweights.h"
 
 
 
@@ -122,5 +123,46 @@ std::vector<IndexesParams> getIndexesParamsFromFile()
 
     return params ;
 }
+
+
+
+std::vector<ExactWeightsParams> getExactWeightsParamsFromFile()
+{
+    std::string filename{"../IndexesAndWeights/weights_summary.txt"};
+
+    std::ifstream ifs1{filename};
+    if (!ifs1 )
+    {
+        std::cout << "Could not open file : " << filename
+                  << std::endl ;
+        exit(-1);
+    }
+
+    uint32 nbrTestCases = 0 ;
+    ifs1 >> nbrTestCases ;
+
+    std::vector<ExactWeightsParams> params(nbrTestCases);
+
+    // reading parameters relative to the test cases
+    for (uint32 i=0 ; i < nbrTestCases ; ++i)
+    {
+        ifs1 >> params[i].interpOrder ;
+        ifs1 >> params[i].nbrX ;
+        ifs1 >> params[i].dx ;
+        ifs1 >> params[i].field ;
+        ifs1 >> params[i].xmin ;
+        ifs1 >> params[i].xpart ;
+
+        params[i].nbrCells[0] = params[i].nbrX ;
+        params[i].dxdydz[0] = params[i].dx ;
+    }
+
+    return params;
+}
+
+
+
+
+
 
 

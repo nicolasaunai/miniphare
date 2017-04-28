@@ -2,8 +2,8 @@
 #!coding: utf-8
 
 
-
 import computeIndexes
+import computeWeights
 
 
 import sys
@@ -17,6 +17,7 @@ def main():
         path = './'
 
     computeIndexes.main(path)
+    computeWeights.main(path)
 
 
 

@@ -13,7 +13,6 @@ import interpolator
 
 
 
-
 def main(path='./'):
 
     if len(sys.argv) == 2:
@@ -24,14 +23,12 @@ def main(path='./'):
     nbrTestCases = nbrParts*nbrOrder
 
     nbrCellX_l=[40]*nbrTestCases
-    nbrCellY_l=[ 0]*nbrTestCases
-    nbrCellZ_l=[ 0]*nbrTestCases
-    nbrCells = {'X':nbrCellX_l, 'Y':nbrCellY_l, 'Z':nbrCellZ_l}
+#    nbrCellY_l=[ 0]*nbrTestCases
+#    nbrCellZ_l=[ 0]*nbrTestCases
 
     dx_l=[0.1]*nbrTestCases 
-    dy_l=[0. ]*nbrTestCases
-    dz_l=[0. ]*nbrTestCases
-    meshSize= {'X':dx_l, 'Y':dy_l, 'Z':dz_l}
+#    dy_l=[0. ]*nbrTestCases
+#    dz_l=[0. ]*nbrTestCases
 
     interpOrder_l=[1, 2, 3, 4]*nbrParts
 
@@ -46,9 +43,6 @@ def main(path='./'):
     
     interp = interpolator.Interpolator()
 
-    Direction_l = gl.Direction_l
-    Qty_l       = gl.Qty_l
-
     print( nbrTestCases )
 
     icase_l = np.arange( nbrTestCases )
@@ -56,21 +50,21 @@ def main(path='./'):
 
 
     # -------- Let us define a function on Bx with Yee lattice --------
-    f = open(os.path.join(path,"indexes_summary.txt"), "w")
+    f = open(os.path.join(path,"weights_summary.txt"), "w")
 
     # the number of test cases
     f.write("%d \n" % len(icase_l) )  
 
     for icase in icase_l:
         order = interpOrder_l[icase]
-        nbrX = nbrCellX_l[icase]
+        nbrCellX = nbrCellX_l[icase]
         dx = dx_l[icase]
         field = field_l[icase]
         xmin = patchMinX_l[icase]
         xpart = particlePosX_l[icase]
 
         f.write(("%d %d %5.4f %s %f %f") %
-           (order, nbrX, 
+           (order, nbrCellX, 
             dx, field, 
             xmin, xpart ) )
 
@@ -79,11 +73,11 @@ def main(path='./'):
     f.close()
 
     for icase in icase_l:
-        f = open( os.path.join(path,("indexes_testCase%d.txt") % \
+        f = open( os.path.join(path,("weights_testCase%d.txt") % \
         (icase_l[icase])), "w")
         
         order = interpOrder_l[icase]
-        nbrX = nbrCellX_l[icase]
+        nbrCellX = nbrCellX_l[icase]
         dx = dx_l[icase]
         field = field_l[icase]
         xmin = patchMinX_l[icase]
@@ -92,22 +86,22 @@ def main(path='./'):
         reduced = interp.reducedCoord( field, xmin, xpart, dx, gl )
         
         indexes = interp.indexList(order, reduced)
-        print(indexes)
-        size = len(indexes)
-        print("len(indexes) : %d" % size ) 
-        
-        for index in indexes:
-            f.write("%d " % index)
-        
+#        print(indexes)
+                    
+#        print("xpart = ", xpart)            
+        x_ticks = indexes * dx + xmin
+#        print("x_ticks[] = ", x_ticks)        
+        shape = interp.getShape(order, x_ticks, xpart, dx)
+#        print("shape[] = ", shape)
+#        print("Sum(shape[]) = %f" % sum(shape))
+            
+        for weight in shape:
+            f.write("%.16f " % weight)
         
         f.close()
-    
-    
+        
 
 if __name__ == "__main__":
     main()
-
-
-
 
 
