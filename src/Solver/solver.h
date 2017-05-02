@@ -33,7 +33,7 @@ public:
     Solver(Solver&& toMove)      = default;
     Solver& operator=(Solver&& source) = default;
 
-    void init(Ions& ions, BoundaryCondition const& boundaryCondition ) const;
+    void init(Ions& ions, BoundaryCondition const& boundaryCondition ) ;
 
     void solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons,
                    BoundaryCondition const& boundaryCondition);

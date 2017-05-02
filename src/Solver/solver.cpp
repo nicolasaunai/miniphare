@@ -70,13 +70,13 @@ Solver::Solver( GridLayout const& layout, double dt,
  * @brief Solver::init  ueses interpolators to initialize species moments
  * @param ions
  */
-void Solver::init(Ions& ions, BoundaryCondition const& boundaryCondition) const
+void Solver::init(Ions& ions, BoundaryCondition const& boundaryCondition)
 {
     for (uint32 iSpe=0; iSpe < ions.nbrSpecies(); ++iSpe)
     {
         Species& species                 = ions.species(iSpe);
         std::vector<Particle>& particles = species.particles();
-        Interpolator const& interpolator = interpolators_[iSpe];
+        Interpolator & interpolator = interpolators_[iSpe];
 
         computeChargeDensityAndFlux(interpolator, species, layout_, particles);
     }

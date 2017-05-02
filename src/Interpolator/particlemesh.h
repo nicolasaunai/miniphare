@@ -17,7 +17,7 @@
 
    ---------------------------------------------------------------------------- */
 
-void fieldsAtParticles(Interpolator &interp,
+void fieldsAtParticles(Interpolator & interp,
                        VecField const& E, VecField const& B,
                        GridLayout const& layout,
                        std::vector<Particle>& particles);
@@ -30,7 +30,7 @@ void fieldsAtParticles(Interpolator &interp,
 
    ---------------------------------------------------------------------------- */
 
-void computeChargeDensityAndFlux(Interpolator const& interpolator,
+void computeChargeDensityAndFlux(Interpolator & interpolator,
                                  Species& species,
                                  GridLayout const& layout,
                                  std::vector<Particle>& particles);
