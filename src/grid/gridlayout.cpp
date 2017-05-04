@@ -76,11 +76,11 @@ GridLayout::GridLayout(GridLayout const& source)
       nbrCelly_{source.nbrCelly_},
       nbrCellz_{source.nbrCellz_},
       origin_{source.origin_},
-      interpOrder_{source.interpOrder_}
+      interpOrder_{source.interpOrder_},
+      layoutName_{source.layoutName_}
 {
-    //TODO : "yee" bad hardcoded. make a clone
     implPtr_ =  GridLayoutImplFactory::createGridLayoutImpl(
-                nbDims_, origin_, interpOrder_, "yee", { {nbrCellx_, nbrCelly_, nbrCellz_} },
+                nbDims_, origin_, interpOrder_, layoutName_, { {nbrCellx_, nbrCelly_, nbrCellz_} },
                 { {dx_, dy_, dz_} } ) ;
 }
 
@@ -95,6 +95,7 @@ GridLayout::GridLayout(GridLayout&& source)
       nbrCellz_{std::move(source.nbrCellz_)},
       origin_{std::move(source.origin_)},
       interpOrder_{std::move(source.interpOrder_)},
+      layoutName_{source.layoutName_},
       implPtr_{std::move(source.implPtr_)}
 {
 }

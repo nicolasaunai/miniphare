@@ -12,13 +12,15 @@
 static const uint32 interpOrderConstant  = 1;
 static const uint32 refineFactorConstant = 2;
 
+static const std::string defaultSplitMethod = "splitOrderN_RF2" ;
+
 
 SimpleInitializerFactory::SimpleInitializerFactory()
     : timeManager_{0.01, 0., 10.} ,layout_{ {{0.2,0.,0.}}, {{32, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
       // hard-coded... will come from input somehow
       interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
       pusher_{"modifiedBoris"},
-      splitMethods_{"splitOrderN_RF2"}
+      splitMethods_{ std::vector<std::string>{2, defaultSplitMethod} }
 {
 
 }
