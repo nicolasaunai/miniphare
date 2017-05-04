@@ -29,6 +29,7 @@ class Patch
 
 private:
 
+    uint32 id_;
     Box coordinates_;
 
     GridLayout layout_;
@@ -71,6 +72,8 @@ public:
     std::shared_ptr<Patch> parent() const { return parent_; }
 
     PatchData const & data() const { return data_; }
+
+    uint32 getID() const {return id_;}
 
     void updateChildren( std::shared_ptr<Patch> newChild ) ;
 

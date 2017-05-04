@@ -6,7 +6,7 @@
 
 uint32 PRAHalfWidth(GridLayout const& layout)
 {
-    return layout.nbrGhostCells(QtyCentering::primal) ;
+    return layout.nbrGhostNodes(QtyCentering::primal) ;
 }
 
 

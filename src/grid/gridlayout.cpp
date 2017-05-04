@@ -331,10 +331,31 @@ QtyCentering GridLayout::fieldCentering(Field const& field, Direction dir) const
 
 
 
-uint32 GridLayout::nbrGhostCells( QtyCentering const& centering ) const
+uint32 GridLayout::nbrGhostNodes( QtyCentering const& centering ) const
 {
-    return implPtr_->nbrGhostCells( centering ) ;
+    return implPtr_->nbrGhostNodes( centering ) ;
 }
+
+
+uint32 GridLayout::nbrGhostNodes(Field const& field, Direction direction) const
+{
+    auto centering = implPtr_->fieldCentering(field, direction);
+    return implPtr_->nbrGhostNodes(centering) ;
+}
+
+
+std::array<uint32, NBR_COMPO> GridLayout::nbrPhysicalNodes(Field const& field) const
+{
+    return  implPtr_->nbrPhysicalNodes(field);
+}
+
+
+std::array<uint32, NBR_COMPO> GridLayout::nbrPhysicalNodes(HybridQuantity hybQty) const
+{
+    return  implPtr_->nbrPhysicalNodes(hybQty);
+}
+
+
 
 /* ---------------------------------------------------------------------------
  *

@@ -42,6 +42,13 @@ MiniPHARE is developed by:
 *
 
 
+
+## Main modules
+
+* [Diagnosics](diagnostics.md)
+
+
+
 ## FAQ
 
 * blah blah?

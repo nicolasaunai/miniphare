@@ -250,13 +250,14 @@ public:
                            Direction direction)
     {
         uint32 idir = static_cast<uint32>(direction) ;
+        double weightOverCellVolume = particle.weight*cellVolumeInverse;
         double reducedCoord = particle.icell[idir] + static_cast<double>(particle.delta[idir]);
-        double weightOncellVolume = particle.weight*cellVolumeInverse;
 
-        double partRho = weightOncellVolume * particle.charge;
-        double partVx  = weightOncellVolume * particle.v[0] ;
-        double partVy  = weightOncellVolume * particle.v[1] ;
-        double partVz  = weightOncellVolume * particle.v[2] ;
+
+        double partRho = weightOverCellVolume * particle.charge;
+        double partVx  = weightOverCellVolume * particle.v[0] ;
+        double partVy  = weightOverCellVolume * particle.v[1] ;
+        double partVz  = weightOverCellVolume * particle.v[2] ;
 
         impl_->computeIndexes(reducedCoord, xIndexes_);
         impl_->computeWeights(reducedCoord, xIndexes_, xWeights_);

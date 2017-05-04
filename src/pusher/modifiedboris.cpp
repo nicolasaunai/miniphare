@@ -24,7 +24,7 @@
  */
 void ModifiedBoris::move(std::vector<Particle>const & partIn ,
                          std::vector<Particle> & partOut,
-                         double m,
+                         double mass,
                          VecField const& E , VecField const & B,
                          Interpolator& interpolator,
                          BoundaryCondition const& boundaryCondition)
@@ -41,7 +41,7 @@ void ModifiedBoris::move(std::vector<Particle>const & partIn ,
     fieldsAtParticles(interpolator, E, B, layout_, partOut);
 
     // push velocity from partIn (n) to n+1 using fields at partOut(n+1/2)
-    pushVelocity_( partOut, partOut, m);
+    pushVelocity_( partOut, partOut, mass);
 
     // must clean the leaving particles buffer before the last step
     // since newly leaving particles will be added to it.

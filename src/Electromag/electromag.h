@@ -21,7 +21,10 @@ public:
     Electromag(std::unique_ptr<ElectromagInitializer> initializer);
 
     Field& getEi(uint32 component) {return E_.component(component);}
+    Field const& getEi(uint32 component) const {return E_.component(component);}
+
     Field& getBi(uint32 component) {return B_.component(component);}
+    Field const& getBi(uint32 component) const {return B_.component(component);}
 
     VecField& getE(){return E_;}
     VecField& getB(){return B_;}

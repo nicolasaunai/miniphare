@@ -12,7 +12,8 @@
 #include "AMR/Hierarchy/hierarchy.h"
 
 #include "grid/gridlayout.h"
-#include "Initializer/initializerfactory.h"
+#include "Diagnostics/diagnosticmanager.h"
+#include "Initializer/simulationinitializerfactory.h"
 
 
 
@@ -32,28 +33,29 @@ int main(int argc, char *argv[])
 
 
 
-    std::unique_ptr<InitializerFactory> initFactory = fromCommandLine(argc, argv) ;
+    std::unique_ptr<SimulationInitializerFactory> initFactory = fromCommandLine(argc, argv);
+
+
+    std::unique_ptr<Time> timeManager{initFactory->createTimeManager()};
+    DiagnosticsManager diagnosticManager{initFactory->createDiagnosticInitializer()};
 
 
     Hierarchy patchHierarchy{ std::make_shared<Patch>(initFactory->getBox(),
                                                        initFactory->gridLayout(),
                                                        PatchData{*initFactory}  ) };
 
-    Time timeManager{initFactory->timeStep(), 0., 100};
     MLMD mlmdManager{*initFactory} ;
+    mlmdManager.initializeRootLevel(patchHierarchy);
 
-    mlmdManager.initializeRootLevel(patchHierarchy) ;
 
-    for (uint32 it=0; it < timeManager.nbrIter(); ++it)
+    for (uint32 it=0; it < timeManager->nbrIter(); ++it)
     {
+        std::cout << it << std::endl;
+        std::cout << timeManager->currentTime() << std::endl;
 
         mlmdManager.evolveFullDomain(patchHierarchy) ;
-        std::cout << it << std::endl;
-        std::cout << timeManager.currentTime() << std::endl;
-        timeManager.advance();
+        diagnosticManager.compute(*timeManager, patchHierarchy);
+        diagnosticManager.save(*timeManager);
+        timeManager->advance();
     }
-
 }
-
-
-

@@ -9,14 +9,14 @@
 #include "Splitting/splittingstrategyfactory.h"
 
 
-static const uint32 interpOrderConstant  = 3 ;
-static const uint32 refineFactorConstant = 2 ;
+static const uint32 interpOrderConstant  = 1;
+static const uint32 refineFactorConstant = 2;
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
+    : timeManager_{0.01, 0., 10.} ,layout_{ {{0.2,0.,0.}}, {{32, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
       // hard-coded... will come from input somehow
-      dt_{0.01}, interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
+      interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
       pusher_{"modifiedBoris"},
       splitMethods_{"splitOrderN_RF2"}
 {
@@ -25,9 +25,9 @@ SimpleInitializerFactory::SimpleInitializerFactory()
 
 
 SimpleInitializerFactory::SimpleInitializerFactory( const std::string & splitMethod )
-    : layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
+    : timeManager_{0.01, 0., 10.} ,layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
       // hard-coded... will come from input somehow
-      dt_{0.01}, interpolationOrders_{ std::vector<uint32>{2, interpOrderConstant} },
+      interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
       pusher_{"modifiedBoris"},
       splitMethods_{ std::vector<std::string>{2, splitMethod} }
 {
@@ -48,7 +48,7 @@ double densityProton1(double x, double y, double z)
     (void) y;
     (void) z;
 
-    return 1.;
+    return 0.5;
 }
 
 
@@ -57,7 +57,7 @@ double densityProton2(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    return 0.25;
+    return 0.5;
 }
 
 
@@ -66,7 +66,7 @@ double thermalSpeedProton1(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    return 0.025;
+    return 0.2;
 }
 
 
@@ -75,7 +75,7 @@ double thermalSpeedProton2(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    return 0.025;
+    return 0.2;
 }
 
 
@@ -183,7 +183,8 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
 
 
 /**
- * @brief SimpleInitializerFactory::createSolverInitializer creates a SolverInitializer for simpled 1D simulation with 2 species with 2nd order interpolation and modified Boris pushers
+ * @brief SimpleInitializerFactory::createSolverInitializer creates a SolverInitializer
+ * for simpled 1D simulation with 2 species with 2nd order interpolation and modified Boris pushers
  * @return
  */
 std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitializer() const
@@ -201,7 +202,8 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
 
 
 /**
- * @brief SimpleInitializerFactory::createBoundaryCondition creates a BoundaryCondition that is a simple periodic domain boundary condition for 1D run.
+ * @brief SimpleInitializerFactory::createBoundaryCondition creates a
+ * BoundaryCondition that is a simple periodic domain boundary condition for 1D run.
  * @return
  */
 std::unique_ptr<BoundaryCondition> SimpleInitializerFactory::createBoundaryCondition() const
@@ -226,7 +228,8 @@ std::unique_ptr<BoundaryCondition> SimpleInitializerFactory::createBoundaryCondi
 
 
 /**
- * @brief SimpleInitializerFactory::createElectromagInitializer return a ElectromagInitializer for 1D periodic simulation. Bx=1, By=Bz=Ex=Ey=Ez=0.
+ * @brief SimpleInitializerFactory::createElectromagInitializer return
+ *  a ElectromagInitializer for 1D periodic simulation.
  * @return
  */
 std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectromagInitializer() const
@@ -234,7 +237,7 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
 
     std::unique_ptr<ElectromagInitializer> eminit {new ElectromagInitializer{layout_,
                     electricField,
-                    magneticField, "_EMField", "_EMFields"} };
+                    magneticField, "_EField", "_BField"} };
 
     std::cout << "creating Simple ElectromagInitializer" << std::endl;
     Point origin{0,0,0};
@@ -272,4 +275,62 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
 
 
 
+/**
+ * @brief SimpleInitializerFactory::createDiagnosticInitializer is a hard-coded DiagnosticInitializer
+ */
+std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosticInitializer() const
+{
+    std::unique_ptr<DiagnosticInitializer> initializer{ new DiagnosticInitializer};
+
+    initializer->exportType = ExportStrategyType::ASCII;
+    std::vector<uint32> iters;
+    for (uint32 i=0; i < 1001; ++i)
+    {
+        iters.push_back(i);
+    }
+
+    EMDiagInitializer emDiag;
+    emDiag.typeName = "E";
+    //emDiag.computingIterations.insert(emDiag.computingIterations.end(), {1,10,20,25});
+    //emDiag.writingIterations.insert(emDiag.writingIterations.end(), {1,10,20,25});
+    emDiag.computingIterations = iters;
+    emDiag.writingIterations = iters;
+    initializer->emInitializers.push_back(std::move(emDiag));
+
+    EMDiagInitializer BDiag;
+    BDiag.typeName = "B";
+    //BDiag.computingIterations.insert(BDiag.computingIterations.end(), {1,10,20,25});
+    //BDiag.writingIterations.insert(BDiag.writingIterations.end(), {1,10,20,25});
+    BDiag.computingIterations = iters;
+    BDiag.writingIterations = iters;
+    initializer->emInitializers.push_back(std::move(BDiag));
+
+
+    FluidDiagInitializer fluidDiag;
+    fluidDiag.speciesName = "proton1";
+    fluidDiag.typeName = "rho_s";
+    fluidDiag.computingIterations.insert(fluidDiag.computingIterations.end(), {1,10,20,25});
+    fluidDiag.writingIterations.insert(fluidDiag.writingIterations.end(), {1,10,20,25});
+    initializer->fluidInitializers.push_back(std::move(fluidDiag));
+
+
+    FluidDiagInitializer fluidDiag2;
+    fluidDiag2.speciesName = "proton1";
+    fluidDiag2.typeName = "flux_s";
+    fluidDiag2.computingIterations.insert(fluidDiag2.computingIterations.end(), {1,10,20,25});
+    fluidDiag2.writingIterations.insert(fluidDiag2.writingIterations.end(), {1,10,20,25});
+    initializer->fluidInitializers.push_back(std::move(fluidDiag2));
+
+
+
+
+    return initializer;
+}
+
+
+
+std::unique_ptr<Time> SimpleInitializerFactory::createTimeManager() const
+{
+    return std::unique_ptr<Time>{new Time{1.e-7, 0., 100.}};
+}
 

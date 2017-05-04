@@ -10,7 +10,10 @@
 #include "Initializer/ohminitializer.h"
 #include "Initializer/solverinitializer.h"
 
+#include "diagnosticinitializer.h"
+
 #include "Splitting/splittingstrategy.h"
+
 
 
 /**
@@ -59,10 +62,6 @@ public:
 
 };
 
-
-
-
-std::unique_ptr<InitializerFactory> fromCommandLine(int argc, char** argv);
 
 
 /* ----------------------------------------------------------------------------

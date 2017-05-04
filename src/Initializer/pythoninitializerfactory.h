@@ -2,7 +2,7 @@
 #define PYTHONINITIALIZERFACTORY_H
 
 
-#include "initializerfactory.h"
+#include "simulationinitializerfactory.h"
 #include "grid/gridlayout.h"
 
 
@@ -11,7 +11,7 @@
  * used to create objects from a user supplied python script. See InitializerFactory
  * for documentation of its methods.
  */
-class PythonInitializerFactory : public InitializerFactory
+class PythonInitializerFactory : public SimulationInitializerFactory
 {
 public:
 
