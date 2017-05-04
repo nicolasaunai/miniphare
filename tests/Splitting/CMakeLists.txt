@@ -33,7 +33,7 @@ include_directories("./")
 add_executable(Splitting ${SOURCES})
 target_link_libraries(Splitting gtest gtest_main)
 target_link_libraries(Splitting gmock gmock_main)
-add_test(NAME test-Splitting COMMAND test-Splitting)
+add_test(NAME test-Splitting COMMAND Splitting)
 
 
 

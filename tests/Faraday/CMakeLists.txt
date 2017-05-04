@@ -22,7 +22,7 @@ include_directories("./")
 add_executable(Faraday ${SOURCES})
 target_link_libraries(Faraday gtest gtest_main)
 target_link_libraries(Faraday gmock gmock_main)
-add_test(NAME test-Faraday COMMAND Gridlayout)
+add_test(NAME test-Faraday COMMAND Faraday)
 add_custom_command(TARGET Faraday
                    POST_BUILD
                    COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/faradaytest.py ${CMAKE_CURRENT_BINARY_DIR})
