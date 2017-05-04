@@ -82,7 +82,7 @@ std::string getEMFilename(uint32 patchID,
     std::stringstream ss;
     ss << diag.stratName()
        << "_" << std::setfill('0') << std::setw(6)
-       << "_" << timeManager.currentTime()
+       << "_" << std::setprecision(6) << std::fixed << timeManager.currentTime()
        << patchID << ".txt";
     return ss.str();
 }
@@ -129,8 +129,7 @@ std::string getFluidFilename(uint32 patchID,
 {
     std::stringstream ss;
     ss << diag.stratName() << "_" << diag.speciesName()
-       << "_" << std::setfill('0') << std::setw(6)
-       << "_" << timeManager.currentTime()
+       << "_" << std::setprecision(6) << std::fixed << timeManager.currentTime()
        << patchID << ".txt";
     return ss.str();
 }

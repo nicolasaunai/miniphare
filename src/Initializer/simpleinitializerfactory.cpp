@@ -9,12 +9,12 @@
 #include "Splitting/splittingstrategyfactory.h"
 
 
-static const uint32 interpOrderConstant  = 3 ;
-static const uint32 refineFactorConstant = 2 ;
+static const uint32 interpOrderConstant  = 1;
+static const uint32 refineFactorConstant = 2;
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : timeManager_{0.01, 0., 10.} ,layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
+    : timeManager_{0.01, 0., 10.} ,layout_{ {{0.2,0.,0.}}, {{32, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
       // hard-coded... will come from input somehow
       interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
       pusher_{"modifiedBoris"},
@@ -48,7 +48,7 @@ double densityProton1(double x, double y, double z)
     (void) y;
     (void) z;
 
-    return 1.;
+    return 0.5;
 }
 
 
@@ -57,7 +57,7 @@ double densityProton2(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    return 0.25;
+    return 0.5;
 }
 
 
@@ -66,7 +66,7 @@ double thermalSpeedProton1(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    return 0.025;
+    return 0.2;
 }
 
 
@@ -75,7 +75,7 @@ double thermalSpeedProton2(double x, double y, double z)
     (void) x;
     (void) y;
     (void) z;
-    return 0.025;
+    return 0.2;
 }
 
 
@@ -283,17 +283,26 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
     std::unique_ptr<DiagnosticInitializer> initializer{ new DiagnosticInitializer};
 
     initializer->exportType = ExportStrategyType::ASCII;
+    std::vector<uint32> iters;
+    for (uint32 i=0; i < 1001; ++i)
+    {
+        iters.push_back(i);
+    }
 
     EMDiagInitializer emDiag;
     emDiag.typeName = "E";
-    emDiag.computingIterations.insert(emDiag.computingIterations.end(), {1,10,20,25});
-    emDiag.writingIterations.insert(emDiag.writingIterations.end(), {1,10,20,25});
+    //emDiag.computingIterations.insert(emDiag.computingIterations.end(), {1,10,20,25});
+    //emDiag.writingIterations.insert(emDiag.writingIterations.end(), {1,10,20,25});
+    emDiag.computingIterations = iters;
+    emDiag.writingIterations = iters;
     initializer->emInitializers.push_back(std::move(emDiag));
 
     EMDiagInitializer BDiag;
     BDiag.typeName = "B";
-    BDiag.computingIterations.insert(BDiag.computingIterations.end(), {1,10,20,25});
-    BDiag.writingIterations.insert(BDiag.writingIterations.end(), {1,10,20,25});
+    //BDiag.computingIterations.insert(BDiag.computingIterations.end(), {1,10,20,25});
+    //BDiag.writingIterations.insert(BDiag.writingIterations.end(), {1,10,20,25});
+    BDiag.computingIterations = iters;
+    BDiag.writingIterations = iters;
     initializer->emInitializers.push_back(std::move(BDiag));
 
 
@@ -322,6 +331,6 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
 
 std::unique_ptr<Time> SimpleInitializerFactory::createTimeManager() const
 {
-    return std::unique_ptr<Time>{new Time{0.01, 0., 1.}};
+    return std::unique_ptr<Time>{new Time{1.e-7, 0., 100.}};
 }
 
