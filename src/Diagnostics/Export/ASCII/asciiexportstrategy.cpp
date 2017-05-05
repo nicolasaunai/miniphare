@@ -80,10 +80,12 @@ std::string getEMFilename(uint32 patchID,
                           Time const& timeManager)
 {
     std::stringstream ss;
-    ss << diag.stratName()
+
+    ss << diag.strategyName()
        << "_" << std::setfill('0') << std::setw(6)
-       << "_" << std::setprecision(6) << std::fixed << timeManager.currentTime()
-       << patchID << ".txt";
+       << patchID
+       << "_" << std::setprecision(10) << std::fixed << timeManager.currentTime()
+       << ".txt";
     return ss.str();
 }
 
@@ -94,7 +96,7 @@ void AsciiExportStrategy::saveEMDiagnostic(EMDiagnostic const& diag, Time const&
 {
     std::cout << "I'm writting EM diagnostics at t = "
               << timeManager.currentTime()
-              << " Diag type : "  << diag.stratName()
+              << " Diag type : "  << diag.strategyName()
               << std::endl;
 
 
@@ -128,9 +130,12 @@ std::string getFluidFilename(uint32 patchID,
                              Time const& timeManager)
 {
     std::stringstream ss;
-    ss << diag.stratName() << "_" << diag.speciesName()
-       << "_" << std::setprecision(6) << std::fixed << timeManager.currentTime()
-       << patchID << ".txt";
+    ss << diag.strategyName() << "_" << diag.speciesName()
+       << '_'
+       << std::setfill('0') << std::setw(6)
+       << patchID
+       << "_" << std::setprecision(10) << std::fixed << timeManager.currentTime()
+       << ".txt";
     return ss.str();
 }
 
@@ -142,7 +147,7 @@ void AsciiExportStrategy::saveFluidDiagnostic(FluidDiagnostic const& diag, Time 
     std::cout << "I'm writting fluid diagnostics for species "
               << diag.speciesName() << "at t = "
               << timeManager.currentTime()
-              << " Diag type : "  << diag.stratName()
+              << " Diag type : "  << diag.strategyName()
               << std::endl;
 
 
