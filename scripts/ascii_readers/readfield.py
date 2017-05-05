@@ -1,0 +1,59 @@
+"""
+Quick functions to read fields exported with the PHARE ASCII exporter
+"""
+
+import numpy as np
+
+class Field:
+    def __init__(self, nbdims, origin, nbrNodes, centering, data):
+        self.nbdims      = nbdims
+        self.origin      = origin
+        self.nbrNodes    = nbrNodes
+        self.centering   = centering
+        self.data        = data
+
+
+
+def read_block(lines, cursor):
+    """
+    read a component in a list of lines from a Field File
+    """
+    nbdims = int(lines[cursor + 1])
+    origin_s = lines[cursor + 3]
+    origin = [float(o) for o in origin_s.split()]
+    nbrNodes = [int(n) for n in lines[cursor + 5].split()]
+    centering = [float(c) for c in lines[cursor+ 7].split()]
+    data = np.zeros(nbrNodes[0])
+    for i in np.arange(nbrNodes[0]):
+        data[i] = float(lines[cursor+10+i])
+
+    return Field(nbdims, origin, nbrNodes, centering, data)
+
+
+
+
+
+def readEMFile(filename):
+    """
+    read the field File 'filename'
+    """
+    f = open(filename, "r")
+    lines = f.readlines()
+    cursor = 0
+    Ex = read_block(lines, cursor)
+    cursor = int(10 + Ex.nbrNodes[0]+3)
+    Ey = read_block(lines, cursor)
+    cursor = int(10*2 + Ey.nbrNodes[0] + Ex.nbrNodes[0] + 3*2)
+    Ez = read_block(lines, cursor)
+    f.close()
+    return Ex, Ey, Ez
+
+
+
+
+def EM_filenameFromTime(fieldname, time):
+    """
+    return the name of a EM file for a given time
+    """
+    patchID = 0 # hard coded patch ID, is OK for L0 simulations only
+    return fieldname + '_' + '%06d' % (patchID) + '_' + '%11.10f.txt' % (time)
