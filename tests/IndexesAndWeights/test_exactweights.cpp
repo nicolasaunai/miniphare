@@ -68,6 +68,28 @@ uint32 ExactWeightsParams::testCaseNbr = 0 ;
 }
 
 
+/**
+ * @brief The WeightsExact1DTest class is intended to test
+ * IndexesAndWeightsO1::computeWeights(...)
+ * IndexesAndWeightsO2::computeWeights(...)
+ * IndexesAndWeightsO3::computeWeights(...)
+ * IndexesAndWeightsO4::computeWeights(...)
+ *
+ * these methods are used either:
+ * - to interpolate a field onto a point
+ * - or to compute the contribution of a particle to rho and fluxes
+ *
+ * Those 2 operations use a list of points:
+ * - Interpolation of a field to a particle requires a list of indexes
+ * from the grid.
+ *
+ * - Depositing the contribution of a particle to a grid requires the grid indexes
+ * where the particle will deposit
+ *
+ * This test verifies whether the ponderation (or weight) attributed to
+ * each point of the list is correctly computed.
+ *
+ */
 class WeightsExact1DTest: public ::testing::TestWithParam<ExactWeightsParams>
 {
 public:

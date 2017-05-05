@@ -12,7 +12,24 @@ import gridlayout
 import interpolator
 
 
-
+#
+#  Ponderations (or weights) are needed:
+#  - to interpolate a field onto a point
+#  - or to compute the contribution of a particle to charge density and fluxes
+#
+#  Those 2 operations use a list of points:
+#  - Interpolation of a field to a particle requires a list of indexes
+#  from the grid 
+#  - Depositing the contribution of a particle to a grid requires the grid indexes
+#  where the particle will deposit
+# 
+#  This python script computes those weights and writes them into files.
+#
+#  The weights are actually computed by interpolator.py
+#  interpolator.py has been validated with exactweights.py, the latter 
+#  script can be used to plot shape functions from 1st to 4th order
+#
+#
 def main(path='./'):
 
     if len(sys.argv) == 2:
