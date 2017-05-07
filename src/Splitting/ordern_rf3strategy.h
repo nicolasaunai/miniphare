@@ -7,14 +7,8 @@
 class OrderN_RF3Strategy : public SplittingStrategy
 {
 private:
-
-
-
 public:
-
-    OrderN_RF3Strategy( const std::string & splitMethod,
-                        uint32 interpOrder ) ;
-
+    OrderN_RF3Strategy(const std::string& splitMethod, uint32 interpOrder);
 };
 
 

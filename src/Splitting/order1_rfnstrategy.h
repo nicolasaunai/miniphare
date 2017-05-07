@@ -7,13 +7,8 @@
 class Order1_RFnStrategy : public SplittingStrategy
 {
 private:
-
-
 public:
-
-    Order1_RFnStrategy( const std::string & splitMethod,
-                        uint32 refineFactor ) ;
-
+    Order1_RFnStrategy(const std::string& splitMethod, uint32 refineFactor);
 };
 
 #endif // ORDER1_ALLREFINESTRATEGY_H

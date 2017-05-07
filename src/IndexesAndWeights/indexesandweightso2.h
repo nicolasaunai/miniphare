@@ -8,11 +8,13 @@
 
 class IndexesAndWeightsO2 : public IndexesAndWeights
 {
-
 public:
     ~IndexesAndWeightsO2() {}
 
-    IndexesAndWeightsO2( uint32 order ): IndexesAndWeights(order) {}
+    IndexesAndWeightsO2(uint32 order)
+        : IndexesAndWeights(order)
+    {
+    }
 
     /**
      * @brief IndexesAndWeightsO2::computeWeights computes
@@ -36,8 +38,8 @@ public:
      *
      *
      */
-    virtual void computeWeights( double reducedCoord, std::vector<uint32> const&indexList,
-                                    std::vector<double> & weightList) final
+    virtual void computeWeights(double reducedCoord, std::vector<uint32> const& indexList,
+                                std::vector<double>& weightList) final
     {
         double coef1, coef2, coef3;
 
@@ -46,9 +48,8 @@ public:
         coef3 = 0.5 - (static_cast<double>(indexList[1]) - reducedCoord);
 
         weightList[0] = 0.5 * coef1 * coef1;
-        weightList[1] = 0.75 -coef2 * coef2;
+        weightList[1] = 0.75 - coef2 * coef2;
         weightList[2] = 0.5 * coef3 * coef3;
-
     }
 };
 

@@ -5,9 +5,8 @@
 
 bool RefinementAnalyser::refinementNeeded()
 {
-    bool result = false ;
+    bool result = false;
 
 
-    return result ;
+    return result;
 }
-

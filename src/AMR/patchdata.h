@@ -3,13 +3,13 @@
 
 
 
-#include "types.h"
+#include "Electromag/electromag.h"
+#include "Initializer/initializerfactory.h"
+#include "Plasmas/electrons.h"
 #include "Plasmas/ions.h"
 #include "Solver/solver.h"
 #include "grid/gridlayout.h"
-#include "Plasmas/electrons.h"
-#include "Electromag/electromag.h"
-#include "Initializer/initializerfactory.h"
+#include "types.h"
 
 
 /**
@@ -21,9 +21,8 @@
 class PatchData
 {
 private:
-
     Electromag EMfields_;
-    Solver     solver_;
+    Solver solver_;
     Ions ions_;
     Electrons electrons_;
     // TODO: Private implementation to avoid a pointer here
@@ -33,10 +32,9 @@ private:
 
 
 public:
-
     PatchData(InitializerFactory const& initFactory);
 
-   // PatchData(double dt, const GridLayout& layout);
+    // PatchData(double dt, const GridLayout& layout);
 
     PatchData(PatchData const& source) = delete;
     PatchData& operator=(PatchData const& source) = delete;
@@ -48,19 +46,13 @@ public:
 
     void initPatchGhostDomain();
 
-    Electromag const& EMfields() const {return EMfields_;}
+    Electromag const& EMfields() const { return EMfields_; }
 
-    Solver const& solver() const {return solver_;}
+    Solver const& solver() const { return solver_; }
 
-    Ions const& ions() const {return ions_;}
+    Ions const& ions() const { return ions_; }
 
-    void solveStep() ;
-
-
+    void solveStep();
 };
 
 #endif // PATCHDATA_H
-
-
-
-

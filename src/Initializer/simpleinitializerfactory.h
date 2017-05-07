@@ -18,7 +18,7 @@ class SimpleInitializerFactory : public SimulationInitializerFactory
 public:
     // TODO : see what Ctors will need to be defined
     SimpleInitializerFactory();
-    SimpleInitializerFactory( const std::string & splitMethod );
+    SimpleInitializerFactory(const std::string& splitMethod);
 
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const override;
@@ -27,32 +27,32 @@ public:
     virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() const override;
     virtual std::unique_ptr<Time> createTimeManager() const override;
 
-    virtual Box getBox() const override { return layout_.getBox() ; }
+    virtual Box getBox() const override { return layout_.getBox(); }
     virtual GridLayout const& gridLayout() const override { return layout_; }
     virtual double timeStep() const override { return createTimeManager()->timeStep(); }
-    virtual std::string const & pusher() const override { return pusher_; }
+    virtual std::string const& pusher() const override { return pusher_; }
 
-    virtual std::vector<uint32> const &
-    interpolationOrders() const override { return interpolationOrders_; }
-    virtual std::vector<std::string> const &
-    splittingStrategies() const override { return splitMethods_; }
+    virtual std::vector<uint32> const& interpolationOrders() const override
+    {
+        return interpolationOrders_;
+    }
+    virtual std::vector<std::string> const& splittingStrategies() const override
+    {
+        return splitMethods_;
+    }
 
     // virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() = 0;
     // virtual std::unique_ptr<GridLayoutInitializer> createGridLayoutInitializer() = 0;
 
 private:
-
     Time timeManager_;
     GridLayout layout_;
 
-    const std::vector<uint32>  interpolationOrders_ ;
-    const std::string pusher_ ;
-    const std::vector<std::string> splitMethods_ ;
-
+    const std::vector<uint32> interpolationOrders_;
+    const std::string pusher_;
+    const std::vector<std::string> splitMethods_;
 };
 
 
 
 #endif // SIMPLEINITIALIZERFACTORY_H
-
-

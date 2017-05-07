@@ -8,11 +8,13 @@
 
 class IndexesAndWeightsO3 : public IndexesAndWeights
 {
-
 public:
     ~IndexesAndWeightsO3() {}
 
-    IndexesAndWeightsO3(uint32 order): IndexesAndWeights(order) {}
+    IndexesAndWeightsO3(uint32 order)
+        : IndexesAndWeights(order)
+    {
+    }
 
     // the formulas ruling the weights are specific to a given order
     /**
@@ -37,26 +39,25 @@ public:
      *
      *
      */
-    virtual void computeWeights( double reducedCoord, std::vector<uint32> const&indexList,
-                                 std::vector<double> & weightList) final
+    virtual void computeWeights(double reducedCoord, std::vector<uint32> const& indexList,
+                                std::vector<double>& weightList) final
     {
         double coef1, coef2, coef3, coef4;
 
-        coef1 = 1. + 0.5*(static_cast<double>(indexList[0]) - reducedCoord);
+        coef1 = 1. + 0.5 * (static_cast<double>(indexList[0]) - reducedCoord);
         coef2 = static_cast<double>(indexList[1]) - reducedCoord;
         coef3 = static_cast<double>(indexList[2]) - reducedCoord;
-        coef4 = 1. - 0.5*(static_cast<double>(indexList[3]) - reducedCoord);
+        coef4 = 1. - 0.5 * (static_cast<double>(indexList[3]) - reducedCoord);
 
-        double coef2_sq  = coef2*coef2;
-        double coef2_cub = coef2_sq*coef2;
-        double coef3_sq  = coef3*coef3;
-        double coef3_cub = coef3_sq*coef3;
+        double coef2_sq  = coef2 * coef2;
+        double coef2_cub = coef2_sq * coef2;
+        double coef3_sq  = coef3 * coef3;
+        double coef3_cub = coef3_sq * coef3;
 
-        weightList[0] = (4./3.)* coef1 * coef1 * coef1;
-        weightList[1] = 2./3. - coef2_sq  - 0.5*coef2_cub;
-        weightList[2] = 2./3. - coef3_sq + 0.5*coef3_cub;
-        weightList[3] = (4./3.)*coef4*coef4*coef4;
-
+        weightList[0] = (4. / 3.) * coef1 * coef1 * coef1;
+        weightList[1] = 2. / 3. - coef2_sq - 0.5 * coef2_cub;
+        weightList[2] = 2. / 3. - coef3_sq + 0.5 * coef3_cub;
+        weightList[3] = (4. / 3.) * coef4 * coef4 * coef4;
     }
 };
 

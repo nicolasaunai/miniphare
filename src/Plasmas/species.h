@@ -2,10 +2,10 @@
 #define SPECIES_H
 
 #include "Field/field.h"
-#include "vecfield/vecfield.h"
-#include "grid/gridlayout.h"
-#include "Plasmas/particles.h"
 #include "Initializer/particleinitializer.h"
+#include "Plasmas/particles.h"
+#include "grid/gridlayout.h"
+#include "vecfield/vecfield.h"
 //#include "Interpolator/interpolator.h"
 
 
@@ -16,9 +16,7 @@
  */
 class Species
 {
-
 private:
-
     double mass_;
     std::string name_;
     GridLayout layout_;
@@ -29,36 +27,37 @@ private:
 
 
 public:
-
     Species(GridLayout const& layout, double mass,
-            std::unique_ptr<ParticleInitializer> particleInitializer,
-            std::string const& name);
+            std::unique_ptr<ParticleInitializer> particleInitializer, std::string const& name);
 
     Species(Species const& source) = delete;
-    Species& operator=(Species const& source)=delete;
+    Species& operator=(Species const& source) = delete;
 
     Species(Species&& source) = default;
     Species& operator=(Species&& source) = default;
 
-    void resetMoments() {rho_.zero(); flux_.zero();}
+    void resetMoments()
+    {
+        rho_.zero();
+        flux_.zero();
+    }
 
-    Field& rho() {return rho_;}
-    Field const& rho() const {return rho_;}
+    Field& rho() { return rho_; }
+    Field const& rho() const { return rho_; }
 
-    Field& flux(uint32 iComponent) {return flux_.component(iComponent);}
-    Field const& flux(uint32 iComponent) const {return flux_.component(iComponent);}
+    Field& flux(uint32 iComponent) { return flux_.component(iComponent); }
+    Field const& flux(uint32 iComponent) const { return flux_.component(iComponent); }
 
-    std::vector<Particle>& particles() {return particleArray_;}
-    std::vector<Particle> const& particles() const {return particleArray_;}
+    std::vector<Particle>& particles() { return particleArray_; }
+    std::vector<Particle> const& particles() const { return particleArray_; }
 
-    double mass() const {return mass_;}
-    std::string name() const {return name_;}
-    std::vector<Particle>::size_type nbrParticles() const {return particleArray_.size();}
+    double mass() const { return mass_; }
+    std::string name() const { return name_; }
+    std::vector<Particle>::size_type nbrParticles() const { return particleArray_.size(); }
 
     void loadParticles();
 
-    //void compute1DChargeDensityAndFlux(Interpolator & project );
-
+    // void compute1DChargeDensityAndFlux(Interpolator & project );
 };
 
 #endif // SPECIES_H

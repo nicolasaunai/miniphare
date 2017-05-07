@@ -20,5 +20,3 @@ void Ampere::operator()(VecField const& B, VecField& Jnew)
 {
     return (*implPtr_)(B, Jnew);
 }
-
-

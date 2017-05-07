@@ -3,12 +3,12 @@
 
 #include "AMR/patch.h"
 
-#include "BoundaryConditions/boundary_conditions.h"
 #include "BoundaryConditions/boundary.h"
+#include "BoundaryConditions/boundary_conditions.h"
 #include "BoundaryConditions/patchboundary.h"
 
-#include "Initializer/initializerfactory.h"
 #include "AMR/MLMD/pra.h"
+#include "Initializer/initializerfactory.h"
 
 #include <memory>
 
@@ -27,7 +27,6 @@
  */
 class PatchBoundaryCondition : public BoundaryCondition
 {
-
 private:
     PRA refinedPRA_;
     std::shared_ptr<Patch> parent_;
@@ -37,20 +36,19 @@ private:
     std::vector<std::unique_ptr<PatchBoundary>> boundaries_;
 
 public:
-    PatchBoundaryCondition( PRA const & refinedPRA, std::shared_ptr<Patch> coarsePatch,
-                            GridLayout const & coarseLayout,
-                            std::vector<std::unique_ptr<PatchBoundary>> boundaries ) ;
+    PatchBoundaryCondition(PRA const& refinedPRA, std::shared_ptr<Patch> coarsePatch,
+                           GridLayout const& coarseLayout,
+                           std::vector<std::unique_ptr<PatchBoundary>> boundaries);
 
     virtual void applyMagneticBC(VecField& B) const override;
     virtual void applyElectricBC(VecField& E) const override;
-    virtual void applyCurrentBC(VecField& J)  const override;
-    virtual void applyDensityBC(Field& N)     const override;
-    virtual void applyBulkBC(VecField& Vi)    const override;
+    virtual void applyCurrentBC(VecField& J) const override;
+    virtual void applyDensityBC(Field& N) const override;
+    virtual void applyBulkBC(VecField& Vi) const override;
     virtual void applyParticleBC(std::vector<Particle>& particleArray,
-                                 LeavingParticles const& leavingParticles)  const override;
+                                 LeavingParticles const& leavingParticles) const override;
 
-    virtual void initializeGhostArea() override ;
-
+    virtual void initializeGhostArea() override;
 };
 
 #endif // PATCHBOUNDARYCONDITION_H

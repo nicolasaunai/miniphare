@@ -9,8 +9,8 @@
 
 struct exactSplit1PartParams
 {
-    std::array<double, 3> dxdydz ;
-    std::array<uint32, 3> nbrCells ;
+    std::array<double, 3> dxdydz;
+    std::array<uint32, 3> nbrCells;
     uint32 nbDim;
     std::string layout;
     Point origin{0., 0., 0.};
@@ -20,23 +20,24 @@ struct exactSplit1PartParams
     uint32 referenceNode;
 
 
-    exactSplit1PartParams() = default ;
+    exactSplit1PartParams() = default;
 
     exactSplit1PartParams(std::array<double, 3> dxdydz, std::array<uint32, 3> nbrCells,
-                          uint32 nbDim, std::string layout,
-                          Point origin, uint32 interpOrder,
-                          uint32 refineFactor,
-                          std::string splitMethod,
-                          uint32 referenceNode ):
-        dxdydz{dxdydz}, nbrCells{nbrCells},
-        nbDim{nbDim}, layout{layout},
-        origin{origin}, interpOrder{interpOrder},
-        refineFactor{refineFactor},
-        splitMethod{splitMethod},
-        referenceNode{referenceNode} {}
+                          uint32 nbDim, std::string layout, Point origin, uint32 interpOrder,
+                          uint32 refineFactor, std::string splitMethod, uint32 referenceNode)
+        : dxdydz{dxdydz}
+        , nbrCells{nbrCells}
+        , nbDim{nbDim}
+        , layout{layout}
+        , origin{origin}
+        , interpOrder{interpOrder}
+        , refineFactor{refineFactor}
+        , splitMethod{splitMethod}
+        , referenceNode{referenceNode}
+    {
+    }
 
-    ~exactSplit1PartParams() = default ;
-
+    ~exactSplit1PartParams() = default;
 };
 
 

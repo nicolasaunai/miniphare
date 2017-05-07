@@ -1,25 +1,25 @@
 #ifndef DIAGNOSTICS_H
 #define DIAGNOSTICS_H
 
-#include <vector>
-#include <stdio.h>
-#include <string>
-#include <sstream>
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
-#include <algorithm>
+#include <sstream>
+#include <stdio.h>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
-#include "types.h"
-#include "Time/time.h"
-#include "Field/field.h"
-#include "utilityphare.h"
-#include "grid/gridlayout.h"
-#include "vecfield/vecfield.h"
-#include "Plasmas/particles.h"
+#include "AMR/Hierarchy/hierarchy.h"
 #include "Diagnostics/diagtype.h"
 #include "Electromag/electromag.h"
-#include "AMR/Hierarchy/hierarchy.h"
+#include "Field/field.h"
+#include "Plasmas/particles.h"
+#include "Time/time.h"
+#include "grid/gridlayout.h"
+#include "types.h"
+#include "utilityphare.h"
+#include "vecfield/vecfield.h"
 
 
 
@@ -34,27 +34,18 @@ protected:
 
 public:
     Diagnostic(uint32 id, std::string name)
-        :name_{name}, id_{id} {}
+        : name_{name}
+        , id_{id}
+    {
+    }
 
-    std::string const& name() const {return name_;}
-    uint32 id() const {return id_;}
+    std::string const& name() const { return name_; }
+    uint32 id() const { return id_; }
 
     virtual void compute(Hierarchy const& hierarchy) = 0;
 
     virtual ~Diagnostic() = default;
-
 };
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -1,8 +1,8 @@
 #ifndef TEST_WEIGHTS_H
 #define TEST_WEIGHTS_H
 
-#include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
 #include "types.h"
 #include "utilityphare.h"
@@ -16,14 +16,11 @@
 
 struct WeightParams;
 
-HybridQuantity GetHybridQtyFromString( std::string field ) ;
+HybridQuantity GetHybridQtyFromString(std::string field);
 
-HybridQuantity GetHybridQty(uint32 iqty) ;
+HybridQuantity GetHybridQty(uint32 iqty);
 
-std::string GetHybridQtyName(uint iqty) ;
-
-
-
+std::string GetHybridQtyName(uint iqty);
 
 
 
@@ -38,36 +35,44 @@ std::string GetHybridQtyName(uint iqty) ;
 
 struct WeightParams
 {
+    uint32 interpOrder;
+    uint32 nbrX;
 
-    uint32 interpOrder ;
-    uint32 nbrX ;
+    double dx;
 
-    double dx ;
+    std::string field;
 
-    std::string field ;
-
-    double xmin ;
-    double xpart ;
+    double xmin;
+    double xpart;
 
     // additional attributes used to initialize
     // a GridLayout object
 
-    std::array<double, 3> dxdydz ;
-    std::array<uint32, 3> nbrCells ;
+    std::array<double, 3> dxdydz;
+    std::array<uint32, 3> nbrCells;
 
-    uint32 nbDim = 1 ;
+    uint32 nbDim = 1;
 
-    std::string lattice = "yee" ;
+    std::string lattice = "yee";
 
-    WeightParams(uint32 order, uint32 nbrCellX, double dx,
-                 std::string field, double xmin, double xpart)
-        :interpOrder{order}, nbrX{nbrCellX}, dx{dx},
-         field{field}, xmin{xmin}, xpart{xpart},
-         dxdydz{ {dx, 0., 0.} }, nbrCells{ {nbrX, 0, 0} } {}
+    WeightParams(uint32 order, uint32 nbrCellX, double dx, std::string field, double xmin,
+                 double xpart)
+        : interpOrder{order}
+        , nbrX{nbrCellX}
+        , dx{dx}
+        , field{field}
+        , xmin{xmin}
+        , xpart{xpart}
+        , dxdydz{{dx, 0., 0.}}
+        , nbrCells{{nbrX, 0, 0}}
+    {
+    }
 
-    WeightParams(): dxdydz{ {0., 0., 0.} },
-        nbrCells{ {0, 0, 0} } {}
-
+    WeightParams()
+        : dxdydz{{0., 0., 0.}}
+        , nbrCells{{0, 0, 0}}
+    {
+    }
 };
 
 

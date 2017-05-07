@@ -1,21 +1,20 @@
 #ifndef UTILITYPHARE_H
 #define UTILITYPHARE_H
 
-#include <vector>
-#include <limits>
 #include <cmath>
+#include <limits>
+#include <vector>
 
 #include "types.h"
 
 
 namespace utils
 {
-    inline bool isEqual(double value1, double value2,
-                        double absErr = std::numeric_limits<double>::epsilon())
-     {
-         return std::abs( value1 - value2 )
-                 <= absErr;
-    }
+inline bool isEqual(double value1, double value2,
+                    double absErr = std::numeric_limits<double>::epsilon())
+{
+    return std::abs(value1 - value2) <= absErr;
+}
 }
 
 
@@ -23,25 +22,39 @@ struct Box
 {
     double x0, x1, y0, y1, z0, z1;
 
-    Box(): x0{0.}, x1{0.},
-           y0{0.}, y1{0.},
-           z0{0.}, z1{0.} {}
+    Box()
+        : x0{0.}
+        , x1{0.}
+        , y0{0.}
+        , y1{0.}
+        , z0{0.}
+        , z1{0.}
+    {
+    }
 
-    Box( double xmin, double xmax )
-        : x0{xmin}, x1{xmax} {}
+    Box(double xmin, double xmax)
+        : x0{xmin}
+        , x1{xmax}
+    {
+    }
 
-    Box( double xmin, double xmax,
-         double ymin, double ymax )
-        : x0{xmin}, x1{xmax},
-          y0{ymin}, y1{ymax} {}
+    Box(double xmin, double xmax, double ymin, double ymax)
+        : x0{xmin}
+        , x1{xmax}
+        , y0{ymin}
+        , y1{ymax}
+    {
+    }
 
-    Box( double xmin, double xmax,
-         double ymin, double ymax,
-         double zmin, double zmax )
-        : x0{xmin}, x1{xmax},
-          y0{ymin}, y1{ymax},
-          z0{zmin}, z1{zmax} {}
-
+    Box(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
+        : x0{xmin}
+        , x1{xmax}
+        , y0{ymin}
+        , y1{ymax}
+        , z0{zmin}
+        , z1{zmax}
+    {
+    }
 };
 
 /**
@@ -55,24 +68,33 @@ struct Box
  */
 struct LogicalBox
 {
-    uint32 ix0=1, ix1=1, iy0=1, iy1=1, iz0=1, iz1=1;
+    uint32 ix0 = 1, ix1 = 1, iy0 = 1, iy1 = 1, iz0 = 1, iz1 = 1;
 
     LogicalBox() {}
 
-    LogicalBox(uint32 ix0, uint32 ix1):
-        ix0{ix0}, ix1{ix1} {}
+    LogicalBox(uint32 ix0, uint32 ix1)
+        : ix0{ix0}
+        , ix1{ix1}
+    {
+    }
 
-    LogicalBox(uint32 ix0, uint32 ix1,
-               uint32 iy0, uint32 iy1):
-        ix0{ix0}, ix1{ix1},
-        iy0{iy0}, iy1{iy1} {}
+    LogicalBox(uint32 ix0, uint32 ix1, uint32 iy0, uint32 iy1)
+        : ix0{ix0}
+        , ix1{ix1}
+        , iy0{iy0}
+        , iy1{iy1}
+    {
+    }
 
-    LogicalBox(uint32 ix0, uint32 ix1,
-               uint32 iy0, uint32 iy1,
-               uint32 iz0, uint32 iz1):
-        ix0{ix0}, ix1{ix1},
-        iy0{iy0}, iy1{iy1},
-        iz0{iz0}, iz1{iz1} {}
+    LogicalBox(uint32 ix0, uint32 ix1, uint32 iy0, uint32 iy1, uint32 iz0, uint32 iz1)
+        : ix0{ix0}
+        , ix1{ix1}
+        , iy0{iy0}
+        , iy1{iy1}
+        , iz0{iz0}
+        , iz1{iz1}
+    {
+    }
 };
 
 

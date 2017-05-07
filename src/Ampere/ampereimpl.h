@@ -1,9 +1,9 @@
 #ifndef AMPEREIMPL_H
 #define AMPEREIMPL_H
 
-#include "vecfield/vecfield.h"
 #include "Field/field.h"
 #include "grid/gridlayout.h"
+#include "vecfield/vecfield.h"
 
 
 
@@ -14,11 +14,10 @@
 class AmpereImpl
 {
 public:
-    virtual ~AmpereImpl() = default ;
+    virtual ~AmpereImpl() = default;
 
     virtual void operator()(VecField const& B, VecField& Jnew) = 0;
 };
-
 
 
 
@@ -32,7 +31,10 @@ public:
 class AmpereImplInternals
 {
 public:
-    AmpereImplInternals(GridLayout const& layout):layout_{layout}{}
+    AmpereImplInternals(GridLayout const& layout)
+        : layout_{layout}
+    {
+    }
 
 protected:
     GridLayout layout_;

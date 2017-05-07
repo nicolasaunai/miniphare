@@ -5,13 +5,11 @@
 
 
 
-class AmpereImpl1D :  public AmpereImpl, private AmpereImplInternals
+class AmpereImpl1D : public AmpereImpl, private AmpereImplInternals
 {
-
 private:
-
-    Field dxBz_ ;
-    Field dxBy_ ;
+    Field dxBz_;
+    Field dxBy_;
 
 
 public:
@@ -20,7 +18,7 @@ public:
     AmpereImpl1D(AmpereImpl1D const& source) = delete;
     AmpereImpl1D& operator=(AmpereImpl1D const& source) = delete;
 
-    AmpereImpl1D(AmpereImpl1D&& source)            = default;
+    AmpereImpl1D(AmpereImpl1D&& source) = default;
     AmpereImpl1D& operator=(AmpereImpl1D&& source) = default;
 
     ~AmpereImpl1D() = default;

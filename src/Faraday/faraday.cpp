@@ -20,5 +20,3 @@ void Faraday::operator()(VecField const& E, VecField const& B, VecField& Bnew)
 {
     return (*implPtr_)(E, B, Bnew);
 }
-
-

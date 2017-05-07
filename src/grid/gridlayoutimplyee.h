@@ -2,11 +2,11 @@
 #define GRIDLAYOUTYEE_H
 
 
-#include <vector>
 #include <array>
+#include <vector>
 
-#include "types.h"
 #include "hybridenums.h"
+#include "types.h"
 
 #include "gridlayoutimpl.h"
 #include "gridlayoutimplinternals.h"
@@ -27,13 +27,11 @@
  */
 class GridLayoutImplYee : public GridLayoutImpl, private GridLayoutImplInternals
 {
-
     // ------------------------------------------------------------------------
     //                              PRIVATE
     // ------------------------------------------------------------------------
 private:
-
-    void initLayoutCentering_( const gridDataT & staticData ) ;
+    void initLayoutCentering_(const gridDataT& staticData);
     void initLinearCombinations_();
 
     LinearCombination momentsToEx_;
@@ -55,44 +53,41 @@ private:
     //                          PUBLIC INTERFACE
     // ------------------------------------------------------------------------
 public:
-
     explicit GridLayoutImplYee(uint32 nbDims, Point origin, uint32 interpOrder,
-                               std::array<uint32,3> nbrCellsXYZ ,
-                               std::array<double,3> dxdydz      );
+                               std::array<uint32, 3> nbrCellsXYZ, std::array<double, 3> dxdydz);
 
     virtual ~GridLayoutImplYee() = default;
 
-    virtual uint32 nbDimensions() const override {return nbdims_;}
+    virtual uint32 nbDimensions() const override { return nbdims_; }
 
 
     // start and end index used in computing loops
     virtual uint32 physicalStartIndex(Field const& field, Direction direction) const override;
-    virtual uint32 physicalEndIndex  (Field const& field, Direction direction) const override;
+    virtual uint32 physicalEndIndex(Field const& field, Direction direction) const override;
 
-    virtual uint32 physicalStartIndex(QtyCentering centering, Direction direction ) const override ;
-    virtual uint32 physicalEndIndex  (QtyCentering centering, Direction direction ) const override ;
+    virtual uint32 physicalStartIndex(QtyCentering centering, Direction direction) const override;
+    virtual uint32 physicalEndIndex(QtyCentering centering, Direction direction) const override;
 
     virtual uint32 ghostStartIndex(Field const& field, Direction direction) const override;
-    virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const override;
+    virtual uint32 ghostEndIndex(Field const& field, Direction direction) const override;
 
     virtual uint32 ghostStartIndex(QtyCentering centering, Direction direction) const override;
-    virtual uint32 ghostEndIndex  (QtyCentering centering, Direction direction) const override;
+    virtual uint32 ghostEndIndex(QtyCentering centering, Direction direction) const override;
 
     virtual void deriv1D(Field const& operand, Field& derivative) const override;
 
-    virtual AllocSizeT allocSize( HybridQuantity qtyType ) const override ;
+    virtual AllocSizeT allocSize(HybridQuantity qtyType) const override;
 
-    virtual AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const override ;
+    virtual AllocSizeT allocSizeDerived(HybridQuantity qty, Direction dir) const override;
 
-    virtual Point fieldNodeCoordinates(
-            const Field & field, const Point & origin,
-            uint32 ix, uint32 iy, uint32 iz ) const override ;
+    virtual Point fieldNodeCoordinates(const Field& field, const Point& origin, uint32 ix,
+                                       uint32 iy, uint32 iz) const override;
 
-    virtual Point cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz ) const override ;
+    virtual Point cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz) const override;
 
-    virtual QtyCentering fieldCentering(Field const & field, Direction dir) const override ;
+    virtual QtyCentering fieldCentering(Field const& field, Direction dir) const override;
 
-    virtual uint32 nbrGhostNodes( QtyCentering centering ) const override ;
+    virtual uint32 nbrGhostNodes(QtyCentering centering) const override;
     virtual std::array<uint32, NBR_COMPO> nbrPhysicalNodes(Field const& field) const override;
     virtual std::array<uint32, NBR_COMPO> nbrPhysicalNodes(HybridQuantity hybQty) const override;
 

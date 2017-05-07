@@ -4,9 +4,9 @@
 #include <array>
 #include <iostream>
 
-#include "types.h"
 #include "gridlayout.h"
 #include "gridlayoutimplyee.h"
+#include "types.h"
 
 
 /**
@@ -20,27 +20,23 @@
 class GridLayoutImplFactory
 {
 public:
-
-    static std::unique_ptr<GridLayoutImpl>
-    createGridLayoutImpl(uint32 nbDims,
-                         Point origin,
-                         uint32 interpOrder,
-                         std::string const& layoutName,
-                         std::array<uint32,3> nbrCellsXYZ,
-                         std::array<double,3> dxdydz     )
+    static std::unique_ptr<GridLayoutImpl> createGridLayoutImpl(uint32 nbDims, Point origin,
+                                                                uint32 interpOrder,
+                                                                std::string const& layoutName,
+                                                                std::array<uint32, 3> nbrCellsXYZ,
+                                                                std::array<double, 3> dxdydz)
     {
         if (nbDims != 1 && nbDims != 2 && nbDims != 3)
         {
-             throw std::runtime_error("Error : GridLayoutImplFactory - wrong dimensionality");
+            throw std::runtime_error("Error : GridLayoutImplFactory - wrong dimensionality");
         }
 
         if (layoutName == "yee")
         {
-            return std::unique_ptr<GridLayoutImpl> (
-                        new GridLayoutImplYee( nbDims, origin, interpOrder,
-                                               nbrCellsXYZ, dxdydz ));
+            return std::unique_ptr<GridLayoutImpl>(
+                new GridLayoutImplYee(nbDims, origin, interpOrder, nbrCellsXYZ, dxdydz));
         }
-        //else if{}
+        // else if{}
 
         else
         {

@@ -3,8 +3,8 @@
 
 #include <gtest/gtest.h>
 
-#include "types.h"
 #include "Field/field.h"
+#include "types.h"
 #include "vecfield/vecfield.h"
 
 #if 0

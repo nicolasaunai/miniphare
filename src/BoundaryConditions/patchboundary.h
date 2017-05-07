@@ -1,8 +1,8 @@
 #ifndef PATCHBOUNDARY_H
 #define PATCHBOUNDARY_H
 
-#include "Initializer/ionsinitializer.h"
 #include "Initializer/electromaginitializer.h"
+#include "Initializer/ionsinitializer.h"
 
 #include "Plasmas/ions.h"
 
@@ -14,30 +14,29 @@
 class PatchBoundary : public Boundary
 {
 private:
-    Ions ions_ ;
-    Electromag EMfields_ ;
+    Ions ions_;
+    Electromag EMfields_;
 
 public:
-    PatchBoundary(GridLayout const & layout,
-                  std::unique_ptr<IonsInitializer> ionsInit,
-                  std::unique_ptr<ElectromagInitializer> electromagInit )
-        : ions_{layout, std::move(ionsInit)},
-          EMfields_{std::move(electromagInit)}
-    {std::cout << "creating patch boundary\n";}
+    PatchBoundary(GridLayout const& layout, std::unique_ptr<IonsInitializer> ionsInit,
+                  std::unique_ptr<ElectromagInitializer> electromagInit)
+        : ions_{layout, std::move(ionsInit)}
+        , EMfields_{std::move(electromagInit)}
+    {
+        std::cout << "creating patch boundary\n";
+    }
 
-    virtual ~PatchBoundary() = default ;
+    virtual ~PatchBoundary() = default;
 
-    virtual void applyElectricBC(VecField& E, GridLayout const& layout) const override ;
-    virtual void applyMagneticBC(VecField& B, GridLayout const& layout) const override ;
-    virtual void applyCurrentBC( VecField& J, GridLayout const& layout) const override ;
-    virtual void applyDensityBC( Field& J,    GridLayout const& layout) const override ;
-    virtual void applyBulkBC(    VecField& Vi,GridLayout const& layout) const override ;
+    virtual void applyElectricBC(VecField& E, GridLayout const& layout) const override;
+    virtual void applyMagneticBC(VecField& B, GridLayout const& layout) const override;
+    virtual void applyCurrentBC(VecField& J, GridLayout const& layout) const override;
+    virtual void applyDensityBC(Field& J, GridLayout const& layout) const override;
+    virtual void applyBulkBC(VecField& Vi, GridLayout const& layout) const override;
     virtual void applyParticleBC(std::vector<Particle>& particleArray,
-                                 LeavingParticles const& leavingParticles)  const override ;
+                                 LeavingParticles const& leavingParticles) const override;
 
-    void initPRAParticles() ;
-
-
+    void initPRAParticles();
 };
 
 

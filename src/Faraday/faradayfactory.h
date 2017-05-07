@@ -7,8 +7,8 @@
 
 #include "Faraday/faraday.h"
 #include "faradayimpl1d.h"
-#include "types.h"
 #include "grid/gridlayout.h"
+#include "types.h"
 
 
 
@@ -19,8 +19,7 @@ public:
     {
         switch (layout.nbDimensions())
         {
-            case 1:
-                return std::unique_ptr<FaradayImpl> ( new FaradayImpl1D(dt, layout));
+            case 1: return std::unique_ptr<FaradayImpl>(new FaradayImpl1D(dt, layout));
 
 #if 0
             case 2:
@@ -29,7 +28,8 @@ public:
 #endif
 
             default:
-                throw std::runtime_error("Error : FaradayFactory - dimension must be either 1D, 2D or 3D");
+                throw std::runtime_error(
+                    "Error : FaradayFactory - dimension must be either 1D, 2D or 3D");
         }
     }
 };

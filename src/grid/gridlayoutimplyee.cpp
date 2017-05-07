@@ -7,23 +7,20 @@
 
 
 GridLayoutImplYee::GridLayoutImplYee(uint32 nbDims, Point origin, uint32 interpOrder,
-                                     std::array<uint32,3> nbrCellsXYZ ,
-                                     std::array<double,3> dxdydz      )
-    : GridLayoutImplInternals(nbDims, origin, interpOrder,
-                              nbrCellsXYZ, dxdydz)
+                                     std::array<uint32, 3> nbrCellsXYZ,
+                                     std::array<double, 3> dxdydz)
+    : GridLayoutImplInternals(nbDims, origin, interpOrder, nbrCellsXYZ, dxdydz)
 {
+    gridDataT gridData{};
 
-    gridDataT gridData{} ;
-
-    initLayoutCentering_( gridData ) ;
+    initLayoutCentering_(gridData);
 
     // all methods MUST BE CALLED AFTER initLayoutCentering()
     // because they USE data in hybridQtycentering_
-    initPhysicalStart( gridData ) ;
-    initPhysicalEnd  ( gridData ) ;
-    initGhostEnd  ( gridData ) ;
+    initPhysicalStart(gridData);
+    initPhysicalEnd(gridData);
+    initGhostEnd(gridData);
     initLinearCombinations_();
-
 }
 
 
@@ -35,7 +32,7 @@ void GridLayoutImplYee::initLinearCombinations_()
     int dualToPrimal;
     int primalTodual;
 
-    if (interpOrder_ == 1 || interpOrder_ ==2 || interpOrder_ == 4)
+    if (interpOrder_ == 1 || interpOrder_ == 2 || interpOrder_ == 4)
     {
         dualToPrimal = -1;
         primalTodual = 1;
@@ -57,13 +54,13 @@ void GridLayoutImplYee::initLinearCombinations_()
     // moment to Ex is Ppp to Dpp
     // shift only in X
     // the average is done for all simulations
-    P1.ix = 0;
-    P1.iy = 0;
-    P1.iz = 0;
+    P1.ix   = 0;
+    P1.iy   = 0;
+    P1.iz   = 0;
     P1.coef = 0.5;
-    P2.ix = primalTodual;
-    P2.iy = 0;
-    P2.iz = 0;
+    P2.ix   = primalTodual;
+    P2.iy   = 0;
+    P2.iz   = 0;
     P2.coef = 0.5;
     momentsToEx_.push_back(P1);
     momentsToEx_.push_back(P2);
@@ -72,18 +69,18 @@ void GridLayoutImplYee::initLinearCombinations_()
     // moment to Ey is pPp to pDp
     // shift only in Y
     // the average is done only for 2D and 3D simulation
-    P1.ix = 0;
-    P1.iy = 0;
-    P1.iz = 0;
+    P1.ix   = 0;
+    P1.iy   = 0;
+    P1.iz   = 0;
     P1.coef = (nbdims_ >= 2) ? 0.5 : 1.;
     momentsToEy_.push_back(P1);
 
     // in 2 and 3D, add another point and average
     if (nbdims_ >= 2)
     {
-        P2.ix = 0;
-        P2.iy = primalTodual;
-        P2.iz = 0;
+        P2.ix   = 0;
+        P2.iy   = primalTodual;
+        P2.iz   = 0;
         P2.coef = 0.5;
         momentsToEy_.push_back(P2);
     }
@@ -93,17 +90,17 @@ void GridLayoutImplYee::initLinearCombinations_()
     // shift only in Z
     // the average is done only for 3D simulation
     // hence for 1D and 2D runs coef==1
-    P1.ix = 0;
-    P1.iy = 0;
-    P1.iz = 0;
+    P1.ix   = 0;
+    P1.iy   = 0;
+    P1.iz   = 0;
     P1.coef = (nbdims_ == 3) ? 0.5 : 1;
     momentsToEz_.push_back(P1);
 
     if (nbdims_ == 3)
     {
-        P2.ix = 0;
-        P2.iy = 0;
-        P2.iz = primalTodual;
+        P2.ix   = 0;
+        P2.iy   = 0;
+        P2.iz   = primalTodual;
         P2.coef = 0.5;
         momentsToEz_.push_back(P2);
     }
@@ -114,17 +111,17 @@ void GridLayoutImplYee::initLinearCombinations_()
     // Bx to Ey is pdD to pdP
     // shift only in Z
     // the average is done only for 3D simulations
-    P1.ix = 0;
-    P1.iy = 0;
-    P1.iz = 0;
+    P1.ix   = 0;
+    P1.iy   = 0;
+    P1.iz   = 0;
     P1.coef = (nbdims_ == 3) ? 0.5 : 1;
     BxToEy_.push_back(P1);
 
     if (nbdims_ == 3)
     {
-        P2.ix = 0;
-        P2.iy = 0;
-        P2.iz = dualToPrimal;
+        P2.ix   = 0;
+        P2.iy   = 0;
+        P2.iz   = dualToPrimal;
         P2.coef = 0.5;
         BxToEy_.push_back(P2);
     }
@@ -135,17 +132,17 @@ void GridLayoutImplYee::initLinearCombinations_()
     // shift in the Y direction only
     // the average is done for 2D and 3D simulations
     // hence for 1D simulations coef is 1
-    P1.ix = 0;
-    P1.iy = 0;
-    P1.iz = 0;
+    P1.ix   = 0;
+    P1.iy   = 0;
+    P1.iz   = 0;
     P1.coef = (nbdims_ >= 2) ? 0.5 : 1;
     BxToEz_.push_back(P1);
 
     if (nbdims_ >= 2)
     {
-        P2.ix = 0;
-        P2.iy = dualToPrimal;
-        P2.iz = 0;
+        P2.ix   = 0;
+        P2.iy   = dualToPrimal;
+        P2.iz   = 0;
         P2.coef = 0.5;
         BxToEz_.push_back(P2);
     }
@@ -154,17 +151,17 @@ void GridLayoutImplYee::initLinearCombinations_()
     // By to Ex is dpD to dpP
     // shift only in the Z direction
     // averaging is done only for 3D simulations
-    P1.ix = 0;
-    P1.iy = 0;
-    P1.iz = 0;
+    P1.ix   = 0;
+    P1.iy   = 0;
+    P1.iz   = 0;
     P1.coef = (nbdims_ == 3) ? 0.5 : 1;
     ByToEx_.push_back(P1);
 
     if (nbdims_ == 3)
     {
-        P2.ix = 0;
-        P2.iy = 0;
-        P2.iz = dualToPrimal;
+        P2.ix   = 0;
+        P2.iy   = 0;
+        P2.iz   = dualToPrimal;
         P2.coef = 0.5;
         ByToEx_.push_back(P2);
     }
@@ -172,13 +169,13 @@ void GridLayoutImplYee::initLinearCombinations_()
     // By to Ez is Dpd to Ppd
     // shift only in the X direction
     // the averaging is done in all simulations
-    P1.ix = 0;
-    P1.iy = 0;
-    P1.iz = 0;
+    P1.ix   = 0;
+    P1.iy   = 0;
+    P1.iz   = 0;
     P1.coef = 0.5;
-    P2.ix = dualToPrimal;
-    P2.iy = 0;
-    P2.iz = 0;
+    P2.ix   = dualToPrimal;
+    P2.iy   = 0;
+    P2.iz   = 0;
     P2.coef = 0.5;
     ByToEz_.push_back(P1);
     ByToEz_.push_back(P2);
@@ -187,17 +184,17 @@ void GridLayoutImplYee::initLinearCombinations_()
     // Bz to Ex is dDp to dPp
     // shift only in the Y direction
     // the averaging is done for 2D and 3D simulations
-    P1.ix = 0;
-    P1.iy = 0;
-    P1.iz = 0;
-    P1.coef = (nbdims_ >= 2) ? 0.5: 1;
+    P1.ix   = 0;
+    P1.iy   = 0;
+    P1.iz   = 0;
+    P1.coef = (nbdims_ >= 2) ? 0.5 : 1;
     BzToEx_.push_back(P1);
 
     if (nbdims_ >= 2)
     {
-        P2.ix = 0;
-        P2.iy = dualToPrimal;
-        P2.iz = 0;
+        P2.ix   = 0;
+        P2.iy   = dualToPrimal;
+        P2.iz   = 0;
         P2.coef = 0.5;
         BzToEx_.push_back(P2);
     }
@@ -206,14 +203,14 @@ void GridLayoutImplYee::initLinearCombinations_()
     // Bz to Ey is Ddp to Pdp
     // shift only in the X direction
     // the averaging is done for all simulations
-    P1.ix = 0;
-    P1.iy = 0;
-    P1.iz = 0;
+    P1.ix   = 0;
+    P1.iy   = 0;
+    P1.iz   = 0;
     P1.coef = 0.5;
     BzToEy_.push_back(P1);
-    P2.ix = dualToPrimal;
-    P2.iy = 0;
-    P2.iz = 0;
+    P2.ix   = dualToPrimal;
+    P2.iy   = 0;
+    P2.iz   = 0;
     P2.coef = 0.5;
     BzToEy_.push_back(P2);
 
@@ -221,14 +218,14 @@ void GridLayoutImplYee::initLinearCombinations_()
     // Ex to Moment is Dpp to Ppp
     // shift only in the X direction
     // the averaging is done for all simulations
-    P1.ix = 0;
-    P1.iy = 0;
-    P1.iz = 0;
+    P1.ix   = 0;
+    P1.iy   = 0;
+    P1.iz   = 0;
     P1.coef = 0.5;
     ExToMoment_.push_back(P1);
-    P2.ix = dualToPrimal;
-    P2.iy = 0;
-    P2.iz = 0;
+    P2.ix   = dualToPrimal;
+    P2.iy   = 0;
+    P2.iz   = 0;
     P2.coef = 0.5;
     ExToMoment_.push_back(P2);
 
@@ -236,17 +233,17 @@ void GridLayoutImplYee::initLinearCombinations_()
     // Ey to Moment is pDp to PPP
     // shift tis only in the Y direction
     // the averaging is done for 2D and 3D simulations
-    P1.ix = 0;
-    P1.iy = 0;
-    P1.iz = 0;
-    P1.coef = (nbdims_ >= 2) ? 0.5: 1;
+    P1.ix   = 0;
+    P1.iy   = 0;
+    P1.iz   = 0;
+    P1.coef = (nbdims_ >= 2) ? 0.5 : 1;
     EyToMoment_.push_back(P1);
 
     if (nbdims_ >= 2)
     {
-        P2.ix = 0;
-        P2.iy = dualToPrimal;
-        P2.iz = 0;
+        P2.ix   = 0;
+        P2.iy   = dualToPrimal;
+        P2.iz   = 0;
         P2.coef = 0.5;
         EyToMoment_.push_back(P2);
     }
@@ -255,22 +252,20 @@ void GridLayoutImplYee::initLinearCombinations_()
     // Ez to Moment is ppD on ppP
     // shift only in the Z direction
     // the averaging is only for 3D simulations
-    P1.ix = 0;
-    P1.iy = 0;
-    P1.iz = 0;
-    P1.coef = (nbdims_ == 3) ? 0.5: 1;
+    P1.ix   = 0;
+    P1.iy   = 0;
+    P1.iz   = 0;
+    P1.coef = (nbdims_ == 3) ? 0.5 : 1;
     EzToMoment_.push_back(P1);
 
     if (nbdims_ == 3)
     {
-        P2.ix = 0;
-        P2.iy = 0;
-        P2.iz = dualToPrimal;
+        P2.ix   = 0;
+        P2.iy   = 0;
+        P2.iz   = dualToPrimal;
         P2.coef = 0.5;
         EzToMoment_.push_back(P2);
     }
-
-
 }
 
 
@@ -285,54 +280,52 @@ void GridLayoutImplYee::initLinearCombinations_()
  * in the Yee interface are just calling private implementation common
  * to all layouts
  */
-void GridLayoutImplYee::initLayoutCentering_( const gridDataT & data )
+void GridLayoutImplYee::initLayoutCentering_(const gridDataT& data)
 {
-    hybridQtyCentering_[data.iBx ][data.idirX] = data.primal ;
-    hybridQtyCentering_[data.iBx ][data.idirY] = data.dual   ;
-    hybridQtyCentering_[data.iBx ][data.idirZ] = data.dual   ;
-    hybridQtyCentering_[data.iBy ][data.idirX] = data.dual   ;
-    hybridQtyCentering_[data.iBy ][data.idirY] = data.primal ;
-    hybridQtyCentering_[data.iBy ][data.idirZ] = data.dual   ;
-    hybridQtyCentering_[data.iBz ][data.idirX] = data.dual   ;
-    hybridQtyCentering_[data.iBz ][data.idirY] = data.dual   ;
-    hybridQtyCentering_[data.iBz ][data.idirZ] = data.primal ;
-    hybridQtyCentering_[data.iEx ][data.idirX] = data.dual   ;
-    hybridQtyCentering_[data.iEx ][data.idirY] = data.primal ;
-    hybridQtyCentering_[data.iEx ][data.idirZ] = data.primal ;
-    hybridQtyCentering_[data.iEy ][data.idirX] = data.primal ;
-    hybridQtyCentering_[data.iEy ][data.idirY] = data.dual   ;
-    hybridQtyCentering_[data.iEy ][data.idirZ] = data.primal ;
-    hybridQtyCentering_[data.iEz ][data.idirX] = data.primal ;
-    hybridQtyCentering_[data.iEz ][data.idirY] = data.primal ;
-    hybridQtyCentering_[data.iEz ][data.idirZ] = data.dual   ;
+    hybridQtyCentering_[data.iBx][data.idirX] = data.primal;
+    hybridQtyCentering_[data.iBx][data.idirY] = data.dual;
+    hybridQtyCentering_[data.iBx][data.idirZ] = data.dual;
+    hybridQtyCentering_[data.iBy][data.idirX] = data.dual;
+    hybridQtyCentering_[data.iBy][data.idirY] = data.primal;
+    hybridQtyCentering_[data.iBy][data.idirZ] = data.dual;
+    hybridQtyCentering_[data.iBz][data.idirX] = data.dual;
+    hybridQtyCentering_[data.iBz][data.idirY] = data.dual;
+    hybridQtyCentering_[data.iBz][data.idirZ] = data.primal;
+    hybridQtyCentering_[data.iEx][data.idirX] = data.dual;
+    hybridQtyCentering_[data.iEx][data.idirY] = data.primal;
+    hybridQtyCentering_[data.iEx][data.idirZ] = data.primal;
+    hybridQtyCentering_[data.iEy][data.idirX] = data.primal;
+    hybridQtyCentering_[data.iEy][data.idirY] = data.dual;
+    hybridQtyCentering_[data.iEy][data.idirZ] = data.primal;
+    hybridQtyCentering_[data.iEz][data.idirX] = data.primal;
+    hybridQtyCentering_[data.iEz][data.idirY] = data.primal;
+    hybridQtyCentering_[data.iEz][data.idirZ] = data.dual;
 
-    hybridQtyCentering_[data.iJx ][data.idirX] = data.dual   ;
-    hybridQtyCentering_[data.iJx ][data.idirY] = data.primal ;
-    hybridQtyCentering_[data.iJx ][data.idirZ] = data.primal ;
-    hybridQtyCentering_[data.iJy ][data.idirX] = data.primal ;
-    hybridQtyCentering_[data.iJy ][data.idirY] = data.dual   ;
-    hybridQtyCentering_[data.iJy ][data.idirZ] = data.primal ;
-    hybridQtyCentering_[data.iJz ][data.idirX] = data.primal ;
-    hybridQtyCentering_[data.iJz ][data.idirY] = data.primal ;
-    hybridQtyCentering_[data.iJz ][data.idirZ] = data.dual   ;
+    hybridQtyCentering_[data.iJx][data.idirX] = data.dual;
+    hybridQtyCentering_[data.iJx][data.idirY] = data.primal;
+    hybridQtyCentering_[data.iJx][data.idirZ] = data.primal;
+    hybridQtyCentering_[data.iJy][data.idirX] = data.primal;
+    hybridQtyCentering_[data.iJy][data.idirY] = data.dual;
+    hybridQtyCentering_[data.iJy][data.idirZ] = data.primal;
+    hybridQtyCentering_[data.iJz][data.idirX] = data.primal;
+    hybridQtyCentering_[data.iJz][data.idirY] = data.primal;
+    hybridQtyCentering_[data.iJz][data.idirZ] = data.dual;
 
-    hybridQtyCentering_[data.irho][data.idirX] = data.primal ;
-    hybridQtyCentering_[data.irho][data.idirY] = data.primal ;
-    hybridQtyCentering_[data.irho][data.idirZ] = data.primal ;
-    hybridQtyCentering_[data.iV  ][data.idirX] = data.primal ;
-    hybridQtyCentering_[data.iV  ][data.idirY] = data.primal ;
-    hybridQtyCentering_[data.iV  ][data.idirZ] = data.primal ;
-    hybridQtyCentering_[data.iP  ][data.idirX] = data.primal ;
-    hybridQtyCentering_[data.iP  ][data.idirY] = data.primal ;
-    hybridQtyCentering_[data.iP  ][data.idirZ] = data.primal ;
+    hybridQtyCentering_[data.irho][data.idirX] = data.primal;
+    hybridQtyCentering_[data.irho][data.idirY] = data.primal;
+    hybridQtyCentering_[data.irho][data.idirZ] = data.primal;
+    hybridQtyCentering_[data.iV][data.idirX]   = data.primal;
+    hybridQtyCentering_[data.iV][data.idirY]   = data.primal;
+    hybridQtyCentering_[data.iV][data.idirZ]   = data.primal;
+    hybridQtyCentering_[data.iP][data.idirX]   = data.primal;
+    hybridQtyCentering_[data.iP][data.idirY]   = data.primal;
+    hybridQtyCentering_[data.iP][data.idirZ]   = data.primal;
 }
 
 
 
 
-
-
-AllocSizeT GridLayoutImplYee::allocSize( HybridQuantity qty ) const
+AllocSizeT GridLayoutImplYee::allocSize(HybridQuantity qty) const
 {
     return allocSize_(qty);
 }
@@ -340,14 +333,12 @@ AllocSizeT GridLayoutImplYee::allocSize( HybridQuantity qty ) const
 
 
 
-
 // TODO : WARNING 1st order only
 // Can it be moved to ImplInternals?
-AllocSizeT  GridLayoutImplYee::allocSizeDerived( HybridQuantity qty, Direction dir ) const
+AllocSizeT GridLayoutImplYee::allocSizeDerived(HybridQuantity qty, Direction dir) const
 {
     return allocSizeDerived_(qty, dir);
 }
-
 
 
 
@@ -361,13 +352,10 @@ uint32 GridLayoutImplYee::physicalStartIndex(Field const& field, Direction direc
 
 
 
-
-uint32 GridLayoutImplYee::physicalStartIndex( QtyCentering centering,
-                                              Direction direction     ) const
+uint32 GridLayoutImplYee::physicalStartIndex(QtyCentering centering, Direction direction) const
 {
-    return physicalStartIndex_(centering , direction); //cellIndexAtMin(centering, direction) ;
+    return physicalStartIndex_(centering, direction); // cellIndexAtMin(centering, direction) ;
 }
-
 
 
 
@@ -380,13 +368,10 @@ uint32 GridLayoutImplYee::physicalEndIndex(Field const& field, Direction directi
 
 
 
-
-uint32 GridLayoutImplYee::physicalEndIndex( QtyCentering centering,
-                                            Direction direction     ) const
+uint32 GridLayoutImplYee::physicalEndIndex(QtyCentering centering, Direction direction) const
 {
-    return physicalEndIndex_(centering, direction);//cellIndexAtMax(centering, direction) ;
+    return physicalEndIndex_(centering, direction); // cellIndexAtMax(centering, direction) ;
 }
-
 
 
 
@@ -418,42 +403,39 @@ uint32 GridLayoutImplYee::ghostEndIndex(QtyCentering centering, Direction direct
 
 
 
-Point GridLayoutImplYee::fieldNodeCoordinates(
-        const Field & field, const Point & origin,
-        uint32 ix, uint32 iy, uint32 iz ) const
+Point GridLayoutImplYee::fieldNodeCoordinates(const Field& field, const Point& origin, uint32 ix,
+                                              uint32 iy, uint32 iz) const
 {
-    return fieldNodeCoordinates_( field, origin, ix, iy, iz ) ;
+    return fieldNodeCoordinates_(field, origin, ix, iy, iz);
 }
 
 
 
 
-
-
-Point GridLayoutImplYee::cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz ) const
+Point GridLayoutImplYee::cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz) const
 {
-    return cellCenteredCoordinates_(ix, iy, iz) ;
+    return cellCenteredCoordinates_(ix, iy, iz);
 }
 
 
 
-QtyCentering GridLayoutImplYee::fieldCentering(Field const & field, Direction dir) const
+QtyCentering GridLayoutImplYee::fieldCentering(Field const& field, Direction dir) const
 {
-    return fieldCentering_( field, dir ) ;
+    return fieldCentering_(field, dir);
 }
 
 
-uint32 GridLayoutImplYee::nbrGhostNodes( QtyCentering centering ) const
+uint32 GridLayoutImplYee::nbrGhostNodes(QtyCentering centering) const
 {
-    return nbrGhosts( centering ) ;
+    return nbrGhosts(centering);
 }
 
 
 std::array<uint32, NBR_COMPO> GridLayoutImplYee::nbrPhysicalNodes(Field const& field) const
 {
-    std::array<QtyCentering, NBR_COMPO> centerings = { { fieldCentering_(field, Direction::X),
-                                                         fieldCentering_(field, Direction::Y),
-                                                         fieldCentering_(field, Direction::Z)  } };
+    std::array<QtyCentering, NBR_COMPO> centerings
+        = {{fieldCentering_(field, Direction::X), fieldCentering_(field, Direction::Y),
+            fieldCentering_(field, Direction::Z)}};
 
     return physicalNodeNbrFromCentering_(centerings);
 }
@@ -461,11 +443,14 @@ std::array<uint32, NBR_COMPO> GridLayoutImplYee::nbrPhysicalNodes(Field const& f
 
 std::array<uint32, NBR_COMPO> GridLayoutImplYee::nbrPhysicalNodes(HybridQuantity hybQty) const
 {
-    QtyCentering centerX = hybridQtyCentering_[static_cast<uint32>(hybQty)][static_cast<uint32>(Direction::X)];
-    QtyCentering centerY = hybridQtyCentering_[static_cast<uint32>(hybQty)][static_cast<uint32>(Direction::Y)];
-    QtyCentering centerZ = hybridQtyCentering_[static_cast<uint32>(hybQty)][static_cast<uint32>(Direction::Z)];
+    QtyCentering centerX
+        = hybridQtyCentering_[static_cast<uint32>(hybQty)][static_cast<uint32>(Direction::X)];
+    QtyCentering centerY
+        = hybridQtyCentering_[static_cast<uint32>(hybQty)][static_cast<uint32>(Direction::Y)];
+    QtyCentering centerZ
+        = hybridQtyCentering_[static_cast<uint32>(hybQty)][static_cast<uint32>(Direction::Z)];
 
-    std::array<QtyCentering, NBR_COMPO> centerings = { { centerX, centerY, centerZ} };
+    std::array<QtyCentering, NBR_COMPO> centerings = {{centerX, centerY, centerZ}};
 
     return physicalNodeNbrFromCentering_(centerings);
 }
@@ -492,8 +477,6 @@ void GridLayoutImplYee::deriv1D(Field const& operand, Field& derivative) const
 {
     deriv1D_(operand, derivative);
 }
-
-
 
 
 
@@ -563,5 +546,3 @@ LinearCombination const& GridLayoutImplYee::EzToMoment() const
 {
     return EzToMoment_;
 }
-
-

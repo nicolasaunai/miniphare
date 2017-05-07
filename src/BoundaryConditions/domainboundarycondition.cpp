@@ -11,8 +11,9 @@
  * @param layout
  * @param boundaryInfos
  */
-DomainBoundaryCondition::DomainBoundaryCondition(GridLayout layout, std::vector<BoundaryInfo> boundaryInfos)
-: layout_{std::move(layout)}
+DomainBoundaryCondition::DomainBoundaryCondition(GridLayout layout,
+                                                 std::vector<BoundaryInfo> boundaryInfos)
+    : layout_{std::move(layout)}
 {
     for (BoundaryInfo boundary : boundaryInfos)
     {
@@ -26,9 +27,6 @@ void DomainBoundaryCondition::initializeGhostArea()
     // nothing to implement for now
     // This method might be used to handle a flow
     // of incoming plasma
-
-
-
 }
 
 
@@ -84,7 +82,7 @@ void DomainBoundaryCondition::applyBulkBC(VecField& Vi) const
 void DomainBoundaryCondition::applyParticleBC(std::vector<Particle>& particleArray,
                                               LeavingParticles const& leavingParticles) const
 {
-    for(auto&& bc : boundaries_)
+    for (auto&& bc : boundaries_)
     {
         bc->applyParticleBC(particleArray, leavingParticles);
     }
@@ -93,7 +91,4 @@ void DomainBoundaryCondition::applyParticleBC(std::vector<Particle>& particleArr
 
 DomainBoundaryCondition::~DomainBoundaryCondition()
 {
-
 }
-
-

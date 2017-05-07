@@ -2,13 +2,13 @@
 #define GRIDLAYOUTDEFS_H
 
 
-#include "types.h"
 #include "hybridenums.h"
+#include "types.h"
 
 
-enum class Direction{ X, Y, Z } ;
+enum class Direction { X, Y, Z };
 
-enum class QtyCentering{ primal, dual } ;
+enum class QtyCentering { primal, dual };
 
 
 
@@ -22,32 +22,32 @@ enum class QtyCentering{ primal, dual } ;
  */
 struct gridDataT
 {
-    Direction dirX = Direction::X ;
-    Direction dirY = Direction::Y ;
-    Direction dirZ = Direction::Z ;
+    Direction dirX = Direction::X;
+    Direction dirY = Direction::Y;
+    Direction dirZ = Direction::Z;
 
-    QtyCentering primal = QtyCentering::primal ;
-    QtyCentering dual   = QtyCentering::dual   ;
+    QtyCentering primal = QtyCentering::primal;
+    QtyCentering dual   = QtyCentering::dual;
 
-    uint32 idirX = static_cast<uint32>(Direction::X) ;
-    uint32 idirY = static_cast<uint32>(Direction::Y) ;
-    uint32 idirZ = static_cast<uint32>(Direction::Z) ;
+    uint32 idirX = static_cast<uint32>(Direction::X);
+    uint32 idirY = static_cast<uint32>(Direction::Y);
+    uint32 idirZ = static_cast<uint32>(Direction::Z);
 
-    uint32 iBx = static_cast<uint32>(HybridQuantity::Bx) ;
-    uint32 iBy = static_cast<uint32>(HybridQuantity::By) ;
-    uint32 iBz = static_cast<uint32>(HybridQuantity::Bz) ;
+    uint32 iBx = static_cast<uint32>(HybridQuantity::Bx);
+    uint32 iBy = static_cast<uint32>(HybridQuantity::By);
+    uint32 iBz = static_cast<uint32>(HybridQuantity::Bz);
 
-    uint32 iEx = static_cast<uint32>(HybridQuantity::Ex) ;
-    uint32 iEy = static_cast<uint32>(HybridQuantity::Ey) ;
-    uint32 iEz = static_cast<uint32>(HybridQuantity::Ez) ;
+    uint32 iEx = static_cast<uint32>(HybridQuantity::Ex);
+    uint32 iEy = static_cast<uint32>(HybridQuantity::Ey);
+    uint32 iEz = static_cast<uint32>(HybridQuantity::Ez);
 
-    uint32 iJx = static_cast<uint32>(HybridQuantity::Jx) ;
-    uint32 iJy = static_cast<uint32>(HybridQuantity::Jy) ;
-    uint32 iJz = static_cast<uint32>(HybridQuantity::Jz) ;
+    uint32 iJx = static_cast<uint32>(HybridQuantity::Jx);
+    uint32 iJy = static_cast<uint32>(HybridQuantity::Jy);
+    uint32 iJz = static_cast<uint32>(HybridQuantity::Jz);
 
-    uint32 irho = static_cast<uint32>(HybridQuantity::rho) ;
-    uint32 iV = static_cast<uint32>(HybridQuantity::V) ;
-    uint32 iP = static_cast<uint32>(HybridQuantity::P) ;
+    uint32 irho = static_cast<uint32>(HybridQuantity::rho);
+    uint32 iV   = static_cast<uint32>(HybridQuantity::V);
+    uint32 iP   = static_cast<uint32>(HybridQuantity::P);
 };
 
 

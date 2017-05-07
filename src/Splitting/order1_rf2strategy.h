@@ -7,11 +7,8 @@
 class Order1_RF2Strategy : public SplittingStrategy
 {
 private:
-
-
 public:
-    Order1_RF2Strategy( const std::string & splitMethod );
-
+    Order1_RF2Strategy(const std::string& splitMethod);
 };
 
 

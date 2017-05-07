@@ -3,12 +3,11 @@
 
 
 
-
 const VecField& ElectronsImpl1D::bulkVel(VecField const& Vi, const Field& Ni, const VecField& J)
 {
-    const uint32 compX=0;
-    const uint32 compY=1;
-    const uint32 compZ=2;
+    const uint32 compX = 0;
+    const uint32 compY = 1;
+    const uint32 compZ = 2;
 
     LinearCombination const& JxOnMoment = layout_.ExToMoment();
     LinearCombination const& JyOnMoment = layout_.EyToMoment();
@@ -19,9 +18,9 @@ const VecField& ElectronsImpl1D::bulkVel(VecField const& Vi, const Field& Ni, co
     Field& Vey = Ve_.component(compY);
     Field& Vez = Ve_.component(compZ);
 
-    const Field& Jx  = J.component(compX);
-    const Field& Jy  = J.component(compY);
-    const Field& Jz  = J.component(compZ);
+    const Field& Jx = J.component(compX);
+    const Field& Jy = J.component(compY);
+    const Field& Jz = J.component(compZ);
 
     const Field& Vix = Vi.component(compX);
     const Field& Viy = Vi.component(compY);
@@ -36,7 +35,6 @@ const VecField& ElectronsImpl1D::bulkVel(VecField const& Vi, const Field& Ni, co
 
     for (uint32 ix = iStart; ix <= iEnd; ++ix)
     {
-
         // J is defined on E. We don't know here where E (thus J) here
         // we need to call the gridLayout LinearCombinations to get J components
         // at the primal nodes.
@@ -61,9 +59,9 @@ const VecField& ElectronsImpl1D::bulkVel(VecField const& Vi, const Field& Ni, co
         // now we have all J components at the primal nodes
         // we can safely compute Ve.
 
-        Vex(ix)  = Vix(ix) - jxloc / Ni(ix);
-        Vey(ix)  = Viy(ix) - jyloc / Ni(ix);
-        Vez(ix)  = Viz(ix) - jzloc / Ni(ix);
+        Vex(ix) = Vix(ix) - jxloc / Ni(ix);
+        Vey(ix) = Viy(ix) - jyloc / Ni(ix);
+        Vez(ix) = Viz(ix) - jzloc / Ni(ix);
     }
 
     return Ve_;
@@ -81,4 +79,3 @@ Field const& ElectronsImpl1D::pressure(Field const& Ni)
     }
     return Pe_;
 }
-

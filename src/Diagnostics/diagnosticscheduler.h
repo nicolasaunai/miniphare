@@ -4,9 +4,8 @@
 
 #include <unordered_map>
 
-#include "diagtype.h"
 #include "Time/time.h"
-
+#include "diagtype.h"
 
 
 
@@ -20,28 +19,25 @@
 class DiagnosticScheduler
 {
 private:
-
-    std::unordered_map<uint32, std::vector<uint32> > computingIterations_;
-    std::unordered_map<uint32, std::vector<uint32> > writingIterations_;
+    std::unordered_map<uint32, std::vector<uint32>> computingIterations_;
+    std::unordered_map<uint32, std::vector<uint32>> writingIterations_;
     std::unordered_map<uint32, uint32> nextComputingIterationIndex_;
     std::unordered_map<uint32, uint32> nextWritingIterationIndex_;
 
 public:
-
     DiagnosticScheduler() = default;
 
-    void registerDiagnostic(uint32 id,
-                            std::vector<uint32> const& computingIterations,
+    void registerDiagnostic(uint32 id, std::vector<uint32> const& computingIterations,
                             std::vector<uint32> const& writingIterations);
 
     inline bool isTimeToWrite(Time const& timeManager, uint32 diagID)
     {
-        uint32 it = timeManager.currentIteration();
-        bool ret = false;
+        uint32 it    = timeManager.currentIteration();
+        bool ret     = false;
         uint32 index = nextWritingIterationIndex_[diagID];
 
         // if index == size it means we've done all the compute already
-        if (index != writingIterations_[diagID].size()+1)
+        if (index != writingIterations_[diagID].size() + 1)
         {
             if (writingIterations_[diagID][index] == it)
             {
@@ -55,13 +51,13 @@ public:
 
     inline bool isTimeToCompute(Time const& timeManager, uint32 diagID)
     {
-        uint32 it = timeManager.currentIteration();
-        bool ret = false;
+        uint32 it    = timeManager.currentIteration();
+        bool ret     = false;
         uint32 index = nextComputingIterationIndex_[diagID];
 
         // if index is == to the size it means we've done
         // all the write already
-        if (index != writingIterations_[diagID].size()+1)
+        if (index != writingIterations_[diagID].size() + 1)
         {
             if (computingIterations_[diagID][index] == it)
             {
@@ -71,7 +67,6 @@ public:
         }
         return ret;
     }
-
 };
 
 

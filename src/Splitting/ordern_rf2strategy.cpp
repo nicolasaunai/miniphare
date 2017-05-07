@@ -6,7 +6,7 @@
 
 
 
-const uint32 refineFactor = 2 ;
+const uint32 refineFactor = 2;
 
 /**
  * @brief OrderN_RF2Strategy::OrderN_RF2Strategy
@@ -23,37 +23,28 @@ const uint32 refineFactor = 2 ;
  * @param refineFactor
  * @param interpOrder
  */
-OrderN_RF2Strategy::OrderN_RF2Strategy( const std::string & splitMethod,
-                                        uint32 interpOrder )
-    : SplittingStrategy( splitMethod,
-                         (2*refineFactor -1) + (refineFactor -1)*(interpOrder-1) )
+OrderN_RF2Strategy::OrderN_RF2Strategy(const std::string& splitMethod, uint32 interpOrder)
+    : SplittingStrategy(splitMethod,
+                        (2 * refineFactor - 1) + (refineFactor - 1) * (interpOrder - 1))
 {
-
-    float nbrCello2 = static_cast<float>( (nbpts_ - 1)/2. ) ;
+    float nbrCello2 = static_cast<float>((nbpts_ - 1) / 2.);
 
     float delta = nbrCello2 - std::floor(nbrCello2);
 
-    int32 icell = static_cast<int32>( std::floor(-nbrCello2) ) ;
-    for( uint32 ik=0 ; ik<nbpts_ ; ++ik )
+    int32 icell = static_cast<int32>(std::floor(-nbrCello2));
+    for (uint32 ik = 0; ik < nbpts_; ++ik)
     {
-        child_icellx_[ik] = icell ;
-        ++icell ;
+        child_icellx_[ik] = icell;
+        ++icell;
 
-        child_deltax_[ik] = delta ;
+        child_deltax_[ik] = delta;
     }
 
-    for( uint32 ik=0 ; ik<nbpts_ ; ++ik )
+    for (uint32 ik = 0; ik < nbpts_; ++ik)
     {
-        child_weights_[ik] = static_cast<double>( binomial(interpOrder+1, ik) )/
-                static_cast<double>( ipow(refineFactor, interpOrder) ) ;
+        child_weights_[ik] = static_cast<double>(binomial(interpOrder + 1, ik))
+                             / static_cast<double>(ipow(refineFactor, interpOrder));
 
-        wtot_ += child_weights_[ik] ;
+        wtot_ += child_weights_[ik];
     }
-
 }
-
-
-
-
-
-

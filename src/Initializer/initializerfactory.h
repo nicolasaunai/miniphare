@@ -5,8 +5,8 @@
 #include <memory>
 #include <string>
 
-#include "Initializer/ionsinitializer.h"
 #include "Initializer/electromaginitializer.h"
+#include "Initializer/ionsinitializer.h"
 #include "Initializer/ohminitializer.h"
 #include "Initializer/solverinitializer.h"
 
@@ -36,21 +36,19 @@
  */
 class InitializerFactory
 {
-
 public:
-
-    virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const = 0;
+    virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const             = 0;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const = 0;
 
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const = 0;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const = 0;
 
-    virtual Box getBox() const = 0;
-    virtual GridLayout const& gridLayout() const = 0 ;
-    virtual double timeStep() const = 0 ;
-    virtual std::string const & pusher() const = 0 ;
-    virtual std::vector<uint32> const & interpolationOrders() const = 0 ;
-    virtual std::vector<std::string> const & splittingStrategies() const = 0 ;
+    virtual Box getBox() const                                          = 0;
+    virtual GridLayout const& gridLayout() const                        = 0;
+    virtual double timeStep() const                                     = 0;
+    virtual std::string const& pusher() const                           = 0;
+    virtual std::vector<uint32> const& interpolationOrders() const      = 0;
+    virtual std::vector<std::string> const& splittingStrategies() const = 0;
 
     // virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() = 0;
     // virtual std::unique_ptr<GridLayoutInitializer> createGridLayoutInitializer() = 0;
@@ -59,7 +57,6 @@ public:
 
 
     virtual ~InitializerFactory() = default;
-
 };
 
 
@@ -77,7 +74,8 @@ public:
   will be used by Ions to build its Species.
 
 
-  \fn virtual std::unique_ptr<ElectromagInitializer> InitializerFactory::createElectromagInitializer() const = 0
+  \fn virtual std::unique_ptr<ElectromagInitializer>
+  InitializerFactory::createElectromagInitializer() const = 0
   \brief creates an ElectromagInitializer object, used to initialize Electromag fields
 
 

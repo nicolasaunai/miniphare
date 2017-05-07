@@ -6,26 +6,25 @@
 
 
 OhmImpl1D::OhmImpl1D(GridLayout const& layout, double eta, double nu)
-    :OhmImpl{ layout , eta, nu}
+    : OhmImpl{layout, eta, nu}
 {
 }
 
 
-void OhmImpl1D::computeTerms(VecField const& B, Field const& Ne,
-                            VecField const& Ve,
-                            Field const& Pe, VecField const&J)
+void OhmImpl1D::computeTerms(VecField const& B, Field const& Ne, VecField const& Ve,
+                             Field const& Pe, VecField const& J)
 {
     ideal_(Ve, B);
     resistive_(J);
     pressure_(Pe, Ne);
-    //hyperResistivity(J);
+    // hyperResistivity(J);
 }
 
 
 
-OhmImpl1D::~OhmImpl1D(){}
-
-
+OhmImpl1D::~OhmImpl1D()
+{
+}
 
 
 
@@ -52,9 +51,9 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
     Field const& Vey = Ve.component(VecField::VecY);
     Field const& Vez = Ve.component(VecField::VecZ);
 
-    Field const& Bx  = B.component(VecField::VecX);
-    Field const& By  = B.component(VecField::VecY);
-    Field const& Bz  = B.component(VecField::VecZ);
+    Field const& Bx = B.component(VecField::VecX);
+    Field const& By = B.component(VecField::VecY);
+    Field const& Bz = B.component(VecField::VecZ);
 
     Field& VexB_x = idealTerm_.component(VecField::VecX);
     Field& VexB_y = idealTerm_.component(VecField::VecY);
@@ -85,11 +84,10 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
     // ------------------------------------------------------------------------
     {
         uint32 const iStart = layout_.physicalStartIndex(VexB_x, Direction::X);
-        uint32 const iEnd   = layout_.physicalEndIndex(VexB_x,  Direction::X);
+        uint32 const iEnd   = layout_.physicalEndIndex(VexB_x, Direction::X);
 
-        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+        for (uint32 ix = iStart; ix <= iEnd; ++ix)
         {
-
             // get Vz at 'ix'
             // and Vy at 'ix'
             double vyloc = 0;
@@ -114,9 +112,8 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
                 byloc += wp.coef * By(ix + wp.ix);
             }
 
-            VexB_x(ix) = vzloc * byloc  -  vyloc * bzloc;
+            VexB_x(ix) = vzloc * byloc - vyloc * bzloc;
         }
-
     }
 
 
@@ -128,9 +125,9 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
     // ------------------------------------------------------------------------
     {
         uint32 const iStart = layout_.physicalStartIndex(VexB_y, Direction::X);
-        uint32 const iEnd   = layout_.physicalEndIndex(VexB_y,  Direction::X);
+        uint32 const iEnd   = layout_.physicalEndIndex(VexB_y, Direction::X);
 
-        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+        for (uint32 ix = iStart; ix <= iEnd; ++ix)
         {
             // get Vz at 'ix'
             double vzloc = 0;
@@ -160,7 +157,7 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
                 bzloc += wp.coef * Bz(ix + wp.ix);
             }
 
-            VexB_y(ix) = - vzloc * bxloc  +  vxloc * bzloc;
+            VexB_y(ix) = -vzloc * bxloc + vxloc * bzloc;
         }
     }
 
@@ -173,9 +170,9 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
     // ------------------------------------------------------------------------
     {
         uint32 const iStart = layout_.physicalStartIndex(VexB_z, Direction::X);
-        uint32 const iEnd   = layout_.physicalEndIndex(VexB_z,  Direction::X);
+        uint32 const iEnd   = layout_.physicalEndIndex(VexB_z, Direction::X);
 
-        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+        for (uint32 ix = iStart; ix <= iEnd; ++ix)
         {
             // get Vx at 'ix'
             double vxloc = 0;
@@ -205,10 +202,9 @@ void OhmImpl1D::ideal_(VecField const& Ve, VecField const& B)
                 bxloc += wp.coef * Bx(ix + wp.ix);
             }
 
-            VexB_z(ix) = -vxloc * byloc  +  vyloc * bxloc;
+            VexB_z(ix) = -vxloc * byloc + vyloc * bxloc;
         }
     }
-
 }
 
 
@@ -229,36 +225,35 @@ void OhmImpl1D::resistive_(VecField const& J)
 
     {
         uint32 const iStart = layout_.physicalStartIndex(Rx, Direction::X);
-        uint32 const iEnd   = layout_.physicalEndIndex(Rx,  Direction::X);
+        uint32 const iEnd   = layout_.physicalEndIndex(Rx, Direction::X);
 
-        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+
+        for (uint32 ix = iStart; ix <= iEnd; ++ix)
         {
-            Rx(ix) = Jx(ix)*eta_;
+            Rx(ix) = Jx(ix) * eta_;
         }
     }
 
     {
         uint32 const iStart = layout_.physicalStartIndex(Ry, Direction::X);
-        uint32 const iEnd   = layout_.physicalEndIndex(Ry,  Direction::X);
+        uint32 const iEnd   = layout_.physicalEndIndex(Ry, Direction::X);
 
-        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+        for (uint32 ix = iStart; ix <= iEnd; ++ix)
         {
-            Ry(ix) = Jy(ix)*eta_;
+            Ry(ix) = Jy(ix) * eta_;
         }
     }
 
 
     {
         uint32 const iStart = layout_.physicalStartIndex(Rz, Direction::X);
-        uint32 const iEnd   = layout_.physicalEndIndex(Rz,  Direction::X);
+        uint32 const iEnd   = layout_.physicalEndIndex(Rz, Direction::X);
 
-        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+        for (uint32 ix = iStart; ix <= iEnd; ++ix)
         {
-            Rz(ix) = Jz(ix)*eta_;
+            Rz(ix) = Jz(ix) * eta_;
         }
     }
-
-
 }
 
 
@@ -287,29 +282,13 @@ void OhmImpl1D::pressure_(Field const& Pe, Field const& Ne)
     // we loop from iStart to iEnd and forget about ghost nodes
     // because they will be fixed by the boundary condition
     // on the electric field
-    for (uint32 ix=iStart; ix <= iEnd; ++ix)
+    for (uint32 ix = iStart; ix <= iEnd; ++ix)
     {
         double ne_loc = 0;
         for (WeightPoint const& wp : avgPointsMomentsEx)
         {
-            ne_loc+= wp.coef * Ne(ix + wp.ix);
+            ne_loc += wp.coef * Ne(ix + wp.ix);
         }
-        gradPx(ix) = -gradPx(ix)/ne_loc;
+        gradPx(ix) = -gradPx(ix) / ne_loc;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,12 +1,12 @@
 #ifndef DIAGNOSTICINITIALIZER_H
 #define DIAGNOSTICINITIALIZER_H
 
-#include <vector>
 #include <string>
+#include <vector>
 
-#include "types.h"
-#include "Diagnostics/diagtype.h"
 #include "Diagnostics/Export/exportstrategytypes.h"
+#include "Diagnostics/diagtype.h"
+#include "types.h"
 
 
 
@@ -15,7 +15,7 @@ struct FluidDiagInitializer
     std::string speciesName;
     std::string typeName;
     std::vector<uint32> computingIterations;
-    std::vector<uint32>  writingIterations;
+    std::vector<uint32> writingIterations;
 };
 
 struct EMDiagInitializer

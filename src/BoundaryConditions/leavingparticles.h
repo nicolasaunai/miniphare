@@ -1,11 +1,11 @@
 #ifndef LEAVINGPARTICLES_H
 #define LEAVINGPARTICLES_H
 
-#include <vector>
 #include <array>
+#include <vector>
 
-#include "types.h"
 #include "grid/gridlayout.h"
+#include "types.h"
 
 
 struct StartEndIndices
@@ -32,44 +32,43 @@ private:
     static const uint32 nbDirections = 3;
 
 public:
-
     //! store start and end cells index in each direction
     std::array<StartEndIndices, nbDirections> startEndIndices;
     //! for each direction store the index of particles leaving at min edge
-    std::vector< std::vector<uint32> > particleIndicesAtMin;
+    std::vector<std::vector<uint32>> particleIndicesAtMin;
     //! for each direction store the index of particles leaving at the max edge
-    std::vector< std::vector<uint32> > particleIndicesAtMax;
+    std::vector<std::vector<uint32>> particleIndicesAtMax;
 
     LeavingParticles(GridLayout const& layout)
-        : particleIndicesAtMin(layout.nbDimensions() ),
-          particleIndicesAtMax(layout.nbDimensions() )
+        : particleIndicesAtMin(layout.nbDimensions())
+        , particleIndicesAtMax(layout.nbDimensions())
     {
-        startEndIndices[0].firstCellIndex = layout.physicalStartIndex(QtyCentering::primal,
-                                                                       Direction::X);
-        startEndIndices[0].lastCellIndex = layout.physicalEndIndex(QtyCentering::primal,
-                                                                       Direction::X) - 1;
+        startEndIndices[0].firstCellIndex
+            = layout.physicalStartIndex(QtyCentering::primal, Direction::X);
+        startEndIndices[0].lastCellIndex
+            = layout.physicalEndIndex(QtyCentering::primal, Direction::X) - 1;
 
         // if 2D or 3D, X already done, do Y
         if (layout.nbDimensions() > 1)
         {
-            startEndIndices[1].firstCellIndex = layout.physicalStartIndex(QtyCentering::primal,
-                                                                           Direction::Y);
-            startEndIndices[1].lastCellIndex  = layout.physicalEndIndex(QtyCentering::primal,
-                                                                         Direction::Y) - 1;
+            startEndIndices[1].firstCellIndex
+                = layout.physicalStartIndex(QtyCentering::primal, Direction::Y);
+            startEndIndices[1].lastCellIndex
+                = layout.physicalEndIndex(QtyCentering::primal, Direction::Y) - 1;
         }
 
         // if 3D, X and Y already done, do Z
         if (layout.nbDimensions() == 3)
         {
-            startEndIndices[2].firstCellIndex = layout.physicalStartIndex(QtyCentering::primal,
-                                                                           Direction::Z);
-            startEndIndices[2].lastCellIndex  = layout.physicalEndIndex(QtyCentering::primal,
-                                                                         Direction::Z)-1;
+            startEndIndices[2].firstCellIndex
+                = layout.physicalStartIndex(QtyCentering::primal, Direction::Z);
+            startEndIndices[2].lastCellIndex
+                = layout.physicalEndIndex(QtyCentering::primal, Direction::Z) - 1;
         }
 
         // hard coded pre-allocation
         const uint32 estimateLeavingParticles = 1000;
-        for (uint32 iDim=0; iDim < layout.nbDimensions(); ++iDim)
+        for (uint32 iDim = 0; iDim < layout.nbDimensions(); ++iDim)
         {
             particleIndicesAtMin.reserve(estimateLeavingParticles);
             particleIndicesAtMax.reserve(estimateLeavingParticles);
@@ -95,7 +94,7 @@ public:
 
     inline void storeIfLeaving(uint32 icell, uint32 ipart, uint32 direction)
     {
-        if (icell  > startEndIndices[direction].lastCellIndex)
+        if (icell > startEndIndices[direction].lastCellIndex)
         {
             particleIndicesAtMax[direction].push_back(ipart);
         }
@@ -104,7 +103,6 @@ public:
             particleIndicesAtMin[direction].push_back(ipart);
         }
     }
-
 };
 
 

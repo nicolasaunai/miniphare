@@ -17,11 +17,8 @@
  */
 class FluidParticleInitializer : public ParticleInitializer
 {
-
-
 private:
-
-    GridLayout     layout_;
+    GridLayout layout_;
     ScalarFunction density;
     VectorFunction bulkVelocity;
     ScalarFunction thermalSpeed;
@@ -34,21 +31,14 @@ private:
     void loadParticles3D_(std::vector<Particle>& particles) const;
 
 public:
-
-
-    FluidParticleInitializer(GridLayout const& layout,
-                             ScalarFunction densityProfile,
-                             VectorFunction bulkVelocityProfile,
-                             ScalarFunction thermalSpeedProfile,
-                             uint32 nbrPartPerCell,
-                             double particleCharge);
+    FluidParticleInitializer(GridLayout const& layout, ScalarFunction densityProfile,
+                             VectorFunction bulkVelocityProfile, ScalarFunction thermalSpeedProfile,
+                             uint32 nbrPartPerCell, double particleCharge);
 
     virtual void loadParticles(std::vector<Particle>& particles) const override;
 
     virtual ~FluidParticleInitializer();
-
 };
-
 
 
 

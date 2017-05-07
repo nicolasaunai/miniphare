@@ -11,7 +11,7 @@
 
 
 
-enum class ParticleInitializerType {Fluid, Kinetic, count};
+enum class ParticleInitializerType { Fluid, Kinetic, count };
 
 
 
@@ -25,14 +25,10 @@ enum class ParticleInitializerType {Fluid, Kinetic, count};
  */
 class ParticleInitializer
 {
-
 public:
-
     virtual void loadParticles(std::vector<Particle>& particles) const = 0;
 
     virtual ~ParticleInitializer() = 0;
-
-
 };
 
 
@@ -63,9 +59,3 @@ public:
 
 
 #endif // PARTICLEINITIALIZER_H
-
-
-
-
-
-

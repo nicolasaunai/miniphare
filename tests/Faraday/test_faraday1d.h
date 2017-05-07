@@ -2,8 +2,8 @@
 #define TEST_FARADAY_H
 
 
-#include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
 #include "types.h"
 #include "utilityphare.h"
@@ -17,17 +17,17 @@
 
 struct FaradayParams;
 
-HybridQuantity GetHybridQtyFromString( std::string field ) ;
+HybridQuantity GetHybridQtyFromString(std::string field);
 
-HybridQuantity GetHybridQty(uint32 iqty) ;
+HybridQuantity GetHybridQty(uint32 iqty);
 
-std::string GetHybridQtyName(uint iqty) ;
+std::string GetHybridQtyName(uint iqty);
 
-std::vector<FaradayParams> getFaraday1DInputsFromFile() ;
+std::vector<FaradayParams> getFaraday1DInputsFromFile();
 
 
 
-#define  MAX_SIZE 1000
+#define MAX_SIZE 1000
 
 
 
@@ -41,54 +41,52 @@ struct FaradayParams
 {
     uint32 interpOrder;
 
-    uint32 nbDim ;
+    uint32 nbDim;
 
     std::array<uint32, 3> nbrCells;
     std::array<double, 3> dxdydz;
 
-    double dt ;
-    double tStart, tEnd ;
+    double dt;
+    double tStart, tEnd;
 
-    std::string testName ;
+    std::string testName;
 
-    uint32 nbrOfFields ;
+    uint32 nbrOfFields;
 
-    std::vector<std::string> fieldNames ;
+    std::vector<std::string> fieldNames;
 
-    uint32 nbrTimeSteps ;
+    uint32 nbrTimeSteps;
 
     // we have 6 components for the electromag field in the most complex case
     // Bx, By, Bz, Ex, Ey, Ez
     //    std::array<SuperVectorT, 6> fieldInputs ;
-    std::array<Field, 6> fieldInputs ;
+    std::array<Field, 6> fieldInputs;
 
     std::string testComment;
 
-    FaradayParams():fieldInputs \
-         { { Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
-             Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
-             Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
-             Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
-             Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
-             Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") )} }
+    FaradayParams()
+        : fieldInputs{{Field(Field(AllocSizeT(10, 1, 1), HybridQuantity::count, "none")),
+                       Field(Field(AllocSizeT(10, 1, 1), HybridQuantity::count, "none")),
+                       Field(Field(AllocSizeT(10, 1, 1), HybridQuantity::count, "none")),
+                       Field(Field(AllocSizeT(10, 1, 1), HybridQuantity::count, "none")),
+                       Field(Field(AllocSizeT(10, 1, 1), HybridQuantity::count, "none")),
+                       Field(Field(AllocSizeT(10, 1, 1), HybridQuantity::count, "none"))}}
     {
     }
 
-    FaradayParams(double dx, double dy, double dz,
-                  uint32 nbrCellx, uint32 nbrCelly, uint32 nbrCellz,
-                  std::string comment):
-        nbrCells{ {nbrCellx,nbrCelly,nbrCellz} }, dxdydz{ {dx,dy,dz} },
-        fieldInputs{ {Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
-                      Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
-                      Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
-                      Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
-                      Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") ),
-                      Field( Field(AllocSizeT(10,1,1),HybridQuantity::count,"none") )} },
-        testComment{comment}
+    FaradayParams(double dx, double dy, double dz, uint32 nbrCellx, uint32 nbrCelly,
+                  uint32 nbrCellz, std::string comment)
+        : nbrCells{{nbrCellx, nbrCelly, nbrCellz}}
+        , dxdydz{{dx, dy, dz}}
+        , fieldInputs{{Field(Field(AllocSizeT(10, 1, 1), HybridQuantity::count, "none")),
+                       Field(Field(AllocSizeT(10, 1, 1), HybridQuantity::count, "none")),
+                       Field(Field(AllocSizeT(10, 1, 1), HybridQuantity::count, "none")),
+                       Field(Field(AllocSizeT(10, 1, 1), HybridQuantity::count, "none")),
+                       Field(Field(AllocSizeT(10, 1, 1), HybridQuantity::count, "none")),
+                       Field(Field(AllocSizeT(10, 1, 1), HybridQuantity::count, "none"))}}
+        , testComment{comment}
     {
-
     }
-
 };
 
 

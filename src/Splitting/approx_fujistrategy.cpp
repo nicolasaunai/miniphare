@@ -4,7 +4,7 @@
 
 
 
-const uint32 nbpts = 2 ;
+const uint32 nbpts = 2;
 
 /**
  * @brief Approx_FujiStrategy::Approx_FujiStrategy only approximately preserve
@@ -17,11 +17,10 @@ const uint32 nbpts = 2 ;
  *
  * @param splitMethod
  */
-Approx_FujiStrategy::Approx_FujiStrategy(const std::string & splitMethod)
-    : SplittingStrategy(splitMethod, nbpts),
-      jitterX_{ 0. }
+Approx_FujiStrategy::Approx_FujiStrategy(const std::string& splitMethod)
+    : SplittingStrategy(splitMethod, nbpts)
+    , jitterX_{0.}
 {
-
     std::random_device randSeed;
     std::mt19937_64 generator(randSeed());
 
@@ -29,20 +28,16 @@ Approx_FujiStrategy::Approx_FujiStrategy(const std::string & splitMethod)
     std::uniform_real_distribution<float> randPosX(0., 0.1f);
 
     // we prepare a random jitter for child particles
-    jitterX_ = randPosX(generator) ;
+    jitterX_ = randPosX(generator);
 
-    child_icellx_[0] = -1 ;
-    child_icellx_[1] =  0 ;
+    child_icellx_[0] = -1;
+    child_icellx_[1] = 0;
 
-    child_deltax_[0] = (1.0f - jitterX_) ;
-    child_deltax_[1] = jitterX_ ;
+    child_deltax_[0] = (1.0f - jitterX_);
+    child_deltax_[1] = jitterX_;
 
-    double weight = 1./nbpts ;
-    wtot_ = 1. ;
-    child_weights_[0] = weight ;
-    child_weights_[1] = weight ;
-
+    double weight     = 1. / nbpts;
+    wtot_             = 1.;
+    child_weights_[0] = weight;
+    child_weights_[1] = weight;
 }
-
-
-

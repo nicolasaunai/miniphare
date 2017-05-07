@@ -15,12 +15,4 @@ std::unique_ptr<ParticleInitializer> ParticleInitializer::clone() const
 
 ParticleInitializer::~ParticleInitializer()
 {
-
 }
-
-
-
-
-
-
-

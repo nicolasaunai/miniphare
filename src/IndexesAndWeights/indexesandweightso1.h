@@ -8,11 +8,13 @@
 
 class IndexesAndWeightsO1 : public IndexesAndWeights
 {
-
 public:
     ~IndexesAndWeightsO1() {}
 
-    IndexesAndWeightsO1( uint32 order ): IndexesAndWeights(order) {}
+    IndexesAndWeightsO1(uint32 order)
+        : IndexesAndWeights(order)
+    {
+    }
 
     /**
      * @brief IndexesAndWeightsO1::computeWeights computes
@@ -35,14 +37,12 @@ public:
      * Some tricks are used to optimize computation
      *
      */
-    inline virtual void computeWeights( double reducedCoord ,std::vector<uint32> const& indexList,
-                                        std::vector<double>& weightList) final
+    inline virtual void computeWeights(double reducedCoord, std::vector<uint32> const& indexList,
+                                       std::vector<double>& weightList) final
     {
-        weightList[1] = reducedCoord - static_cast<double> (indexList[0]) ;
-        weightList[0] = 1. - weightList[1] ;
+        weightList[1] = reducedCoord - static_cast<double>(indexList[0]);
+        weightList[0] = 1. - weightList[1];
     }
-
-
 };
 
 

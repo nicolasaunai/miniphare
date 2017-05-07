@@ -5,9 +5,9 @@
 
 #include "faradayimpl.h"
 
-#include "vecfield/vecfield.h"
 #include "Field/field.h"
 #include "grid/gridlayout.h"
+#include "vecfield/vecfield.h"
 
 
 
@@ -24,28 +24,22 @@
 class Faraday
 {
 private:
-
     std::unique_ptr<FaradayImpl> implPtr_;
 
 
 public:
-
-
     Faraday(double dt, GridLayout const& layout);
 
     // Faraday is a move-only object.
     Faraday(Faraday const& source) = delete;
     Faraday& operator=(Faraday const& source) = delete;
 
-    Faraday(Faraday&& source)            = default;
+    Faraday(Faraday&& source) = default;
     Faraday& operator=(Faraday&& source) = default;
 
 
 
-    void operator()(VecField const& E,
-                    VecField const& B,
-                    VecField& Bnew);
-
+    void operator()(VecField const& E, VecField const& B, VecField& Bnew);
 };
 
 

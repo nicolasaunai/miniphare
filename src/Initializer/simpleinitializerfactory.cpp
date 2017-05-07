@@ -1,10 +1,10 @@
 
 #include <memory>
 
-#include "Initializer/simpleinitializerfactory.h"
-#include "Initializer/fluidparticleinitializer.h"
 #include "BoundaryConditions/domainboundarycondition.h"
 #include "BoundaryConditions/periodicdomainboundary.h"
+#include "Initializer/fluidparticleinitializer.h"
+#include "Initializer/simpleinitializerfactory.h"
 
 #include "Splitting/splittingstrategyfactory.h"
 
@@ -12,28 +12,30 @@
 static const uint32 interpOrderConstant  = 1;
 static const uint32 refineFactorConstant = 2;
 
-static const std::string defaultSplitMethod = "splitOrderN_RF2" ;
+static const std::string defaultSplitMethod = "splitOrderN_RF2";
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
-    : timeManager_{0.01, 0., 10.} ,layout_{ {{0.2,0.,0.}}, {{32, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
-      // hard-coded... will come from input somehow
-      interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
-      pusher_{"modifiedBoris"},
-      splitMethods_{ std::vector<std::string>{2, defaultSplitMethod} }
+    : timeManager_{0.01, 0., 10.}
+    , layout_{{{0.2, 0., 0.}}, {{32, 0, 0}}, 1, "yee", Point{0., 0., 0.}, interpOrderConstant}
+    ,
+    // hard-coded... will come from input somehow
+    interpolationOrders_{{interpOrderConstant, interpOrderConstant}}
+    , pusher_{"modifiedBoris"}
+    , splitMethods_{std::vector<std::string>{2, defaultSplitMethod}}
 {
-
 }
 
 
-SimpleInitializerFactory::SimpleInitializerFactory( const std::string & splitMethod )
-    : timeManager_{0.01, 0., 10.} ,layout_{ {{0.2,0.,0.}}, {{16, 0, 0}}, 1, "yee", Point{0.,0.,0.}, interpOrderConstant},
-      // hard-coded... will come from input somehow
-      interpolationOrders_{ {interpOrderConstant, interpOrderConstant} },
-      pusher_{"modifiedBoris"},
-      splitMethods_{ std::vector<std::string>{2, splitMethod} }
+SimpleInitializerFactory::SimpleInitializerFactory(const std::string& splitMethod)
+    : timeManager_{0.01, 0., 10.}
+    , layout_{{{0.2, 0., 0.}}, {{16, 0, 0}}, 1, "yee", Point{0., 0., 0.}, interpOrderConstant}
+    ,
+    // hard-coded... will come from input somehow
+    interpolationOrders_{{interpOrderConstant, interpOrderConstant}}
+    , pusher_{"modifiedBoris"}
+    , splitMethods_{std::vector<std::string>{2, splitMethod}}
 {
-
 }
 
 
@@ -46,9 +48,9 @@ SimpleInitializerFactory::SimpleInitializerFactory( const std::string & splitMet
 
 double densityProton1(double x, double y, double z)
 {
-    (void) x;
-    (void) y;
-    (void) z;
+    (void)x;
+    (void)y;
+    (void)z;
 
     return 0.5;
 }
@@ -56,49 +58,49 @@ double densityProton1(double x, double y, double z)
 
 double densityProton2(double x, double y, double z)
 {
-    (void) x;
-    (void) y;
-    (void) z;
+    (void)x;
+    (void)y;
+    (void)z;
     return 0.5;
 }
 
 
 double thermalSpeedProton1(double x, double y, double z)
 {
-    (void) x;
-    (void) y;
-    (void) z;
+    (void)x;
+    (void)y;
+    (void)z;
     return 0.2;
 }
 
 
 double thermalSpeedProton2(double x, double y, double z)
 {
-    (void) x;
-    (void) y;
-    (void) z;
+    (void)x;
+    (void)y;
+    (void)z;
     return 0.2;
 }
 
 
-std::array<double,3> bulkVelocityProton1(double x, double y, double z)
+std::array<double, 3> bulkVelocityProton1(double x, double y, double z)
 {
-    std::array<double,3> vec;
-    (void) x;
-    (void) y;
-    (void) z;
+    std::array<double, 3> vec;
+    (void)x;
+    (void)y;
+    (void)z;
     vec[0] = 0.;
     vec[1] = 0.;
     vec[2] = 0.;
     return vec;
 }
 
-std::array<double,3> bulkVelocityProton2(double x, double y, double z)
+std::array<double, 3> bulkVelocityProton2(double x, double y, double z)
 {
-    std::array<double,3> vec;
-    (void) x;
-    (void) y;
-    (void) z;
+    std::array<double, 3> vec;
+    (void)x;
+    (void)y;
+    (void)z;
     vec[0] = 0.;
     vec[1] = 0.;
     vec[2] = 0.;
@@ -106,12 +108,12 @@ std::array<double,3> bulkVelocityProton2(double x, double y, double z)
 }
 
 
-std::array<double,3>  magneticField(double x, double y, double z)
+std::array<double, 3> magneticField(double x, double y, double z)
 {
-    std::array<double,3> vec;
-    (void) x;
-    (void) y;
-    (void) z;
+    std::array<double, 3> vec;
+    (void)x;
+    (void)y;
+    (void)z;
     vec[0] = 1.;
     vec[1] = 0.;
     vec[2] = 0.;
@@ -119,12 +121,12 @@ std::array<double,3>  magneticField(double x, double y, double z)
 }
 
 
-std::array<double,3> electricField(double x, double y, double z)
+std::array<double, 3> electricField(double x, double y, double z)
 {
-    std::array<double,3> vec;
-    (void) x;
-    (void) y;
-    (void) z;
+    std::array<double, 3> vec;
+    (void)x;
+    (void)y;
+    (void)z;
     vec[0] = 0.;
     vec[1] = 0.;
     vec[2] = 0.;
@@ -145,14 +147,14 @@ std::array<double,3> electricField(double x, double y, double z)
  */
 std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer() const
 {
-    const uint32 nbrSpecies = 2;
+    const uint32 nbrSpecies     = 2;
     const uint32 nbrPartPerCell = 100;
     double chargeProton1 = 1., chargeProton2 = 1.;
 
     // should be obtained from
     // the factory somehow...
 
-    std::unique_ptr<IonsInitializer> ionInitPtr{ new IonsInitializer{} };
+    std::unique_ptr<IonsInitializer> ionInitPtr{new IonsInitializer{}};
 
     ionInitPtr->nbrSpecies = nbrSpecies;
     ionInitPtr->masses.push_back(1.);
@@ -162,23 +164,15 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
 
 
     // TODO those rvalues should be moved so ParticleInitializer should have noexcept move Ctor.
-    ionInitPtr->particleInitializers.push_back( std::unique_ptr<ParticleInitializer>
-                                                    {new FluidParticleInitializer{layout_,
-                                                                densityProton1,
-                                                                bulkVelocityProton1,
-                                                                thermalSpeedProton1,
-                                                                nbrPartPerCell,
-                                                                chargeProton1} } );
+    ionInitPtr->particleInitializers.push_back(std::unique_ptr<ParticleInitializer>{
+        new FluidParticleInitializer{layout_, densityProton1, bulkVelocityProton1,
+                                     thermalSpeedProton1, nbrPartPerCell, chargeProton1}});
 
-    ionInitPtr->particleInitializers.push_back( std::unique_ptr<ParticleInitializer>
-                                                    {new FluidParticleInitializer{layout_,
-                                                     densityProton2, bulkVelocityProton2,
-                                                     thermalSpeedProton2,
-                                                     nbrPartPerCell,
-                                                     chargeProton2} } );
+    ionInitPtr->particleInitializers.push_back(std::unique_ptr<ParticleInitializer>{
+        new FluidParticleInitializer{layout_, densityProton2, bulkVelocityProton2,
+                                     thermalSpeedProton2, nbrPartPerCell, chargeProton2}});
 
     return ionInitPtr;
-
 }
 
 
@@ -191,14 +185,12 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
  */
 std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitializer() const
 {
+    std::unique_ptr<SolverInitializer> solverInitPtr{new SolverInitializer{}};
 
+    solverInitPtr->pusherType          = pusher_;
+    solverInitPtr->interpolationOrders = interpolationOrders_;
 
-    std::unique_ptr<SolverInitializer> solverInitPtr{ new SolverInitializer{} };
-
-    solverInitPtr->pusherType = pusher_ ;
-    solverInitPtr->interpolationOrders = interpolationOrders_ ;
-
-    return  solverInitPtr;
+    return solverInitPtr;
 }
 
 
@@ -221,7 +213,7 @@ std::unique_ptr<BoundaryCondition> SimpleInitializerFactory::createBoundaryCondi
     boundaries[0].second = BoundaryType::Periodic;
     boundaries[1].second = BoundaryType::Periodic;
 
-    std::unique_ptr<BoundaryCondition> bc {new DomainBoundaryCondition{layout_, boundaries}};
+    std::unique_ptr<BoundaryCondition> bc{new DomainBoundaryCondition{layout_, boundaries}};
 
     return bc;
 }
@@ -236,38 +228,35 @@ std::unique_ptr<BoundaryCondition> SimpleInitializerFactory::createBoundaryCondi
  */
 std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectromagInitializer() const
 {
-
-    std::unique_ptr<ElectromagInitializer> eminit {new ElectromagInitializer{layout_,
-                    electricField,
-                    magneticField, "_EField", "_BField"} };
+    std::unique_ptr<ElectromagInitializer> eminit{
+        new ElectromagInitializer{layout_, electricField, magneticField, "_EField", "_BField"}};
 
     std::cout << "creating Simple ElectromagInitializer" << std::endl;
-    Point origin{0,0,0};
+    Point origin{0, 0, 0};
 
-    for (uint32 iComponent=0; iComponent < 3; ++iComponent)
+    for (uint32 iComponent = 0; iComponent < 3; ++iComponent)
     {
-
         // ELECTRIC FIELD ----------------
-        Field& Ei = eminit->E_.component(iComponent);
+        Field& Ei     = eminit->E_.component(iComponent);
         uint32 iStart = layout_.ghostStartIndex(Ei, Direction::X);
-        uint32 iEnd   = layout_.ghostEndIndex(  Ei, Direction::X);
+        uint32 iEnd   = layout_.ghostEndIndex(Ei, Direction::X);
 
-        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+        for (uint32 ix = iStart; ix <= iEnd; ++ix)
         {
             Point coord = layout_.fieldNodeCoordinates(Ei, origin, ix, 0, 0);
-            std::array<double,3> E = electricField(coord.x_, origin.y_, origin.z_);
+            std::array<double, 3> E = electricField(coord.x_, origin.y_, origin.z_);
             Ei(ix) = E[iComponent];
         }
 
         // MEGNETIC FIELD ----------------
         Field& Bi = eminit->B_.component(iComponent);
-        iStart = layout_.ghostStartIndex(Bi, Direction::X);
-        iEnd   = layout_.ghostEndIndex(  Bi, Direction::X);
+        iStart    = layout_.ghostStartIndex(Bi, Direction::X);
+        iEnd      = layout_.ghostEndIndex(Bi, Direction::X);
 
-        for (uint32 ix=iStart; ix <= iEnd; ++ix)
+        for (uint32 ix = iStart; ix <= iEnd; ++ix)
         {
             Point coord = layout_.fieldNodeCoordinates(Bi, origin, ix, 0, 0);
-            std::array<double,3> B = magneticField(coord.x_, origin.y_, origin.z_);
+            std::array<double, 3> B = magneticField(coord.x_, origin.y_, origin.z_);
             Bi(ix) = B[iComponent];
         }
     }
@@ -278,49 +267,50 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
 
 
 /**
- * @brief SimpleInitializerFactory::createDiagnosticInitializer is a hard-coded DiagnosticInitializer
+ * @brief SimpleInitializerFactory::createDiagnosticInitializer is a hard-coded
+ * DiagnosticInitializer
  */
 std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosticInitializer() const
 {
-    std::unique_ptr<DiagnosticInitializer> initializer{ new DiagnosticInitializer};
+    std::unique_ptr<DiagnosticInitializer> initializer{new DiagnosticInitializer};
 
     initializer->exportType = ExportStrategyType::ASCII;
     std::vector<uint32> iters;
-    for (uint32 i=0; i < 1001; ++i)
+    for (uint32 i = 0; i < 1001; ++i)
     {
         iters.push_back(i);
     }
 
     EMDiagInitializer emDiag;
     emDiag.typeName = "E";
-    //emDiag.computingIterations.insert(emDiag.computingIterations.end(), {1,10,20,25});
-    //emDiag.writingIterations.insert(emDiag.writingIterations.end(), {1,10,20,25});
+    // emDiag.computingIterations.insert(emDiag.computingIterations.end(), {1,10,20,25});
+    // emDiag.writingIterations.insert(emDiag.writingIterations.end(), {1,10,20,25});
     emDiag.computingIterations = iters;
-    emDiag.writingIterations = iters;
+    emDiag.writingIterations   = iters;
     initializer->emInitializers.push_back(std::move(emDiag));
 
     EMDiagInitializer BDiag;
     BDiag.typeName = "B";
-    //BDiag.computingIterations.insert(BDiag.computingIterations.end(), {1,10,20,25});
-    //BDiag.writingIterations.insert(BDiag.writingIterations.end(), {1,10,20,25});
+    // BDiag.computingIterations.insert(BDiag.computingIterations.end(), {1,10,20,25});
+    // BDiag.writingIterations.insert(BDiag.writingIterations.end(), {1,10,20,25});
     BDiag.computingIterations = iters;
-    BDiag.writingIterations = iters;
+    BDiag.writingIterations   = iters;
     initializer->emInitializers.push_back(std::move(BDiag));
 
 
     FluidDiagInitializer fluidDiag;
     fluidDiag.speciesName = "proton1";
-    fluidDiag.typeName = "rho_s";
-    fluidDiag.computingIterations.insert(fluidDiag.computingIterations.end(), {1,10,20,25});
-    fluidDiag.writingIterations.insert(fluidDiag.writingIterations.end(), {1,10,20,25});
+    fluidDiag.typeName    = "rho_s";
+    fluidDiag.computingIterations.insert(fluidDiag.computingIterations.end(), {1, 10, 20, 25});
+    fluidDiag.writingIterations.insert(fluidDiag.writingIterations.end(), {1, 10, 20, 25});
     initializer->fluidInitializers.push_back(std::move(fluidDiag));
 
 
     FluidDiagInitializer fluidDiag2;
     fluidDiag2.speciesName = "proton1";
-    fluidDiag2.typeName = "flux_s";
-    fluidDiag2.computingIterations.insert(fluidDiag2.computingIterations.end(), {1,10,20,25});
-    fluidDiag2.writingIterations.insert(fluidDiag2.writingIterations.end(), {1,10,20,25});
+    fluidDiag2.typeName    = "flux_s";
+    fluidDiag2.computingIterations.insert(fluidDiag2.computingIterations.end(), {1, 10, 20, 25});
+    fluidDiag2.writingIterations.insert(fluidDiag2.writingIterations.end(), {1, 10, 20, 25});
     initializer->fluidInitializers.push_back(std::move(fluidDiag2));
 
 
@@ -335,4 +325,3 @@ std::unique_ptr<Time> SimpleInitializerFactory::createTimeManager() const
 {
     return std::unique_ptr<Time>{new Time{1.e-7, 0., 100.}};
 }
-

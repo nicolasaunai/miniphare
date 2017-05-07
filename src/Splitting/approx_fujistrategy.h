@@ -7,11 +7,10 @@
 class Approx_FujiStrategy : public SplittingStrategy
 {
 protected:
-    float jitterX_ ;
+    float jitterX_;
 
 public:
-    Approx_FujiStrategy( const std::string & splitMethod );
-
+    Approx_FujiStrategy(const std::string& splitMethod);
 };
 
 #endif // APPROXFUJISTRATEGY_H

@@ -5,9 +5,9 @@
 
 #include "ampereimpl.h"
 
-#include "vecfield/vecfield.h"
 #include "Field/field.h"
 #include "grid/gridlayout.h"
+#include "vecfield/vecfield.h"
 
 
 
@@ -25,27 +25,22 @@
 class Ampere
 {
 private:
-
     std::unique_ptr<AmpereImpl> implPtr_;
 
 
 public:
-
-
     explicit Ampere(GridLayout const& layout);
 
     // Ampere is a move-only object.
     Ampere(Ampere const& source) = delete;
     Ampere& operator=(Ampere const& source) = delete;
 
-    Ampere(Ampere&& source)            = default;
+    Ampere(Ampere&& source) = default;
     Ampere& operator=(Ampere&& source) = default;
 
-    ~Ampere() = default ;
+    ~Ampere() = default;
 
-    void operator()(VecField const& B,
-                    VecField& Jnew);
-
+    void operator()(VecField const& B, VecField& Jnew);
 };
 
 

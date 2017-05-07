@@ -4,8 +4,8 @@
 #include <array>
 
 #include "constants.h"
-#include "types.h"
 #include "hybridenums.h"
+#include "types.h"
 
 #include "Field/field.h"
 #include "gridlayoutdefs.h"
@@ -19,7 +19,6 @@ struct WeightPoint
 
 
 using LinearCombination = std::vector<WeightPoint>;
-
 
 
 
@@ -39,36 +38,34 @@ using LinearCombination = std::vector<WeightPoint>;
  */
 class GridLayoutImpl
 {
-
 public:
-
     // start and end index used in computing loops
-    virtual uint32 physicalStartIndex(Field const& field, Direction direction) const = 0;
-    virtual uint32 physicalStartIndex(QtyCentering centering, Direction direction ) const = 0 ;
+    virtual uint32 physicalStartIndex(Field const& field, Direction direction) const     = 0;
+    virtual uint32 physicalStartIndex(QtyCentering centering, Direction direction) const = 0;
 
-    virtual uint32 physicalEndIndex(Field const& field, Direction direction) const = 0;
-    virtual uint32 physicalEndIndex(QtyCentering centering, Direction direction ) const = 0 ;
+    virtual uint32 physicalEndIndex(Field const& field, Direction direction) const     = 0;
+    virtual uint32 physicalEndIndex(QtyCentering centering, Direction direction) const = 0;
 
-    virtual uint32 ghostStartIndex(Field const& field, Direction direction) const = 0;
+    virtual uint32 ghostStartIndex(Field const& field, Direction direction) const     = 0;
     virtual uint32 ghostStartIndex(QtyCentering centering, Direction direction) const = 0;
 
-    virtual uint32 ghostEndIndex  (Field const& field, Direction direction) const = 0;
-    virtual uint32 ghostEndIndex  (QtyCentering centering, Direction direction) const = 0;
+    virtual uint32 ghostEndIndex(Field const& field, Direction direction) const     = 0;
+    virtual uint32 ghostEndIndex(QtyCentering centering, Direction direction) const = 0;
 
-    virtual AllocSizeT allocSize( HybridQuantity qtyType ) const = 0 ;
-    virtual AllocSizeT  allocSizeDerived( HybridQuantity qty, Direction dir ) const = 0 ;
+    virtual AllocSizeT allocSize(HybridQuantity qtyType) const = 0;
+    virtual AllocSizeT allocSizeDerived(HybridQuantity qty, Direction dir) const = 0;
 
-    virtual void deriv1D(Field const& operand, Field& derivative)const = 0;
-    //virtual void deriv2D(Field const& operand, Direction direction, Field& derivative)const = 0;
-    //virtual void deriv3D(Field const& operand, Direction direction, Field& derivative)const = 0;
-    virtual Point fieldNodeCoordinates( const Field & field, const Point & origin,
-                                        uint32 ix, uint32 iy, uint32 iz ) const = 0;
+    virtual void deriv1D(Field const& operand, Field& derivative) const = 0;
+    // virtual void deriv2D(Field const& operand, Direction direction, Field& derivative)const = 0;
+    // virtual void deriv3D(Field const& operand, Direction direction, Field& derivative)const = 0;
+    virtual Point fieldNodeCoordinates(const Field& field, const Point& origin, uint32 ix,
+                                       uint32 iy, uint32 iz) const = 0;
 
-    virtual Point cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz ) const = 0 ;
-    virtual QtyCentering fieldCentering(Field const & field, Direction dir) const = 0 ;
+    virtual Point cellCenteredCoordinates(uint32 ix, uint32 iy, uint32 iz) const = 0;
+    virtual QtyCentering fieldCentering(Field const& field, Direction dir) const = 0;
 
-    virtual uint32 nbrGhostNodes( QtyCentering centering ) const = 0 ;
-    virtual std::array<uint32, NBR_COMPO> nbrPhysicalNodes(Field const& field) const = 0;
+    virtual uint32 nbrGhostNodes(QtyCentering centering) const = 0;
+    virtual std::array<uint32, NBR_COMPO> nbrPhysicalNodes(Field const& field) const    = 0;
     virtual std::array<uint32, NBR_COMPO> nbrPhysicalNodes(HybridQuantity hybQty) const = 0;
     virtual uint32 nbDimensions() const = 0;
 
@@ -91,10 +88,7 @@ public:
     virtual LinearCombination const& ExToMoment() const = 0;
     virtual LinearCombination const& EyToMoment() const = 0;
     virtual LinearCombination const& EzToMoment() const = 0;
-
-
 };
-
 
 
 

@@ -1,10 +1,10 @@
 #ifndef OHMIMPLFACTORY_H
 #define OHMIMPLFACTORY_H
 
-#include "types.h"
+#include "grid/gridlayout.h"
 #include "ohm.h"
 #include "ohmimpl1d.h"
-#include "grid/gridlayout.h"
+#include "types.h"
 
 
 class OhmImplFactory
@@ -12,10 +12,9 @@ class OhmImplFactory
 public:
     static std::unique_ptr<OhmImpl> createOhmImpl(GridLayout const& layout)
     {
-        switch ( layout.nbDimensions() )
+        switch (layout.nbDimensions())
         {
-            case 1:
-                return std::unique_ptr<OhmImpl> ( new OhmImpl1D(layout, 1e-3, 1e-4));
+            case 1: return std::unique_ptr<OhmImpl>(new OhmImpl1D(layout, 1e-3, 1e-4));
 
 #if 0
             case 2:
@@ -24,7 +23,8 @@ public:
 #endif
 
             default:
-                throw std::runtime_error("Error : FaradayFactory - dimension must be either 1D, 2D or 3D");
+                throw std::runtime_error(
+                    "Error : FaradayFactory - dimension must be either 1D, 2D or 3D");
         }
     }
 };

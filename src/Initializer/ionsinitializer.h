@@ -2,8 +2,8 @@
 #define IONSINITIALIZER_H
 
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "particleinitializer.h"
 #include "types.h"
@@ -31,7 +31,7 @@
  */
 struct IonsInitializer
 {
-    std::vector< std::unique_ptr<ParticleInitializer> > particleInitializers;
+    std::vector<std::unique_ptr<ParticleInitializer>> particleInitializers;
     std::vector<double> masses;
     std::vector<std::string> names;
     uint32 nbrSpecies;

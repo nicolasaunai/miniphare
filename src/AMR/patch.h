@@ -5,9 +5,9 @@
 // data structure Tree
 
 #include "AMR/patchdata.h"
+#include "AMR/refinmentanalyser.h"
 #include "Plasmas/ions.h"
 #include "utilityphare.h"
-#include "AMR/refinmentanalyser.h"
 
 
 
@@ -26,9 +26,7 @@
  */
 class Patch
 {
-
 private:
-
     uint32 id_;
     Box coordinates_;
 
@@ -36,18 +34,19 @@ private:
 
     PatchData data_;
 
-    std::shared_ptr<Patch> parent_ ;
-    std::vector<std::shared_ptr<Patch> > children_ ;
+    std::shared_ptr<Patch> parent_;
+    std::vector<std::shared_ptr<Patch>> children_;
 
 
 public:
-
-    explicit Patch(Box coordinates, GridLayout const & layout,
-                   PatchData&& patchData)
-        : coordinates_{coordinates},
-          layout_{layout},
-          data_{std::move(patchData)},
-          parent_{nullptr}, children_{}  {}
+    explicit Patch(Box coordinates, GridLayout const& layout, PatchData&& patchData)
+        : coordinates_{coordinates}
+        , layout_{layout}
+        , data_{std::move(patchData)}
+        , parent_{nullptr}
+        , children_{}
+    {
+    }
 
     Patch(Patch&& source) = default;
     Patch& operator=(Patch&& source) = default;
@@ -57,31 +56,25 @@ public:
 
     ~Patch() = default;
 
-    void init() ;
+    void init();
 
-    void evolve() ;
+    void evolve();
 
     Ions const& ions() const { return data_.ions(); }
 
     Solver const& solver() const { return data_.solver(); }
 
-    Box const & coordinates() const { return coordinates_; }
+    Box const& coordinates() const { return coordinates_; }
 
-    GridLayout const & layout() const { return layout_; }
+    GridLayout const& layout() const { return layout_; }
 
     std::shared_ptr<Patch> parent() const { return parent_; }
 
-    PatchData const & data() const { return data_; }
+    PatchData const& data() const { return data_; }
 
-    uint32 getID() const {return id_;}
+    uint32 getID() const { return id_; }
 
-    void updateChildren( std::shared_ptr<Patch> newChild ) ;
-
+    void updateChildren(std::shared_ptr<Patch> newChild);
 };
 
 #endif // PATCH_H
-
-
-
-
-

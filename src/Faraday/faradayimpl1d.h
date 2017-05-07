@@ -6,11 +6,9 @@
 
 
 // comment here
-class FaradayImpl1D :  public FaradayImpl, private FaradayImplInternals
+class FaradayImpl1D : public FaradayImpl, private FaradayImplInternals
 {
-
 private:
-
     Field dxEz_;
     Field dxEy_;
 
@@ -21,7 +19,7 @@ public:
     FaradayImpl1D(FaradayImpl1D const& source) = delete;
     FaradayImpl1D& operator=(FaradayImpl1D const& source) = delete;
 
-    FaradayImpl1D(FaradayImpl1D&& source)            = default;
+    FaradayImpl1D(FaradayImpl1D&& source) = default;
     FaradayImpl1D& operator=(FaradayImpl1D&& source) = default;
 
     ~FaradayImpl1D() = default;

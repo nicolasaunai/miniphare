@@ -15,8 +15,7 @@
 struct Push1dParams;
 
 
-std::vector<Push1dParams>  getPush1dParamsFromFile() ;
-
+std::vector<Push1dParams> getPush1dParamsFromFile();
 
 
 
@@ -29,37 +28,38 @@ std::vector<Push1dParams>  getPush1dParamsFromFile() ;
 
 struct Push1dParams
 {
+    double tbegin, tend;
+    uint32 nstep;
 
-    double tbegin, tend ;
-    uint32 nstep ;
-
-    double q, m ;
+    double q, m;
 
     // Initial conditions
-    double x0, y0, z0 ;
-    double vx0, vy0, vz0 ;
+    double x0, y0, z0;
+    double vx0, vy0, vz0;
 
 
-    uint32 testId ;
+    uint32 testId;
 
-    static uint32 testCaseNbr ;
+    static uint32 testCaseNbr;
 
     // additional attributes used to initialize
     // a GridLayout object
 
-    std::array<double, 3> origin = { {0., 0., 0.} } ;
-    std::array<double, 3> dxdydz = { {0.1, 0., 0.} } ;
-    std::array<uint32, 3> nbrCells = { {1000, 0, 0} } ;
+    std::array<double, 3> origin   = {{0., 0., 0.}};
+    std::array<double, 3> dxdydz   = {{0.1, 0., 0.}};
+    std::array<uint32, 3> nbrCells = {{1000, 0, 0}};
 
-    uint32 nbDim = 1 ;
+    uint32 nbDim = 1;
 
-    std::string lattice = "yee" ;
+    std::string lattice = "yee";
 
-    uint32 interpOrder = 1 ;
+    uint32 interpOrder = 1;
 
-    Push1dParams(): testId{ testCaseNbr }
-     { ++testCaseNbr ; }
-
+    Push1dParams()
+        : testId{testCaseNbr}
+    {
+        ++testCaseNbr;
+    }
 };
 
 

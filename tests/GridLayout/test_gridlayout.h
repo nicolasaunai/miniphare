@@ -2,8 +2,8 @@
 #define TEST_GRIDLAYOUT_H
 
 
-#include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
 #include "types.h"
 #include "utilityphare.h"
@@ -17,33 +17,33 @@
 
 struct GridLayoutParams;
 
-HybridQuantity GetHybridQty(uint iqty) ;
+HybridQuantity GetHybridQty(uint iqty);
 
-std::string GetHybridQtyName(uint iqty) ;
+std::string GetHybridQtyName(uint iqty);
 
-std::vector<GridLayoutParams> getIndexingInputsFromFile() ;
+std::vector<GridLayoutParams> getIndexingInputsFromFile();
 
-std::vector<GridLayoutParams> getAllocInputsFromFile() ;
+std::vector<GridLayoutParams> getAllocInputsFromFile();
 
-std::vector<GridLayoutParams> getFieldCoordsInputsFromFile() ;
+std::vector<GridLayoutParams> getFieldCoordsInputsFromFile();
 
-std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile() ;
+std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile();
 
 
 
-#define  MAX_SIZE 1000
+#define MAX_SIZE 1000
 
 
 
 MATCHER_P(DoubleNear, epsilon, "Precision out of range")
 {
     // we get the actual value
-    double actual = std::get<0>(arg) ;
+    double actual = std::get<0>(arg);
 
     // we get the expected value
-    double expected = std::get<1>(arg) ;
+    double expected = std::get<1>(arg);
 
-    return actual > expected-epsilon && actual < expected+epsilon ;
+    return actual > expected - epsilon && actual < expected + epsilon;
 }
 
 
@@ -60,48 +60,46 @@ struct GridLayoutParams
 
     HybridQuantity qty;
     std::string qtyName;
-    uint32 iqty ;        // integer equals to static_cast<uint32> (qty)
+    uint32 iqty; // integer equals to static_cast<uint32> (qty)
 
-    std::string functionName ;
+    std::string functionName;
 
-    std::string layoutName ;
+    std::string layoutName;
 
     std::array<uint32, 3> nbrCells;
     std::array<double, 3> dxdydz;
 
-    std::array<uint32,3> allocSizes;
-    std::array<uint32,3> allocSizeDerived;
+    std::array<uint32, 3> allocSizes;
+    std::array<uint32, 3> allocSizeDerived;
 
-    std::array<uint32,3> PSI;
-    std::array<uint32,3> PEI;
-    std::array<uint32,3> GSI;
-    std::array<uint32,3> GEI;
+    std::array<uint32, 3> PSI;
+    std::array<uint32, 3> PEI;
+    std::array<uint32, 3> GSI;
+    std::array<uint32, 3> GEI;
 
-    uint32  field_iStart ;
-    uint32  field_iEnd   ;
+    uint32 field_iStart;
+    uint32 field_iEnd;
 
-    Point origin{0., 0., 0.} ;
+    Point origin{0., 0., 0.};
 
-    std::vector<double>  fieldXCoords ;
-    std::vector<double>  fieldXValues ;
+    std::vector<double> fieldXCoords;
+    std::vector<double> fieldXValues;
 
-    std::vector<double>  cellCenteredXCoords ;
+    std::vector<double> cellCenteredXCoords;
 
     std::string testComment;
 
-    GridLayoutParams() = default ;
+    GridLayoutParams() = default;
 
-    GridLayoutParams(double dx, double dy, double dz,
-                     uint32 nbrCellx, uint32 nbrCelly, uint32 nbrCellz,
-                     std::string const& name,
-                     uint32 dim, std::string comment):
-        nbDim{dim}, layoutName{name},
-        nbrCells{ {nbrCellx,nbrCelly,nbrCellz} }, dxdydz{ {dx,dy,dz} },
-        testComment{comment}
+    GridLayoutParams(double dx, double dy, double dz, uint32 nbrCellx, uint32 nbrCelly,
+                     uint32 nbrCellz, std::string const& name, uint32 dim, std::string comment)
+        : nbDim{dim}
+        , layoutName{name}
+        , nbrCells{{nbrCellx, nbrCelly, nbrCellz}}
+        , dxdydz{{dx, dy, dz}}
+        , testComment{comment}
     {
-
     }
-
 };
 
 

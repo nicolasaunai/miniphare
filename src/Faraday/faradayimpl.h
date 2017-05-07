@@ -1,9 +1,9 @@
 #ifndef FARADAYIMPL_H
 #define FARADAYIMPL_H
 
-#include "vecfield/vecfield.h"
 #include "Field/field.h"
 #include "grid/gridlayout.h"
+#include "vecfield/vecfield.h"
 
 
 
@@ -22,7 +22,6 @@ public:
 
 
 
-
 /**
  * @brief The FaradayImplInternals class factorizes details of implementation
  *  for the concrete derived classes inheriting from FaradayImpl.
@@ -32,7 +31,11 @@ public:
 class FaradayImplInternals
 {
 public:
-    FaradayImplInternals(double dt, GridLayout const& layout):dt_{dt},layout_{layout}{}
+    FaradayImplInternals(double dt, GridLayout const& layout)
+        : dt_{dt}
+        , layout_{layout}
+    {
+    }
 
 protected:
     double dt_;

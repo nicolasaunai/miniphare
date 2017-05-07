@@ -2,8 +2,8 @@
 #define PYTHONINITIALIZERFACTORY_H
 
 
-#include "simulationinitializerfactory.h"
 #include "grid/gridlayout.h"
+#include "simulationinitializerfactory.h"
 
 
 /**
@@ -14,18 +14,17 @@
 class PythonInitializerFactory : public SimulationInitializerFactory
 {
 public:
-
     PythonInitializerFactory();
-    PythonInitializerFactory(PythonInitializerFactory const&source)            = default;
-    PythonInitializerFactory(PythonInitializerFactory&& source)                = default;
-    PythonInitializerFactory& operator=(PythonInitializerFactory const&source) = default;
-    PythonInitializerFactory& operator=(PythonInitializerFactory&& source)     = default;
+    PythonInitializerFactory(PythonInitializerFactory const& source) = default;
+    PythonInitializerFactory(PythonInitializerFactory&& source)      = default;
+    PythonInitializerFactory& operator=(PythonInitializerFactory const& source) = default;
+    PythonInitializerFactory& operator=(PythonInitializerFactory&& source) = default;
 
 
-    virtual std::unique_ptr<IonsInitializer> createIonsInitializer()             const override;
+    virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
     virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const override;
 
-    virtual std::unique_ptr<SolverInitializer> createSolverInitializer()         const override;
+    virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const override;
 
     virtual GridLayout const& gridLayout() const override;
     virtual double timeStep() const override;

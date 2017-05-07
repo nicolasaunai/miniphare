@@ -1,8 +1,8 @@
 #ifndef PATCHINFO_H
 #define PATCHINFO_H
 
-#include<string>
-#include<vector>
+#include <string>
+#include <vector>
 
 #include "types.h"
 

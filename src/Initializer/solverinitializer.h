@@ -3,9 +3,9 @@
 
 #include <vector>
 
+#include "BoundaryConditions/boundary_conditions.h"
 #include "types.h"
 #include <string>
-#include "BoundaryConditions/boundary_conditions.h"
 
 /**
  * @brief SolverInitializer is needed for Solver construction
@@ -18,8 +18,8 @@
  */
 struct SolverInitializer
 {
-    std::string  pusherType ;
-    std::vector<uint32>  interpolationOrders ;
+    std::string pusherType;
+    std::vector<uint32> interpolationOrders;
 };
 
 

@@ -8,8 +8,8 @@
 #include "AMR/patchdata.h"
 #include "grid/gridlayout.h"
 
-#include "diagnosticscheduler.h"
 #include "Diagnostics/diagtype.h"
+#include "diagnosticscheduler.h"
 
 #include "Initializer/diagnosticinitializer.h"
 
@@ -31,19 +31,17 @@
 class DiagnosticsManager
 {
 private:
-
     static uint32 id;
-    std::vector<std::unique_ptr<FluidDiagnostic> > fluidDiags_;
-    std::vector<std::unique_ptr<EMDiagnostic> > emDiags_;
-    //std::vector<ParticleDiagnostic> partDiags_;
-    //std::vector<OrbitDiagnostic> orbitDiags_;
-    //std::vector<ProbeDiagnostic> probeDiags_;
-    //std::vector<GlobalDiagnostic> globalDiags_;
+    std::vector<std::unique_ptr<FluidDiagnostic>> fluidDiags_;
+    std::vector<std::unique_ptr<EMDiagnostic>> emDiags_;
+    // std::vector<ParticleDiagnostic> partDiags_;
+    // std::vector<OrbitDiagnostic> orbitDiags_;
+    // std::vector<ProbeDiagnostic> probeDiags_;
+    // std::vector<GlobalDiagnostic> globalDiags_;
     std::unique_ptr<ExportStrategy> exportStrat_;
     DiagnosticScheduler scheduler_;
 
 public:
-
     /** @brief DiagnosticsManager creates an empty DiagnosticManager with concrete ExportStrategy */
     DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> initializer);
 
@@ -52,8 +50,7 @@ public:
                             std::vector<uint32> const& computingIterations,
                             std::vector<uint32> const& writingIterations);
 
-    void newEMDiagnostic(std::string type,
-                         std::vector<uint32> const& computingIterations,
+    void newEMDiagnostic(std::string type, std::vector<uint32> const& computingIterations,
                          std::vector<uint32> const& writingIterations);
 
 

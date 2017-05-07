@@ -18,16 +18,15 @@ public:
     DomainBoundaryFactory() = delete;
     static std::unique_ptr<Boundary> makeBoundary(DomainBoundaryCondition::BoundaryInfo info)
     {
-        std::unique_ptr<Boundary> bc{nullptr} ;
+        std::unique_ptr<Boundary> bc{nullptr};
 
         if (info.second == BoundaryType::Periodic)
         {
-            bc = std::unique_ptr<Boundary> ( new PeriodicDomainBoundary{info.first} );
+            bc = std::unique_ptr<Boundary>(new PeriodicDomainBoundary{info.first});
         }
 
         return bc;
     }
-
 };
 
 #endif // DOMAINBOUNDARYFACTORY_H

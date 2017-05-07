@@ -2,28 +2,23 @@
 #define ELECTRONSIMPLFACTORY_H
 
 
-#include "types.h"
 #include "electrons.h"
 #include "electronsimpl1d.h"
+#include "types.h"
 
 class ElectronsImplFactory
 {
 public:
-
-    static std::unique_ptr<ElectronsImpl> createElectronImpl(GridLayout const& layout,
-                                                             double Te)
+    static std::unique_ptr<ElectronsImpl> createElectronImpl(GridLayout const& layout, double Te)
     {
         switch (layout.nbDimensions())
         {
-            case 1:
-            return std::unique_ptr<ElectronsImpl> {new ElectronsImpl1D{layout, Te} };
+            case 1: return std::unique_ptr<ElectronsImpl>{new ElectronsImpl1D{layout, Te}};
 
 
             case 2:
-            case 3 :
-            default:
-            throw std::runtime_error("Not implemented");
-
+            case 3:
+            default: throw std::runtime_error("Not implemented");
         }
     }
 };
