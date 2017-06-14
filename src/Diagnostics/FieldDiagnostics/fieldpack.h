@@ -18,6 +18,7 @@ struct FieldPack
     std::vector<std::string> keys;
     std::unordered_map<std::string, std::vector<float> > data;
     std::unordered_map<std::string, std::array<uint32, 3> > nbrNodes;
+    std::unordered_map<std::string, std::array<float, 3> > gridSpacing;
     std::unordered_map<std::string, std::array<QtyCentering,3> > centerings;
     std::unordered_map<std::string, uint32> nbrDimensions;
     std::unordered_map<std::string, Point> origin;

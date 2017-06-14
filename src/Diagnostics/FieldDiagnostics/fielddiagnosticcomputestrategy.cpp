@@ -94,6 +94,10 @@ void FieldDiagnosticComputeStrategy::fillPack_(FieldPack& pack, Field const& fie
 
     pack.origin[key] = layout.origin();
 
+    pack.gridSpacing[key][0] = static_cast<float>(layout.dx());
+    pack.gridSpacing[key][1] = static_cast<float>(layout.dy());
+    pack.gridSpacing[key][2] = static_cast<float>(layout.dz());
+
     switch (layout.nbDimensions())
     {
     case 1:
