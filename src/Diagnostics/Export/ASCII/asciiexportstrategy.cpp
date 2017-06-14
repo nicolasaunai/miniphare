@@ -38,6 +38,11 @@ void fillFile(FieldPack const& pack, FILE* file)
         fprintf(file, "%f %f %f", itOri->second.x_, itOri->second.y_, itOri->second.z_);
         fprintf(file, "\n");
 
+        fprintf(file, "# grid spacing\n");
+        auto spacing = pack.gridSpacing.find(key);
+        fprintf(file, "%f %f %f", spacing->second[0], spacing->second[1], spacing->second[2]);
+        fprintf(file, "\n");
+
         fprintf(file, "# nbrNoxdes x y z\n");
         auto itNbrNodes = pack.nbrNodes.find(key);
         for (uint32 n : itNbrNodes->second)
@@ -84,7 +89,7 @@ std::string getEMFilename(uint32 patchID,
     ss << diag.strategyName()
        << "_" << std::setfill('0') << std::setw(6)
        << patchID
-       << "_" << std::setprecision(10) << std::fixed << timeManager.currentTime()
+       << "_" << std::setprecision(6) << std::fixed << timeManager.currentTime()
        << ".txt";
     return ss.str();
 }
@@ -134,7 +139,7 @@ std::string getFluidFilename(uint32 patchID,
        << '_'
        << std::setfill('0') << std::setw(6)
        << patchID
-       << "_" << std::setprecision(10) << std::fixed << timeManager.currentTime()
+       << "_" << std::setprecision(6) << std::fixed << timeManager.currentTime()
        << ".txt";
     return ss.str();
 }
