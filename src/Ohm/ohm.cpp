@@ -90,6 +90,6 @@ void Ohm::operator()(VecField const& B, Field const& Ne, VecField const& Ve, Fie
     {
         Ez(i) = VexB_z(i); // +0* Rz(i);
     }
-    std::cout << Ez(0) << " " << Ez(1) << " " << Ez(2) << " " << Ez(3) << " " << Ez(4) << " "
-              << Ez(5) << std::endl;
+    //std::cout << Ez(0) << " " << Ez(1) << " " << Ez(2) << " " << Ez(3) << " " << Ez(4) << " "
+     //         << Ez(5) << std::endl;
 }
