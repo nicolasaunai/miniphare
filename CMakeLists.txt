@@ -4,7 +4,8 @@ project (miniphare)
 set (Tutorial_VERSION_MAJOR 1)
 set (Tutorial_VERSION_MINOR 0)
 
-add_compile_options(-std=c++11 -Wall)
+add_compile_options(-Wall)
+set(CMAKE_CXX_STANDARD 11)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
@@ -19,6 +20,7 @@ add_subdirectory(src)
 
 
 option(test "Build all tests." ON) # Makes boolean 'test' available.
+option(coverage "Generate code coverage" ON)
 
 
 if (test)
@@ -31,6 +33,20 @@ if (test)
   # 'project(gtest)' above.
   include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
   include_directories(${gmock_SOURCE_DIR}/include ${gmock_SOURCE_DIR})
+
+  if (coverage)
+    # coverage
+    set(CMAKE_CXX_FLAGS "-g -O0 -Wall -fprofile-arcs -ftest-coverage")
+    list(APPEND CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
+    set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/out/index.html
+        COMMAND lcov --capture -directory ${CMAKE_CURRENT_BINARY_DIR} --output-file ${CMAKE_CURRENT_BINARY_DIR}/coverage.info
+        COMMAND genhtml ${CMAKE_CURRENT_BINARY_DIR}/coverage.info --output-directory ${CMAKE_CURRENT_BINARY_DIR}/out
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating coverage repport"
+        )
+    add_custom_target(coverage_report DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/out/index.html)
+  endif()
 
   ##############
   # Unit Tests
