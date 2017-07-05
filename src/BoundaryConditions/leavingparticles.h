@@ -34,8 +34,10 @@ private:
 public:
     //! store start and end cells index in each direction
     std::array<StartEndIndices, nbDirections> startEndIndices;
+
     //! for each direction store the index of particles leaving at min edge
     std::vector<std::vector<uint32>> particleIndicesAtMin;
+
     //! for each direction store the index of particles leaving at the max edge
     std::vector<std::vector<uint32>> particleIndicesAtMax;
 
@@ -70,8 +72,8 @@ public:
         const uint32 estimateLeavingParticles = 1000;
         for (uint32 iDim = 0; iDim < layout.nbDimensions(); ++iDim)
         {
-            particleIndicesAtMin.reserve(estimateLeavingParticles);
-            particleIndicesAtMax.reserve(estimateLeavingParticles);
+            particleIndicesAtMin[iDim].reserve(estimateLeavingParticles);
+            particleIndicesAtMax[iDim].reserve(estimateLeavingParticles);
         }
     }
 
