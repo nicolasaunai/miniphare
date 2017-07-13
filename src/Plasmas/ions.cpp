@@ -85,6 +85,7 @@ Species& Ions::species(std::string name)
 void Ions::loadParticles()
 {
     std::cout << "Ions > loading particles..." << std::endl;
+
     for (Species& species : speciesArray_)
     {
         std::cout << "... species : " << species.name() << std::endl;
@@ -154,4 +155,17 @@ void Ions::computeBulkVelocity()
     std::transform(vxTot.begin(), vxTot.end(), rho_.begin(), vxTot.begin(), std::divides<double>());
     std::transform(vyTot.begin(), vyTot.end(), rho_.begin(), vyTot.begin(), std::divides<double>());
     std::transform(vzTot.begin(), vzTot.end(), rho_.begin(), vzTot.begin(), std::divides<double>());
+}
+
+
+uint32 Ions::population() const
+{
+    uint32 popTot = 0;
+
+    for (Species const& spe : speciesArray_)
+    {
+        popTot += spe.particles().size();
+    }
+
+    return popTot;
 }

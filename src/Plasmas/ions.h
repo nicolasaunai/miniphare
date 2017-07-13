@@ -56,7 +56,15 @@ public:
             spe.resetMoments();
     }
 
+    void resetParticles()
+    {
+        for (Species& spe : speciesArray_)
+            spe.resetParticles();
+    }
+
     uint32 nbrSpecies() const { return static_cast<uint32>(speciesArray_.size()); }
+
+    uint32 population() const;
 
     uint32 speciesID(std::string name) const
     {
