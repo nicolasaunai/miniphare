@@ -42,6 +42,8 @@ public:
         flux_.zero();
     }
 
+    void resetParticles() { particleArray_.clear(); }
+
     Field& rho() { return rho_; }
     Field const& rho() const { return rho_; }
 
