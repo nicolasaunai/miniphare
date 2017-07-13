@@ -161,8 +161,9 @@ void fieldsAtParticles(Interpolator& interp, VecField const& E, VecField const& 
    ---------------------------------------------------------------------------- */
 
 
-void compute1DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
-                                   GridLayout const& layout, std::vector<Particle>& particles)
+
+void update1DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
+                                  GridLayout const& layout, std::vector<Particle>& particles)
 {
     uint32 idirX = static_cast<uint32>(Direction::X);
     uint32 idirY = static_cast<uint32>(Direction::Y);
@@ -173,7 +174,6 @@ void compute1DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
     Field& fz  = species.flux(idirZ);
     Field& rho = species.rho();
 
-    species.resetMoments();
     double odx = layout.odx();
 
     for (const Particle& part : particles)
@@ -183,8 +183,8 @@ void compute1DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
 }
 
 
-void compute2DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
-                                   GridLayout const& layout, std::vector<Particle>& particles)
+void update2DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
+                                  GridLayout const& layout, std::vector<Particle>& particles)
 {
     // not implemented function
     // void unused variables
@@ -196,8 +196,8 @@ void compute2DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
 }
 
 
-void compute3DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
-                                   GridLayout const& layout, std::vector<Particle>& particles)
+void update3DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
+                                  GridLayout const& layout, std::vector<Particle>& particles)
 {
     // not implemented function
     // void unused variables
@@ -206,6 +206,47 @@ void compute3DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
     (void)layout;
     (void)particles;
     throw std::runtime_error("NOT IMPLEMENTED");
+}
+
+
+void updateChargeDensityAndFlux(Interpolator& interpolator, Species& species,
+                                GridLayout const& layout, std::vector<Particle>& particles)
+{
+    switch (layout.nbDimensions())
+    {
+        case 1: update1DChargeDensityAndFlux(interpolator, species, layout, particles); break;
+        case 2: update2DChargeDensityAndFlux(interpolator, species, layout, particles); break;
+        case 3: update3DChargeDensityAndFlux(interpolator, species, layout, particles); break;
+        default: throw std::runtime_error("wrong dimensionality");
+    }
+}
+
+
+
+void compute1DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
+                                   GridLayout const& layout, std::vector<Particle>& particles)
+{
+    species.resetMoments();
+
+    update1DChargeDensityAndFlux(interpolator, species, layout, particles);
+}
+
+
+void compute2DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
+                                   GridLayout const& layout, std::vector<Particle>& particles)
+{
+    species.resetMoments();
+
+    update2DChargeDensityAndFlux(interpolator, species, layout, particles);
+}
+
+
+void compute3DChargeDensityAndFlux(Interpolator& interpolator, Species& species,
+                                   GridLayout const& layout, std::vector<Particle>& particles)
+{
+    species.resetMoments();
+
+    update3DChargeDensityAndFlux(interpolator, species, layout, particles);
 }
 
 

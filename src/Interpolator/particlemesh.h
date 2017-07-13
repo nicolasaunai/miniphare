@@ -31,6 +31,8 @@ void fieldsAtParticles(Interpolator& interp, VecField const& E, VecField const& 
 void computeChargeDensityAndFlux(Interpolator& interpolator, Species& species,
                                  GridLayout const& layout, std::vector<Particle>& particles);
 
+void updateChargeDensityAndFlux(Interpolator& interpolator, Species& species,
+                                GridLayout const& layout, std::vector<Particle>& particles);
 
 
 
