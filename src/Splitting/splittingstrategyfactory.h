@@ -20,7 +20,7 @@ private:
 
 
 public:
-    SplittingStrategyFactory(std::string const& strategy, uint32 refineFactor, uint32 interpOrder)
+    SplittingStrategyFactory(std::string const& strategy, uint32 interpOrder, uint32 refineFactor)
         : strategy_{strategy}
     {
         strategyMap_["Approx1to4"]
@@ -54,10 +54,9 @@ public:
         {
             StrategyFunctor const& fonctor = *(mapIterator->second);
             strategyPtr                    = fonctor.createStrategy();
-            std::cout << "Splitting strategy found: " << mapIterator->first << std::endl;
-            std::cout << "With arguments:" << std::endl;
-            std::cout << "------> interpOrder  = " << fonctor.interpOrder() << std::endl;
-            std::cout << "------> refineFactor = " << fonctor.refineFactor() << std::endl;
+            std::cout << "Splitting strategy found: " << mapIterator->first << " ";
+            std::cout << "(order = " << fonctor.interpOrder() << ", RF = " << fonctor.refineFactor()
+                      << ")" << std::endl;
         }
         else
         {

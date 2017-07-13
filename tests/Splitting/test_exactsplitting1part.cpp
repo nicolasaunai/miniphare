@@ -114,7 +114,7 @@ public:
 
     std::vector<double> actual_weights;
 
-    const double precision = std::numeric_limits<float>::epsilon();
+    const double precision = 10. * static_cast<double>(std::numeric_limits<float>::epsilon());
 
 
     exactSplit1PartParams inputs;
@@ -137,8 +137,8 @@ public:
         uint32 refNode = inputs.referenceNode;
 
 
-        SplittingStrategyFactory factory(inputs.splitMethod, inputs.refineFactor,
-                                         inputs.interpOrder);
+        SplittingStrategyFactory factory(inputs.splitMethod, inputs.interpOrder,
+                                         inputs.refineFactor);
 
         std::unique_ptr<SplittingStrategy> strategy = factory.createSplittingStrategy();
 
@@ -188,7 +188,7 @@ public:
 
             // compute the shifted logical node
             // due to iCell displacement
-            uint32 shiftedNode = static_cast<uint32>(iCell) + refNode;
+            uint32 shiftedNode = iCell + refNode;
 
             // we now initialize a Particle at the reference node
             // Particle( weight, charge, icells, deltas, velocities )
@@ -196,8 +196,9 @@ public:
                             {{0., 0., 0.}});
 
             // mother particle x coordinate
-            double motherX
-                = static_cast<double>(mother.icell[0]) + static_cast<double>(mother.delta[0]);
+            double motherX = static_cast<double>(mother.icell[0])
+                             - coarseLayout.nbrGhostNodes(QtyCentering::primal)
+                             + static_cast<double>(mother.delta[0]);
 
             uint32 order = inputs.interpOrder;
 
@@ -229,8 +230,8 @@ public:
 
             // compute the node index
             // on the refined layout
-            SplittingStrategy::normalizeMotherPosition1D(
-                coarseLayout, refinedLayout, inputs.refineFactor, mother, normalizedMother);
+            SplittingStrategy::normalizeMotherPosition(coarseLayout, refinedLayout, mother,
+                                                       normalizedMother);
 
             std::vector<Particle> childParticles;
             strategy->split1D(normalizedMother, childParticles);
@@ -245,8 +246,9 @@ public:
             actual_weights[ik] = 0.;
             for (Particle const& child : childParticles)
             {
-                double childX
-                    = static_cast<double>(child.icell[0]) + static_cast<double>(child.delta[0]);
+                double childX = static_cast<double>(child.icell[0])
+                                - refinedLayout.nbrGhostNodes(QtyCentering::primal)
+                                + static_cast<double>(child.delta[0]);
 
                 std::vector<uint32> childInds(order + 1, 0);
                 std::vector<double> childPonds(order + 1, 0.);

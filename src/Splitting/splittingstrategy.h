@@ -10,6 +10,8 @@
 #include "utilityphare.h"
 
 #include "Plasmas/particles.h"
+#include "Plasmas/virtualparticle.h"
+
 #include "grid/gridlayout.h"
 
 
@@ -25,10 +27,15 @@ public:
 
     void split1D(const Particle& mother, std::vector<Particle>& childParticles) const;
 
-    static void normalizeMotherPosition1D(const GridLayout& coarseLayout,
-                                          const GridLayout& refinedLayout,
-                                          const uint32 refinementRatio, const Particle& mother,
-                                          Particle& normalizedMother);
+    void split1D(const VirtualParticle& mother, std::vector<VirtualParticle>& childParticles) const;
+
+    static void normalizeMotherPosition(const GridLayout& coarseLayout,
+                                        const GridLayout& refinedLayout, const Particle& mother,
+                                        Particle& normalizedMother);
+
+    static void normalizeMotherPosition(GridLayout const& coarseLayout,
+                                        GridLayout const& refinedLayout, Particle const& mother,
+                                        VirtualParticle& normalizedMother);
 
 protected:
     std::string splitMethod_;

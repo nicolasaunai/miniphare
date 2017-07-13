@@ -3,6 +3,7 @@ project (test-Splitting)
 
 set(SOURCES
      ../../src/Plasmas/particles.cpp
+     ../../src/Plasmas/virtualparticle.cpp
      ../../src/Interpolator/interpolator.cpp
      ../../src/Interpolator/particlemesh.cpp
      ../../src/grid/gridlayout.cpp
