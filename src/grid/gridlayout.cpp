@@ -123,12 +123,12 @@ Box GridLayout::getBox() const
 
 
 
-GridLayout GridLayout::subLayout(Box const& newPatch, uint32 refinement) const
+GridLayout GridLayout::subLayout(Box const& newBox, uint32 refinement) const
 {
     // compute nbrCellx, nbrCelly, nbrCellz according to the new patch Box
-    uint32 nbrCellx = static_cast<uint32>(std::ceil((newPatch.x1 - newPatch.x0) / dx_));
-    uint32 nbrCelly = static_cast<uint32>(std::ceil((newPatch.y1 - newPatch.y0) / dy_));
-    uint32 nbrCellz = static_cast<uint32>(std::ceil((newPatch.z1 - newPatch.z0) / dz_));
+    uint32 nbrCellx = static_cast<uint32>(std::ceil((newBox.x1 - newBox.x0) / dx_));
+    uint32 nbrCelly = static_cast<uint32>(std::ceil((newBox.y1 - newBox.y0) / dy_));
+    uint32 nbrCellz = static_cast<uint32>(std::ceil((newBox.z1 - newBox.z0) / dz_));
 
     // take into account refinement factor
     nbrCellx *= refinement;

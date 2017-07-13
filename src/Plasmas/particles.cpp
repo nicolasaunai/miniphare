@@ -11,6 +11,10 @@ Particle::Particle(double weight, double charge, std::array<uint32, 3> icell,
     , delta{delta}
     , v{v}
 {
-    //    Ex = 0. ; Ey = 0. ; Ez = 0. ;
-    //    Bx = 0. ; By = 0. ; Bz = 0. ;
+    Ex = 0.;
+    Ey = 0.;
+    Ez = 0.;
+    Bx = 0.;
+    By = 0.;
+    Bz = 0.;
 }

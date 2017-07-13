@@ -148,7 +148,7 @@ public:
 
     Box getBox() const;
 
-    GridLayout subLayout(Box const& newPatch, uint32 refinement) const;
+    GridLayout subLayout(Box const& newBox, uint32 refinement) const;
 
 
 

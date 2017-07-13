@@ -35,6 +35,10 @@ struct Box
     Box(double xmin, double xmax)
         : x0{xmin}
         , x1{xmax}
+        , y0{0.}
+        , y1{0.}
+        , z0{0.}
+        , z1{0.}
     {
     }
 
@@ -43,6 +47,8 @@ struct Box
         , x1{xmax}
         , y0{ymin}
         , y1{ymax}
+        , z0{0.}
+        , z1{0.}
     {
     }
 
@@ -57,6 +63,7 @@ struct Box
     }
 };
 
+
 /**
  * @brief The LogicalBox struct only stores indexes
  * Remember that indexes are relative to a
@@ -68,17 +75,17 @@ struct Box
  */
 struct LogicalBox
 {
-    uint32 ix0 = 1, ix1 = 1, iy0 = 1, iy1 = 1, iz0 = 1, iz1 = 1;
+    int32 ix0 = 1, ix1 = 1, iy0 = 1, iy1 = 1, iz0 = 1, iz1 = 1;
 
     LogicalBox() {}
 
-    LogicalBox(uint32 ix0, uint32 ix1)
+    LogicalBox(int32 ix0, int32 ix1)
         : ix0{ix0}
         , ix1{ix1}
     {
     }
 
-    LogicalBox(uint32 ix0, uint32 ix1, uint32 iy0, uint32 iy1)
+    LogicalBox(int32 ix0, int32 ix1, int32 iy0, int32 iy1)
         : ix0{ix0}
         , ix1{ix1}
         , iy0{iy0}
@@ -86,7 +93,7 @@ struct LogicalBox
     {
     }
 
-    LogicalBox(uint32 ix0, uint32 ix1, uint32 iy0, uint32 iy1, uint32 iz0, uint32 iz1)
+    LogicalBox(int32 ix0, int32 ix1, int32 iy0, int32 iy1, int32 iz0, int32 iz1)
         : ix0{ix0}
         , ix1{ix1}
         , iy0{iy0}

@@ -33,12 +33,12 @@ class FieldDiagnostic : public Diagnostic
 protected:
 
     std::vector<FieldPack> packs_;  // one pack per patch
-    std::unique_ptr<FieldDiagnosticComputeStrategy> strategy_;
+    std::unique_ptr<FieldDiagnosticComputeStrategy> strat_;
 
 
     FieldDiagnostic(uint32 id, std::string diagName, std::unique_ptr<FieldDiagnosticComputeStrategy> strat)
         : Diagnostic{id, diagName},
-          strategy_{std::move(strat)}
+          strat_{std::move(strat)}
     {}
 
 
@@ -47,7 +47,7 @@ protected:
     // routines used to access the diagnostic data per patch by export strat.
     std::vector<FieldPack> const& getPacks() const {return packs_;}
     void flushPacks();
-    std::string const& strategyName() const {return strategy_->name();}
+    std::string const& stratName() const {return strat_->name();}
 
     virtual void compute(Hierarchy const& hierarchy) final;
 

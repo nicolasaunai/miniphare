@@ -5,7 +5,7 @@
 #include <array>
 
 #include "Plasmas/particles.h"
-//#include "particleinitializerimpl.h"
+
 #include "grid/gridlayout.h"
 
 
@@ -25,6 +25,7 @@ enum class ParticleInitializerType { Fluid, Kinetic, count };
  */
 class ParticleInitializer
 {
+protected:
 public:
     virtual void loadParticles(std::vector<Particle>& particles) const = 0;
 

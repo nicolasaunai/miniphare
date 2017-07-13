@@ -48,6 +48,9 @@ public:
                       BoundaryCondition const& boundaryCondition)
         = 0;
 
+
+    double dt() const { return dt_; }
+
     std::string const& pusherType() const { return pusherType_; }
 
     LeavingParticles const& getLeavingParticles() const { return leavingParticles_; }

@@ -9,7 +9,7 @@
 #include "Splitting/splittingstrategyfactory.h"
 
 
-static const uint32 interpOrderConstant  = 1;
+static const uint32 interpOrderConstant  = 2;
 static const uint32 refineFactorConstant = 2;
 
 static const std::string defaultSplitMethod = "splitOrderN_RF2";
@@ -17,7 +17,7 @@ static const std::string defaultSplitMethod = "splitOrderN_RF2";
 
 SimpleInitializerFactory::SimpleInitializerFactory()
     : timeManager_{0.01, 0., 10.}
-    , layout_{{{0.2, 0., 0.}}, {{32, 0, 0}}, 1, "yee", Point{0., 0., 0.}, interpOrderConstant}
+    , layout_{{{0.2, 0., 0.}}, {{64, 0, 0}}, 1, "yee", Point{0., 0., 0.}, interpOrderConstant}
     ,
     // hard-coded... will come from input somehow
     interpolationOrders_{{interpOrderConstant, interpOrderConstant}}
@@ -27,9 +27,10 @@ SimpleInitializerFactory::SimpleInitializerFactory()
 }
 
 
+
 SimpleInitializerFactory::SimpleInitializerFactory(const std::string& splitMethod)
     : timeManager_{0.01, 0., 10.}
-    , layout_{{{0.2, 0., 0.}}, {{16, 0, 0}}, 1, "yee", Point{0., 0., 0.}, interpOrderConstant}
+    , layout_{{{0.2, 0., 0.}}, {{64, 0, 0}}, 1, "yee", Point{0., 0., 0.}, interpOrderConstant}
     ,
     // hard-coded... will come from input somehow
     interpolationOrders_{{interpOrderConstant, interpOrderConstant}}
@@ -37,6 +38,7 @@ SimpleInitializerFactory::SimpleInitializerFactory(const std::string& splitMetho
     , splitMethods_{std::vector<std::string>{2, splitMethod}}
 {
 }
+
 
 
 /* below are just stupid functions to make this initializer work
@@ -148,7 +150,7 @@ std::array<double, 3> electricField(double x, double y, double z)
 std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer() const
 {
     const uint32 nbrSpecies     = 2;
-    const uint32 nbrPartPerCell = 100;
+    const uint32 nbrPartPerCell = 10; // 100
     double chargeProton1 = 1., chargeProton2 = 1.;
 
     // should be obtained from
@@ -323,5 +325,6 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
 
 std::unique_ptr<Time> SimpleInitializerFactory::createTimeManager() const
 {
-    return std::unique_ptr<Time>{new Time{1.e-3, 0., 100.}};
+    // return std::unique_ptr<Time>{new Time{1.e-2, 0., 0.1}};
+    return std::unique_ptr<Time>{new Time{1.e-2, 0., 10.}};
 }

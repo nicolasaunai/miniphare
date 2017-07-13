@@ -13,6 +13,8 @@
 class Electromag
 {
 public:
+    Electromag();
+
     Electromag(std::array<AllocSizeT, NBR_COMPO> E_AllocSizes,
                std::array<AllocSizeT, NBR_COMPO> B_AllocSizes, std::string name = "");
 
