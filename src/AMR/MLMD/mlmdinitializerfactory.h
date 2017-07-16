@@ -3,20 +3,19 @@
 
 #include <array>
 
-#include "Initializer/ionsinitializer.h"
 #include "Initializer/electromaginitializer.h"
+#include "Initializer/initializerfactory.h"
+#include "Initializer/ionsinitializer.h"
 #include "Initializer/ohminitializer.h"
 #include "Initializer/solverinitializer.h"
-#include "Initializer/initializerfactory.h"
 
-#include "AMR/patch.h"
 #include "AMR/particleselector.h"
+#include "AMR/patch.h"
 
 #include "Splitting/splittingstrategy.h"
 
-#include "AMR/patchinfo.h"
 #include "AMR/MLMD/pra.h"
-
+#include "AMR/patchinfo.h"
 
 
 
@@ -42,32 +41,32 @@ private:
     std::string pusher_;
     std::vector<std::string> splitMethods_;
 
-    void buildIonsInitializer_(IonsInitializer & ionInit,
-                               std::unique_ptr<ParticleSelector> selector) const;
+    void buildIonsInitializer_(IonsInitializer& ionInit,
+                               std::shared_ptr<ParticleSelector> selector) const;
 
 
 public:
-
-    MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch,
-                           Box const& newPatchCoords,
-                           GridLayout const& refinedLayout,
-                           PatchInfo const& patchInfo);
+    MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch, Box const& newPatchCoords,
+                           GridLayout const& refinedLayout, PatchInfo const& patchInfo);
 
     virtual Box getBox() const override { return refinedLayout_.getBox(); }
     virtual GridLayout const& gridLayout() const override { return refinedLayout_; }
     virtual double timeStep() const override { return dt_; }
     virtual std::string const& pusher() const override { return pusher_; }
-    virtual std::vector<uint32> const& interpolationOrders() const override { return interpolationOrders_; }
-    virtual std::vector<std::string> const & splittingStrategies() const override { return splitMethods_; }
+    virtual std::vector<uint32> const& interpolationOrders() const override
+    {
+        return interpolationOrders_;
+    }
+    virtual std::vector<std::string> const& splittingStrategies() const override
+    {
+        return splitMethods_;
+    }
 
 
     virtual std::unique_ptr<IonsInitializer> createIonsInitializer() const override;
-    virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const  override;
-    virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const  override;
+    virtual std::unique_ptr<ElectromagInitializer> createElectromagInitializer() const override;
+    virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
 };
 
 #endif // MLMDINITIALIZERFACTORY_H
-
-
-

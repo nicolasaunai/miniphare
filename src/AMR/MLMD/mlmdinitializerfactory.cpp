@@ -54,7 +54,7 @@ MLMDInitializerFactory::MLMDInitializerFactory(std::shared_ptr<Patch> parentPatc
  * @param selector
  */
 void MLMDInitializerFactory::buildIonsInitializer_(IonsInitializer& ionInit,
-                                                   std::unique_ptr<ParticleSelector> selector) const
+                                                   std::shared_ptr<ParticleSelector> selector) const
 {
     Ions const& parentIons = parentPatch_->ions();
 
@@ -67,10 +67,8 @@ void MLMDInitializerFactory::buildIonsInitializer_(IonsInitializer& ionInit,
 
         Species const& species = parentIons.species(ispe);
 
-        selector->interpOrder = interpolationOrders_[ispe];
-
         std::unique_ptr<ParticleInitializer> particleInit{
-            new MLMDParticleInitializer{species, std::move(selector), std::move(splitting),
+            new MLMDParticleInitializer{species, selector, std::move(splitting),
                                         parentPatch_->layout(), refinedLayout_, refinementRatio_}};
 
         ionInit.masses.push_back(parentIons.species(ispe).mass());
@@ -98,10 +96,13 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
     /* this routine creates an ion initializer with a Patch Choice function. */
     std::unique_ptr<IonsInitializer> ionInitPtr{new IonsInitializer{}};
 
-    std::unique_ptr<ParticleSelector> selectorPtr{
-        new isInBox{parentPatch_->coordinates(), newPatchCoords_, parentPatch_->layout().dxdydz()}};
+    // the ParticleSelector will be shared by
+    // multiple species
+    std::shared_ptr<ParticleSelector> selectorPtr{
+        new isInBox{parentPatch_->coordinates(), newPatchCoords_, parentPatch_->layout().dxdydz(),
+                    parentPatch_->layout().nbrGhostNodes(QtyCentering::primal)}};
 
-    buildIonsInitializer_(*ionInitPtr, std::move(selectorPtr));
+    buildIonsInitializer_(*ionInitPtr, selectorPtr);
 
     return ionInitPtr;
 }
@@ -195,7 +196,8 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
         // the selector will check whether particles from the parent Box
         // belong to the boundary layout box
         std::unique_ptr<ParticleSelector> selectorPtr{new isInBox{
-            parentPatch_->coordinates(), praEdgeLayout.getBox(), parentPatch_->layout().dxdydz()}};
+            parentPatch_->coordinates(), praEdgeLayout.getBox(), parentPatch_->layout().dxdydz(),
+            parentPatch_->layout().nbrGhostNodes(QtyCentering::primal)}};
 
         buildIonsInitializer_(*ionInitPtr, std::move(selectorPtr));
 

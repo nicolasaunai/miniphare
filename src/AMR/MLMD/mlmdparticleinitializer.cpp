@@ -15,7 +15,7 @@ void MLMDParticleInitializer::loadParticles(std::vector<Particle>& particlesArra
     for (Particle const& mother : particleSource_.particles())
     {
         // look if the 'big' particle is within the Patch domain
-        if (selector(mother))
+        if (selector.pick(mother))
         {
             SplittingStrategy::normalizeMotherPosition(coarseLayout_, refinedLayout_, mother,
                                                        normalizedMother);

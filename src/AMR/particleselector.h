@@ -4,7 +4,7 @@
 #include "utilityphare.h"
 
 #include "Plasmas/particles.h"
-
+#include "grid/gridlayoutdefs.h"
 
 /**
  * @brief The ParticleSelector class is an interface, it mainly
@@ -22,16 +22,14 @@
 class ParticleSelector
 {
 public:
-    uint32 interpOrder;
+    ParticleSelector() {}
 
-    ParticleSelector(uint32 order)
-        : interpOrder{order}
-    {
-    }
+    virtual bool pick(Particle const& particle) const = 0;
 
-    virtual bool operator()(Particle const& particle) const = 0;
-    virtual ~ParticleSelector()                             = default;
+    virtual ~ParticleSelector() = default;
 };
+
+
 
 
 /**
@@ -51,35 +49,41 @@ private:
     double dy_;
     double dz_;
 
+    uint32 nbrGhosts_;
+
 public:
-    isInBox(Box const& parentBox, Box const& newBox, std::array<double, 3> dxdydz)
-        : ParticleSelector(4)
-        , parentBox_{parentBox}
+    isInBox(Box const& parentBox, Box const& newBox, std::array<double, 3> dxdydz, uint32 nbrGhosts)
+        : parentBox_{parentBox}
         , newBox_{newBox}
         , dx_{dxdydz[0]}
         , dy_{dxdydz[1]}
         , dz_{dxdydz[2]}
+        , nbrGhosts_{nbrGhosts}
     {
     }
 
-    inline bool operator()(Particle const& particle) const override
+
+    inline bool pick(Particle const& particle) const override
     {
-        double posx = (particle.icell[0] + particle.delta[0]) * dx_ + parentBox_.x0;
-        double posy = (particle.icell[1] + particle.delta[1]) * dy_ + parentBox_.y0;
-        double posz = (particle.icell[2] + particle.delta[2]) * dz_ + parentBox_.z0;
+        double posx = (static_cast<int32>(particle.icell[0]) - static_cast<int32>(nbrGhosts_)
+                       + particle.delta[0])
+                          * dx_
+                      + parentBox_.x0;
+        double posy = (static_cast<int32>(particle.icell[1]) - static_cast<int32>(nbrGhosts_)
+                       + particle.delta[1])
+                          * dy_
+                      + parentBox_.y0;
+        double posz = (static_cast<int32>(particle.icell[2]) - static_cast<int32>(nbrGhosts_)
+                       + particle.delta[2])
+                          * dz_
+                      + parentBox_.z0;
 
-        // In order to ensure all split particles belong to the box,
-        // we must take into account the total size of the particle
-        double halfSpreadx = 0.5 * (interpOrder + 1) * dx_;
-        double halfSpready = 0.5 * (interpOrder + 1) * dy_;
-        double halfSpreadz = 0.5 * (interpOrder + 1) * dz_;
-
-        double xlower = newBox_.x0 + halfSpreadx;
-        double xupper = newBox_.x1 - halfSpreadx;
-        double ylower = newBox_.y0 + halfSpready;
-        double yupper = newBox_.y1 - halfSpready;
-        double zlower = newBox_.z0 + halfSpreadz;
-        double zupper = newBox_.z1 - halfSpreadz;
+        double xlower = newBox_.x0;
+        double xupper = newBox_.x1;
+        double ylower = newBox_.y0;
+        double yupper = newBox_.y1;
+        double zlower = newBox_.z0;
+        double zupper = newBox_.z1;
 
         // return true if the particle is in the box
         return posx >= xlower && posx <= xupper && posy >= ylower && posy <= yupper
@@ -91,6 +95,199 @@ public:
 };
 
 
+
+
+class isInAndCloseToTheBox : public ParticleSelector
+{
+private:
+    Box parentBox_;
+    Box newBox_;
+
+    double dx_;
+    double dy_;
+    double dz_;
+
+    uint32 nbrGhosts_;
+
+    uint32 interpOrder_;
+
+    double halfSpreadx_;
+    double halfSpready_;
+    double halfSpreadz_;
+
+    void computeNearPRARegion_()
+    {
+        // In 1D, if the mother particle position is farther than halfSpreadx_
+        // from the physical boundary of the domain
+        // then no child particle will enter the physical domain
+        // should be 0.25 * (interpOrder_ + 1) * dx_
+        halfSpreadx_ = 0.25 * (interpOrder_ + 1) * dx_;
+        halfSpready_ = 0.25 * (interpOrder_ + 1) * dy_;
+        halfSpreadz_ = 0.25 * (interpOrder_ + 1) * dz_;
+    }
+
+public:
+    isInAndCloseToTheBox(Box const& parentBox, Box const& newBox, std::array<double, 3> dxdydz,
+                         uint32 nbrGhosts, uint32 interpOrder)
+        : parentBox_{parentBox}
+        , newBox_{newBox}
+        , dx_{dxdydz[0]}
+        , dy_{dxdydz[1]}
+        , dz_{dxdydz[2]}
+        , nbrGhosts_{nbrGhosts}
+        , interpOrder_{interpOrder}
+        , halfSpreadx_{0.}
+        , halfSpready_{0.}
+        , halfSpreadz_{0.}
+    {
+        computeNearPRARegion_();
+    }
+
+
+    inline bool pick(Particle const& particle) const override
+    {
+        double posx = (static_cast<int32>(particle.icell[0]) - static_cast<int32>(nbrGhosts_)
+                       + particle.delta[0])
+                          * dx_
+                      + parentBox_.x0;
+        double posy = (static_cast<int32>(particle.icell[1]) - static_cast<int32>(nbrGhosts_)
+                       + particle.delta[1])
+                          * dy_
+                      + parentBox_.y0;
+        double posz = (static_cast<int32>(particle.icell[2]) - static_cast<int32>(nbrGhosts_)
+                       + particle.delta[2])
+                          * dz_
+                      + parentBox_.z0;
+
+        double xlower = newBox_.x0 - halfSpreadx_;
+        double xupper = newBox_.x1 + halfSpreadx_;
+        double ylower = newBox_.y0 - halfSpready_;
+        double yupper = newBox_.y1 + halfSpready_;
+        double zlower = newBox_.z0 - halfSpreadz_;
+        double zupper = newBox_.z1 + halfSpreadz_;
+
+        // return true if the particle is in the box
+        return posx >= xlower && posx <= xupper && posy >= ylower && posy <= yupper
+               && posz >= zlower && posz <= zupper;
+    }
+
+
+    virtual ~isInAndCloseToTheBox() {}
+};
+
+
+
+
+class isNearBorder : public ParticleSelector
+{
+private:
+    Box parentBox_;
+    Box newBox_;
+
+    double dx_;
+    double dy_;
+    double dz_;
+
+    uint32 nbrGhosts_;
+
+    uint32 interpOrder_;
+
+    Direction direction_;
+
+    double halfSpreadx_;
+    double halfSpready_;
+    double halfSpreadz_;
+
+    // AVOID INITIALIZE split particles in ghost cells
+    void computeNearPRARegion_()
+    {
+        // In 1D, if the mother particle position is farther than halfSpreadx_
+        // from the physical boundary of the domain
+        // then no child particle will enter the physical domain
+        // should be 0.25 * (interpOrder_ + 1) * dx_
+        halfSpreadx_ = 0.25 * (interpOrder_ + 1) * dx_;
+        halfSpready_ = 0.25 * (interpOrder_ + 1) * dy_;
+        halfSpreadz_ = 0.25 * (interpOrder_ + 1) * dz_;
+    }
+
+public:
+    isNearBorder(Box const& parentBox, Box const& newBox, std::array<double, 3> dxdydz,
+                 uint32 nbrGhosts, uint32 interpOrder, Direction direction)
+        : parentBox_{parentBox}
+        , newBox_{newBox}
+        , dx_{dxdydz[0]}
+        , dy_{dxdydz[1]}
+        , dz_{dxdydz[2]}
+        , nbrGhosts_{nbrGhosts}
+        , interpOrder_{interpOrder}
+        , direction_{direction}
+        , halfSpreadx_{0.}
+        , halfSpready_{0.}
+        , halfSpreadz_{0.}
+    {
+        computeNearPRARegion_();
+    }
+
+
+    inline bool pick(Particle const& particle) const override
+    {
+        bool inBorder{true};
+
+        double lpos = 0.;
+
+        double lmin_out = 0.;
+        double lmin_pra = 0.;
+        double lmax_pra = 0.;
+        double lmax_out = 0.;
+
+        switch (direction_)
+        {
+            case Direction::X:
+                lpos = (static_cast<int32>(particle.icell[0]) - static_cast<int32>(nbrGhosts_)
+                        + particle.delta[0])
+                           * dx_
+                       + parentBox_.x0;
+
+                lmin_out = newBox_.x0 - halfSpreadx_;
+                lmin_pra = newBox_.x0;
+                lmax_pra = newBox_.x1;
+                lmax_out = newBox_.x1 + halfSpreadx_;
+                break;
+
+            case Direction::Y:
+                lpos = (static_cast<int32>(particle.icell[1]) - static_cast<int32>(nbrGhosts_)
+                        + particle.delta[1])
+                           * dy_
+                       + parentBox_.y0;
+
+                lmin_out = newBox_.y0 - halfSpready_;
+                lmin_pra = newBox_.y0;
+                lmax_pra = newBox_.y1;
+                lmax_out = newBox_.y1 + halfSpready_;
+                break;
+
+            case Direction::Z:
+                lpos = (static_cast<int32>(particle.icell[2]) - static_cast<int32>(nbrGhosts_)
+                        + particle.delta[2])
+                           * dz_
+                       + parentBox_.z0;
+
+                lmin_out = newBox_.z0 - halfSpreadz_;
+                lmin_pra = newBox_.z0;
+                lmax_pra = newBox_.z1;
+                lmax_out = newBox_.z1 + halfSpreadz_;
+                break;
+        }
+
+        inBorder = (lpos >= lmin_out && lpos < lmin_pra) || (lpos > lmax_pra && lpos <= lmax_out);
+
+        // return true if the particle belongs to the border
+        return inBorder;
+    }
+
+
+    virtual ~isNearBorder() {}
+};
 
 
 #endif // PARTICLESELECTOR_H
