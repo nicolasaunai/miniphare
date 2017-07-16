@@ -21,21 +21,6 @@
 
 class Solver
 {
-public:
-    Solver(GridLayout const& layout, double dt,
-           std::unique_ptr<SolverInitializer> solverInitializer);
-
-    Solver(Solver const& source) = delete;
-    Solver& operator=(Solver const& source) = delete;
-
-    Solver(Solver&& toMove) = default;
-    Solver& operator=(Solver&& source) = default;
-
-    void init(Ions& ions, BoundaryCondition const& boundaryCondition);
-
-    void solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons,
-                   BoundaryCondition const& boundaryCondition);
-
 private:
     const uint32 predictor1_ = 0;
     const uint32 predictor2_ = 1;
@@ -59,6 +44,21 @@ private:
 
     void moveIons_(VecField const& E, VecField const& B, Ions& ions,
                    BoundaryCondition const& boundaryConditon, uint32 const predictorStep);
+
+public:
+    Solver(GridLayout const& layout, double dt,
+           std::unique_ptr<SolverInitializer> solverInitializer);
+
+    Solver(Solver const& source) = delete;
+    Solver& operator=(Solver const& source) = delete;
+
+    Solver(Solver&& toMove) = default;
+    Solver& operator=(Solver&& source) = default;
+
+    void init(Ions& ions, BoundaryCondition const& boundaryCondition);
+
+    void solveStepPPC(Electromag& EMFields, Ions& ions, Electrons& electrons,
+                      BoundaryCondition const& boundaryCondition);
 };
 
 

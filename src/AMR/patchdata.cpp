@@ -43,5 +43,5 @@ void PatchData::initPatchGhostDomain()
 
 void PatchData::solveStep()
 {
-    solver_.solveStep(EMfields_, ions_, electrons_, *boundaryCondition_);
+    solver_.solveStepPPC(EMfields_, ions_, electrons_, *boundaryCondition_);
 }

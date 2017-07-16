@@ -85,8 +85,8 @@ void Solver::init(Ions& ions, BoundaryCondition const& boundaryCondition)
 
 
 
-void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons,
-                       BoundaryCondition const& boundaryCondition)
+void Solver::solveStepPPC(Electromag& EMFields, Ions& ions, Electrons& electrons,
+                          BoundaryCondition const& boundaryCondition)
 {
     VecField& B     = EMFields.getB();
     VecField& E     = EMFields.getE();
@@ -171,7 +171,14 @@ void Solver::solveStep(Electromag& EMFields, Ions& ions, Electrons& electrons,
     // update ions at n+1 in place, i.e. overwritting ions at n
     moveIons_(Eavg, Bavg, ions, boundaryCondition, predictor2_);
 
+    // ------------------------------------------------------
+    //                INCOMING PARTICLE BC
+    // ------------------------------------------------------
+    boundaryCondition.applyIncomingParticleBC(ions, pusher_->pusherType(), pusher_->dt());
 
+    // TODO : just for debug use, remove asap
+    // ions.computeChargeDensity();
+    // ions.computeBulkVelocity();
 
     // -----------------------------------------------------------------------
     //
