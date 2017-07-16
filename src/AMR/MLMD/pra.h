@@ -2,40 +2,47 @@
 #define PRA_H
 
 
-#include <vector>
 #include <array>
+#include <vector>
 
+#include "grid/gridlayout.h"
 #include "types.h"
 #include "utilityphare.h"
-#include "grid/gridlayout.h"
+
+
 
 
 struct PRA
 {
-    std::array<uint32, 3> PRAwidth ;
+    std::array<int32, 3> PRAwidth;
 
     std::vector<LogicalBox> logicDecomposition;
     std::vector<Box> boxDecomposition;
 
     PRA() {}
 
-    PRA( std::array<uint32, 3> PRAwidth,
-         std::vector<LogicalBox> logicBoxes,
-         std::vector<Box> boxes )
-        : PRAwidth{PRAwidth},
-          logicDecomposition{logicBoxes},
-          boxDecomposition{boxes} {}
+    PRA(std::array<int32, 3> PRAwidth, std::vector<LogicalBox> logicBoxes, std::vector<Box> boxes)
+        : PRAwidth{PRAwidth}
+        , logicDecomposition{logicBoxes}
+        , boxDecomposition{boxes}
+    {
+    }
 };
+
+static const int32 PRAphysicalNodeNbr = 5;
+
+// ideally this should depend on the interpolation order
+// but we don't really care
+static const int32 PRAincompleteNodeNbr = 3;
 
 
 struct PRALimits
 {
-    std::array<uint32, 2> innerLimitsIndexes;
-    std::array<uint32, 2> outerLimitsIndexes;
+    std::array<int32, 2> innerLimitsIndexes;
+    std::array<int32, 2> outerLimitsIndexes;
     std::array<double, 2> innerLimitsCoords;
     std::array<double, 2> outerLimitsCoords;
 };
-
 
 
 
