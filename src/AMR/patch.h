@@ -5,9 +5,9 @@
 // data structure Tree
 
 #include "AMR/patchdata.h"
-#include "AMR/refinmentanalyser.h"
 #include "Plasmas/ions.h"
 #include "utilityphare.h"
+
 
 
 
@@ -30,6 +30,8 @@ private:
     uint32 id_;
     Box coordinates_;
 
+    double dt_;
+
     GridLayout layout_;
 
     PatchData data_;
@@ -39,8 +41,9 @@ private:
 
 
 public:
-    explicit Patch(Box coordinates, GridLayout const& layout, PatchData&& patchData)
+    explicit Patch(Box coordinates, double dt, GridLayout const& layout, PatchData&& patchData)
         : coordinates_{coordinates}
+        , dt_{dt}
         , layout_{layout}
         , data_{std::move(patchData)}
         , parent_{nullptr}
@@ -58,7 +61,15 @@ public:
 
     void init();
 
-    void evolve();
+    void solveStep();
+
+    uint32 population() const;
+
+
+    bool hasChildren() const { return children_.size() > 0; }
+
+    uint32 nbrChildren() const { return children_.size(); }
+
 
     Ions const& ions() const { return data_.ions(); }
 
@@ -66,9 +77,16 @@ public:
 
     Box const& coordinates() const { return coordinates_; }
 
+    double timeStep() const { return dt_; }
+
     GridLayout const& layout() const { return layout_; }
 
     std::shared_ptr<Patch> parent() const { return parent_; }
+
+
+    std::shared_ptr<Patch> children(uint32 ik) const { return children_[ik]; }
+
+    PatchData& data() { return data_; }
 
     PatchData const& data() const { return data_; }
 

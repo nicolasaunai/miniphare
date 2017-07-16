@@ -41,8 +41,9 @@ int main(int argc, char *argv[])
     DiagnosticsManager diagnosticManager{initFactory->createDiagnosticInitializer()};
 
 
-    Hierarchy patchHierarchy{std::make_shared<Patch>(
-        initFactory->getBox(), initFactory->gridLayout(), PatchData{*initFactory})};
+    Hierarchy patchHierarchy{std::make_shared<Patch>(initFactory->getBox(), initFactory->timeStep(),
+                                                     initFactory->gridLayout(),
+                                                     PatchData{*initFactory})};
 
     MLMD mlmdManager{*initFactory};
     mlmdManager.initializeRootLevel(patchHierarchy);

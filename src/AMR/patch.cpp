@@ -7,17 +7,21 @@ void Patch::init()
     std::cout << "init Patch...";
     data_.initPatchPhysicalDomain();
     std::cout << " Patch initialization: OK\n";
-
-    data_.initPatchGhostDomain();
-    std::cout << " PRA initialization: OK\n";
 }
 
 
 
-void Patch::evolve()
+void Patch::solveStep()
 {
     data_.solveStep();
 }
+
+
+uint32 Patch::population() const
+{
+    return data_.population();
+}
+
 
 
 

@@ -3,6 +3,7 @@
 
 
 
+
 #include "Electromag/electromag.h"
 #include "Initializer/initializerfactory.h"
 #include "Plasmas/electrons.h"
@@ -10,6 +11,8 @@
 #include "Solver/solver.h"
 #include "grid/gridlayout.h"
 #include "types.h"
+
+
 
 
 /**
@@ -28,9 +31,6 @@ private:
     // TODO: Private implementation to avoid a pointer here
     std::unique_ptr<BoundaryCondition> boundaryCondition_;
 
-
-
-
 public:
     PatchData(InitializerFactory const& initFactory);
 
@@ -44,13 +44,17 @@ public:
 
     void initPatchPhysicalDomain();
 
-    void initPatchGhostDomain();
+
+    uint32 population() const;
 
     Electromag const& EMfields() const { return EMfields_; }
 
     Solver const& solver() const { return solver_; }
 
+    Ions& ions() { return ions_; }
     Ions const& ions() const { return ions_; }
+
+    BoundaryCondition* boundaryCondition() { return boundaryCondition_.get(); }
 
     void solveStep();
 };
