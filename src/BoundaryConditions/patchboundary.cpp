@@ -34,7 +34,14 @@ void PatchBoundary::applyBulkBC(VecField& Vi, GridLayout const& layout) const
 }
 
 
-void PatchBoundary::applyParticleBC(std::vector<Particle>& particleArray,
-                                    LeavingParticles const& leavingParticles) const
+void PatchBoundary::applyOutgoingParticleBC(std::vector<Particle>& particleArray,
+                                            LeavingParticles const& leavingParticles) const
+{
+}
+
+
+void PatchBoundary::applyIncomingParticleBC(BoundaryCondition const& temporaryBC, Pusher& pusher,
+                                            GridLayout const& patchLayout,
+                                            std::vector<Particle>& patchParticles, uint32 iesp)
 {
 }

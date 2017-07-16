@@ -22,13 +22,6 @@ DomainBoundaryCondition::DomainBoundaryCondition(GridLayout layout,
 }
 
 
-void DomainBoundaryCondition::initializeGhostArea()
-{
-    // nothing to implement for now
-    // This method might be used to handle a flow
-    // of incoming plasma
-}
-
 
 void DomainBoundaryCondition::applyMagneticBC(VecField& B) const
 {
@@ -79,14 +72,21 @@ void DomainBoundaryCondition::applyBulkBC(VecField& Vi) const
 
 
 
-void DomainBoundaryCondition::applyParticleBC(std::vector<Particle>& particleArray,
-                                              LeavingParticles const& leavingParticles) const
+void DomainBoundaryCondition::applyOutgoingParticleBC(
+    std::vector<Particle>& particleArray, LeavingParticles const& leavingParticles) const
 {
     for (auto&& bc : boundaries_)
     {
-        bc->applyParticleBC(particleArray, leavingParticles);
+        bc->applyOutgoingParticleBC(particleArray, leavingParticles);
     }
 }
+
+
+void DomainBoundaryCondition::applyIncomingParticleBC(Ions& ions, std::string const& pusher,
+                                                      double const& dt) const
+{
+}
+
 
 
 DomainBoundaryCondition::~DomainBoundaryCondition()

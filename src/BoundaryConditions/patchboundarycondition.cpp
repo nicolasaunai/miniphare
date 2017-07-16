@@ -75,7 +75,13 @@ void PatchBoundaryCondition::applyBulkBC(VecField& Vi) const
 
 
 
-void PatchBoundaryCondition::applyParticleBC(std::vector<Particle>& particleArray,
-                                             LeavingParticles const& leavingParticles) const
+void PatchBoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& particleArray,
+                                                     LeavingParticles const& leavingParticles) const
+{
+}
+
+
+void PatchBoundaryCondition::applyIncomingParticleBC(Ions& ions, std::string const& pusher,
+                                                     double const& dt) const
 {
 }

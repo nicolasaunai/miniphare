@@ -32,7 +32,7 @@ void ModifiedBoris::move(std::vector<Particle> const& partIn, std::vector<Partic
 
     // advance partOut from partIn(n) to n+1/2
     prePush_(partIn, partOut);
-    boundaryCondition.applyParticleBC(partOut, leavingParticles_);
+    boundaryCondition.applyOutgoingParticleBC(partOut, leavingParticles_);
 
     // get fields(n+1/2) at position partOut now at n+11/2
     fieldsAtParticles(interpolator, E, B, layout_, partOut);
@@ -46,7 +46,7 @@ void ModifiedBoris::move(std::vector<Particle> const& partIn, std::vector<Partic
 
     postPush_(partOut, partOut);
 
-    boundaryCondition.applyParticleBC(partOut, leavingParticles_);
+    boundaryCondition.applyOutgoingParticleBC(partOut, leavingParticles_);
 }
 
 
@@ -83,7 +83,7 @@ void ModifiedBoris::prePush_(std::vector<Particle> const& particleIn,
             partOut.delta[dim] = delta - iCell;
 
             // update the logical node
-            partOut.icell[dim] = static_cast<uint32>(iCell) + partIn.icell[dim];
+            partOut.icell[dim] = iCell + partIn.icell[dim];
 
             // check if the particle is now leaving the patch
             // and if it does, store it in the leavingParticles buffers

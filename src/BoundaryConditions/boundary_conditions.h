@@ -5,11 +5,12 @@
 #include <vector>
 
 #include "Field/field.h"
+#include "Plasmas/ions.h"
 #include "Plasmas/particles.h"
 #include "leavingparticles.h"
 #include "vecfield/vecfield.h"
 
-enum class BoundaryType { Periodic };
+enum class BoundaryType { Periodic, Frozen };
 
 /**
  * @brief The BoundaryCondition class is the interface used in the Solver
@@ -21,7 +22,7 @@ enum class BoundaryType { Periodic };
 class BoundaryCondition
 {
 public:
-    BoundaryCondition(){};
+    BoundaryCondition() {}
 
     virtual ~BoundaryCondition() = default;
 
@@ -30,8 +31,12 @@ public:
     virtual void applyCurrentBC(VecField& J) const  = 0;
     virtual void applyDensityBC(Field& N) const     = 0;
     virtual void applyBulkBC(VecField& Vi) const    = 0;
-    virtual void applyParticleBC(std::vector<Particle>& particleArray,
-                                 LeavingParticles const& leavingParticles) const = 0;
+    virtual void applyOutgoingParticleBC(std::vector<Particle>& particleArray,
+                                         LeavingParticles const& leavingParticles) const = 0;
+    virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusher,
+                                         double const& dt) const = 0;
+
+    virtual bool hasARepopulationArea() const = 0;
 
     virtual void initializeGhostArea() = 0;
 };

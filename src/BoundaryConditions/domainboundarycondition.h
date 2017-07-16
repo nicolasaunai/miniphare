@@ -3,6 +3,7 @@
 
 #include <vector>
 
+
 #include "BoundaryConditions/boundary.h"
 #include "BoundaryConditions/boundary_conditions.h"
 #include "Plasmas/particles.h"
@@ -38,10 +39,14 @@ public:
     virtual void applyCurrentBC(VecField& J) const override;
     virtual void applyDensityBC(Field& N) const override;
     virtual void applyBulkBC(VecField& Vi) const override;
-    virtual void applyParticleBC(std::vector<Particle>& particleArray,
-                                 LeavingParticles const& leavingParticles) const override;
+    virtual void applyOutgoingParticleBC(std::vector<Particle>& particleArray,
+                                         LeavingParticles const& leavingParticles) const override;
+    virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusher,
+                                         double const& dt) const override;
 
-    virtual void initializeGhostArea() override;
+    virtual bool hasARepopulationArea() const override { return false; }
+
+    virtual void initializeGhostArea() override {}
 
     virtual ~DomainBoundaryCondition();
 };

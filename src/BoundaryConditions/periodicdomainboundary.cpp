@@ -178,11 +178,13 @@ void PeriodicDomainBoundary::makeMomentPeriodic1D_(Field& moment, GridLayout con
 
 void PeriodicDomainBoundary::makeMomentPeriodic2D_(Field& moment, GridLayout const& layout) const
 {
+    throw std::runtime_error("Not Implemented");
 }
 
 
 void PeriodicDomainBoundary::makeMomentPeriodic3D_(Field& moment, GridLayout const& layout) const
 {
+    throw std::runtime_error("Not Implemented");
 }
 
 
@@ -224,11 +226,19 @@ void makeParticlesPeriodic(std::vector<Particle>& particleArray,
 
 
 
-void PeriodicDomainBoundary::applyParticleBC(std::vector<Particle>& particleArray,
-                                             LeavingParticles const& leavingParticles) const
+void PeriodicDomainBoundary::applyOutgoingParticleBC(std::vector<Particle>& particleArray,
+                                                     LeavingParticles const& leavingParticles) const
 {
     if (edge_ == Edge::Xmin || edge_ == Edge::Ymin || edge_ == Edge::Zmin)
     {
         makeParticlesPeriodic(particleArray, leavingParticles);
     }
+}
+
+
+void PeriodicDomainBoundary::applyIncomingParticleBC(BoundaryCondition const& temporaryBC,
+                                                     Pusher& pusher, GridLayout const& patchLayout,
+                                                     std::vector<Particle>& patchParticles,
+                                                     uint32 iesp)
+{
 }
