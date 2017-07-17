@@ -18,12 +18,14 @@ private:
     Species const& particleSource_;
 
     std::shared_ptr<ParticleSelector> selector_;
+
     std::unique_ptr<SplittingStrategy> strategy_;
 
     GridLayout coarseLayout_;
     GridLayout refinedLayout_;
 
     const uint32 refinementRatio_;
+
 
 public:
     MLMDParticleInitializer(Species const& particleSource,
