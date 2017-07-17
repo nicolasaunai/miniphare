@@ -79,7 +79,65 @@ void PatchBoundary::applyOutgoingParticleBC(std::vector<Particle>& particleArray
 void PatchBoundary::removeOutgoingParticles_(std::vector<Particle>& particleArray,
                                              LeavingParticles const& leavingParticles) const
 {
+    // loop on dimensions of leavingParticles.particleIndicesAtMin/Max
+    uint32 nbDims = leavingParticles.particleIndicesAtMax.size();
+
+    for (uint32 dim = 0; dim < nbDims; ++dim)
+    {
+        std::vector<uint32> const& leavingAtMin = leavingParticles.particleIndicesAtMin[dim];
+        std::vector<uint32> const& leavingAtMax = leavingParticles.particleIndicesAtMax[dim];
+
+        std::vector<uint32> leavingIndexes;
+        leavingIndexes.reserve(leavingAtMin.size() + leavingAtMax.size());
+
+        leavingIndexes.insert(leavingIndexes.end(), leavingAtMin.begin(), leavingAtMin.end());
+        leavingIndexes.insert(leavingIndexes.end(), leavingAtMax.begin(), leavingAtMax.end());
+
+        removeParticles_(leavingIndexes, particleArray);
+    }
 }
+
+
+/**
+ * @brief PatchBoundary::removeParticles_
+ * All particles indexed in leavingIndexes are removed from
+ * particleArray
+ *
+ *
+ * Successful test with Coliru
+ */
+void PatchBoundary::removeParticles_(std::vector<uint32> const& leavingIndexes,
+                                     std::vector<Particle>& particleArray) const
+{
+    if (leavingIndexes.size() > 0)
+    {
+        std::vector<Particle> particleBuffer;
+
+        particleBuffer.reserve(particleArray.size());
+        particleBuffer.clear();
+
+        uint32 iremove = 0;
+
+        for (uint32 ipart = 0; ipart < particleArray.size(); ++ipart)
+        {
+            if (ipart != leavingIndexes[iremove])
+            {
+                particleBuffer.push_back(particleArray[ipart]);
+            }
+
+            if (ipart >= leavingIndexes[iremove])
+            {
+                if (iremove < leavingIndexes.size() - 1)
+                {
+                    iremove++;
+                }
+            }
+        }
+
+        std::swap(particleBuffer, particleArray);
+    }
+}
+
 
 
 void PatchBoundary::applyIncomingParticleBC(BoundaryCondition const& temporaryBC, Pusher& pusher,
