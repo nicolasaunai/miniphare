@@ -10,6 +10,7 @@
 #include "AMR/MLMD/mlmdinitializerfactory.h"
 #include "AMR/MLMD/mlmdparticleinitializer.h"
 
+
 #include "Electromag/electromag.h"
 
 #include "Interpolator/interpolator.h"
@@ -19,62 +20,6 @@
 #include "BoundaryConditions/boundary_conditions.h"
 #include "BoundaryConditions/patchboundary.h"
 #include "BoundaryConditions/patchboundarycondition.h"
-
-
-
-
-MLMDInitializerFactory::MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch,
-                                               Box const& newPatchCoords,
-                                               GridLayout const& refinedLayout,
-                                               PatchInfo const& patchInfo)
-    : newPatchCoords_{newPatchCoords}
-    , refinedLayout_{refinedLayout}
-    , parentPatch_{parentPatch}
-    , refinementRatio_{patchInfo.refinementRatio}
-    , interpolationOrders_{patchInfo.interpOrders}
-    , pusher_{patchInfo.pusher}
-    , splitMethods_{patchInfo.splitStrategies}
-{
-}
-
-
-
-
-/**
- * @brief MLMDInitializerFactory::buildIonsInitializer_
- *
- * We build the private attributes of MLMDParticleInitializer,
- * among those attributes the following depend on
- * the species:
- * - the particle source (known from the parent)
- * - the splitting strategy, because each species has its
- * own interpolation order
- *
- * @param ionInit
- * @param selector
- */
-void MLMDInitializerFactory::buildIonsInitializer_(IonsInitializer& ionInit,
-                                                   std::shared_ptr<ParticleSelector> selector) const
-{
-    Ions const& parentIons = parentPatch_->ions();
-
-    for (uint32 ispe = 0; ispe < parentIons.nbrSpecies(); ++ispe)
-    {
-        SplittingStrategyFactory factory{splitMethods_[ispe], interpolationOrders_[ispe],
-                                         refinementRatio_};
-
-        std::unique_ptr<SplittingStrategy> splitting = factory.createSplittingStrategy();
-
-        Species const& species = parentIons.species(ispe);
-
-        std::unique_ptr<ParticleInitializer> particleInit{
-            new MLMDParticleInitializer{species, selector, std::move(splitting),
-                                        parentPatch_->layout(), refinedLayout_, refinementRatio_}};
-
-        ionInit.masses.push_back(parentIons.species(ispe).mass());
-        ionInit.particleInitializers.push_back(std::move(particleInit));
-    }
-}
 
 
 
@@ -93,20 +38,64 @@ void MLMDInitializerFactory::buildIonsInitializer_(IonsInitializer& ionInit,
  */
 std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer() const
 {
+    std::cout << "\nCREATE IONS INITIALIZER" << std::endl;
+
     /* this routine creates an ion initializer with a Patch Choice function. */
     std::unique_ptr<IonsInitializer> ionInitPtr{new IonsInitializer{}};
 
     // the ParticleSelector will be shared by
     // multiple species
-    std::shared_ptr<ParticleSelector> selectorPtr{
-        new isInBox{parentPatch_->coordinates(), newPatchCoords_, parentPatch_->layout().dxdydz(),
-                    parentPatch_->layout().nbrGhostNodes(QtyCentering::primal)}};
+    std::shared_ptr<ParticleSelector> selectorPtr{new isInAndCloseToTheBox{
+        parentPatch_->coordinates(), newPatchCoords_, parentPatch_->layout().dxdydz(),
+        parentPatch_->layout().nbrGhostNodes(QtyCentering::primal),
+        parentPatch_->layout().order()}};
 
-    buildIonsInitializer_(*ionInitPtr, selectorPtr);
+    buildIonsInitializer_(*ionInitPtr, selectorPtr, refinedLayout_);
+
 
     return ionInitPtr;
 }
 
+
+/**
+ * @brief MLMDInitializerFactory::buildIonsInitializer_
+ *
+ * We build the private attributes of MLMDParticleInitializer,
+ * among those attributes the following depend on
+ * the species:
+ * - the particle source (known from the parent)
+ * - the splitting strategy, because each species has its
+ * own interpolation order
+ *
+ * @param ionInit
+ * @param selector
+ */
+void MLMDInitializerFactory::buildIonsInitializer_(IonsInitializer& ionInit,
+                                                   std::shared_ptr<ParticleSelector> selector,
+                                                   GridLayout const& targetLayout) const
+{
+    Ions const& parentIons = parentPatch_->ions();
+
+    ionInit.nbrSpecies = parentIons.nbrSpecies();
+
+    for (uint32 ispe = 0; ispe < parentIons.nbrSpecies(); ++ispe)
+    {
+        SplittingStrategyFactory factory{splitMethods_[ispe], interpolationOrders_[ispe],
+                                         refinementRatio_};
+
+        std::unique_ptr<SplittingStrategy> splitting = factory.createSplittingStrategy();
+
+        Species const& species = parentIons.species(ispe);
+
+        std::unique_ptr<ParticleInitializer> particleInit{
+            new MLMDParticleInitializer{species, selector, std::move(splitting),
+                                        parentPatch_->layout(), targetLayout, refinementRatio_}};
+
+        ionInit.masses.push_back(parentIons.species(ispe).mass());
+        ionInit.names.push_back(parentIons.species(ispe).name());
+        ionInit.particleInitializers.push_back(std::move(particleInit));
+    }
+}
 
 
 
@@ -169,6 +158,8 @@ std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializ
  */
 std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryCondition() const
 {
+    std::cout << "\nCREATE BOUNDARY CONDITION" << std::endl;
+
     GridLayout coarseLayout{parentPatch_->layout()};
     uint32 nbrBoundaries = 2 * coarseLayout.nbDimensions();
 
@@ -184,36 +175,45 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
     std::vector<std::unique_ptr<PatchBoundary>> boundaries{};
 
 
+    const std::array<Edge, 6> boundaryEdges
+        = {{Edge::Xmin, Edge::Xmax, Edge::Ymin, Edge::Ymax, Edge::Zmin, Edge::Zmax}};
 
 
     // FIRST, LOOP OVER all the boundaries
     for (uint32 ibord = 0; ibord < nbrBoundaries; ++ibord)
     {
+        std::cout << "Boundary, ibord = " << ibord << std::endl;
+
         // Get the layout of the adequate PRA boundary
         GridLayout praEdgeLayout{buildPRABoundaryLayout(refinedPRA, ibord, refinedLayout_)};
+        // Get PRA extended layout
+        GridLayout praExtendedLayout{getExtendedLayout_(praEdgeLayout)};
+
         std::unique_ptr<IonsInitializer> ionInitPtr{new IonsInitializer{}};
 
         // the selector will check whether particles from the parent Box
         // belong to the boundary layout box
-        std::unique_ptr<ParticleSelector> selectorPtr{new isInBox{
+        std::shared_ptr<ParticleSelector> selectorPtr{new isInAndCloseToTheBox{
             parentPatch_->coordinates(), praEdgeLayout.getBox(), parentPatch_->layout().dxdydz(),
-            parentPatch_->layout().nbrGhostNodes(QtyCentering::primal)}};
+            parentPatch_->layout().nbrGhostNodes(QtyCentering::primal),
+            parentPatch_->layout().order()}};
 
-        buildIonsInitializer_(*ionInitPtr, std::move(selectorPtr));
+        buildIonsInitializer_(*ionInitPtr, selectorPtr, praEdgeLayout);
 
         // We need the electromagnetic field on the PRA layout
         // of the adequate Patch boundary
         std::unique_ptr<ElectromagInitializer> emInitPtr{
-            new ElectromagInitializer{praEdgeLayout, "_EMField", "_EMFields"}};
+            new ElectromagInitializer{praExtendedLayout, "_EMField", "_EMFields"}};
 
         // Now we compute the E and B fields
         // of the ElectromagInitializer
-        fieldAtRefinedNodes(interpolator, parentPatch_->layout(), parentElectromag, praEdgeLayout,
-                            *emInitPtr);
+        fieldAtRefinedNodes(interpolator, parentPatch_->layout(), parentElectromag,
+                            praExtendedLayout, *emInitPtr);
 
         // For each boundary build the PatchBoundary object
         std::unique_ptr<PatchBoundary> boundaryPtr{
-            new PatchBoundary{praEdgeLayout, std::move(ionInitPtr), std::move(emInitPtr)}};
+            new PatchBoundary{praEdgeLayout, praExtendedLayout, std::move(ionInitPtr),
+                              std::move(emInitPtr), boundaryEdges[ibord]}};
 
         // For each boundary add this PatchBoundary to our temporary
         // vector of std::unique_ptr<Boundary>
@@ -221,8 +221,61 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
     }
 
     // SECOND, build PatchBoundaryCondition object
-    std::unique_ptr<BoundaryCondition> boundaryCondition{
-        new PatchBoundaryCondition{refinedPRA, parentPatch_, coarseLayout, std::move(boundaries)}};
+    std::unique_ptr<BoundaryCondition> boundaryCondition{new PatchBoundaryCondition{
+        refinedPRA, parentPatch_, refinedLayout_, std::move(boundaries)}};
 
     return boundaryCondition;
+}
+
+
+/**
+ * @brief MLMDInitializerFactory::getExtendedLayout_
+ * this method widen slightly the layout provided in argument
+ * in each active direction
+ *
+ *
+ * @param praLayout
+ * @return
+ */
+GridLayout MLMDInitializerFactory::getExtendedLayout_(GridLayout const& praLayout) const
+{
+    Point origin{praLayout.origin()};
+    std::array<double, 3> dxdydz{praLayout.dxdydz()};
+    std::array<uint32, 3> nxnynz{praLayout.nbrCellxyz()};
+
+    double dx = dxdydz[0];
+    double dy = dxdydz[1];
+    double dz = dxdydz[2];
+
+    uint32 nx = nxnynz[0];
+    uint32 ny = nxnynz[1];
+    uint32 nz = nxnynz[2];
+
+    switch (praLayout.nbDimensions())
+    {
+        case 1:
+            origin.x_ += -dx;
+            nx += 2;
+            break;
+
+        case 2:
+            origin.x_ += -dx;
+            origin.y_ += -dy;
+            nx += 2;
+            ny += 2;
+            break;
+
+        case 3:
+            origin.x_ += -dx;
+            origin.y_ += -dy;
+            origin.z_ += -dz;
+            nx += 2;
+            ny += 2;
+            nz += 2;
+            break;
+    }
+
+
+    return GridLayout(praLayout.dxdydz(), {{nx, ny, nz}}, praLayout.nbDimensions(),
+                      praLayout.layoutName(), origin, praLayout.order());
 }

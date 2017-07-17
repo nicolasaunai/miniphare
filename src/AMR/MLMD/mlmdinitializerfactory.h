@@ -32,22 +32,37 @@
 class MLMDInitializerFactory : public InitializerFactory
 {
 private:
-    double dt_;
+    std::shared_ptr<Patch> parentPatch_;
+
     Box newPatchCoords_;
     GridLayout refinedLayout_;
-    std::shared_ptr<Patch> parentPatch_;
+
     uint32 refinementRatio_;
     std::vector<uint32> interpolationOrders_;
     std::string pusher_;
     std::vector<std::string> splitMethods_;
 
-    void buildIonsInitializer_(IonsInitializer& ionInit,
-                               std::shared_ptr<ParticleSelector> selector) const;
+    double dt_;
 
+    void buildIonsInitializer_(IonsInitializer& ionInit, std::shared_ptr<ParticleSelector> selector,
+                               GridLayout const& targetLayout) const;
+
+    GridLayout getExtendedLayout_(GridLayout const& praLayout) const;
 
 public:
     MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch, Box const& newPatchCoords,
-                           GridLayout const& refinedLayout, PatchInfo const& patchInfo);
+                           GridLayout const& refinedLayout, PatchInfo const& patchInfo,
+                           double dt_patch)
+        : parentPatch_{parentPatch}
+        , newPatchCoords_{newPatchCoords}
+        , refinedLayout_{refinedLayout}
+        , refinementRatio_{patchInfo.refinementRatio}
+        , interpolationOrders_{patchInfo.interpOrders}
+        , pusher_{patchInfo.pusher}
+        , splitMethods_{patchInfo.splitStrategies}
+        , dt_{dt_patch}
+    {
+    }
 
     virtual Box getBox() const override { return refinedLayout_.getBox(); }
     virtual GridLayout const& gridLayout() const override { return refinedLayout_; }

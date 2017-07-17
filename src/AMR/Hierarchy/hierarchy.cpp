@@ -143,7 +143,7 @@ std::shared_ptr<Patch> Hierarchy::addNewPatch(RefinementInfo const& refineInfo,
 
     // we need to build a factory for PatchData to be built
     std::unique_ptr<InitializerFactory> factory{
-        new MLMDInitializerFactory(coarsePatch, refinedBox, refinedLayout, patchInfo)};
+        new MLMDInitializerFactory(coarsePatch, refinedBox, refinedLayout, patchInfo, dt_patch)};
 
     // create a new patch, attach it to the parent patch and updated the hierarchy
     Patch theNewPatch{refinedBox, dt_patch, refinedLayout, PatchData{*factory}};
