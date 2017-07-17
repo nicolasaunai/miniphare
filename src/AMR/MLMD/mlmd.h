@@ -4,13 +4,13 @@
 
 #include "grid/gridlayout.h"
 
-#include "AMR/patchinfo.h"
 #include "AMR/Hierarchy/hierarchy.h"
+#include "AMR/patchinfo.h"
 
-#include "Splitting/splittingstrategy.h"
 #include "Initializer/initializerfactory.h"
+#include "Splitting/splittingstrategy.h"
 
-
+#include "BoundaryConditions/patchboundarycondition.h"
 
 
 /**
@@ -25,7 +25,7 @@ class MLMD
 {
 private:
     // TODO: should be initialized by reading inputs parameters
-    GridLayout baseLayout_ ;
+    GridLayout baseLayout_;
     PatchInfo patchInfos_;
 
     void evolvePlasma_(Hierarchy& hierarchy, uint32 refineRatio);

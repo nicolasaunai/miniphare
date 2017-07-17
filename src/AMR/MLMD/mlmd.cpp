@@ -13,17 +13,21 @@
 
 MLMD::MLMD(InitializerFactory const& initFactory)
     : baseLayout_{GridLayout{initFactory.gridLayout()}}
-/*patchHierarchy_{ std::make_shared<Patch>(
-                     initFactory.getBox(), baseLayout_,
-                     PatchData{initFactory}  ) },*/
 {
     patchInfos_.interpOrders    = initFactory.interpolationOrders();
     patchInfos_.pusher          = initFactory.pusher();
     patchInfos_.splitStrategies = initFactory.splittingStrategies();
     patchInfos_.refinementRatio = 2;
+
+    patchInfos_.userTimeStep = initFactory.timeStep();
+
     // will probably have to change the way objects are initialized.
     // if we want, at some point, start from an already existing hierarchy
     // (in case of restart for e.g.
+
+    patchInfos_.fakeStratIteration     = {0}; // 0, 1
+    patchInfos_.fakeStratLevelToRefine = {0}; // 0, 1
+    patchInfos_.fakeStratPatchToRefine = {0}; // 0, 0
 }
 
 
@@ -34,7 +38,6 @@ void MLMD::initializeRootLevel(Hierarchy& patchHierarchy)
     std::cout << "building root level...";
     Patch& rootLevel = patchHierarchy.root();
     rootLevel.init();
-    std::cout << " OK" << std::endl;
 }
 
 
@@ -95,7 +98,6 @@ void MLMD::evolvePlasma_(Hierarchy& hierarchy, uint32 refineRatio)
         evolve_(root, 1);
     }
 }
-
 
 
 void MLMD::evolve_(Patch& patch, uint32 nbrSteps)
@@ -208,7 +210,6 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
 
 
 
-
 void MLMD::manageParticlesInGhostDomain_(Patch& patch)
 {
 }
@@ -216,14 +217,17 @@ void MLMD::manageParticlesInGhostDomain_(Patch& patch)
 
 void MLMD::sendCorrectedFieldsToChildrenPRA_(Patch& patch)
 {
+    std::cout << "sendCorrectedFieldsToChildrenPRA" << std::endl;
 }
 
 
 void MLMD::interpolateFieldBCInTime_(Patch& patch)
 {
+    std::cout << "interpolateFieldBCInTime" << std::endl;
 }
 
 
 void MLMD::updateFieldsWithRefinedSolutions_(Patch& patch)
 {
+    std::cout << "updateFieldsWithRefinedSolutions" << std::endl;
 }
