@@ -104,10 +104,46 @@ void PatchBoundaryCondition::applyBulkBC(VecField& Vi) const
 void PatchBoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& particleArray,
                                                      LeavingParticles const& leavingParticles) const
 {
+    for (auto&& bc : boundaries_)
+    {
+        bc->applyOutgoingParticleBC(particleArray, leavingParticles);
+    }
 }
 
 
-void PatchBoundaryCondition::applyIncomingParticleBC(Ions& ions, std::string const& pusher,
+
+void PatchBoundaryCondition::applyIncomingParticleBC(Ions& ions, std::string const& pusherType,
                                                      double const& dt) const
 {
+    // Declare frozen BoundaryCondition
+    // hard coded domain frozen boundary condition
+    std::vector<DomainBoundaryCondition::BoundaryInfo> boundaries(2);
+
+    // "first" is the edge coordinate
+    boundaries[0].first = Edge::Xmin;
+    boundaries[1].first = Edge::Xmax;
+
+    // "second" is the type of boundary, here periodic
+    boundaries[0].second = BoundaryType::Frozen;
+    boundaries[1].second = BoundaryType::Frozen;
+
+
+    for (auto&& bc : boundaries_)
+    {
+        // frozen boundary condition of the PRA
+        // each PRA has its frozen boundaries built here
+        std::unique_ptr<BoundaryCondition> temporaryBC{
+            new DomainBoundaryCondition{bc->extendedLayout(), boundaries}};
+
+        // Declare Pusher
+        std::unique_ptr<Pusher> pusher{
+            PusherFactory::createPusher(bc->extendedLayout(), pusherType, dt)};
+
+        for (uint32 iesp = 0; iesp < ions.nbrSpecies(); ++iesp)
+        {
+            std::vector<Particle>& patchArray = ions.species(iesp).particles();
+
+            bc->applyIncomingParticleBC(*temporaryBC, *pusher, patchLayout_, patchArray, iesp);
+        }
+    }
 }
