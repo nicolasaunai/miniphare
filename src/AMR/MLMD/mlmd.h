@@ -37,6 +37,13 @@ private:
     void interpolateFieldBCInTime_(Patch& patch);         // MLMD step 4
     void updateFieldsWithRefinedSolutions_(Patch& patch); // MLMD step 5
 
+    void initPRAparticles_(BoundaryCondition* boundaryCondition);
+    void computePRAMoments_(BoundaryCondition* boundaryCondition,
+                            std::vector<uint32> const& orders);
+    void addPRAMomentsToPatch_(PatchData& data, BoundaryCondition* boundaryCond);
+
+
+
 public:
     MLMD(InitializerFactory const& initFactory);
     void initializeRootLevel(Hierarchy& patchHierarchy);

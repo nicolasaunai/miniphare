@@ -7,8 +7,9 @@
 #include "AMR/MLMD/mlmd.h"
 #include "AMR/patch.h"
 #include "AMR/patchdata.h"
+#include "AMR/refinmentanalyser.h"
 
-
+#include "Interpolator/particlemesh.h"
 
 
 MLMD::MLMD(InitializerFactory const& initFactory)
@@ -212,6 +213,57 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
 
 void MLMD::manageParticlesInGhostDomain_(Patch& patch)
 {
+    std::cout << "manageParticlesInGhostDomain()\n" << std::endl;
+
+    BoundaryCondition* boundaryCond = patch.data().boundaryCondition();
+
+    initPRAparticles_(boundaryCond);
+    std::cout << " PRA initialization: OK\n";
+
+    computePRAMoments_(boundaryCond, patchInfos_.interpOrders);
+
+    addPRAMomentsToPatch_(patch.data(), boundaryCond);
+}
+
+
+
+/**
+ * @brief PatchData::initPRA will trigger the initialization of
+ * the Particle Repopulation Area, contained in
+ * boundaryCondition_ attribute
+ *
+ */
+void MLMD::initPRAparticles_(BoundaryCondition* boundaryCondition)
+{
+    // we have to trigger loadParticles() method of Ions,
+    // the latter will call loadParticles() of Species
+    if (PatchBoundaryCondition* boundaryCond
+        = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
+    {
+        boundaryCond->initializePRAparticles();
+    }
+}
+
+
+void MLMD::computePRAMoments_(BoundaryCondition* boundaryCondition,
+                              std::vector<uint32> const& orders)
+{
+    if (PatchBoundaryCondition* boundaryCond
+        = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
+    {
+        boundaryCond->computePRAMoments(orders);
+    }
+}
+
+
+
+void MLMD::addPRAMomentsToPatch_(PatchData& data, BoundaryCondition* boundaryCond)
+{
+    if (PatchBoundaryCondition* condition = dynamic_cast<PatchBoundaryCondition*>(boundaryCond))
+    {
+        condition->applyDensityBC(data.ions().rho());
+        condition->applyBulkBC(data.ions().bulkVel());
+    }
 }
 
 
