@@ -2,6 +2,7 @@
 #define DOMAINBOUNDARYFACTORY_H
 
 #include "BoundaryConditions/boundary.h"
+#include "BoundaryConditions/frozenboundary.h"
 #include "BoundaryConditions/periodicdomainboundary.h"
 #include "domainboundarycondition.h"
 
@@ -23,6 +24,10 @@ public:
         if (info.second == BoundaryType::Periodic)
         {
             bc = std::unique_ptr<Boundary>(new PeriodicDomainBoundary{info.first});
+        }
+        else if (info.second == BoundaryType::Frozen)
+        {
+            bc = std::unique_ptr<Boundary>(new FrozenBoundary{info.first});
         }
 
         return bc;
