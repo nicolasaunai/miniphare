@@ -46,8 +46,6 @@ public:
 
     virtual bool hasARepopulationArea() const override { return false; }
 
-    virtual void initializeGhostArea() override {}
-
     virtual ~DomainBoundaryCondition();
 };
 

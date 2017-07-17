@@ -46,6 +46,22 @@ private:
     void removeParticles_(std::vector<uint32> const& leavingIndexes,
                           std::vector<Particle>& particleArray) const;
 
+
+    void addPRAmomentsToPatch1D_(GridLayout const& patchLayout, Field& rhoPatch,
+                                 Field const& rhoPRA, Edge const& edge) const;
+    void addPRAmomentsToPatch1D_(GridLayout const& patchLayout, VecField& bulkVelPatch,
+                                 VecField const& bulkVelPRA, Edge const& edge) const;
+
+    void addPRAmomentsToPatch2D_(GridLayout const& patchLayout, Field& rhoPatch,
+                                 Field const& rhoPRA, Edge const& edge) const;
+    void addPRAmomentsToPatch2D_(GridLayout const& patchLayout, VecField& bulkVelPatch,
+                                 VecField const& bulkVelPRA, Edge const& edge) const;
+
+    void addPRAmomentsToPatch3D_(GridLayout const& patchLayout, Field& rhoPatch,
+                                 Field const& rhoPRA, Edge const& edge) const;
+    void addPRAmomentsToPatch3D_(GridLayout const& patchLayout, VecField& bulkVelPatch,
+                                 VecField const& bulkVelPRA, Edge const& edge) const;
+
     void getPRAandPatchStartIndexes_(GridLayout const& patchLayout, Field const& fieldPatch,
                                      Field const& fieldPRA, Edge const& edge,
                                      Direction const& direction, uint32& nbrNodes,
@@ -91,6 +107,9 @@ public:
     GridLayout const& extendedLayout() const { return extendedLayout_; }
 
     void initPRAParticles();
+
+
+    void computePRAmoments(std::vector<uint32> const& orders);
 };
 
 

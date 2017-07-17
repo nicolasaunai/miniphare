@@ -21,7 +21,7 @@
  * PatchBoundaryCondition constructor basically needs:
  * + a PRA struct (containing innerBox and outerBox)
  * + a pointer to the coarse (parent) patch
- * + a copy of the coarse (parent) patch
+ * + a copy of the coarse (parent) patch layout
  *
  *
  */
@@ -30,7 +30,7 @@ class PatchBoundaryCondition : public BoundaryCondition
 private:
     PRA refinedPRA_;
     std::shared_ptr<Patch> parent_;
-    GridLayout coarseLayout_;
+    GridLayout patchLayout_;
 
     // We know we are dealing with PatchBoundary objects
     std::vector<std::unique_ptr<PatchBoundary>> boundaries_;
@@ -45,16 +45,17 @@ public:
     virtual void applyCurrentBC(VecField& J) const override;
     virtual void applyDensityBC(Field& N) const override;
     virtual void applyBulkBC(VecField& Vi) const override;
-
     virtual void applyOutgoingParticleBC(std::vector<Particle>& particleArray,
                                          LeavingParticles const& leavingParticles) const override;
 
-    virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusher,
+    virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusherType,
                                          double const& dt) const override;
 
     virtual bool hasARepopulationArea() const override { return true; }
 
-    virtual void initializeGhostArea() override;
+    void initializePRAparticles();
+
+    void computePRAMoments(std::vector<uint32> const& orders);
 };
 
 #endif // PATCHBOUNDARYCONDITION_H

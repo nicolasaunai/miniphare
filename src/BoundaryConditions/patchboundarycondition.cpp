@@ -1,5 +1,11 @@
 #include "patchboundarycondition.h"
 
+#include "BoundaryConditions/domainboundarycondition.h"
+
+#include "pusher/pusherfactory.h"
+
+
+#include "utilityphare.h"
 
 
 /**
@@ -13,11 +19,11 @@
  * @param boundaries
  */
 PatchBoundaryCondition::PatchBoundaryCondition(
-    PRA const& refinedPRA, std::shared_ptr<Patch> coarsePatch, GridLayout const& coarseLayout,
+    PRA const& refinedPRA, std::shared_ptr<Patch> coarsePatch, GridLayout const& refinedLayout,
     std::vector<std::unique_ptr<PatchBoundary>> boundaries)
     : refinedPRA_{refinedPRA}
     , parent_{coarsePatch}
-    , coarseLayout_{coarseLayout}
+    , patchLayout_{refinedLayout}
     , boundaries_{std::move(boundaries)}
 {
 }
@@ -30,7 +36,7 @@ PatchBoundaryCondition::PatchBoundaryCondition(
  *
  *
  */
-void PatchBoundaryCondition::initializeGhostArea()
+void PatchBoundaryCondition::initializePRAparticles()
 {
     for (auto& boundary : boundaries_)
     {
@@ -49,6 +55,17 @@ void PatchBoundaryCondition::initializeGhostArea()
 }
 
 
+
+void PatchBoundaryCondition::computePRAMoments(std::vector<uint32> const& orders)
+{
+    for (auto& boundary : boundaries_)
+    {
+        boundary->computePRAmoments(orders);
+    }
+}
+
+
+
 void PatchBoundaryCondition::applyMagneticBC(VecField& B) const
 {
 }
@@ -64,13 +81,22 @@ void PatchBoundaryCondition::applyCurrentBC(VecField& J) const
 }
 
 
+
 void PatchBoundaryCondition::applyDensityBC(Field& N) const
 {
+    for (auto& boundary : boundaries_)
+    {
+        boundary->applyDensityBC(N, patchLayout_);
+    }
 }
 
 
 void PatchBoundaryCondition::applyBulkBC(VecField& Vi) const
 {
+    for (auto& boundary : boundaries_)
+    {
+        boundary->applyBulkBC(Vi, patchLayout_);
+    }
 }
 
 
