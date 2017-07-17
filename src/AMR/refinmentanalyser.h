@@ -1,7 +1,7 @@
 #ifndef REFINMENTANALYSER_H
 #define REFINMENTANALYSER_H
 
-#include "AMR/patchdata.h"
+#include "AMR/patch.h"
 
 #include "utilityphare.h"
 
@@ -15,28 +15,25 @@ private:
     // Initialize with an empty Box
     std::vector<Box> refinedVolumes_;
 
+    std::vector<uint32> const fakeStratIter_;
+    std::vector<uint32> const fakeStratLevel_;
+    std::vector<uint32> const fakeStratPatch_;
+
 public:
-    RefinementAnalyser()
-        : refinedVolumes_{{0, 0, 0, 0, 0, 0}}
+    RefinementAnalyser(std::vector<uint32> const& fakeStratIter,
+                       std::vector<uint32> const& fakeStratLevel,
+                       std::vector<uint32> const& fakeStratPatch)
+        : fakeStratIter_{fakeStratIter}
+        , fakeStratLevel_{fakeStratLevel}
+        , fakeStratPatch_{fakeStratPatch}
     {
     }
 
-    bool operator()(PatchData const& data)
-    {
-        bool result = false;
+    bool refinementNeeded(uint32 iter, uint32 iLevel, uint32 iPatch);
 
-        // analyze vecfields in data
-
-
-        // if needed, build the refine box
-
-
-        return result;
-    }
+    bool refine(Patch const& patch);
 
     std::vector<Box> const& refinedDomains() { return refinedVolumes_; }
-
-    bool refinementNeeded();
 };
 
 

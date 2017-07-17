@@ -1,13 +1,13 @@
 #ifndef HIERARCHY_H
 #define HIERARCHY_H
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "AMR/patch.h"
 #include "AMR/patchinfo.h"
 
-
+#include "AMR/refinmentanalyser.h"
 
 
 
@@ -17,17 +17,18 @@ struct RefinementInfo
     Box refinedDomain;
     uint32 level;
 
-    uint32 refinementRatio ;
-    GridLayout const & baseLayout ;
+    uint32 refinementRatio;
+    GridLayout const& baseLayout;
 
-    RefinementInfo( std::shared_ptr<Patch> parentPatch,
-                    Box area, uint32 level,
-                    uint32 refinementRatio,
-                    GridLayout const & baseLayout ):
-        parentPatch{parentPatch}, refinedDomain{area},
-        level{level}, refinementRatio{refinementRatio},
-        baseLayout{baseLayout} {}
-
+    RefinementInfo(std::shared_ptr<Patch> parentPatch, Box area, uint32 level,
+                   uint32 refinementRatio, GridLayout const& baseLayout)
+        : parentPatch{parentPatch}
+        , refinedDomain{area}
+        , level{level}
+        , refinementRatio{refinementRatio}
+        , baseLayout{baseLayout}
+    {
+    }
 };
 
 
@@ -40,23 +41,22 @@ struct RefinementInfo
 class Hierarchy
 {
 private:
-
-    std::vector< std::vector< std::shared_ptr<Patch> > > patchTable_;
-    GridLayout  buildLayout_(RefinementInfo const & info);
+    std::vector<std::vector<std::shared_ptr<Patch>>> patchTable_;
+    GridLayout buildLayout_(RefinementInfo const& info);
 
 public:
-
-    using hierarchyType = std::vector< std::vector< std::shared_ptr<Patch> > > ;
-    using RefinementInfoTable = std::vector< std::vector<RefinementInfo> >;
+    using hierarchyType       = std::vector<std::vector<std::shared_ptr<Patch>>>;
+    using RefinementInfoTable = std::vector<std::vector<RefinementInfo>>;
 
 
     explicit Hierarchy(std::shared_ptr<Patch> root)
     {
-        patchTable_.push_back(std::vector< std::shared_ptr<Patch> >{std::move(root)});
+        patchTable_.push_back(std::vector<std::shared_ptr<Patch>>{std::move(root)});
     }
 
     Patch& root() { return *patchTable_[0][0]; }
-    hierarchyType & patchTable() { return patchTable_; }
+
+    hierarchyType& patchTable() { return patchTable_; }
     hierarchyType const& patchTable() const { return patchTable_; }
 
 
@@ -73,7 +73,8 @@ public:
                  std::string const & pusher,
                  std::vector<std::string> const & splitMethod ) ;
 
-
+    RefinementInfoTable evaluateRefinementNeed(uint32 refineRatio, GridLayout const& baseLayout,
+                                               RefinementAnalyser& analyser, uint32 iter);
 };
 
 #endif // HIERARCHY_H

@@ -1,4 +1,5 @@
 
+#include <cmath>
 #include <memory>
 #include <tuple>
 
@@ -48,7 +49,8 @@ void Hierarchy::evolvePlasma()
  * a vector of RefinementInfo for each Level.
  */
 std::vector<std::vector<RefinementInfo>>
-Hierarchy::evaluateRefinementNeed(uint32 refineRatio, GridLayout const& baseLayout)
+Hierarchy::evaluateRefinementNeed(uint32 refineRatio, GridLayout const& baseLayout,
+                                  RefinementAnalyser& analyser, uint32 iter)
 {
     std::vector<std::vector<RefinementInfo>> refinementTable;
     uint32 nbrLevels = static_cast<uint32>(patchTable_.size());
@@ -57,17 +59,18 @@ Hierarchy::evaluateRefinementNeed(uint32 refineRatio, GridLayout const& baseLayo
     {
         std::vector<std::shared_ptr<Patch>> const& patchesAtLevel = patchTable_[iLevel];
 
+        std::vector<RefinementInfo> refineInfos;
         for (uint32 iPatch = 0; iPatch < patchesAtLevel.size(); ++iPatch)
         {
             std::shared_ptr<Patch> const& patch = patchesAtLevel[iPatch];
-            RefinementAnalyser analyser{};
-            analyser(patch->data());
 
             // if the patch has to be refined we
             // store a reference
             // for further use
-            if (analyser.refinementNeeded())
+            if (analyser.refinementNeeded(iter, iLevel, iPatch))
             {
+                analyser.refine(*patch);
+
                 std::vector<Box> const& refinedList = analyser.refinedDomains();
 
                 // TODO: design might change
@@ -76,11 +79,15 @@ Hierarchy::evaluateRefinementNeed(uint32 refineRatio, GridLayout const& baseLayo
                 for (Box const& domain : refinedList)
                 {
                     RefinementInfo refine{patch, domain, iLevel + 1, refineRatio, baseLayout};
-                    refinementTable[iLevel].push_back(std::move(refine));
+                    refineInfos.push_back(std::move(refine));
                 }
             } // end refinement need
         }     // end patch loop
-    }         // end loop on levels
+
+        if (refineInfos.size() > 0)
+            refinementTable.push_back(refineInfos);
+
+    } // end loop on levels
 
     return refinementTable;
 }
@@ -132,6 +139,8 @@ void Hierarchy::refine(std::vector<std::vector<RefinementInfo>> const& refinemen
 std::shared_ptr<Patch> Hierarchy::addNewPatch(RefinementInfo const& refineInfo,
                                               PatchInfo const& patchInfo)
 {
+    std::cout << "ADD NEW PATCH!" << std::endl;
+
     std::shared_ptr<Patch> coarsePatch = refineInfo.parentPatch;
     Box refinedBox                     = refineInfo.refinedDomain;
     uint32 refinedLevel                = refineInfo.level;
@@ -149,6 +158,12 @@ std::shared_ptr<Patch> Hierarchy::addNewPatch(RefinementInfo const& refineInfo,
     Patch theNewPatch{refinedBox, dt_patch, refinedLayout, PatchData{*factory}};
     std::shared_ptr<Patch> patchPtr = std::make_shared<Patch>(std::move(theNewPatch));
     coarsePatch->updateChildren(patchPtr);
+
+    if (patchTable_.size() <= refinedLevel)
+    {
+        patchTable_.push_back({});
+    }
+
     patchTable_[refinedLevel].push_back(patchPtr);
 
     return patchPtr;
@@ -179,9 +194,9 @@ GridLayout Hierarchy::buildLayout_(RefinementInfo const& info)
     double dz = L0.dz() / std::pow(refineRatio, level);
 
     // cell numbers
-    uint32 nbx = static_cast<uint32>(std::ceil((area.x1 - area.x0) / dx));
-    uint32 nby = static_cast<uint32>(std::ceil((area.y1 - area.y0) / dy));
-    uint32 nbz = static_cast<uint32>(std::ceil((area.z1 - area.z0) / dz));
+    uint32 nbx = static_cast<uint32>(std::round((area.x1 - area.x0) / dx));
+    uint32 nby = static_cast<uint32>(std::round((area.y1 - area.y0) / dy));
+    uint32 nbz = static_cast<uint32>(std::round((area.z1 - area.z0) / dz));
 
     // we create the layout of a new patch
     // and store it

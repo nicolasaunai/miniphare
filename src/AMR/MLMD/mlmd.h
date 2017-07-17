@@ -28,20 +28,21 @@ private:
     GridLayout baseLayout_ ;
     PatchInfo patchInfos_;
 
+    void evolvePlasma_(Hierarchy& hierarchy, uint32 refineRatio);
+    void recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint32 nbrSteps);
+
+    void manageParticlesInGhostDomain_(Patch& patch);     // MLMD step 1
+    void evolve_(Patch& patch, uint32 nbrSteps);          // MLMD step 2
+    void sendCorrectedFieldsToChildrenPRA_(Patch& patch); // MLMD step 3
+    void interpolateFieldBCInTime_(Patch& patch);         // MLMD step 4
+    void updateFieldsWithRefinedSolutions_(Patch& patch); // MLMD step 5
 
 public:
-
     MLMD(InitializerFactory const& initFactory);
     void initializeRootLevel(Hierarchy& patchHierarchy);
-    void evolveFullDomain(Hierarchy& patchHierarchy);
+    void evolveFullDomain(Hierarchy& patchHierarchy, uint32 iter);
 
-//    Hierarchy & hierarchy() { return patchHierarchy_ ; }
-//    Hierarchy const & hierarchy() const { return patchHierarchy_ ; }
-
-
-   // TODO void computedtFromCFL(); // calculate dt from CFL and dx_ // for MLMD version
-
-
+    // TODO void computedtFromCFL(); // calculate dt from CFL and dx_ // for MLMD version
 };
 
 #endif // MLMD_H
