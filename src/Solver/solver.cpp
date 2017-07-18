@@ -174,6 +174,14 @@ void Solver::solveStepPPC(Electromag& EMFields, Ions& ions, Electrons& electrons
     // ------------------------------------------------------
     //                INCOMING PARTICLE BC
     // ------------------------------------------------------
+    // There are 2 prediction steps, particle positions and velocities
+    // obtained after the 1st prediction push are used to predict the electric field.
+    // But, this data is dispelled after use.
+    // Eventually, we only retain particle information deduced
+    // from the 2nd prediction step.
+    //
+    // Therefore we apply incoming particle boundary conditions only once,
+    // after the 2nd prediction step.
     boundaryCondition.applyIncomingParticleBC(ions, pusher_->pusherType(), pusher_->dt());
 
     // TODO : just for debug use, remove asap
