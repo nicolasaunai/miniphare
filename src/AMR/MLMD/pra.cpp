@@ -1,19 +1,22 @@
 #include "pra.h"
 
 
+// Here we set the number of complete nodes for
+// any arbitrary direction of the PRA
+//
+// This number should be small to limit computational cost
+static const int32 PRAcompleteNodeNbr = 5;
+
+// ideally this should depend on the interpolation order
+// Here, we overestimate the number of incomplete nodes
+// 3 is ok to handle any order from 1st to 4th
+static const int32 MAXincompleteNodeNbr = 3;
 
 
-// TODO: remove this method
-// int32 PRAHalfWidth(GridLayout const& layout)
-//{
-//    uint32 minHalfWidth = static_cast<uint32>(std::ceil(GridLayout::minNbrCells / 2));
-
-//    return static_cast<int32>(std::max(minHalfWidth, layout.nbrGhostNodes(QtyCentering::primal)));
-//}
 
 std::array<int32, 3> computePRACellNumbers(GridLayout const& layout)
 {
-    int32 cellNumber = 2 * PRAincompleteNodeNbr + PRAphysicalNodeNbr - 1;
+    int32 cellNumber = 2 * MAXincompleteNodeNbr + PRAcompleteNodeNbr - 1;
 
     switch (layout.nbDimensions())
     {
@@ -59,11 +62,11 @@ PRALimits getPRAlimits(GridLayout const& layout, Direction direction)
     //    outerLimitsIndexes[start] = -PRAincompleteNodeNbr;
     //    outerLimitsIndexes[end]   = static_cast<int32>(layout.nbrCellx()) + PRAincompleteNodeNbr;
 
-    outerLimitsIndexes[start] = -2 * PRAincompleteNodeNbr - PRAphysicalNodeNbr + 1;
+    outerLimitsIndexes[start] = -2 * MAXincompleteNodeNbr - PRAcompleteNodeNbr + 1;
     innerLimitsIndexes[start] = 0;
     innerLimitsIndexes[end]   = static_cast<int32>(layout.nbrCellx());
     outerLimitsIndexes[end]
-        = static_cast<int32>(layout.nbrCellx()) + 2 * PRAincompleteNodeNbr + PRAphysicalNodeNbr - 1;
+        = static_cast<int32>(layout.nbrCellx()) + 2 * MAXincompleteNodeNbr + PRAcompleteNodeNbr - 1;
 
     innerLimitsCoords[start] = innerLimitsIndexes[0] * layout.dx() + origin;
     innerLimitsCoords[end]   = innerLimitsIndexes[1] * layout.dx() + origin;

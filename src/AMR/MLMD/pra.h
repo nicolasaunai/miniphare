@@ -29,11 +29,6 @@ struct PRA
     }
 };
 
-static const int32 PRAphysicalNodeNbr = 5;
-
-// ideally this should depend on the interpolation order
-// but we don't really care
-static const int32 PRAincompleteNodeNbr = 3;
 
 
 struct PRALimits
