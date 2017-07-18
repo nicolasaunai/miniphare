@@ -1,7 +1,7 @@
 
 #include "AMR/MLMD/mlmdparticleinitializer.h"
 #include "AMR/particleselector.h"
-#include "AMR/particletests.h"
+#include "AMR/particleutilities.h"
 
 #include "Plasmas/virtualparticle.h"
 
