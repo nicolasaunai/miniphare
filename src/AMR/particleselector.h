@@ -109,38 +109,23 @@ private:
 
     uint32 nbrGhosts_;
 
-    uint32 interpOrder_;
-
-    double halfSpreadx_;
-    double halfSpready_;
-    double halfSpreadz_;
-
-    void computeNearPRARegion_()
-    {
-        // In 1D, if the mother particle position is farther than halfSpreadx_
-        // from the physical boundary of the domain
-        // then no child particle will enter the physical domain
-        // should be 0.25 * (interpOrder_ + 1) * dx_
-        halfSpreadx_ = 0.25 * (interpOrder_ + 1) * dx_;
-        halfSpready_ = 0.25 * (interpOrder_ + 1) * dy_;
-        halfSpreadz_ = 0.25 * (interpOrder_ + 1) * dz_;
-    }
+    double tol_x_;
+    double tol_y_;
+    double tol_z_;
 
 public:
     isInAndCloseToTheBox(Box const& parentBox, Box const& newBox, std::array<double, 3> dxdydz,
-                         uint32 nbrGhosts, uint32 interpOrder)
+                         uint32 nbrGhosts, std::array<double, 3> tol)
         : parentBox_{parentBox}
         , newBox_{newBox}
         , dx_{dxdydz[0]}
         , dy_{dxdydz[1]}
         , dz_{dxdydz[2]}
         , nbrGhosts_{nbrGhosts}
-        , interpOrder_{interpOrder}
-        , halfSpreadx_{0.}
-        , halfSpready_{0.}
-        , halfSpreadz_{0.}
+        , tol_x_{tol[0]}
+        , tol_y_{tol[1]}
+        , tol_z_{tol[2]}
     {
-        computeNearPRARegion_();
     }
 
 
@@ -159,12 +144,12 @@ public:
                           * dz_
                       + parentBox_.z0;
 
-        double xlower = newBox_.x0 - halfSpreadx_;
-        double xupper = newBox_.x1 + halfSpreadx_;
-        double ylower = newBox_.y0 - halfSpready_;
-        double yupper = newBox_.y1 + halfSpready_;
-        double zlower = newBox_.z0 - halfSpreadz_;
-        double zupper = newBox_.z1 + halfSpreadz_;
+        double xlower = newBox_.x0 - tol_x_;
+        double xupper = newBox_.x1 + tol_x_;
+        double ylower = newBox_.y0 - tol_y_;
+        double yupper = newBox_.y1 + tol_y_;
+        double zlower = newBox_.z0 - tol_z_;
+        double zupper = newBox_.z1 + tol_z_;
 
         // return true if the particle is in the box
         return posx >= xlower && posx <= xupper && posy >= ylower && posy <= yupper

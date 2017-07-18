@@ -23,6 +23,8 @@
 
 
 
+std::array<double, 3> computeNearPRARegion(uint32 interpOrder, std::array<double, 3> const& dxdydz);
+
 
 /**
  * @brief MLMDInitializerFactory::createIonsInitializer creates an
@@ -43,12 +45,14 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
     /* this routine creates an ion initializer with a Patch Choice function. */
     std::unique_ptr<IonsInitializer> ionInitPtr{new IonsInitializer{}};
 
+    std::array<double, 3> tol_xyz{
+        computeNearPRARegion(parentPatch_->layout().order(), parentPatch_->layout().dxdydz())};
+
     // the ParticleSelector will be shared by
     // multiple species
     std::shared_ptr<ParticleSelector> selectorPtr{new isInAndCloseToTheBox{
         parentPatch_->coordinates(), newPatchCoords_, parentPatch_->layout().dxdydz(),
-        parentPatch_->layout().nbrGhostNodes(QtyCentering::primal),
-        parentPatch_->layout().order()}};
+        parentPatch_->layout().nbrGhostNodes(QtyCentering::primal), tol_xyz}};
 
     buildIonsInitializer_(*ionInitPtr, selectorPtr, refinedLayout_);
 
@@ -191,12 +195,14 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 
         std::unique_ptr<IonsInitializer> ionInitPtr{new IonsInitializer{}};
 
+        std::array<double, 3> tol_xyz{
+            computeNearPRARegion(parentPatch_->layout().order(), parentPatch_->layout().dxdydz())};
+
         // the selector will check whether particles from the parent Box
         // belong to the boundary layout box
         std::shared_ptr<ParticleSelector> selectorPtr{new isInAndCloseToTheBox{
             parentPatch_->coordinates(), praEdgeLayout.getBox(), parentPatch_->layout().dxdydz(),
-            parentPatch_->layout().nbrGhostNodes(QtyCentering::primal),
-            parentPatch_->layout().order()}};
+            parentPatch_->layout().nbrGhostNodes(QtyCentering::primal), tol_xyz}};
 
         buildIonsInitializer_(*ionInitPtr, selectorPtr, praEdgeLayout);
 
@@ -226,6 +232,27 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 
     return boundaryCondition;
 }
+
+
+
+
+std::array<double, 3> computeNearPRARegion(uint32 interpOrder, std::array<double, 3> const& dxdydz)
+{
+    // In 1D, if the mother particle position is farther than tol_x
+    // from the physical boundary of the domain
+    // then no child particle will enter the physical domain
+    //
+    // Exact splitting gives:
+    // tol_x = 0.25 * (interpOrder_ + 1) * dx_
+    // For generality we overestimate this treshold:
+    // tol_x = (interpOrder_ + 1) * dx_
+    double tol_x = (interpOrder + 1) * dxdydz[0];
+    double tol_y = (interpOrder + 1) * dxdydz[1];
+    double tol_z = (interpOrder + 1) * dxdydz[2];
+
+    return {{tol_x, tol_y, tol_z}};
+}
+
 
 
 /**
