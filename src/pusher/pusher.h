@@ -45,7 +45,7 @@ public:
 
     virtual void move(std::vector<Particle> const& partIn, std::vector<Particle>& partOut, double m,
                       VecField const& E, VecField const& B, Interpolator& interpolator,
-                      BoundaryCondition const& boundaryCondition)
+                      BoundaryCondition& boundaryCondition)
         = 0;
 
 

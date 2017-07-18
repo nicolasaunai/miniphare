@@ -1,6 +1,6 @@
 #include "patchboundarycondition.h"
 
-#include "BoundaryConditions/domainboundarycondition.h"
+#include "BoundaryConditions/praboundarycondition.h"
 
 #include "pusher/pusherfactory.h"
 
@@ -102,7 +102,7 @@ void PatchBoundaryCondition::applyBulkBC(VecField& Vi) const
 
 
 void PatchBoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& particleArray,
-                                                     LeavingParticles const& leavingParticles) const
+                                                     LeavingParticles const& leavingParticles)
 {
     for (auto&& bc : boundaries_)
     {
@@ -115,25 +115,15 @@ void PatchBoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& part
 void PatchBoundaryCondition::applyIncomingParticleBC(Ions& ions, std::string const& pusherType,
                                                      double const& dt) const
 {
-    // Declare frozen BoundaryCondition
-    // hard coded domain frozen boundary condition
-    std::vector<DomainBoundaryCondition::BoundaryInfo> boundaries(2);
-
-    // "first" is the edge coordinate
-    boundaries[0].first = Edge::Xmin;
-    boundaries[1].first = Edge::Xmax;
-
-    // "second" is the type of boundary, here periodic
-    boundaries[0].second = BoundaryType::Frozen;
-    boundaries[1].second = BoundaryType::Frozen;
-
-
     for (auto&& bc : boundaries_)
     {
         // frozen boundary condition of the PRA
         // each PRA has its frozen boundaries built here
+        // std::unique_ptr<BoundaryCondition> temporaryBC{
+        //    new DomainBoundaryCondition{bc->extendedLayout(), boundaries}};
+
         std::unique_ptr<BoundaryCondition> temporaryBC{
-            new DomainBoundaryCondition{bc->extendedLayout(), boundaries}};
+            new PRABoundaryCondition{patchLayout_, bc->layout()}};
 
         // Declare Pusher
         std::unique_ptr<Pusher> pusher{PusherFactory::createPusher(bc->layout(), pusherType, dt)};

@@ -93,6 +93,8 @@ public:
         }
     }
 
+    std::vector<std::vector<uint32>> const& indexesAtMin() const { return particleIndicesAtMin; }
+    std::vector<std::vector<uint32>> const& indexesAtMax() const { return particleIndicesAtMax; }
 
     inline void storeIfLeaving(uint32 icell, uint32 ipart, uint32 direction)
     {

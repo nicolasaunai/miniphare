@@ -29,7 +29,7 @@ private:
     std::vector<Particle> incomingParticleBucket_;
 
 public:
-    PRABoundaryCondition(GridLayout const & patchLayout, GridLayout const & PRALayout);
+    PRABoundaryCondition(GridLayout const& patchLayout, GridLayout const& PRALayout);
 
 
     virtual void applyMagneticBC(VecField& B) const override;
@@ -37,10 +37,14 @@ public:
     virtual void applyCurrentBC(VecField& J) const override;
     virtual void applyDensityBC(Field& N) const override;
     virtual void applyBulkBC(VecField& Vi) const override;
-    virtual void applyOutgoingParticleBC(std::vector<Particle>& particleArray,
-                                         LeavingParticles const& leavingParticles) const override;
+
+    virtual void applyOutgoingParticleBC(std::vector<Particle>& PRAparticles,
+                                         LeavingParticles const& leavingParticles) override;
+
     virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusher,
                                          double const& dt) const override;
+
+    std::vector<Particle> const& incomingBucket() const { return incomingParticleBucket_; }
 
     virtual ~PRABoundaryCondition();
 };

@@ -86,7 +86,7 @@ void Solver::init(Ions& ions, BoundaryCondition const& boundaryCondition)
 
 
 void Solver::solveStepPPC(Electromag& EMFields, Ions& ions, Electrons& electrons,
-                          BoundaryCondition const& boundaryCondition)
+                          BoundaryCondition& boundaryCondition)
 {
     VecField& B     = EMFields.getB();
     VecField& E     = EMFields.getE();
@@ -244,7 +244,7 @@ std::vector<Particle>::size_type maxNbrParticles(Ions const& ions)
 // this routine move the ions for all species, accumulate their moments
 // and compute the total ion moments.
 void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
-                       BoundaryCondition const& boundaryCondition, uint32 predictorStep)
+                       BoundaryCondition& boundaryCondition, uint32 predictorStep)
 {
     // the temporary buffer must be big enough to hold the max
     // number of particles

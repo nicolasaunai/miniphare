@@ -236,8 +236,8 @@ void PeriodicDomainBoundary::applyOutgoingParticleBC(std::vector<Particle>& part
 }
 
 
-void PeriodicDomainBoundary::applyIncomingParticleBC(BoundaryCondition const& temporaryBC,
-                                                     Pusher& pusher, GridLayout const& patchLayout,
+void PeriodicDomainBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Pusher& pusher,
+                                                     GridLayout const& patchLayout,
                                                      std::vector<Particle>& patchParticles,
                                                      uint32 iesp)
 {

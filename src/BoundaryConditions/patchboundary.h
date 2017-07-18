@@ -36,16 +36,8 @@ private:
     Electromag correctedEMfields_;
 
 
-
-    void recomputeParticlePosistion_(GridLayout const& praLayout, GridLayout const& patchLayout,
-                                     Particle const& part, Particle& newPart) const;
-
     void removeOutgoingParticles_(std::vector<Particle>& particleArray,
                                   LeavingParticles const& leavingParticles) const;
-
-    void removeParticles_(std::vector<uint32> const& leavingIndexes,
-                          std::vector<Particle>& particleArray) const;
-
 
     void addPRAmomentsToPatch1D_(GridLayout const& patchLayout, Field& rhoPatch,
                                  Field const& rhoPRA, Edge const& edge) const;
@@ -95,7 +87,7 @@ public:
     virtual void applyOutgoingParticleBC(std::vector<Particle>& particleArray,
                                          LeavingParticles const& leavingParticles) const override;
 
-    virtual void applyIncomingParticleBC(BoundaryCondition const& temporaryBC, Pusher& pusher,
+    virtual void applyIncomingParticleBC(BoundaryCondition& temporaryBC, Pusher& pusher,
                                          GridLayout const& patchLayout,
                                          std::vector<Particle>& particleArray,
                                          uint32 iesp) override;

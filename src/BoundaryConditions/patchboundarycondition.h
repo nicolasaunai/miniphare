@@ -45,8 +45,9 @@ public:
     virtual void applyCurrentBC(VecField& J) const override;
     virtual void applyDensityBC(Field& N) const override;
     virtual void applyBulkBC(VecField& Vi) const override;
+
     virtual void applyOutgoingParticleBC(std::vector<Particle>& particleArray,
-                                         LeavingParticles const& leavingParticles) const override;
+                                         LeavingParticles const& leavingParticles) override;
 
     virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusherType,
                                          double const& dt) const override;

@@ -25,7 +25,7 @@ public:
     virtual void applyOutgoingParticleBC(std::vector<Particle>& particleArray,
                                          LeavingParticles const& leavingParticles) const = 0;
 
-    virtual void applyIncomingParticleBC(BoundaryCondition const& temporaryBC, Pusher& pusher,
+    virtual void applyIncomingParticleBC(BoundaryCondition& temporaryBC, Pusher& pusher,
                                          GridLayout const& patchLayout,
                                          std::vector<Particle>& patchParticles, uint32 iesp)
         = 0;

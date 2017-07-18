@@ -24,7 +24,7 @@
  */
 void ModifiedBoris::move(std::vector<Particle> const& partIn, std::vector<Particle>& partOut,
                          double mass, VecField const& E, VecField const& B,
-                         Interpolator& interpolator, BoundaryCondition const& boundaryCondition)
+                         Interpolator& interpolator, BoundaryCondition& boundaryCondition)
 {
     // must clean the leaving particles buffer before the last step
     // since newly leaving particles will be added to it.

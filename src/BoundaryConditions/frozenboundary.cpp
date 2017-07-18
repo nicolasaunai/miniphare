@@ -49,7 +49,7 @@ void FrozenBoundary::applyOutgoingParticleBC(std::vector<Particle>& particleArra
 }
 
 
-void FrozenBoundary::applyIncomingParticleBC(BoundaryCondition const& temporaryBC, Pusher& pusher,
+void FrozenBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Pusher& pusher,
                                              GridLayout const& patchLayout,
                                              std::vector<Particle>& patchParticles, uint32 iesp)
 {

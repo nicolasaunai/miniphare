@@ -1,4 +1,6 @@
 
+#include "BoundaryConditions/praboundarycondition.h"
+
 #include "BoundaryConditions/patchboundary.h"
 
 #include "Interpolator/interpolator.h"
@@ -93,7 +95,7 @@ void PatchBoundary::removeOutgoingParticles_(std::vector<Particle>& particleArra
         leavingIndexes.insert(leavingIndexes.end(), leavingAtMin.begin(), leavingAtMin.end());
         leavingIndexes.insert(leavingIndexes.end(), leavingAtMax.begin(), leavingAtMax.end());
 
-        removeParticles_(leavingIndexes, particleArray);
+        removeParticles(leavingIndexes, particleArray);
     }
 }
 
@@ -112,7 +114,7 @@ void PatchBoundary::removeOutgoingParticles_(std::vector<Particle>& particleArra
  *
  * @param iesp
  */
-void PatchBoundary::applyIncomingParticleBC(BoundaryCondition const& temporaryBC, Pusher& pusher,
+void PatchBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Pusher& pusher,
                                             GridLayout const& patchLayout,
                                             std::vector<Particle>& particleArray, uint32 iesp)
 {
@@ -133,130 +135,21 @@ void PatchBoundary::applyIncomingParticleBC(BoundaryCondition const& temporaryBC
 
     pusher.move(PRAparticles, PRAparticles, ions_.species(iesp).mass(), E, B, interpolator,
                 temporaryBC);
-
-    std::vector<uint32> leavingIndexes;
-    leavingIndexes.reserve(PRAparticles.size());
-
-    for (uint32 ipart = 0; ipart < PRAparticles.size(); ++ipart)
+    try
     {
-        const Particle& part = PRAparticles[ipart];
+        PRABoundaryCondition const& boundaryCond
+            = dynamic_cast<PRABoundaryCondition const&>(temporaryBC);
 
-        if (!isInSpecifiedBox(layout_, part, layout_))
+        std::vector<Particle> const& incomingBucket{boundaryCond.incomingBucket()};
+
+        for (Particle const& part : incomingBucket)
         {
-            if (isInSpecifiedBox(layout_, part, patchLayout))
-            {
-                Particle newPart;
-
-                recomputeParticlePosistion_(layout_, patchLayout, part, newPart);
-
-                particleArray.push_back(newPart);
-            }
-
-            // TODO: store index of the particle to be removed
-            leavingIndexes.push_back(ipart);
+            particleArray.push_back(part);
         }
     }
-
-    // TODO: remove particle from PRAparticles
-    removeParticles_(leavingIndexes, PRAparticles);
-}
-
-
-
-
-/**
- * @brief PatchBoundary::removeParticles_
- * All particles indexed in leavingIndexes are removed from
- * particleArray
- *
- *
- * Successful test with Coliru
- */
-void PatchBoundary::removeParticles_(std::vector<uint32> const& leavingIndexes,
-                                     std::vector<Particle>& particleArray) const
-{
-    if (leavingIndexes.size() > 0)
+    catch (std::bad_cast excep)
     {
-        std::vector<Particle> particleBuffer;
-
-        particleBuffer.reserve(particleArray.size());
-        particleBuffer.clear();
-
-        uint32 iremove = 0;
-
-        for (uint32 ipart = 0; ipart < particleArray.size(); ++ipart)
-        {
-            if (ipart != leavingIndexes[iremove])
-            {
-                particleBuffer.push_back(particleArray[ipart]);
-            }
-
-            if (ipart >= leavingIndexes[iremove])
-            {
-                if (iremove < leavingIndexes.size() - 1)
-                {
-                    iremove++;
-                }
-            }
-        }
-
-        std::swap(particleBuffer, particleArray);
-    }
-}
-
-
-
-void PatchBoundary::recomputeParticlePosistion_(GridLayout const& praLayout,
-                                                GridLayout const& patchLayout, Particle const& part,
-                                                Particle& newPart) const
-{
-    newPart = part;
-
-    int32 nbrGhostspra = static_cast<int32>(praLayout.nbrGhostNodes(QtyCentering::primal));
-
-    // Components of the vector oriented
-    // from the origin of the refined layout
-    // to mother particle
-    double compo_x
-        = (praLayout.origin().x_ - patchLayout.origin().x_)
-          + (static_cast<int32>(part.icell[0]) - nbrGhostspra + part.delta[0]) * praLayout.dx();
-
-    double compo_y
-        = (praLayout.origin().y_ - patchLayout.origin().y_)
-          + (static_cast<int32>(part.icell[1]) - nbrGhostspra + part.delta[1]) * praLayout.dy();
-
-    double compo_z
-        = (praLayout.origin().z_ - patchLayout.origin().z_)
-          + (static_cast<int32>(part.icell[2]) - nbrGhostspra + part.delta[2]) * praLayout.dz();
-
-    int32 nbrGhostsPatch = static_cast<int32>(patchLayout.nbrGhostNodes(QtyCentering::primal));
-
-    double compo_x_odx = compo_x / patchLayout.dx();
-    double compo_y_ody = compo_y / patchLayout.dy();
-    double compo_z_odz = compo_z / patchLayout.dz();
-
-    switch (praLayout.nbDimensions())
-    {
-        case 3:
-            newPart.icell[2]
-                = static_cast<uint32>(nbrGhostsPatch + static_cast<int32>(std::floor(compo_z_odz)));
-
-            newPart.delta[2] = static_cast<float>(compo_z_odz - std::floor(compo_z_odz));
-
-        case 2:
-            newPart.icell[1]
-                = static_cast<uint32>(nbrGhostsPatch + static_cast<int32>(std::floor(compo_y_ody)));
-
-            newPart.delta[1] = static_cast<float>(compo_y_ody - std::floor(compo_y_ody));
-
-        case 1:
-            newPart.icell[0]
-                = static_cast<uint32>(nbrGhostsPatch + static_cast<int32>(std::floor(compo_x_odx)));
-
-            newPart.delta[0] = static_cast<float>(compo_x_odx - std::floor(compo_x_odx));
-            break;
-
-        default: throw std::runtime_error("normalizeMotherPosition: wrong dimensionality");
+        std::cout << "PatchBoundary::applyIncomingParticleBC => Caught bad cast\n";
     }
 }
 

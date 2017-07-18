@@ -43,7 +43,7 @@ private:
     std::unique_ptr<Pusher> pusher_;
 
     void moveIons_(VecField const& E, VecField const& B, Ions& ions,
-                   BoundaryCondition const& boundaryConditon, uint32 const predictorStep);
+                   BoundaryCondition& boundaryConditon, uint32 const predictorStep);
 
 public:
     Solver(GridLayout const& layout, double dt,
@@ -58,7 +58,7 @@ public:
     void init(Ions& ions, BoundaryCondition const& boundaryCondition);
 
     void solveStepPPC(Electromag& EMFields, Ions& ions, Electrons& electrons,
-                      BoundaryCondition const& boundaryCondition);
+                      BoundaryCondition& boundaryCondition);
 };
 
 

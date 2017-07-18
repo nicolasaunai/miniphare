@@ -72,8 +72,8 @@ void DomainBoundaryCondition::applyBulkBC(VecField& Vi) const
 
 
 
-void DomainBoundaryCondition::applyOutgoingParticleBC(
-    std::vector<Particle>& particleArray, LeavingParticles const& leavingParticles) const
+void DomainBoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& particleArray,
+                                                      LeavingParticles const& leavingParticles)
 {
     for (auto&& bc : boundaries_)
     {
