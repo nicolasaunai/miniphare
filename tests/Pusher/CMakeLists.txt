@@ -14,8 +14,6 @@ set(SOURCES
      ../../src/BoundaryConditions/periodicdomainboundary.cpp
      ../../src/vecfield/vecfield.cpp
      ../../src/Field/field.cpp
-     ../../src/BoundaryConditions/frozenboundary.cpp
-     ../../src/BoundaryConditions/periodicdomainboundary.cpp
      test_main.cpp
      test_utilities.cpp
      test_commons.cpp
