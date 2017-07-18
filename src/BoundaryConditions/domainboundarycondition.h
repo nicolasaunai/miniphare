@@ -44,8 +44,6 @@ public:
     virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusher,
                                          double const& dt) const override;
 
-    virtual bool hasARepopulationArea() const override { return false; }
-
     virtual ~DomainBoundaryCondition();
 };
 

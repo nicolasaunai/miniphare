@@ -51,8 +51,6 @@ public:
     virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusherType,
                                          double const& dt) const override;
 
-    virtual bool hasARepopulationArea() const override { return true; }
-
     void initializePRAparticles();
 
     void computePRAMoments(std::vector<uint32> const& orders);

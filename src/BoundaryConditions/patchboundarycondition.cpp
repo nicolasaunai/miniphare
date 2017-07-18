@@ -136,8 +136,7 @@ void PatchBoundaryCondition::applyIncomingParticleBC(Ions& ions, std::string con
             new DomainBoundaryCondition{bc->extendedLayout(), boundaries}};
 
         // Declare Pusher
-        std::unique_ptr<Pusher> pusher{
-            PusherFactory::createPusher(bc->extendedLayout(), pusherType, dt)};
+        std::unique_ptr<Pusher> pusher{PusherFactory::createPusher(bc->layout(), pusherType, dt)};
 
         for (uint32 iesp = 0; iesp < ions.nbrSpecies(); ++iesp)
         {

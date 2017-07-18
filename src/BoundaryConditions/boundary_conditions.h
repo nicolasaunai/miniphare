@@ -35,8 +35,6 @@ public:
                                          LeavingParticles const& leavingParticles) const = 0;
     virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusher,
                                          double const& dt) const = 0;
-
-    virtual bool hasARepopulationArea() const = 0;
 };
 
 
