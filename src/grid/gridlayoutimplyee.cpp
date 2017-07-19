@@ -344,21 +344,35 @@ AllocSizeT GridLayoutImplYee::allocSizeDerived(HybridQuantity qty, Direction dir
 
 
 // start and end index used in computing loops
+uint32 GridLayoutImplYee::physicalStartIndex(QtyCentering centering, Direction direction) const
+{
+    return physicalStartIndex_(centering, direction);
+}
+
+
+uint32 GridLayoutImplYee::physicalStartIndex(HybridQuantity const& hybridQuantity,
+                                             Direction direction) const
+{
+    return physicalStartIndex_(hybridQuantity, direction);
+}
+
 uint32 GridLayoutImplYee::physicalStartIndex(Field const& field, Direction direction) const
 {
     return physicalStartIndex_(field, direction);
 }
 
 
-
-
-uint32 GridLayoutImplYee::physicalStartIndex(QtyCentering centering, Direction direction) const
+uint32 GridLayoutImplYee::physicalEndIndex(QtyCentering centering, Direction direction) const
 {
-    return physicalStartIndex_(centering, direction); // cellIndexAtMin(centering, direction) ;
+    return physicalEndIndex_(centering, direction);
 }
 
 
-
+uint32 GridLayoutImplYee::physicalEndIndex(HybridQuantity const& hybridQuantity,
+                                           Direction direction) const
+{
+    return physicalEndIndex_(hybridQuantity, direction);
+}
 
 uint32 GridLayoutImplYee::physicalEndIndex(Field const& field, Direction direction) const
 {
@@ -367,14 +381,18 @@ uint32 GridLayoutImplYee::physicalEndIndex(Field const& field, Direction directi
 
 
 
-
-uint32 GridLayoutImplYee::physicalEndIndex(QtyCentering centering, Direction direction) const
+uint32 GridLayoutImplYee::ghostStartIndex(QtyCentering centering, Direction direction) const
 {
-    return physicalEndIndex_(centering, direction); // cellIndexAtMax(centering, direction) ;
+    // should we directly return 0 and remove ghostStartIndex_ ?
+    return ghostStartIndex_(centering, direction);
 }
 
-
-
+uint32 GridLayoutImplYee::ghostStartIndex(HybridQuantity const& hybridQuantity,
+                                          Direction direction) const
+{
+    // should we directly return 0 and remove ghostStartIndex_ ?
+    return ghostStartIndex_(hybridQuantity, direction);
+}
 
 uint32 GridLayoutImplYee::ghostStartIndex(Field const& field, Direction direction) const
 {
@@ -383,23 +401,23 @@ uint32 GridLayoutImplYee::ghostStartIndex(Field const& field, Direction directio
 }
 
 
-uint32 GridLayoutImplYee::ghostStartIndex(QtyCentering centering, Direction direction) const
+
+uint32 GridLayoutImplYee::ghostEndIndex(QtyCentering centering, Direction direction) const
 {
-    // should we directly return 0 and remove ghostStartIndex_ ?
-    return ghostStartIndex_(centering, direction);
+    return ghostEndIndex_(centering, direction);
 }
 
+uint32 GridLayoutImplYee::ghostEndIndex(HybridQuantity const& hybridQuantity,
+                                        Direction direction) const
+{
+    return ghostEndIndex_(hybridQuantity, direction);
+}
 
 uint32 GridLayoutImplYee::ghostEndIndex(Field const& field, Direction direction) const
 {
     return ghostEndIndex_(field, direction);
 }
 
-
-uint32 GridLayoutImplYee::ghostEndIndex(QtyCentering centering, Direction direction) const
-{
-    return ghostEndIndex_(centering, direction);
-}
 
 
 

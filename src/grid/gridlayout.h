@@ -119,15 +119,21 @@ public:
 
     std::string layoutName() const { return layoutName_; }
 
-    uint32 physicalStartIndex(Field const& field, Direction direction) const;
-    uint32 physicalEndIndex(Field const& field, Direction direction) const;
     uint32 physicalStartIndex(QtyCentering centering, Direction direction) const;
-    uint32 physicalEndIndex(QtyCentering centering, Direction direction) const;
+    uint32 physicalStartIndex(HybridQuantity const& hybridQuantity, Direction direction) const;
+    uint32 physicalStartIndex(Field const& field, Direction direction) const;
 
-    uint32 ghostStartIndex(Field const& field, Direction direction) const;
-    uint32 ghostEndIndex(Field const& field, Direction direction) const;
+    uint32 physicalEndIndex(QtyCentering centering, Direction direction) const;
+    uint32 physicalEndIndex(HybridQuantity const& hybridQuantity, Direction direction) const;
+    uint32 physicalEndIndex(Field const& field, Direction direction) const;
+
     uint32 ghostStartIndex(QtyCentering centering, Direction direction) const;
+    uint32 ghostStartIndex(HybridQuantity const& hybridQuantity, Direction direction) const;
+    uint32 ghostStartIndex(Field const& field, Direction direction) const;
+
     uint32 ghostEndIndex(QtyCentering centering, Direction direction) const;
+    uint32 ghostEndIndex(HybridQuantity const& hybridQuantity, Direction direction) const;
+    uint32 ghostEndIndex(Field const& field, Direction direction) const;
 
     AllocSizeT allocSize(HybridQuantity qtyType) const;
     AllocSizeT allocSizeDerived(HybridQuantity qty, Direction dir) const;

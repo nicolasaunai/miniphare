@@ -40,17 +40,25 @@ class GridLayoutImpl
 {
 public:
     // start and end index used in computing loops
-    virtual uint32 physicalStartIndex(Field const& field, Direction direction) const     = 0;
     virtual uint32 physicalStartIndex(QtyCentering centering, Direction direction) const = 0;
+    virtual uint32 physicalStartIndex(HybridQuantity const& hybridQuantity,
+                                      Direction direction) const = 0;
+    virtual uint32 physicalStartIndex(Field const& field, Direction direction) const = 0;
 
-    virtual uint32 physicalEndIndex(Field const& field, Direction direction) const     = 0;
     virtual uint32 physicalEndIndex(QtyCentering centering, Direction direction) const = 0;
+    virtual uint32 physicalEndIndex(HybridQuantity const& hybridQuantity,
+                                    Direction direction) const = 0;
+    virtual uint32 physicalEndIndex(Field const& field, Direction direction) const = 0;
 
-    virtual uint32 ghostStartIndex(Field const& field, Direction direction) const     = 0;
     virtual uint32 ghostStartIndex(QtyCentering centering, Direction direction) const = 0;
+    virtual uint32 ghostStartIndex(HybridQuantity const& hybridQuantity,
+                                   Direction direction) const = 0;
+    virtual uint32 ghostStartIndex(Field const& field, Direction direction) const = 0;
 
-    virtual uint32 ghostEndIndex(Field const& field, Direction direction) const     = 0;
     virtual uint32 ghostEndIndex(QtyCentering centering, Direction direction) const = 0;
+    virtual uint32 ghostEndIndex(HybridQuantity const& hybridQuantity,
+                                 Direction direction) const = 0;
+    virtual uint32 ghostEndIndex(Field const& field, Direction direction) const = 0;
 
     virtual AllocSizeT allocSize(HybridQuantity qtyType) const = 0;
     virtual AllocSizeT allocSizeDerived(HybridQuantity qty, Direction dir) const = 0;

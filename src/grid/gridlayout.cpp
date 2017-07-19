@@ -150,19 +150,6 @@ GridLayout GridLayout::subLayout(Box const& newBox, uint32 refinement) const
 
 
 /**
- * @brief GridLayout::physicalStartIndex return the index of the first node
- * of a 'field' in a given 'direction' that belong to the physical domain.
- * The function just calls its private implementation
- */
-uint32 GridLayout::physicalStartIndex(Field const& field, Direction direction) const
-{
-    return implPtr_->physicalStartIndex(field, direction);
-}
-
-
-
-
-/**
  * @brief GridLayout::physicalStartIndex return the index of the first primal or
  * dual node (centering= QtyCentering::dual or QtyCentering::primal).
  * The function just calls its private implementation.
@@ -173,15 +160,26 @@ uint32 GridLayout::physicalStartIndex(QtyCentering centering, Direction directio
 }
 
 
+/**
+ * @brief GridLayout::physicalStartIndex return the index of the first node
+ * of a 'HybridQuantity' in a given 'direction' that belong to the physical domain.
+ * The function just calls its private implementation
+ */
+uint32 GridLayout::physicalStartIndex(HybridQuantity const& hybridQuantity,
+                                      Direction direction) const
+{
+    return implPtr_->physicalStartIndex(hybridQuantity, direction);
+}
 
 
 /**
- * @brief GridLayout::physicalEndIndex return the index of the last node of a
- * 'field' in a given 'direction'. The function just calls its private implementation
+ * @brief GridLayout::physicalStartIndex return the index of the first node
+ * of a 'field' in a given 'direction' that belong to the physical domain.
+ * The function just calls its private implementation
  */
-uint32 GridLayout::physicalEndIndex(Field const& field, Direction direction) const
+uint32 GridLayout::physicalStartIndex(Field const& field, Direction direction) const
 {
-    return implPtr_->physicalEndIndex(field, direction);
+    return implPtr_->physicalStartIndex(field, direction);
 }
 
 
@@ -198,18 +196,26 @@ uint32 GridLayout::physicalEndIndex(QtyCentering centering, Direction direction)
 }
 
 
+/**
+ * @brief GridLayout::physicalEndIndex return the index of the last node of a
+ * 'HybridQuantity' in a given 'direction'. The function just calls its private implementation
+ */
+uint32 GridLayout::physicalEndIndex(HybridQuantity const& hybridQuantity, Direction direction) const
+{
+    return implPtr_->physicalEndIndex(hybridQuantity, direction);
+}
 
 
 /**
- * @brief GridLayout::ghostStartIndex returns the index of the first ghost node
- * of a 'field' in a given 'direction'. The function just calls its private
- * implementation.
+ * @brief GridLayout::physicalEndIndex return the index of the last node of a
+ * 'field' in a given 'direction'. The function just calls its private implementation
  */
-uint32 GridLayout::ghostStartIndex(Field const& field, Direction direction) const
+uint32 GridLayout::physicalEndIndex(Field const& field, Direction direction) const
 {
-    // TODO should this not always be 0?
-    return implPtr_->ghostStartIndex(field, direction);
+    return implPtr_->physicalEndIndex(field, direction);
 }
+
+
 
 
 /**
@@ -221,20 +227,30 @@ uint32 GridLayout::ghostStartIndex(Field const& field, Direction direction) cons
  */
 uint32 GridLayout::ghostStartIndex(QtyCentering centering, Direction direction) const
 {
-    // TODO should this not always be 0?
     return implPtr_->ghostStartIndex(centering, direction);
 }
 
-
+/**
+ * @brief GridLayout::ghostStartIndex returns the index of the first ghost node
+ * of a 'HybridQuantity' in a given 'direction'. The function just calls its private
+ * implementation.
+ */
+uint32 GridLayout::ghostStartIndex(HybridQuantity const& hybridQuantity, Direction direction) const
+{
+    return implPtr_->ghostStartIndex(hybridQuantity, direction);
+}
 
 /**
- * @brief GridLayout::ghostEndIndex returns the index of the last primal or dual
- * node in a given 'direction'.
+ * @brief GridLayout::ghostStartIndex returns the index of the first ghost node
+ * of a 'field' in a given 'direction'. The function just calls its private
+ * implementation.
  */
-uint32 GridLayout::ghostEndIndex(Field const& field, Direction direction) const
+uint32 GridLayout::ghostStartIndex(Field const& field, Direction direction) const
 {
-    return implPtr_->ghostEndIndex(field, direction);
+    return implPtr_->ghostStartIndex(field, direction);
 }
+
+
 
 /**
  * @brief GridLayout::ghostEndIndex returns the index of the last ghost node
@@ -247,6 +263,26 @@ uint32 GridLayout::ghostEndIndex(QtyCentering centering, Direction direction) co
 {
     return implPtr_->ghostEndIndex(centering, direction);
 }
+
+/**
+ * @brief GridLayout::ghostEndIndex returns the index of the last primal or dual
+ * node in a given 'direction'.
+ */
+uint32 GridLayout::ghostEndIndex(HybridQuantity const& hybridQuantity, Direction direction) const
+{
+    return implPtr_->ghostEndIndex(hybridQuantity, direction);
+}
+
+
+/**
+ * @brief GridLayout::ghostEndIndex returns the index of the last primal or dual
+ * node in a given 'direction'.
+ */
+uint32 GridLayout::ghostEndIndex(Field const& field, Direction direction) const
+{
+    return implPtr_->ghostEndIndex(field, direction);
+}
+
 
 
 

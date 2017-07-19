@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
     for (uint32 it = 0; it < timeManager->nbrIter(); ++it)
     {
         std::cout << "itime = " << it << std::endl;
+
         std::cout << timeManager->currentTime() << std::endl;
 
         mlmdManager.evolveFullDomain(patchHierarchy, it);

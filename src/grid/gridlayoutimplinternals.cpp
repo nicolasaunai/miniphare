@@ -242,15 +242,19 @@ uint32 GridLayoutImplInternals::physicalStartIndex_(QtyCentering centering,
 }
 
 
-
-
-uint32 GridLayoutImplInternals::physicalStartIndex_(Field const& field, Direction direction) const
+uint32 GridLayoutImplInternals::physicalStartIndex_(HybridQuantity const& hybridQuantity,
+                                                    Direction direction) const
 {
-    uint32 iQty       = static_cast<uint32>(field.hybridQty());
+    uint32 iQty       = static_cast<uint32>(hybridQuantity);
     uint32 iDir       = static_cast<uint32>(direction);
     uint32 iCentering = static_cast<uint32>(hybridQtyCentering_[iQty][iDir]);
 
     return physicalStartIndexTable_[iCentering][iDir];
+}
+
+uint32 GridLayoutImplInternals::physicalStartIndex_(Field const& field, Direction direction) const
+{
+    return physicalStartIndex_(field.hybridQty(), direction);
 }
 
 
@@ -265,11 +269,10 @@ uint32 GridLayoutImplInternals::physicalEndIndex_(QtyCentering centering, Direct
 }
 
 
-
-
-uint32 GridLayoutImplInternals::physicalEndIndex_(Field const& field, Direction direction) const
+uint32 GridLayoutImplInternals::physicalEndIndex_(HybridQuantity const& hybridQuantity,
+                                                  Direction direction) const
 {
-    uint32 iQty       = static_cast<uint32>(field.hybridQty());
+    uint32 iQty       = static_cast<uint32>(hybridQuantity);
     uint32 iDir       = static_cast<uint32>(direction);
     uint32 iCentering = static_cast<uint32>(hybridQtyCentering_[iQty][iDir]);
 
@@ -277,13 +280,11 @@ uint32 GridLayoutImplInternals::physicalEndIndex_(Field const& field, Direction 
 }
 
 
-
-
-uint32 GridLayoutImplInternals::ghostStartIndex_(Field const& field, Direction direction) const
+uint32 GridLayoutImplInternals::physicalEndIndex_(Field const& field, Direction direction) const
 {
-    // ghostStartIndex is always the first node
-    return 0;
+    return physicalEndIndex_(field.hybridQty(), direction);
 }
+
 
 
 
@@ -294,15 +295,19 @@ uint32 GridLayoutImplInternals::ghostStartIndex_(QtyCentering centering, Directi
 }
 
 
-
-
-uint32 GridLayoutImplInternals::ghostEndIndex_(Field const& field, Direction direction) const
+uint32 GridLayoutImplInternals::ghostStartIndex_(HybridQuantity const& hybridQuantity,
+                                                 Direction direction) const
 {
-    uint32 iQty       = static_cast<uint32>(field.hybridQty());
-    uint32 iDir       = static_cast<uint32>(direction);
-    uint32 iCentering = static_cast<uint32>(hybridQtyCentering_[iQty][iDir]);
-    return ghostEndIndexTable_[iCentering][iDir];
+    // ghostStartIndex is always the first node
+    return 0;
 }
+
+uint32 GridLayoutImplInternals::ghostStartIndex_(Field const& field, Direction direction) const
+{
+    // ghostStartIndex is always the first node
+    return 0;
+}
+
 
 
 
@@ -312,6 +317,20 @@ uint32 GridLayoutImplInternals::ghostEndIndex_(QtyCentering centering, Direction
     uint32 iDir       = static_cast<uint32>(direction);
 
     return ghostEndIndexTable_[iCentering][iDir];
+}
+
+uint32 GridLayoutImplInternals::ghostEndIndex_(HybridQuantity const& hybridQuantity,
+                                               Direction direction) const
+{
+    uint32 iQty       = static_cast<uint32>(hybridQuantity);
+    uint32 iDir       = static_cast<uint32>(direction);
+    uint32 iCentering = static_cast<uint32>(hybridQtyCentering_[iQty][iDir]);
+    return ghostEndIndexTable_[iCentering][iDir];
+}
+
+uint32 GridLayoutImplInternals::ghostEndIndex_(Field const& field, Direction direction) const
+{
+    return ghostEndIndex_(field.hybridQty(), direction);
 }
 
 

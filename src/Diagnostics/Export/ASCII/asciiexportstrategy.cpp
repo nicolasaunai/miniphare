@@ -1,10 +1,9 @@
 
-#include <string>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
-#include <iomanip>
-#include <stdio.h>
+#include <string>
 
 #include "asciiexportstrategy.h"
 
@@ -12,7 +11,7 @@
 
 float centering2float(QtyCentering centering)
 {
-    if(QtyCentering::dual == centering)
+    if (QtyCentering::dual == centering)
     {
         return 0.5;
     }
@@ -23,8 +22,7 @@ float centering2float(QtyCentering centering)
 
 void fillFile(FieldPack const& pack, FILE* file)
 {
-
-    for (uint32 iField = 0; iField < pack.data.size();  ++iField)
+    for (uint32 iField = 0; iField < pack.data.size(); ++iField)
     {
         std::string key = pack.keys[iField];
 
@@ -36,6 +34,11 @@ void fillFile(FieldPack const& pack, FILE* file)
         fprintf(file, "# Origin\n");
         auto itOri = pack.origin.find(key);
         fprintf(file, "%f %f %f", itOri->second.x_, itOri->second.y_, itOri->second.z_);
+        fprintf(file, "\n");
+
+        fprintf(file, "# grid spacing\n");
+        auto spacing = pack.gridSpacing.find(key);
+        fprintf(file, "%f %f %f", spacing->second[0], spacing->second[1], spacing->second[2]);
         fprintf(file, "\n");
 
         fprintf(file, "# nbrNoxdes x y z\n");
@@ -58,7 +61,7 @@ void fillFile(FieldPack const& pack, FILE* file)
         fprintf(file, "# data\n");
         auto itData = pack.data.find(key);
         fprintf(file, "#%s %d \n", itData->first.c_str(), static_cast<int>(itData->second.size()));
-        for (uint i=0; i < itData->second.size(); ++i)
+        for (uint i = 0; i < itData->second.size(); ++i)
         {
             fprintf(file, "%f\n", itData->second[i]);
         }
@@ -75,15 +78,12 @@ void fillFile(FieldPack const& pack, FILE* file)
 
    ---------------------------------------------------------------------------- */
 
-std::string getEMFilename(uint32 patchID,
-                          EMDiagnostic const& diag,
-                          Time const& timeManager)
+std::string getEMFilename(uint32 patchID, EMDiagnostic const& diag, Time const& timeManager)
 {
     std::stringstream ss;
-    ss << diag.stratName()
-       << "_" << std::setfill('0') << std::setw(6)
-       << "_" << std::setprecision(6) << std::fixed << timeManager.currentTime()
-       << patchID << ".txt";
+    ss << diag.stratName() << "_" << std::setfill('0') << std::setw(6) << patchID << "_"
+       << std::setprecision(6) << std::fixed << timeManager.currentTime() << ".txt";
+
     return ss.str();
 }
 
@@ -92,19 +92,17 @@ std::string getEMFilename(uint32 patchID,
 
 void AsciiExportStrategy::saveEMDiagnostic(EMDiagnostic const& diag, Time const& timeManager)
 {
-    std::cout << "I'm writting EM diagnostics at t = "
-              << timeManager.currentTime()
-              << " Diag type : "  << diag.stratName()
-              << std::endl;
+    std::cout << "I'm writting EM diagnostics at t = " << timeManager.currentTime()
+              << " Diag type : " << diag.stratName() << std::endl;
 
 
-    uint32 pacthID=0;
+    uint32 pacthID = 0;
     // there is one FieldPack per Patch
     // we save one file per Patch.
     for (FieldPack const& pack : diag.getPacks())
     {
         std::string filename = getEMFilename(pacthID, diag, timeManager);
-        FILE *file = fopen(filename.c_str(), "w");
+        FILE* file           = fopen(filename.c_str(), "w");
         fillFile(pack, file);
         fclose(file);
         pacthID++;
@@ -122,15 +120,14 @@ void AsciiExportStrategy::saveEMDiagnostic(EMDiagnostic const& diag, Time const&
 
 
 
-
-std::string getFluidFilename(uint32 patchID,
-                             FluidDiagnostic const& diag,
-                             Time const& timeManager)
+std::string getFluidFilename(uint32 patchID, FluidDiagnostic const& diag, Time const& timeManager)
 {
     std::stringstream ss;
-    ss << diag.stratName() << "_" << diag.speciesName()
-       << "_" << std::setprecision(6) << std::fixed << timeManager.currentTime()
-       << patchID << ".txt";
+
+    ss << diag.stratName() << "_" << diag.speciesName() << '_' << std::setfill('0') << std::setw(6)
+       << patchID << "_" << std::setprecision(6) << std::fixed << timeManager.currentTime()
+       << ".txt";
+
     return ss.str();
 }
 
@@ -139,20 +136,18 @@ std::string getFluidFilename(uint32 patchID,
 
 void AsciiExportStrategy::saveFluidDiagnostic(FluidDiagnostic const& diag, Time const& timeManager)
 {
-    std::cout << "I'm writting fluid diagnostics for species "
-              << diag.speciesName() << "at t = "
-              << timeManager.currentTime()
-              << " Diag type : "  << diag.stratName()
+    std::cout << "I'm writting fluid diagnostics for species " << diag.speciesName()
+              << "at t = " << timeManager.currentTime() << " Diag type : " << diag.stratName()
               << std::endl;
 
 
-    uint32 pacthID=0;
+    uint32 pacthID = 0;
     // there is one FieldPack per Patch
     // we save one file per Patch.
     for (FieldPack const& pack : diag.getPacks())
     {
         std::string filename = getFluidFilename(pacthID, diag, timeManager);
-        FILE *file = fopen(filename.c_str(), "w");
+        FILE* file           = fopen(filename.c_str(), "w");
         fillFile(pack, file);
         fclose(file);
         pacthID++;
