@@ -16,15 +16,16 @@ void FieldDiagnostic::compute(Hierarchy const& hierarchy)
         throw std::runtime_error("FieldDiagnostic Error - No compute Strategy");
 
 
-    auto const& patchTable  = hierarchy.patchTable();
+    auto const& patchTable = hierarchy.patchTable();
     for (auto const& level : patchTable)
     {
         for (auto const& patch : level)
         {
             pack = strategy_->compute(*patch);
+
+            packs_.push_back(std::move(pack));
         }
     }
-    packs_.push_back(std::move(pack));
 }
 
 
