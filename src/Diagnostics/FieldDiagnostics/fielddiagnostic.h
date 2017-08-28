@@ -16,9 +16,6 @@
 
 
 
-
-
-
 /**
  * @brief The FieldDiagnostic class is the interface used by the ExportStrategy
  * to get data that is going to be written on disk. It encapsulates a container
@@ -33,12 +30,12 @@ class FieldDiagnostic : public Diagnostic
 protected:
 
     std::vector<FieldPack> packs_;  // one pack per patch
-    std::unique_ptr<FieldDiagnosticComputeStrategy> strat_;
+    std::unique_ptr<FieldDiagnosticComputeStrategy> strategy_;
 
 
     FieldDiagnostic(uint32 id, std::string diagName, std::unique_ptr<FieldDiagnosticComputeStrategy> strat)
         : Diagnostic{id, diagName},
-          strat_{std::move(strat)}
+          strategy_{std::move(strat)}
     {}
 
 
@@ -47,7 +44,7 @@ protected:
     // routines used to access the diagnostic data per patch by export strat.
     std::vector<FieldPack> const& getPacks() const {return packs_;}
     void flushPacks();
-    std::string const& stratName() const {return strat_->name();}
+    std::string const& stratName() const {return strategy_->name();}
 
     virtual void compute(Hierarchy const& hierarchy) final;
 

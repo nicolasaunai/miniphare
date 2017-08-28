@@ -12,7 +12,7 @@
 void FieldDiagnostic::compute(Hierarchy const& hierarchy)
 {
     FieldPack pack;
-    if (strat_ == nullptr)
+    if (strategy_ == nullptr)
         throw std::runtime_error("FieldDiagnostic Error - No compute Strategy");
 
 
@@ -21,7 +21,7 @@ void FieldDiagnostic::compute(Hierarchy const& hierarchy)
     {
         for (auto const& patch : level)
         {
-            pack = strat_->compute(*patch);
+            pack = strategy_->compute(*patch);
         }
     }
     packs_.push_back(std::move(pack));
