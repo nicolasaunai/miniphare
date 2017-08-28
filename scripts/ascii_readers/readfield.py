@@ -5,9 +5,10 @@ Quick functions to read fields exported with the PHARE ASCII exporter
 import numpy as np
 
 class Field:
-    def __init__(self, nbdims, origin, nbrNodes, centering, data):
+    def __init__(self, nbdims, origin, spacing, nbrNodes, centering, data):
         self.nbdims      = nbdims
         self.origin      = origin
+        self.spacing     = spacing
         self.nbrNodes    = nbrNodes
         self.centering   = centering
         self.data        = data
@@ -28,7 +29,7 @@ def read_block(lines, cursor):
     for i in np.arange(nbrNodes[0]):
         data[i] = float(lines[cursor+12+i])
 
-    return Field(nbdims, origin, nbrNodes, centering, data)
+    return Field(nbdims, origin, spacing, nbrNodes, centering, data)
 
 
 
