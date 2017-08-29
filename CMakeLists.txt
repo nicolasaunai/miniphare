@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.2)
 project (miniphare)
 
 set (Tutorial_VERSION_MAJOR 1)
@@ -6,6 +6,7 @@ set (Tutorial_VERSION_MINOR 0)
 
 add_compile_options(-Wall)
 set(CMAKE_CXX_STANDARD 11)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
