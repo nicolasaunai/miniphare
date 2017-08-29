@@ -53,11 +53,11 @@ def readEMFile(filename):
 
 
 
-def EM_filenameFromTime(fieldname, time):
+def EM_filenameFromTime(fieldname, patchID, time):
     """
     return the name of a EM file for a given time
     """
-    patchID = 0 # hard coded patch ID, is OK for L0 simulations only
+    
     return fieldname + '_' + '%06d' % (patchID) + '_' + '%7.6f.txt' % (time)
 
 
