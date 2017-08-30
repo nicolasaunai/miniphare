@@ -1,6 +1,6 @@
 #include "particleutilities.h"
 
-
+#include <algorithm>
 
 
 bool isInSpecifiedBox(GridLayout const& partLayout, Particle const& child,
