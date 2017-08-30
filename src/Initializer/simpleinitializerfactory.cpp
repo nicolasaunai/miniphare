@@ -326,5 +326,5 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
 std::unique_ptr<Time> SimpleInitializerFactory::createTimeManager() const
 {
     // return std::unique_ptr<Time>{new Time{1.e-2, 0., 0.1}};
-    return std::unique_ptr<Time>{new Time{1.e-2, 0., 10.}};
+    return std::unique_ptr<Time>{new Time{1.e-3, 0., 100.}};
 }
