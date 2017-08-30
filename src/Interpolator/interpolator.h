@@ -1,6 +1,7 @@
 #ifndef INTERPOLATOR_H
 #define INTERPOLATOR_H
 
+#include <cassert>
 #include <memory>
 
 #include "Field/field.h"
@@ -257,6 +258,9 @@ public:
 
         for (uint32 ik = 0; ik < xIndexes_.size(); ++ik)
         {
+            assert(xIndexes_[ik] < rho.shape()[idir]
+                   && "Wrong index for interpolation - index bigger than rho.shape()");
+            assert(xIndexes_[ik] >= 0 && "Wrong index for interpolation - index lower than 0");
             rho(xIndexes_[ik]) += partRho * xWeights_[ik];
             xFlux(xIndexes_[ik]) += partVx * xWeights_[ik];
             yFlux(xIndexes_[ik]) += partVy * xWeights_[ik];

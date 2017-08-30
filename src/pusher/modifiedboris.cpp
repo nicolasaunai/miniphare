@@ -4,7 +4,7 @@
 #include "Interpolator/interpolator.h"
 #include "Interpolator/particlemesh.h"
 #include "pusher/modifiedboris.h"
-
+#include <cassert>
 
 
 /**
@@ -30,6 +30,8 @@ void ModifiedBoris::move(std::vector<Particle> const& partIn, std::vector<Partic
     // since newly leaving particles will be added to it.
     leavingParticles_.cleanBuffers();
 
+    assert(partIn.size() == partOut.size()
+           && "PusherError - Particle arrays must have equal size\n");
     // advance partOut from partIn(n) to n+1/2
     prePush_(partIn, partOut);
     boundaryCondition.applyOutgoingParticleBC(partOut, leavingParticles_);
@@ -81,6 +83,8 @@ void ModifiedBoris::prePush_(std::vector<Particle> const& particleIn,
             // and do auto-correction
             float iCell        = std::floor(delta);
             partOut.delta[dim] = delta - iCell;
+            assert(partOut.delta[dim] <= 1 && partOut.delta[dim] >= 0
+                   && "Error in prePush_ : absolute value of delta is out of [0, 1] range");
 
             // update the logical node
             partOut.icell[dim] = iCell + partIn.icell[dim];
@@ -185,7 +189,8 @@ void ModifiedBoris::postPush_(std::vector<Particle> const& particleIn,
             // and do auto-correction
             float iCell        = std::floor(delta);
             partOut.delta[dim] = delta - iCell;
-
+            assert(partOut.delta[dim] <= 1 && partOut.delta[dim] >= 0
+                   && "Error in postPush_ : absolute value of delta is out of [0, 1] range");
             // update the logical node
             partOut.icell[dim] += iCell;
 
