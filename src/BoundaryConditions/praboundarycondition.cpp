@@ -10,7 +10,7 @@ PRABoundaryCondition::PRABoundaryCondition(GridLayout const& patchLayout,
                                            GridLayout const& PRALayout)
     : patchLayout_{patchLayout}
     , PRALayout_{PRALayout}
-    , incomingParticleBucket_{{}}
+    , incomingParticleBucket_{}
 {
 }
 
