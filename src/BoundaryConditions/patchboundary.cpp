@@ -85,6 +85,9 @@ void PatchBoundary::removeOutgoingParticles_(std::vector<Particle>& particleArra
     uint32 nbDims = leavingParticles.particleIndicesAtMax.size();
     std::vector<uint32> leavingIndexes;
 
+    // we need to concatenate all leaving particles to remove them all at once
+    // if we don't then leaving indexes won't match leaving particles in the
+    // particle array any more since the remove() operation shuffles the indexes.
     for (uint32 dim = 0; dim < nbDims; ++dim)
     {
         std::vector<uint32> const& leavingAtMin = leavingParticles.particleIndicesAtMin[dim];
@@ -94,9 +97,15 @@ void PatchBoundary::removeOutgoingParticles_(std::vector<Particle>& particleArra
         leavingIndexes.insert(leavingIndexes.end(), leavingAtMax.begin(), leavingAtMax.end());
     }
 
+    // the index array should be sorted
     std::sort(leavingIndexes.begin(), leavingIndexes.end());
+
+    // in case a particle leaves at more than 1 boundary, e.g. x AND y
+    // its index will be found several times in the concatenated array
+    // so call unique() will remove doubles.
     std::unique(leavingIndexes.begin(), leavingIndexes.end());
 
+    // ok ready to remove particles now.
     removeParticles(leavingIndexes, particleArray);
 }
 

@@ -75,60 +75,41 @@ bool isInRefinedBox(GridLayout const& refinedLayout, VirtualParticle const& chil
  * @brief removeParticles
  * All particles indexed in leavingIndexes are removed from
  * particleArray
- *
- *
- * Successful test with Coliru
  */
 void removeParticles(std::vector<uint32> leavingIndexes, std::vector<Particle>& particleArray)
 {
-    auto size        = particleArray.size();
-    auto sizeLeaving = leavingIndexes.size();
+    auto size = particleArray.size();
+
+    /* The idea of the algorithm is to loop over the leaving indexes
+    * and swap each leaving particle with the last one of the particle array
+    * if the last particle is also one to be moved then update the index list
+    * with its new location in the particle array*/
 
     for (std::size_t iLeav = 0; iLeav < leavingIndexes.size(); ++iLeav)
     {
+        // swap the leaving particle with the last one of the array
+        // remove the last element of the array
+        // decrement its size by one.
         particleArray[leavingIndexes[iLeav]] = particleArray[size - 1];
         particleArray.pop_back();
         size--;
 
+        // the particle at position 'size' has been moved to position
+        // leavingIndexes[iLeav]
+        // if its former index (size) was in leavingIndexes
+        // then leavingIndexes has to be updated to the new location
+        // for the particle to be removed.
         auto it = std::find(leavingIndexes.begin(), leavingIndexes.end(), size);
         if (it != leavingIndexes.end())
         {
             *it = leavingIndexes[iLeav];
+
+            // we have to maintain the index array sorted
+            // but only have to sort the part over which we have not looped yet
             std::sort(leavingIndexes.begin() + static_cast<long int>(iLeav) + 1,
                       leavingIndexes.end());
         }
     }
-
-
-    /*
-    if (leavingIndexes.size() > 0)
-    {
-        std::vector<Particle> particleBuffer;
-
-        particleBuffer.reserve(particleArray.size());
-        particleBuffer.clear();
-
-        uint32 iremove = 0;
-
-        for (uint32 ipart = 0; ipart < particleArray.size(); ++ipart)
-        {
-            if (ipart != leavingIndexes[iremove])
-            {
-                particleBuffer.push_back(particleArray[ipart]);
-            }
-
-            if (ipart >= leavingIndexes[iremove])
-            {
-                if (iremove < leavingIndexes.size() - 1)
-                {
-                    iremove++;
-                }
-            }
-        }
-
-        std::swap(particleBuffer, particleArray);
-    }
-    */
 }
 
 
