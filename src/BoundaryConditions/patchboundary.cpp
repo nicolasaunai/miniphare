@@ -83,20 +83,21 @@ void PatchBoundary::removeOutgoingParticles_(std::vector<Particle>& particleArra
 {
     // loop on dimensions of leavingParticles.particleIndicesAtMin/Max
     uint32 nbDims = leavingParticles.particleIndicesAtMax.size();
+    std::vector<uint32> leavingIndexes;
 
     for (uint32 dim = 0; dim < nbDims; ++dim)
     {
         std::vector<uint32> const& leavingAtMin = leavingParticles.particleIndicesAtMin[dim];
         std::vector<uint32> const& leavingAtMax = leavingParticles.particleIndicesAtMax[dim];
 
-        std::vector<uint32> leavingIndexes;
-        leavingIndexes.reserve(leavingAtMin.size() + leavingAtMax.size());
-
         leavingIndexes.insert(leavingIndexes.end(), leavingAtMin.begin(), leavingAtMin.end());
         leavingIndexes.insert(leavingIndexes.end(), leavingAtMax.begin(), leavingAtMax.end());
-
-        removeParticles(leavingIndexes, particleArray);
     }
+
+    std::sort(leavingIndexes.begin(), leavingIndexes.end());
+    std::unique(leavingIndexes.begin(), leavingIndexes.end());
+
+    removeParticles(leavingIndexes, particleArray);
 }
 
 

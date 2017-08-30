@@ -79,9 +79,28 @@ bool isInRefinedBox(GridLayout const& refinedLayout, VirtualParticle const& chil
  *
  * Successful test with Coliru
  */
-void removeParticles(std::vector<uint32> const& leavingIndexes,
-                     std::vector<Particle>& particleArray)
+void removeParticles(std::vector<uint32> leavingIndexes, std::vector<Particle>& particleArray)
 {
+    auto size        = particleArray.size();
+    auto sizeLeaving = leavingIndexes.size();
+
+    for (std::size_t iLeav = 0; iLeav < leavingIndexes.size(); ++iLeav)
+    {
+        particleArray[leavingIndexes[iLeav]] = particleArray[size - 1];
+        particleArray.pop_back();
+        size--;
+
+        auto it = std::find(leavingIndexes.begin(), leavingIndexes.end(), size);
+        if (it != leavingIndexes.end())
+        {
+            *it = leavingIndexes[iLeav];
+            std::sort(leavingIndexes.begin() + static_cast<long int>(iLeav) + 1,
+                      leavingIndexes.end());
+        }
+    }
+
+
+    /*
     if (leavingIndexes.size() > 0)
     {
         std::vector<Particle> particleBuffer;
@@ -109,6 +128,7 @@ void removeParticles(std::vector<uint32> const& leavingIndexes,
 
         std::swap(particleBuffer, particleArray);
     }
+    */
 }
 
 
