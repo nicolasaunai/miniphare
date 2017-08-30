@@ -148,15 +148,18 @@ void PatchBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Push
                 temporaryBC);
     try
     {
-        PRABoundaryCondition const& boundaryCond
-            = dynamic_cast<PRABoundaryCondition const&>(temporaryBC);
+        PRABoundaryCondition& boundaryCond = dynamic_cast<PRABoundaryCondition&>(temporaryBC);
 
-        std::vector<Particle> const& incomingBucket{boundaryCond.incomingBucket()};
+        std::vector<Particle>& incomingBucket{boundaryCond.incomingBucket()};
 
         for (Particle const& part : incomingBucket)
         {
             particleArray.push_back(part);
         }
+
+        // we have to reset incoming particle bucket
+        // before considering the next species
+        boundaryCond.resetBucket();
     }
     catch (std::bad_cast excep)
     {

@@ -44,7 +44,9 @@ public:
     virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusher,
                                          double const& dt) const override;
 
-    std::vector<Particle> const& incomingBucket() const { return incomingParticleBucket_; }
+    std::vector<Particle>& incomingBucket() { return incomingParticleBucket_; }
+
+    void resetBucket() { incomingParticleBucket_.clear(); }
 
     virtual ~PRABoundaryCondition();
 };
