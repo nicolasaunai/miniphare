@@ -91,8 +91,8 @@ void PatchBoundary::removeOutgoingParticles_(std::vector<Particle>& particleArra
     // particle array any more since the remove() operation shuffles the indexes.
     for (uint32 dim = 0; dim < nbDims; ++dim)
     {
-        std::vector<uint32> const& leavingAtMin = leavingParticles.particleIndicesAtMin[dim];
-        std::vector<uint32> const& leavingAtMax = leavingParticles.particleIndicesAtMax[dim];
+        std::vector<int32> const& leavingAtMin = leavingParticles.particleIndicesAtMin[dim];
+        std::vector<int32> const& leavingAtMax = leavingParticles.particleIndicesAtMax[dim];
 
         leavingIndexes.insert(leavingIndexes.end(), leavingAtMin.begin(), leavingAtMin.end());
         leavingIndexes.insert(leavingIndexes.end(), leavingAtMax.begin(), leavingAtMax.end());

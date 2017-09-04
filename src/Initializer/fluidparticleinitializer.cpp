@@ -91,8 +91,8 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
 
             std::array<float, 3> delta = {{randPosX(generator), 0., 0.}};
 
-            Particle tmpParticle(cellWeight, particleCharge_, {{ix, 0, 0}}, delta,
-                                 particleVelocity);
+            Particle tmpParticle(cellWeight, particleCharge_, {{static_cast<int32>(ix), 0, 0}},
+                                 delta, particleVelocity);
 
             particles.push_back(std::move(tmpParticle));
         }
@@ -161,7 +161,8 @@ void FluidParticleInitializer::loadParticles2D_(std::vector<Particle>& particles
 
                 std::array<float, 3> delta = {{randPosX(generator), randPosY(generator), 0.}};
 
-                Particle tmpParticle(cellWeight, particleCharge_, {{ix, iy, 0}}, delta,
+                Particle tmpParticle(cellWeight, particleCharge_,
+                                     {{static_cast<int32>(ix), static_cast<int32>(iy), 0}}, delta,
                                      particleVelocity);
 
                 particles.push_back(std::move(tmpParticle));
@@ -238,8 +239,10 @@ void FluidParticleInitializer::loadParticles3D_(std::vector<Particle>& particles
                     std::array<float, 3> delta
                         = {{randPosX(generator), randPosY(generator), randPosZ(generator)}};
 
-                    Particle tmpParticle(cellWeight, particleCharge_, {{ix, iy, iz}}, delta,
-                                         particleVelocity);
+                    Particle tmpParticle(
+                        cellWeight, particleCharge_,
+                        {{static_cast<int32>(ix), static_cast<int32>(iy), static_cast<int32>(iz)}},
+                        delta, particleVelocity);
 
                     particles.push_back(std::move(tmpParticle));
                 }

@@ -188,7 +188,7 @@ public:
 
             // compute the shifted logical node
             // due to iCell displacement
-            uint32 shiftedNode = iCell + refNode;
+            int32 shiftedNode = iCell + refNode;
 
             // we now initialize a Particle at the reference node
             // Particle( weight, charge, icells, deltas, velocities )

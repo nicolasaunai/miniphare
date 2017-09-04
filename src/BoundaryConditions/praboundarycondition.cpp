@@ -1,8 +1,8 @@
 
 #include "praboundarycondition.h"
 
+#include "AMR/particleselector.h"
 #include "AMR/particleutilities.h"
-
 
 
 
@@ -70,6 +70,7 @@ void PRABoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& PRApar
         }
     }
 
+    IsInBoxSelector selector{PRALayout_, patchLayout_.getBox()};
 
     // build array containing the specific subset of leaving particles
     // going to the patch
@@ -77,16 +78,18 @@ void PRABoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& PRApar
     {
         const Particle& part = PRAparticles[ipart];
 
-        if (!isInSpecifiedBox(PRALayout_, part, PRALayout_))
+        /*        if (!isInSpecifiedBox(PRALayout_, part, PRALayout_))
+                {
+                    if (isInSpecifiedBox(PRALayout_, part, patchLayout_))
+                    {*/
+
+        if (selector.pick(part))
         {
-            if (isInSpecifiedBox(PRALayout_, part, patchLayout_))
-            {
-                Particle newPart;
+            Particle newPart;
 
-                recomputeParticlePosition(PRALayout_, patchLayout_, part, newPart);
+            recomputeParticlePosition(PRALayout_, patchLayout_, part, newPart);
 
-                incomingParticleBucket_.push_back(newPart);
-            }
+            incomingParticleBucket_.push_back(newPart);
         }
     }
 

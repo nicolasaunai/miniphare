@@ -61,6 +61,16 @@ struct Box
         , z1{zmax}
     {
     }
+
+    void expand(std::array<double, 3> padding)
+    {
+        x0 -= padding[0];
+        x1 += padding[0];
+        y0 -= padding[1];
+        y1 += padding[1];
+        z0 -= padding[2];
+        z1 += padding[2];
+    }
 };
 
 

@@ -48,13 +48,16 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
     std::array<double, 3> tol_xyz{
         computeNearPRARegion(parentPatch_->layout().order(), parentPatch_->layout().dxdydz())};
 
+    Box selectionBox{newPatchCoords_};
+    selectionBox.expand(tol_xyz);
+
     // the ParticleSelector will be shared by
     // multiple species
-    std::shared_ptr<ParticleSelector> selectorPtr{new isInAndCloseToTheBox{
-        parentPatch_->coordinates(), newPatchCoords_, parentPatch_->layout().dxdydz(),
-        parentPatch_->layout().nbrGhostNodes(QtyCentering::primal), tol_xyz}};
+    std::shared_ptr<ParticleSelector> motherParticleSelector{
+        new IsInBoxSelector{parentPatch_->layout(), selectionBox}};
 
-    buildIonsInitializer_(*ionInitPtr, selectorPtr, refinedLayout_);
+
+    buildIonsInitializer_(*ionInitPtr, motherParticleSelector, refinedLayout_);
 
 
     return ionInitPtr;
@@ -198,13 +201,15 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
         std::array<double, 3> tol_xyz{
             computeNearPRARegion(parentPatch_->layout().order(), parentPatch_->layout().dxdydz())};
 
+        Box selectionBox = praEdgeLayout.getBox();
+        selectionBox.expand(tol_xyz);
+
         // the selector will check whether particles from the parent Box
         // belong to the boundary layout box
-        std::shared_ptr<ParticleSelector> selectorPtr{new isInAndCloseToTheBox{
-            parentPatch_->coordinates(), praEdgeLayout.getBox(), parentPatch_->layout().dxdydz(),
-            parentPatch_->layout().nbrGhostNodes(QtyCentering::primal), tol_xyz}};
+        std::shared_ptr<ParticleSelector> selector
+            = std::make_shared<IsInBoxSelector>(parentPatch_->layout(), selectionBox);
 
-        buildIonsInitializer_(*ionInitPtr, selectorPtr, praEdgeLayout);
+        buildIonsInitializer_(*ionInitPtr, selector, praEdgeLayout);
 
         // We need the electromagnetic field on the PRA layout
         // of the adequate Patch boundary

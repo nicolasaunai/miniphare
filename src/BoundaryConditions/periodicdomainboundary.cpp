@@ -207,8 +207,8 @@ void makeParticlesPeriodic(std::vector<Particle>& particleArray,
 
     for (uint32 dim = 0; dim < nbDims; ++dim)
     {
-        std::vector<uint32> const& leavingAtMin = leavingParticles.particleIndicesAtMin[dim];
-        std::vector<uint32> const& leavingAtMax = leavingParticles.particleIndicesAtMax[dim];
+        std::vector<int32> const& leavingAtMin = leavingParticles.particleIndicesAtMin[dim];
+        std::vector<int32> const& leavingAtMax = leavingParticles.particleIndicesAtMax[dim];
 
         // loop on all particles leaving at Min
         for (auto index : leavingAtMin)

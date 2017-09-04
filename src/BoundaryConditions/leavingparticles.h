@@ -36,10 +36,10 @@ public:
     std::array<StartEndIndices, nbDirections> startEndIndices;
 
     //! for each direction store the index of particles leaving at min edge
-    std::vector<std::vector<uint32>> particleIndicesAtMin;
+    std::vector<std::vector<int32>> particleIndicesAtMin;
 
     //! for each direction store the index of particles leaving at the max edge
-    std::vector<std::vector<uint32>> particleIndicesAtMax;
+    std::vector<std::vector<int32>> particleIndicesAtMax;
 
     LeavingParticles(GridLayout const& layout)
         : particleIndicesAtMin(layout.nbDimensions())
@@ -93,10 +93,10 @@ public:
         }
     }
 
-    std::vector<std::vector<uint32>> const& indexesAtMin() const { return particleIndicesAtMin; }
-    std::vector<std::vector<uint32>> const& indexesAtMax() const { return particleIndicesAtMax; }
+    std::vector<std::vector<int32>> const& indexesAtMin() const { return particleIndicesAtMin; }
+    std::vector<std::vector<int32>> const& indexesAtMax() const { return particleIndicesAtMax; }
 
-    inline void storeIfLeaving(uint32 icell, uint32 ipart, uint32 direction)
+    inline void storeIfLeaving(int32 icell, uint32 ipart, uint32 direction)
     {
         if (icell > startEndIndices[direction].lastCellIndex)
         {

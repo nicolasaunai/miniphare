@@ -1,71 +1,35 @@
 #include "particleutilities.h"
-
+#include "types.h"
 #include <algorithm>
 
 
-bool isInSpecifiedBox(GridLayout const& partLayout, Particle const& child,
-                      GridLayout const& targetLayout)
+
+Point getPosition(Particle const& part, GridLayout const& layout)
 {
-    Box targetBox{targetLayout.getBox()};
-    Box partBox{partLayout.getBox()};
+    double dx = layout.dx();
+    double dy = layout.dy();
+    double dz = layout.dz();
 
-    double dx = partLayout.dx();
-    double dy = partLayout.dy();
-    double dz = partLayout.dz();
+    Box box = layout.getBox();
 
-    double part_x0 = partBox.x0;
-    double part_y0 = partBox.y0;
-    double part_z0 = partBox.z0;
+    double x0 = box.x0;
+    double y0 = box.y0;
+    double z0 = box.z0;
 
-    int32 nbrGhosts = static_cast<int32>(partLayout.nbrGhostNodes(QtyCentering::primal));
+    int32 nbrGhosts = static_cast<int32>(layout.nbrGhostNodes(QtyCentering::primal));
 
-    double posx = (static_cast<int32>(child.icell[0]) - nbrGhosts + child.delta[0]) * dx + part_x0;
-    double posy = (static_cast<int32>(child.icell[1]) - nbrGhosts + child.delta[1]) * dy + part_y0;
-    double posz = (static_cast<int32>(child.icell[2]) - nbrGhosts + child.delta[2]) * dz + part_z0;
+    double posx = (part.icell[0] - nbrGhosts + static_cast<double>(part.delta[0])) * dx + x0;
+    double posy = (part.icell[1] - nbrGhosts + static_cast<double>(part.delta[1])) * dy + y0;
+    double posz = (part.icell[2] - nbrGhosts + static_cast<double>(part.delta[2])) * dz + z0;
 
-    double xlower = targetBox.x0;
-    double xupper = targetBox.x1;
-    double ylower = targetBox.y0;
-    double yupper = targetBox.y1;
-    double zlower = targetBox.z0;
-    double zupper = targetBox.z1;
-
-    // return true if the particle is in the box
-    return (posx >= xlower && posx <= xupper && posy >= ylower && posy <= yupper && posz >= zlower
-            && posz <= zupper);
+    return Point{posx, posy, posz};
 }
 
 
-
-
-bool isInRefinedBox(GridLayout const& refinedLayout, VirtualParticle const& child)
+bool pointInBox(Point const& point, Box const& box)
 {
-    Box refinedBox{refinedLayout.getBox()};
-
-    double dx = refinedLayout.dx();
-    double dy = refinedLayout.dy();
-    double dz = refinedLayout.dz();
-
-    double x0 = refinedBox.x0;
-    double y0 = refinedBox.y0;
-    double z0 = refinedBox.z0;
-
-    int32 nbrGhosts = static_cast<int32>(refinedLayout.nbrGhostNodes(QtyCentering::primal));
-
-    double posx = static_cast<double>(child.icell[0] - nbrGhosts + child.delta[0]) * dx + x0;
-    double posy = static_cast<double>(child.icell[1] - nbrGhosts + child.delta[1]) * dy + y0;
-    double posz = static_cast<double>(child.icell[2] - nbrGhosts + child.delta[2]) * dz + z0;
-
-    double xlower = refinedBox.x0;
-    double xupper = refinedBox.x1;
-    double ylower = refinedBox.y0;
-    double yupper = refinedBox.y1;
-    double zlower = refinedBox.z0;
-    double zupper = refinedBox.z1;
-
-    // return true if the particle is in the box
-    return (posx >= xlower && posx <= xupper && posy >= ylower && posy <= yupper && posz >= zlower
-            && posz <= zupper);
+    return (point.x_ >= box.x0 && point.x_ <= box.x1 && point.y_ >= box.y0 && point.y_ <= box.y1
+            && point.z_ >= box.z0 && point.z_ <= box.z1);
 }
 
 

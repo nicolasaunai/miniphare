@@ -144,7 +144,7 @@ public:
         double weight = 1.;
         double mass   = 1.;
 
-        uint32 icellx0 = static_cast<uint32>(std::floor(inputs.x0 / layout.dx()));
+        int32 icellx0 = static_cast<int32>(std::floor(inputs.x0 / layout.dx()));
 
         Particle partic(weight, inputs.q, {{icellx0, 0, 0}},
                         {{static_cast<float>(inputs.x0 - icellx0 * layout.dx()), 0., 0.}},

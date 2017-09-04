@@ -7,12 +7,9 @@
 #include <string>
 #include <vector>
 
-#include "utilityphare.h"
-
 #include "Plasmas/particles.h"
-#include "Plasmas/virtualparticle.h"
-
 #include "grid/gridlayout.h"
+#include "utilityphare.h"
 
 
 
@@ -25,17 +22,14 @@ public:
 
     std::string const& name() const { return splitMethod_; }
 
+
     void split1D(const Particle& mother, std::vector<Particle>& childParticles) const;
 
-    void split1D(const VirtualParticle& mother, std::vector<VirtualParticle>& childParticles) const;
 
     static void normalizeMotherPosition(const GridLayout& coarseLayout,
                                         const GridLayout& refinedLayout, const Particle& mother,
                                         Particle& normalizedMother);
 
-    static void normalizeMotherPosition(GridLayout const& coarseLayout,
-                                        GridLayout const& refinedLayout, Particle const& mother,
-                                        VirtualParticle& normalizedMother);
 
 protected:
     std::string splitMethod_;

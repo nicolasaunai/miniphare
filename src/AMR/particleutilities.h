@@ -4,15 +4,12 @@
 #include "types.h"
 
 #include "Plasmas/particles.h"
-#include "Plasmas/virtualparticle.h"
 #include "grid/gridlayout.h"
 
 
-bool isInRefinedBox(GridLayout const& refinedLayout, VirtualParticle const& child);
+bool pointInBox(Point const& point, Box const& box);
 
-
-bool isInSpecifiedBox(GridLayout const& particleLayout, Particle const& child,
-                      GridLayout const& targetLayout);
+Point getPosition(Particle const& part, GridLayout const& layout);
 
 
 void recomputeParticlePosition(GridLayout const& praLayout, GridLayout const& patchLayout,
