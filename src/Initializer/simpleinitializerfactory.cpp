@@ -9,8 +9,8 @@
 #include "Splitting/splittingstrategyfactory.h"
 
 
-static const uint32 interpOrderConstant  = 2;
-static const uint32 refineFactorConstant = 2;
+static const uint32 interpOrderConstant = 2;
+// static const uint32 refineFactorConstant = 2;
 
 static const std::string defaultSplitMethod = "splitOrderN_RF2";
 

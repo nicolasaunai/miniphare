@@ -11,8 +11,8 @@ class Time
 private:
     double dt_;
     double startTime_;
-    double endTime_;
-    double duration_;
+    // double endTime_;
+    // double duration_;
     double currentTime_;
     uint32 iteration_;
     uint32 nbrIterations_;
@@ -22,9 +22,8 @@ private:
 public:
     Time(double timeStep, double startTime, double duration)
         : dt_{timeStep}
-        , startTime_{startTime}
-        , endTime_{startTime + duration}
-        , duration_{duration}
+        , startTime_{startTime} //, endTime_{startTime + duration}
+        //, duration_{duration}
         , currentTime_{startTime}
         , nbrIterations_{}
     {

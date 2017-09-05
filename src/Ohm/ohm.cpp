@@ -69,11 +69,11 @@ void Ohm::operator()(VecField const& B, Field const& Ne, VecField const& Ve, Fie
     Field const& VexB_y = implPtr_->idealTerm_.component(VecField::VecY);
     Field const& VexB_z = implPtr_->idealTerm_.component(VecField::VecZ);
 
-    Field const& ePressureX = implPtr_->pressureTerm_.component(VecField::VecX);
+    // Field const& ePressureX = implPtr_->pressureTerm_.component(VecField::VecX);
 
-    Field const& Rx = implPtr_->resistivityTerm_.component(VecField::VecX);
-    Field const& Ry = implPtr_->resistivityTerm_.component(VecField::VecY);
-    Field const& Rz = implPtr_->resistivityTerm_.component(VecField::VecZ);
+    // Field const& Rx = implPtr_->resistivityTerm_.component(VecField::VecX);
+    // Field const& Ry = implPtr_->resistivityTerm_.component(VecField::VecY);
+    // Field const& Rz = implPtr_->resistivityTerm_.component(VecField::VecZ);
 
 
     for (uint32 i = 0; i < Ex.size(); ++i)
@@ -90,6 +90,6 @@ void Ohm::operator()(VecField const& B, Field const& Ne, VecField const& Ve, Fie
     {
         Ez(i) = VexB_z(i); // +0* Rz(i);
     }
-    //std::cout << Ez(0) << " " << Ez(1) << " " << Ez(2) << " " << Ez(3) << " " << Ez(4) << " "
-     //         << Ez(5) << std::endl;
+    // std::cout << Ez(0) << " " << Ez(1) << " " << Ez(2) << " " << Ez(3) << " " << Ez(4) << " "
+    //         << Ez(5) << std::endl;
 }

@@ -94,9 +94,8 @@ void MLMDInitializerFactory::buildIonsInitializer_(IonsInitializer& ionInit,
 
         Species const& species = parentIons.species(ispe);
 
-        std::unique_ptr<ParticleInitializer> particleInit{
-            new MLMDParticleInitializer{species, selector, std::move(splitting),
-                                        parentPatch_->layout(), targetLayout, refinementRatio_}};
+        std::unique_ptr<ParticleInitializer> particleInit{new MLMDParticleInitializer{
+            species, selector, std::move(splitting), parentPatch_->layout(), targetLayout}};
 
         ionInit.masses.push_back(parentIons.species(ispe).mass());
         ionInit.names.push_back(parentIons.species(ispe).name());

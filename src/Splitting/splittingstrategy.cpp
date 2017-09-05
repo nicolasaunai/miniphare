@@ -15,7 +15,6 @@ SplittingStrategy::SplittingStrategy(std::string name, uint32 nbpts)
 }
 
 
-
 void SplittingStrategy::split1D(const Particle& mother, std::vector<Particle>& childParticles) const
 {
     for (uint32 ik = 0; ik < nbpts_; ++ik)
