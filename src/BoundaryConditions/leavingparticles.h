@@ -98,11 +98,11 @@ public:
 
     inline void storeIfLeaving(int32 icell, uint32 ipart, uint32 direction)
     {
-        if (icell > startEndIndices[direction].lastCellIndex)
+        if (icell > static_cast<int32>(startEndIndices[direction].lastCellIndex))
         {
             particleIndicesAtMax[direction].push_back(ipart);
         }
-        else if (icell < startEndIndices[direction].firstCellIndex)
+        else if (icell < static_cast<int32>(startEndIndices[direction].firstCellIndex))
         {
             particleIndicesAtMin[direction].push_back(ipart);
         }
