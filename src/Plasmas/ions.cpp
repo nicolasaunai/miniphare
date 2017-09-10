@@ -23,7 +23,6 @@
 Ions::Ions(GridLayout const& layout, std::unique_ptr<IonsInitializer> ionInitializer)
 
     : speciesArray_{}
-    , layout_{layout}
     , rho_{layout.allocSize(HybridQuantity::rho), HybridQuantity::rho, "_rhoTot"}
     , bulkVel_{layout.allocSize(HybridQuantity::V),
                layout.allocSize(HybridQuantity::V),

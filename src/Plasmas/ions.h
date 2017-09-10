@@ -30,7 +30,6 @@ class Ions
 private:
     std::vector<Species> speciesArray_;
     std::unordered_map<std::string, uint32> name2ID_;
-    GridLayout layout_;
     Field rho_;
     VecField bulkVel_;
 
