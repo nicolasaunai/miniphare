@@ -79,7 +79,7 @@ public:
 
     uint32 getID() const { return id_; }
 
-    void updateChildren(std::shared_ptr<Patch> newChild);
+    void addChild(std::shared_ptr<Patch> newChild);
 };
 
 #endif // PATCH_H

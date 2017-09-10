@@ -130,7 +130,7 @@ std::shared_ptr<Patch> Hierarchy::addNewPatch(RefinementInfo const& refineInfo,
     // create a new patch, attach it to the parent patch and updated the hierarchy
     Patch theNewPatch{refinedBox, dt_patch, refinedLayout, PatchData{*factory}};
     std::shared_ptr<Patch> patchPtr = std::make_shared<Patch>(std::move(theNewPatch));
-    coarsePatch->updateChildren(patchPtr);
+    coarsePatch->addChild(patchPtr);
 
     if (patchTable_.size() <= refinedLevel)
     {
