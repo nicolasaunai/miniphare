@@ -199,7 +199,7 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
         // warning part BC at tn + dt(parent_patch)
         //        patch.initParticlesInGhostDomain() ;
 
-        std::cout << "Patch total population = " << patch.population() << std::endl;
+        std::cout << "Patch total population = " << patch.data().population() << std::endl;
 
         // MLMD mecanism step 2 (times nbrSteps) on a patch of the finest level
         evolve_(patch, nbrSteps);

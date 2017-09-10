@@ -11,13 +11,6 @@ void Patch::init()
 
 
 
-uint32 Patch::population() const
-{
-    return data_.population();
-}
-
-
-
 
 void Patch::updateChildren(std::shared_ptr<Patch> newChild)
 {

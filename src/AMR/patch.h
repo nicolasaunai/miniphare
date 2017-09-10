@@ -60,7 +60,6 @@ public:
     ~Patch() = default;
 
     void init();
-    uint32 population() const;
 
     bool hasChildren() const { return children_.size() > 0; }
     std::size_t nbrChildren() const { return children_.size(); }
