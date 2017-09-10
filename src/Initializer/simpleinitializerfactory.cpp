@@ -246,7 +246,7 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
         for (uint32 ix = iStart; ix <= iEnd; ++ix)
         {
             Point coord = layout_.fieldNodeCoordinates(Ei, origin, ix, 0, 0);
-            std::array<double, 3> E = electricField(coord.x_, origin.y_, origin.z_);
+            std::array<double, 3> E = electricField(coord.x, origin.y, origin.z);
             Ei(ix) = E[iComponent];
         }
 
@@ -258,7 +258,7 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
         for (uint32 ix = iStart; ix <= iEnd; ++ix)
         {
             Point coord = layout_.fieldNodeCoordinates(Bi, origin, ix, 0, 0);
-            std::array<double, 3> B = magneticField(coord.x_, origin.y_, origin.z_);
+            std::array<double, 3> B = magneticField(coord.x, origin.y, origin.z);
             Bi(ix) = B[iComponent];
         }
     }

@@ -1,5 +1,5 @@
-#ifndef UTILITYPHARE_H
-#define UTILITYPHARE_H
+#ifndef box_H
+#define box_H
 
 #include <cmath>
 #include <limits>
@@ -114,6 +114,11 @@ struct LogicalBox
     }
 };
 
+struct Point;
+
+bool pointInBox(Point const& point, Box const& box);
 
 
-#endif // UTILITYPHARE_H
+
+
+#endif // box_H

@@ -256,9 +256,9 @@ std::vector<DerivTestParams> getDerivInputsFromFile()
         ifs1 >> params[i].iGhostEndOperand;
         ifs1 >> params[i].iPhysStartDerivative;
         ifs1 >> params[i].iPhysEndDerivative;
-        ifs1 >> params[i].origin.x_;
-        ifs1 >> params[i].origin.y_;
-        ifs1 >> params[i].origin.z_;
+        ifs1 >> params[i].origin.x;
+        ifs1 >> params[i].origin.y;
+        ifs1 >> params[i].origin.z;
         ifs1 >> params[i].functionName;
 
         params[i].qty     = GetHybridQty(iqty);

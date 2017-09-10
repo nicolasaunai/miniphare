@@ -284,8 +284,8 @@ void normalizeRefNodePosition1D(GridLayout const& coarseLayout, GridLayout const
                                 uint32 const refinementRatio, uint32 const& refNode,
                                 uint32& normalizedRefNode)
 {
-    double origL0_x = coarseLayout.origin().x_;
-    double origL1_x = refinedLayout.origin().x_;
+    double origL0_x = coarseLayout.origin().x;
+    double origL1_x = refinedLayout.origin().x;
 
     double normDif_x = (origL0_x - origL1_x) / refinedLayout.dx();
 

@@ -33,7 +33,7 @@ void fillFile(FieldPack const& pack, FILE* file)
 
         fprintf(file, "# Origin\n");
         auto itOri = pack.origin.find(key);
-        fprintf(file, "%f %f %f", itOri->second.x_, itOri->second.y_, itOri->second.z_);
+        fprintf(file, "%f %f %f", itOri->second.x, itOri->second.y, itOri->second.z);
         fprintf(file, "\n");
 
         fprintf(file, "# grid spacing\n");

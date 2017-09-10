@@ -4,7 +4,7 @@
 #include "constants.h"
 #include "gridlayout.h"
 #include "gridlayoutimplfactory.h"
-#include "utilityphare.h"
+#include "box.h"
 
 
 
@@ -108,9 +108,9 @@ GridLayout::GridLayout(GridLayout&& source)
 
 Box GridLayout::getBox() const
 {
-    double x0 = origin_.x_;
-    double y0 = origin_.y_;
-    double z0 = origin_.z_;
+    double x0 = origin_.x;
+    double y0 = origin_.y;
+    double z0 = origin_.z;
 
     double x1 = x0 + nbrCellx_ * dx_;
     double y1 = y0 + nbrCelly_ * dy_;

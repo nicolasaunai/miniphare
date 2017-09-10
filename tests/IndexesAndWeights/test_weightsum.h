@@ -5,7 +5,7 @@
 #include "gtest/gtest.h"
 
 #include "types.h"
-#include "utilityphare.h"
+#include "box.h"
 
 #include "grid/gridlayout.h"
 #include "grid/gridlayoutimplfactory.h"

@@ -26,13 +26,6 @@ Point getPosition(Particle const& part, GridLayout const& layout)
 }
 
 
-bool pointInBox(Point const& point, Box const& box)
-{
-    return (point.x_ >= box.x0 && point.x_ <= box.x1 && point.y_ >= box.y0 && point.y_ <= box.y1
-            && point.z_ >= box.z0 && point.z_ <= box.z1);
-}
-
-
 
 
 /**
@@ -78,53 +71,56 @@ void removeParticles(std::vector<uint32> leavingIndexes, std::vector<Particle>& 
 
 
 
-void recomputeParticlePosition(GridLayout const& praLayout, GridLayout const& patchLayout,
-                               Particle const& part, Particle& newPart)
+void particleChangeLayout(GridLayout const& praLayout, GridLayout const& patchLayout,
+                          Particle const& part, Particle& newPart)
 {
     newPart = part;
 
-    int32 nbrGhostspra = static_cast<int32>(praLayout.nbrGhostNodes(QtyCentering::primal));
+    auto nbrGhostspra   = static_cast<int32>(praLayout.nbrGhostNodes(QtyCentering::primal));
+    auto nbrGhostsPatch = static_cast<int32>(patchLayout.nbrGhostNodes(QtyCentering::primal));
 
-    // Components of the vector oriented
-    // from the origin of the refined layout
+    std::array<double, 3> deltaOrigins;
+    deltaOrigins[0] = praLayout.origin().x - patchLayout.origin().x;
+    deltaOrigins[1] = praLayout.origin().y - patchLayout.origin().y;
+    deltaOrigins[2] = praLayout.origin().z - patchLayout.origin().z;
+
+
+    std::array<double, 3> oldNormalizedPos;
+    for (uint32 i           = 0; i <= 2; ++i)
+        oldNormalizedPos[i] = static_cast<double>(part.icell[i] + part.delta[i]);
+
+    // Components of the vector oriented from the origin of the refined layout
     // to mother particle
-    double compo_x
-        = (praLayout.origin().x_ - patchLayout.origin().x_)
-          + (static_cast<int32>(part.icell[0]) - nbrGhostspra + part.delta[0]) * praLayout.dx();
+    std::array<double, 3> newNormalizedPos;
+    auto pradxyz = praLayout.dxdydz();
 
-    double compo_y
-        = (praLayout.origin().y_ - patchLayout.origin().y_)
-          + (static_cast<int32>(part.icell[1]) - nbrGhostspra + part.delta[1]) * praLayout.dy();
+    for (uint32 i           = 0; i <= 2; ++i)
+        newNormalizedPos[i] = deltaOrigins[i] + (oldNormalizedPos[i] - nbrGhostspra) * pradxyz[i];
 
-    double compo_z
-        = (praLayout.origin().z_ - patchLayout.origin().z_)
-          + (static_cast<int32>(part.icell[2]) - nbrGhostspra + part.delta[2]) * praLayout.dz();
 
-    int32 nbrGhostsPatch = static_cast<int32>(patchLayout.nbrGhostNodes(QtyCentering::primal));
+    auto newPosition = newNormalizedPos;
+    auto patchdxyz   = patchLayout.dxdydz();
 
-    double compo_x_odx = compo_x / patchLayout.dx();
-    double compo_y_ody = compo_y / patchLayout.dy();
-    double compo_z_odz = compo_z / patchLayout.dz();
+    for (uint32 i = 0; i <= 2; ++i)
+        newPosition[i] /= patchdxyz[i];
+
+
+    auto delta
+        = [](double position) { return static_cast<float>(position - std::floor(position)); };
 
     switch (praLayout.nbDimensions())
     {
         case 3:
-            newPart.icell[2]
-                = static_cast<uint32>(nbrGhostsPatch + static_cast<int32>(std::floor(compo_z_odz)));
-
-            newPart.delta[2] = static_cast<float>(compo_z_odz - std::floor(compo_z_odz));
+            newPart.icell[2] = nbrGhostsPatch + static_cast<int32>(std::floor(newPosition[2]));
+            newPart.delta[2] = delta(newPosition[2]);
 
         case 2:
-            newPart.icell[1]
-                = static_cast<uint32>(nbrGhostsPatch + static_cast<int32>(std::floor(compo_y_ody)));
-
-            newPart.delta[1] = static_cast<float>(compo_y_ody - std::floor(compo_y_ody));
+            newPart.icell[1] = nbrGhostsPatch + static_cast<int32>(std::floor(newPosition[1]));
+            newPart.delta[1] = delta(newPosition[1]);
 
         case 1:
-            newPart.icell[0]
-                = static_cast<uint32>(nbrGhostsPatch + static_cast<int32>(std::floor(compo_x_odx)));
-
-            newPart.delta[0] = static_cast<float>(compo_x_odx - std::floor(compo_x_odx));
+            newPart.icell[0] = nbrGhostsPatch + static_cast<int32>(std::floor(newPosition[0]));
+            newPart.delta[0] = delta(newPosition[0]);
             break;
 
         default: throw std::runtime_error("normalizeMotherPosition: wrong dimensionality");

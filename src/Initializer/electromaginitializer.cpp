@@ -125,7 +125,7 @@ void ElectromagInitializer::init1D_Ecomponent_(GridLayout const &layout, Field &
     for (uint32 ix = iStart; ix <= iEnd; ++ix)
     {
         Point coord = layout.fieldNodeCoordinates(Ei, origin, ix, 0, 0);
-        std::array<double, NBR_COMPO> E = electricField(coord.x_, origin.y_, origin.z_);
+        std::array<double, NBR_COMPO> E = electricField(coord.x, origin.y, origin.z);
         Ei(ix) = E[iComponent];
     }
 }
@@ -145,7 +145,7 @@ void ElectromagInitializer::init1D_Bcomponent_(GridLayout const &layout, Field &
     for (uint32 ix = iStart; ix <= iEnd; ++ix)
     {
         Point coord = layout.fieldNodeCoordinates(Bi, origin, ix, 0, 0);
-        std::array<double, NBR_COMPO> B = magneticField(coord.x_, origin.y_, origin.z_);
+        std::array<double, NBR_COMPO> B = magneticField(coord.x, origin.y, origin.z);
         Bi(ix) = B[iComponent];
     }
 }
@@ -169,7 +169,7 @@ void ElectromagInitializer::init2D_Ecomponent_(GridLayout const &layout, Field &
         for (uint32 iy = iStart[dirY]; iy <= iEnd[dirY]; ++iy)
         {
             Point coord = layout.fieldNodeCoordinates(Ei, origin, ix, iy, 0);
-            std::array<double, NBR_COMPO> E = electricField(coord.x_, coord.y_, origin.z_);
+            std::array<double, NBR_COMPO> E = electricField(coord.x, coord.y, origin.z);
             Ei(ix, iy)                      = E[iComponent];
         }
     }
@@ -193,7 +193,7 @@ void ElectromagInitializer::init2D_Bcomponent_(GridLayout const &layout, Field &
         for (uint32 iy = iStart[dirY]; iy <= iEnd[dirY]; ++iy)
         {
             Point coord = layout.fieldNodeCoordinates(Bi, origin, ix, iy, 0);
-            std::array<double, NBR_COMPO> B = magneticField(coord.x_, coord.y_, origin.z_);
+            std::array<double, NBR_COMPO> B = magneticField(coord.x, coord.y, origin.z);
             Bi(ix, iy)                      = B[iComponent];
         }
     }
@@ -222,7 +222,7 @@ void ElectromagInitializer::init3D_Ecomponent_(GridLayout const &layout, Field &
             for (uint32 iz = iStart[dirZ]; iz <= iEnd[dirZ]; ++iz)
             {
                 Point coord = layout.fieldNodeCoordinates(Ei, origin, ix, iy, iz);
-                std::array<double, NBR_COMPO> E = electricField(coord.x_, coord.y_, coord.z_);
+                std::array<double, NBR_COMPO> E = electricField(coord.x, coord.y, coord.z);
                 Ei(ix, iy, iz) = E[iComponent];
             }
         }
@@ -252,7 +252,7 @@ void ElectromagInitializer::init3D_Bcomponent_(GridLayout const &layout, Field &
             for (uint32 iz = iStart[dirZ]; iz <= iEnd[dirZ]; ++iz)
             {
                 Point coord = layout.fieldNodeCoordinates(Bi, origin, ix, iy, iz);
-                std::array<double, NBR_COMPO> B = magneticField(coord.x_, coord.y_, coord.z_);
+                std::array<double, NBR_COMPO> B = magneticField(coord.x, coord.y, coord.z);
                 Bi(ix, iy, iz) = B[iComponent];
             }
         }

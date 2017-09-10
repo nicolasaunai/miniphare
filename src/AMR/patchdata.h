@@ -34,8 +34,6 @@ private:
 public:
     PatchData(InitializerFactory const& initFactory);
 
-    // PatchData(double dt, const GridLayout& layout);
-
     PatchData(PatchData const& source) = delete;
     PatchData& operator=(PatchData const& source) = delete;
 
@@ -44,12 +42,9 @@ public:
 
     void initPatchPhysicalDomain();
 
-
     uint32 population() const;
 
     Electromag const& EMfields() const { return EMfields_; }
-
-    Solver const& solver() const { return solver_; }
 
     Ions& ions() { return ions_; }
     Ions const& ions() const { return ions_; }

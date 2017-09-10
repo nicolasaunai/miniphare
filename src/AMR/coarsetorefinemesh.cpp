@@ -65,7 +65,7 @@ void fieldAtRefinedNodes1D(Interpolator& interp, GridLayout const& coarseLayout,
 
 
     double newOriginReducedOnCoarse
-        = std::fabs(refinedLayout.origin().x_ - coarseLayout.origin().x_) / coarseLayout.dx();
+        = std::fabs(refinedLayout.origin().x - coarseLayout.origin().x) / coarseLayout.dx();
 
     double dx_refined = refinedLayout.dx();
     double dx_coarse  = coarseLayout.dx();

@@ -157,9 +157,9 @@ std::vector<GridLayoutParams> getFieldCoordsInputsFromFile()
         }
         ifs1 >> params[i].field_iStart;
         ifs1 >> params[i].field_iEnd;
-        ifs1 >> params[i].origin.x_;
-        ifs1 >> params[i].origin.y_;
-        ifs1 >> params[i].origin.z_;
+        ifs1 >> params[i].origin.x;
+        ifs1 >> params[i].origin.y;
+        ifs1 >> params[i].origin.z;
 
         params[i].qty     = GetHybridQty(iqty);
         params[i].qtyName = GetHybridQtyName(iqty);
@@ -200,9 +200,9 @@ std::vector<GridLayoutParams> getCenteredCoordsInputsFromFile()
 
         ifs1 >> params[i].field_iStart;
         ifs1 >> params[i].field_iEnd;
-        ifs1 >> params[i].origin.x_;
-        ifs1 >> params[i].origin.y_;
-        ifs1 >> params[i].origin.z_;
+        ifs1 >> params[i].origin.x;
+        ifs1 >> params[i].origin.y;
+        ifs1 >> params[i].origin.z;
 
         params[i].cellCenteredXCoords.assign(MAX_SIZE, 0.);
     }

@@ -75,12 +75,12 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
 
         // get the coordinate of the current cell
         coord = layout_.cellCenteredCoordinates(ix, 0, 0);
-        x     = coord.x_;
+        x     = coord.x;
 
         // now get density, velocity and thermal speed values
-        n   = density(x, origin.y_, origin.z_);
-        V   = bulkVelocity(x, origin.y_, origin.z_);
-        Vth = thermalSpeed(x, origin.y_, origin.z_);
+        n   = density(x, origin.y, origin.z);
+        V   = bulkVelocity(x, origin.y, origin.z);
+        Vth = thermalSpeed(x, origin.y, origin.z);
 
         cellWeight = n * cellVolume / nbrParticlePerCell_;
         std::uniform_real_distribution<float> randPosX(0., 1.);
@@ -143,13 +143,13 @@ void FluidParticleInitializer::loadParticles2D_(std::vector<Particle>& particles
 
             // get the coordinate of the current cell
             coord = layout_.cellCenteredCoordinates(ix, iy, 0);
-            x     = coord.x_;
-            y     = coord.y_;
+            x     = coord.x;
+            y     = coord.y;
 
             // now get density, velocity and thermal speed values
-            n   = density(x, y, origin.z_);
-            V   = bulkVelocity(x, y, origin.z_);
-            Vth = thermalSpeed(x, y, origin.z_);
+            n   = density(x, y, origin.z);
+            V   = bulkVelocity(x, y, origin.z);
+            Vth = thermalSpeed(x, y, origin.z);
 
             cellWeight = n * cellVolume / nbrParticlePerCell_;
             std::uniform_real_distribution<float> randPosX(0., 1.);
@@ -218,9 +218,9 @@ void FluidParticleInitializer::loadParticles3D_(std::vector<Particle>& particles
 
                 // get the coordinate of the current cell
                 coord = layout_.cellCenteredCoordinates(ix, iy, iz);
-                x     = coord.x_;
-                y     = coord.y_;
-                z     = coord.z_;
+                x     = coord.x;
+                y     = coord.y;
+                z     = coord.z;
 
                 // now get density, velocity and thermal speed values
                 n          = density(x, y, z);

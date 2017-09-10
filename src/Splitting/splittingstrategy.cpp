@@ -51,13 +51,13 @@ void SplittingStrategy::normalizeMotherPosition(const GridLayout& coarseLayout,
     // Components of the vector oriented
     // from the origin of the refined layout
     // to mother particle
-    double compo_x = (coarseLayout.origin().x_ - refinedLayout.origin().x_)
+    double compo_x = (coarseLayout.origin().x - refinedLayout.origin().x)
                      + (mother.icell[0] - nbrGhostsLn + mother.delta[0]) * coarseLayout.dx();
 
-    double compo_y = (coarseLayout.origin().y_ - refinedLayout.origin().y_)
+    double compo_y = (coarseLayout.origin().y - refinedLayout.origin().y)
                      + (mother.icell[1] - nbrGhostsLn + mother.delta[1]) * coarseLayout.dy();
 
-    double compo_z = (coarseLayout.origin().z_ - refinedLayout.origin().z_)
+    double compo_z = (coarseLayout.origin().z - refinedLayout.origin().z)
                      + (mother.icell[2] - nbrGhostsLn + mother.delta[2]) * coarseLayout.dz();
 
     int32 nbrGhostsLnplus1 = static_cast<int32>(refinedLayout.nbrGhostNodes(QtyCentering::primal));

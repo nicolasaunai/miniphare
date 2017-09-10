@@ -78,7 +78,7 @@ public:
             {
                 Point fieldNode = gl.fieldNodeCoordinates(field, inputs.origin, ix, iy, iz);
 
-                actual_fieldCoordsx.push_back(fieldNode.x_);
+                actual_fieldCoordsx.push_back(fieldNode.x);
             }
         }
     }
@@ -95,8 +95,8 @@ public:
                   << inputs.dxdydz[2] << "\n"
                   << " field iStart : " << inputs.field_iStart << "\t"
                   << " field iEnd : " << inputs.field_iEnd << "\n"
-                  << " Origin, x=" << inputs.origin.x_ << ", y=" << inputs.origin.y_
-                  << ", z=" << inputs.origin.z_ << std::endl;
+                  << " Origin, x=" << inputs.origin.x << ", y=" << inputs.origin.y
+                  << ", z=" << inputs.origin.z << std::endl;
     }
 };
 

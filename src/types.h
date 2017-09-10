@@ -35,15 +35,15 @@ struct AllocSizeT
 
 struct Point
 {
-    double x_ = 0.;
-    double y_ = 0.;
-    double z_ = 0.;
+    double x = 0.;
+    double y = 0.;
+    double z = 0.;
 
     Point() = default;
     Point(double x, double y, double z)
-        : x_{x}
-        , y_{y}
-        , z_{z}
+        : x{x}
+        , y{y}
+        , z{z}
     {
     }
 
@@ -52,11 +52,11 @@ struct Point
         double value = 0.;
         switch (idim)
         {
-            case 0: value = x_; break;
+            case 0: value = x; break;
 
-            case 1: value = y_; break;
+            case 1: value = y; break;
 
-            case 2: value = z_; break;
+            case 2: value = z; break;
 
             default: throw std::runtime_error("wrong dimensionality");
         }

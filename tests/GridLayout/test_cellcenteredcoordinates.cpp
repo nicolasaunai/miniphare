@@ -42,7 +42,7 @@ public:
         {
             Point cellCenter = gl.cellCenteredCoordinates(ix, iy, iz);
 
-            actual_cellCentersX.push_back(cellCenter.x_);
+            actual_cellCentersX.push_back(cellCenter.x);
 
             expected_cellCentersX.push_back(inputs.cellCenteredXCoords[ix]);
         }

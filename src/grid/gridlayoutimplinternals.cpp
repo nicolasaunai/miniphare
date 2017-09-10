@@ -401,9 +401,9 @@ Point GridLayoutImplInternals::fieldNodeCoordinates_(const Field& field, const P
     // if ix is dual   then ixStart is dual
     // if iy is primal then iyStart is primal ...
 
-    double x = ((ix - ixStart) + halfCell[0]) * dx_ + origin.x_;
-    double y = ((iy - iyStart) + halfCell[1]) * dy_ + origin.y_;
-    double z = ((iz - izStart) + halfCell[2]) * dz_ + origin.z_;
+    double x = ((ix - ixStart) + halfCell[0]) * dx_ + origin.x;
+    double y = ((iy - iyStart) + halfCell[1]) * dy_ + origin.y;
+    double z = ((iz - izStart) + halfCell[2]) * dz_ + origin.z;
 
     return Point(x, y, z);
 }
@@ -440,9 +440,9 @@ Point GridLayoutImplInternals::cellCenteredCoordinates_(uint32 ix, uint32 iy, ui
     // cell center physical coordinates,
     // because this point is located on the dual mesh
 
-    double x = ((ix - ixStart) + halfCell) * dx_ + origin_.x_;
-    double y = ((iy - iyStart) + halfCell) * dy_ + origin_.y_;
-    double z = ((iz - izStart) + halfCell) * dz_ + origin_.z_;
+    double x = ((ix - ixStart) + halfCell) * dx_ + origin_.x;
+    double y = ((iy - iyStart) + halfCell) * dy_ + origin_.y;
+    double z = ((iz - izStart) + halfCell) * dz_ + origin_.z;
 
     return Point(x, y, z);
 }

@@ -5,8 +5,7 @@
 // data structure Tree
 
 #include "AMR/patchdata.h"
-//#include "Plasmas/ions.h"
-#include "utilityphare.h"
+#include "box.h"
 
 
 
@@ -29,13 +28,9 @@ class Patch
 private:
     uint32 id_;
     Box coordinates_;
-
     double dt_;
-
     GridLayout layout_;
-
     PatchData data_;
-
     std::shared_ptr<Patch> parent_;
     std::vector<std::shared_ptr<Patch>> children_;
 
@@ -63,7 +58,6 @@ public:
 
     bool hasChildren() const { return children_.size() > 0; }
     std::size_t nbrChildren() const { return children_.size(); }
-
 
     Box const& coordinates() const { return coordinates_; }
 

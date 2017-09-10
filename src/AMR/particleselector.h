@@ -1,9 +1,9 @@
 #ifndef PARTICLESELECTOR_H
 #define PARTICLESELECTOR_H
 
-#include "utilityphare.h"
 
 #include "Plasmas/particles.h"
+#include "box.h"
 #include "grid/gridlayoutdefs.h"
 #include "particleutilities.h"
 #include "types.h"

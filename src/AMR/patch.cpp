@@ -12,7 +12,7 @@ void Patch::init()
 
 
 
-void Patch::updateChildren(std::shared_ptr<Patch> newChild)
+void Patch::addChild(std::shared_ptr<Patch> newChild)
 {
     children_.push_back(newChild);
 }

@@ -285,21 +285,21 @@ GridLayout MLMDInitializerFactory::getExtendedLayout_(GridLayout const& praLayou
     switch (praLayout.nbDimensions())
     {
         case 1:
-            origin.x_ += -dx;
+            origin.x += -dx;
             nx += 2;
             break;
 
         case 2:
-            origin.x_ += -dx;
-            origin.y_ += -dy;
+            origin.x += -dx;
+            origin.y += -dy;
             nx += 2;
             ny += 2;
             break;
 
         case 3:
-            origin.x_ += -dx;
-            origin.y_ += -dy;
-            origin.z_ += -dz;
+            origin.x += -dx;
+            origin.y += -dy;
+            origin.z += -dz;
             nx += 2;
             ny += 2;
             nz += 2;

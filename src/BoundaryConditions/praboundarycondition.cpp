@@ -87,7 +87,7 @@ void PRABoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& PRApar
         {
             Particle newPart;
 
-            recomputeParticlePosition(PRALayout_, patchLayout_, part, newPart);
+            particleChangeLayout(PRALayout_, patchLayout_, part, newPart);
 
             incomingParticleBucket_.push_back(newPart);
         }
