@@ -111,7 +111,7 @@ void MLMD::evolve_(Patch& patch, uint32 nbrSteps)
     {
         std::cout << "solveStep = " << itime + 1 << " / " << nbrSteps << std::endl;
 
-        patch.solveStep();
+        patch.data().solveStep();
 
         // MLMD mecanism step 4
         interpolateFieldBCInTime_(patch);
@@ -146,7 +146,7 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
     std::cout << "recursivEvolve:"
               << "dt = " << patch.timeStep() << ", nbrSteps = " << nbrSteps << std::endl;
 
-    uint32 nbrChildren = patch.nbrChildren();
+    auto nbrChildren = patch.nbrChildren();
 
     std::cout << "Level = " << ilevel << std::endl;
     std::cout << "nbrChildren = " << nbrChildren << std::endl;

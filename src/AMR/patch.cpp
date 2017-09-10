@@ -11,12 +11,6 @@ void Patch::init()
 
 
 
-void Patch::solveStep()
-{
-    data_.solveStep();
-}
-
-
 uint32 Patch::population() const
 {
     return data_.population();

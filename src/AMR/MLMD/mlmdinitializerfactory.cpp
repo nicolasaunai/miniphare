@@ -81,7 +81,7 @@ void MLMDInitializerFactory::buildIonsInitializer_(IonsInitializer& ionInit,
                                                    std::shared_ptr<ParticleSelector> selector,
                                                    GridLayout const& targetLayout) const
 {
-    Ions const& parentIons = parentPatch_->ions();
+    Ions const& parentIons = parentPatch_->data().ions();
 
     ionInit.nbrSpecies = parentIons.nbrSpecies();
 

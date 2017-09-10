@@ -5,7 +5,7 @@
 // data structure Tree
 
 #include "AMR/patchdata.h"
-#include "Plasmas/ions.h"
+//#include "Plasmas/ions.h"
 #include "utilityphare.h"
 
 
@@ -60,20 +60,11 @@ public:
     ~Patch() = default;
 
     void init();
-
-    void solveStep();
-
     uint32 population() const;
 
-
     bool hasChildren() const { return children_.size() > 0; }
+    std::size_t nbrChildren() const { return children_.size(); }
 
-    uint32 nbrChildren() const { return children_.size(); }
-
-
-    Ions const& ions() const { return data_.ions(); }
-
-    Solver const& solver() const { return data_.solver(); }
 
     Box const& coordinates() const { return coordinates_; }
 
@@ -82,12 +73,9 @@ public:
     GridLayout const& layout() const { return layout_; }
 
     std::shared_ptr<Patch> parent() const { return parent_; }
-
-
     std::shared_ptr<Patch> children(uint32 ik) const { return children_[ik]; }
 
     PatchData& data() { return data_; }
-
     PatchData const& data() const { return data_; }
 
     uint32 getID() const { return id_; }
