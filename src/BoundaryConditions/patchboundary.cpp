@@ -16,10 +16,7 @@
 
 void PatchBoundary::initPRAParticles()
 {
-    // first, we clear particle information
     ions_.resetParticles();
-
-    // we trigger actual loading of particles
     ions_.loadParticles();
 }
 
