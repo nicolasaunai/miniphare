@@ -91,7 +91,6 @@ public:
     VecField const& bulkVel() const { return bulkVel_; }
 
     void loadParticles();
-
     void computeChargeDensity();
     void computeBulkVelocity();
 };

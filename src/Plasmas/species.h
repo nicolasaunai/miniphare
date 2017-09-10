@@ -4,9 +4,11 @@
 #include "Field/field.h"
 #include "Initializer/particleinitializer.h"
 #include "Plasmas/particles.h"
-#include "grid/gridlayout.h"
 #include "vecfield/vecfield.h"
-//#include "Interpolator/interpolator.h"
+
+
+class GridLayout;
+
 
 
 /**
@@ -19,7 +21,6 @@ class Species
 private:
     double mass_;
     std::string name_;
-    GridLayout layout_;
     Field rho_;
     VecField flux_;
     std::vector<Particle> particleArray_;
