@@ -5,12 +5,10 @@
 #include <memory>
 #include <vector>
 
-#include "hybridenums.h"
-#include "types.h"
-
-//#include "Electromag/electromag.h"
 #include "Field/field.h"
 #include "gridlayoutimpl.h"
+#include "hybridenums.h"
+#include "types.h"
 #include "utilityphare.h"
 
 
