@@ -3,7 +3,7 @@
 
 
 #include "types.h"
-#include "box.h"
+#include "utilities/box.h"
 
 #include "grid/gridlayout.h"
 #include "grid/gridlayoutimplfactory.h"

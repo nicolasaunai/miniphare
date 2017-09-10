@@ -3,12 +3,11 @@
 
 #include <memory>
 
-#include "AMR/particleselector.h"
 #include "Initializer/particleinitializer.h"
 #include "Plasmas/species.h"
 #include "Splitting/splittingstrategy.h"
-
-#include "box.h"
+#include "utilities/box.h"
+#include "utilities/particleselector.h"
 
 
 

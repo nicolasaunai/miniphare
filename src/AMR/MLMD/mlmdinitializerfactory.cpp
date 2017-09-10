@@ -5,7 +5,7 @@
 
 #include "AMR/MLMD/pra.h"
 #include "AMR/coarsetorefinemesh.h"
-#include "AMR/particleselector.h"
+#include "utilities/particleselector.h"
 
 #include "AMR/MLMD/mlmdinitializerfactory.h"
 #include "AMR/MLMD/mlmdparticleinitializer.h"

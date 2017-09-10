@@ -9,8 +9,9 @@
 #include "Initializer/ohminitializer.h"
 #include "Initializer/solverinitializer.h"
 
-#include "AMR/particleselector.h"
 #include "AMR/patch.h"
+
+#include "utilities/particleselector.h"
 
 #include "Splitting/splittingstrategy.h"
 

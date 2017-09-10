@@ -1,5 +1,5 @@
 
-#include "box.h"
+#include "utilities/box.h"
 #include "types.h"
 
 bool pointInBox(Point const& point, Box const& box)

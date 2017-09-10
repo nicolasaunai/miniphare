@@ -7,7 +7,7 @@
 #include "Interpolator/particlemesh.h"
 
 #include "AMR/MLMD/pra.h"
-#include "AMR/particleutilities.h"
+#include "utilities/particleutilities.h"
 
 #include <algorithm>
 #include <iostream>

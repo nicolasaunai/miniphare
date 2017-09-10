@@ -5,15 +5,10 @@
 #include <string>
 #include <vector>
 
-#include "Diagnostics/diagnostics.h"
-//#include "Field/field.h"
 #include "AMR/Hierarchy/hierarchy.h"
+#include "Diagnostics/diagnostics.h"
 #include "fielddiagnosticcomputestrategy.h"
 #include "fieldpack.h"
-//#include "grid/gridlayout.h"
-//#include "box.h"
-//#include "vecfield/vecfield.h"
-
 
 
 

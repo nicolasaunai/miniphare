@@ -3,10 +3,10 @@
 
 
 #include "Plasmas/particles.h"
-#include "box.h"
 #include "grid/gridlayoutdefs.h"
 #include "particleutilities.h"
 #include "types.h"
+#include "utilities/box.h"
 
 /**
  * @brief The ParticleSelector class is an interface, it mainly

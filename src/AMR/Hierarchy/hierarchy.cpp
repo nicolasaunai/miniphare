@@ -12,7 +12,7 @@
 
 #include "Splitting/splittingstrategy.h"
 
-#include "box.h"
+#include "utilities/box.h"
 
 
 

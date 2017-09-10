@@ -2,7 +2,7 @@
 #define REFINMENTANALYSER_H
 
 #include "AMR/patch.h"
-#include "box.h"
+#include "utilities/box.h"
 
 
 

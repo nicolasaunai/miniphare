@@ -1,7 +1,7 @@
 
 #include "AMR/MLMD/mlmdparticleinitializer.h"
-#include "AMR/particleselector.h"
-#include "AMR/particleutilities.h"
+#include "utilities/particleselector.h"
+#include "utilities/particleutilities.h"
 
 
 

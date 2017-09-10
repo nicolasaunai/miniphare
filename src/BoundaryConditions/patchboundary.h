@@ -9,14 +9,13 @@
 
 #include "Plasmas/ions.h"
 
-#include "AMR/particleselector.h"
 #include "BoundaryConditions/boundary.h"
 #include "BoundaryConditions/boundary_conditions.h"
 #include "Electromag/electromag.h"
 #include "pusher/pusher.h"
+#include "utilities/box.h"
+#include "utilities/particleselector.h"
 #include "vecfield/vecfield.h"
-
-#include "box.h"
 
 
 
