@@ -2,8 +2,8 @@
 #define FIELDDIAGNOSTICCOMPUTESTRATEGY_H
 
 #include "AMR/patch.h"
-#include "fieldpack.h"
 #include "Field/field.h"
+#include "fieldpack.h"
 #include "grid/gridlayout.h"
 
 /**
@@ -15,31 +15,24 @@
  */
 class FieldDiagnosticComputeStrategy
 {
-
 protected:
-
     std::string stratName_;
 
-    void fillDiagData1D_(Field const& field,
-                         GridLayout const& layout,
-                         FieldPack& pack);
+    void fillDiagData1D_(Field const& field, GridLayout const& layout, FieldPack& pack);
 
-    void fillDiagData2D_(Field const& field,
-                         GridLayout const& layout,
-                         FieldPack& pack);
+    void fillDiagData2D_(Field const& field, GridLayout const& layout, FieldPack& pack);
 
-    void fillDiagData3D_(Field const& field,
-                         GridLayout const& layout,
-                         FieldPack& pack);
+    void fillDiagData3D_(Field const& field, GridLayout const& layout, FieldPack& pack);
 
 
     void fillPack_(FieldPack& pack, Field const& field, GridLayout const& layout);
 
 
 public:
-
     FieldDiagnosticComputeStrategy(std::string name)
-        :stratName_{name}{}
+        : stratName_{name}
+    {
+    }
 
     /**
      * @brief compute is overriden by a concrete FieldDiagnosticCompute class
@@ -50,7 +43,7 @@ public:
      */
     FieldPack virtual compute(Patch const& patch) = 0;
 
-    std::string const& name() const {return stratName_;}
+    std::string const& name() const { return stratName_; }
 };
 
 

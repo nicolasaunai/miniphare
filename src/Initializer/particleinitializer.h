@@ -5,7 +5,6 @@
 #include <array>
 
 #include "Plasmas/particles.h"
-
 #include "grid/gridlayout.h"
 
 

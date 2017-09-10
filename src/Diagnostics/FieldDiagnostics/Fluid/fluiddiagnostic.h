@@ -1,14 +1,14 @@
 #ifndef FLUIDDIAGNOSTIC_H
 #define FLUIDDIAGNOSTIC_H
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "AMR/patch.h"
 #include "Field/field.h"
-#include "AMR/patchdata.h"
-#include "Plasmas/species.h"
+//#include "AMR/patchdata.h"
 #include "Diagnostics/FieldDiagnostics/fielddiagnostic.h"
+//#include "Plasmas/species.h"
 
 
 
@@ -19,14 +19,14 @@ private:
     std::string speciesName_;
 
 public:
-
-    FluidDiagnostic(uint32 id,
-                    std::string speciesName,
+    FluidDiagnostic(uint32 id, std::string speciesName,
                     std::unique_ptr<FieldDiagnosticComputeStrategy> strat)
-        : FieldDiagnostic{id, "fluid_"+speciesName, std::move(strat)},
-          speciesName_{speciesName} {}
+        : FieldDiagnostic{id, "fluid_" + speciesName, std::move(strat)}
+        , speciesName_{speciesName}
+    {
+    }
 
-    std::string const& speciesName() const {return speciesName_;}
+    std::string const& speciesName() const { return speciesName_; }
 };
 
 
@@ -39,14 +39,13 @@ private:
 
 public:
     RhoSpeciesDiag(std::string speciesName)
-        : FieldDiagnosticComputeStrategy{"rho_s"},
-          speciesName_{speciesName}{}
+        : FieldDiagnosticComputeStrategy{"rho_s"}
+        , speciesName_{speciesName}
+    {
+    }
 
     FieldPack virtual compute(Patch const& patch) override;
-
 };
-
-
 
 
 
@@ -58,13 +57,13 @@ private:
 
 public:
     FluxSpeciesDiag(std::string speciesName)
-        : FieldDiagnosticComputeStrategy{"flux_s"},
-          speciesName_{speciesName}{}
+        : FieldDiagnosticComputeStrategy{"flux_s"}
+        , speciesName_{speciesName}
+    {
+    }
 
     FieldPack virtual compute(Patch const& patch) override;
 };
-
-
 
 
 

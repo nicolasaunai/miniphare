@@ -1,8 +1,4 @@
 
-#include <cstddef>
-#include <iostream>
-
-
 #include "vecfield.h"
 
 
@@ -36,11 +32,9 @@ Field& VecField::component(uint32 iComp)
 
     switch (iComp)
     {
-        case VecField::VecX: return xComponent_; break;
-
-        case VecField::VecY: return yComponent_; break;
-
-        case VecField::VecZ: return zComponent_; break;
+        case VecField::VecX: return xComponent_;
+        case VecField::VecY: return yComponent_;
+        case VecField::VecZ: return zComponent_;
 
         default: throw std::runtime_error("wrong component");
     }
@@ -52,11 +46,9 @@ const Field& VecField::component(uint32 iComp) const
 {
     switch (iComp)
     {
-        case VecField::VecX: return xComponent_; break;
-
-        case VecField::VecY: return yComponent_; break;
-
-        case VecField::VecZ: return zComponent_; break;
+        case VecField::VecX: return xComponent_;
+        case VecField::VecY: return yComponent_;
+        case VecField::VecZ: return zComponent_;
 
         default: throw std::runtime_error("wrong component");
     }

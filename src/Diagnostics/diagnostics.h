@@ -1,25 +1,9 @@
 #ifndef DIAGNOSTICS_H
 #define DIAGNOSTICS_H
 
-#include <algorithm>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include <stdio.h>
-#include <string>
-#include <unordered_map>
-#include <vector>
 
 #include "AMR/Hierarchy/hierarchy.h"
-#include "Diagnostics/diagtype.h"
-#include "Electromag/electromag.h"
-#include "Field/field.h"
-#include "Plasmas/particles.h"
-#include "Time/time.h"
-#include "grid/gridlayout.h"
-#include "types.h"
-#include "utilityphare.h"
-#include "vecfield/vecfield.h"
+#include <string>
 
 
 

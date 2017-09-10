@@ -10,6 +10,7 @@
 #include "AMR/particleutilities.h"
 
 #include <algorithm>
+#include <iostream>
 
 
 
@@ -26,17 +27,23 @@ void PatchBoundary::initPRAParticles()
 
 void PatchBoundary::applyElectricBC(VecField& E, GridLayout const& layout) const
 {
+    (void)E;
+    (void)layout;
 }
 
 
 void PatchBoundary::applyMagneticBC(VecField& B, GridLayout const& layout) const
 {
+    (void)B;
+    (void)layout;
 }
 
 
 
 void PatchBoundary::applyCurrentBC(VecField& J, GridLayout const& layout) const
 {
+    (void)J;
+    (void)layout;
 }
 
 
@@ -48,9 +55,7 @@ void PatchBoundary::applyDensityBC(Field& rhoPatch, GridLayout const& patchLayou
     switch (patchLayout.nbDimensions())
     {
         case 1: addPRAmomentsToPatch1D_(patchLayout, rhoPatch, rhoPRA, edge_); break;
-
         case 2: addPRAmomentsToPatch2D_(patchLayout, rhoPatch, rhoPRA, edge_); break;
-
         case 3: addPRAmomentsToPatch3D_(patchLayout, rhoPatch, rhoPRA, edge_); break;
     }
 }
@@ -60,13 +65,10 @@ void PatchBoundary::applyBulkBC(VecField& bulkVelPatch, GridLayout const& patchL
 {
     VecField const& bulkVelPRA = ions_.bulkVel();
 
-
     switch (patchLayout.nbDimensions())
     {
         case 1: addPRAmomentsToPatch1D_(patchLayout, bulkVelPatch, bulkVelPRA, edge_); break;
-
         case 2: addPRAmomentsToPatch2D_(patchLayout, bulkVelPatch, bulkVelPRA, edge_); break;
-
         case 3: addPRAmomentsToPatch3D_(patchLayout, bulkVelPatch, bulkVelPRA, edge_); break;
     }
 }
@@ -83,7 +85,7 @@ void PatchBoundary::removeOutgoingParticles_(std::vector<Particle>& particleArra
                                              LeavingParticles const& leavingParticles) const
 {
     // loop on dimensions of leavingParticles.particleIndicesAtMin/Max
-    uint32 nbDims = leavingParticles.particleIndicesAtMax.size();
+    uint32 nbDims = static_cast<uint32>(leavingParticles.particleIndicesAtMax.size());
     std::vector<uint32> leavingIndexes;
 
     // we need to concatenate all leaving particles to remove them all at once

@@ -1,6 +1,9 @@
 #ifndef PATCHBOUNDARY_H
 #define PATCHBOUNDARY_H
 
+#include <iostream>
+
+
 #include "Initializer/electromaginitializer.h"
 #include "Initializer/ionsinitializer.h"
 

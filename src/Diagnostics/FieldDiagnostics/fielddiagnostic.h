@@ -1,17 +1,18 @@
 #ifndef FIELDDIAGNOSTIC_H
 #define FIELDDIAGNOSTIC_H
 
-#include <vector>
 #include <array>
+#include <string>
+#include <vector>
 
-#include "fieldpack.h"
-#include "Field/field.h"
-#include "utilityphare.h"
-#include "grid/gridlayout.h"
-#include "vecfield/vecfield.h"
 #include "Diagnostics/diagnostics.h"
+//#include "Field/field.h"
+#include "AMR/Hierarchy/hierarchy.h"
 #include "fielddiagnosticcomputestrategy.h"
-
+#include "fieldpack.h"
+//#include "grid/gridlayout.h"
+//#include "utilityphare.h"
+//#include "vecfield/vecfield.h"
 
 
 
@@ -26,29 +27,26 @@
  */
 class FieldDiagnostic : public Diagnostic
 {
-
 protected:
-
-    std::vector<FieldPack> packs_;  // one pack per patch
+    std::vector<FieldPack> packs_; // one pack per patch
     std::unique_ptr<FieldDiagnosticComputeStrategy> strategy_;
 
 
-    FieldDiagnostic(uint32 id, std::string diagName, std::unique_ptr<FieldDiagnosticComputeStrategy> strat)
-        : Diagnostic{id, diagName},
-          strategy_{std::move(strat)}
-    {}
+    FieldDiagnostic(uint32 id, std::string diagName,
+                    std::unique_ptr<FieldDiagnosticComputeStrategy> strat)
+        : Diagnostic{id, diagName}
+        , strategy_{std::move(strat)}
+    {
+    }
 
 
- public:
-
+public:
     // routines used to access the diagnostic data per patch by export strat.
-    std::vector<FieldPack> const& getPacks() const {return packs_;}
+    std::vector<FieldPack> const& getPacks() const { return packs_; }
     void flushPacks();
-    std::string const& stratName() const {return strategy_->name();}
+    std::string const& stratName() const { return strategy_->name(); }
 
     virtual void compute(Hierarchy const& hierarchy) final;
-
-
 };
 
 

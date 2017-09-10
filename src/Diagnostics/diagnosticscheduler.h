@@ -2,10 +2,12 @@
 #define DIAGNOSTICSCHEDULER_H
 
 
-#include <unordered_map>
-
 #include "Time/time.h"
 #include "diagtype.h"
+#include "types.h"
+
+#include <unordered_map>
+#include <vector>
 
 
 

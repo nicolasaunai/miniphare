@@ -4,8 +4,6 @@
 #include <memory>
 
 #include "ampereimpl.h"
-
-#include "Field/field.h"
 #include "grid/gridlayout.h"
 #include "vecfield/vecfield.h"
 

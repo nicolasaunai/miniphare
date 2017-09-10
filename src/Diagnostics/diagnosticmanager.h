@@ -5,9 +5,6 @@
 #include <memory>
 #include <vector>
 
-#include "AMR/patchdata.h"
-#include "grid/gridlayout.h"
-
 #include "Diagnostics/diagtype.h"
 #include "diagnosticscheduler.h"
 

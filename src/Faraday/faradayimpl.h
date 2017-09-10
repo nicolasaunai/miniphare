@@ -1,7 +1,6 @@
 #ifndef FARADAYIMPL_H
 #define FARADAYIMPL_H
 
-#include "Field/field.h"
 #include "grid/gridlayout.h"
 #include "vecfield/vecfield.h"
 

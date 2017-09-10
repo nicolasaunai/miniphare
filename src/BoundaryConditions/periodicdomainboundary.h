@@ -4,6 +4,7 @@
 
 #include "BoundaryConditions/boundary.h"
 #include "vecfield/vecfield.h"
+#include <iostream>
 
 
 /**

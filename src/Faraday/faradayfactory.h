@@ -8,7 +8,7 @@
 #include "Faraday/faraday.h"
 #include "faradayimpl1d.h"
 #include "grid/gridlayout.h"
-#include "types.h"
+//#include "types.h"
 
 
 

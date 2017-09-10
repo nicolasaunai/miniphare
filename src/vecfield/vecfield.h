@@ -5,7 +5,6 @@
 
 #include <array>
 #include <functional>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -27,7 +26,7 @@ private:
     Field zComponent_;
 
 
-    friend bool sameShape(VecField const& v1, VecField const& v2);
+    // friend bool sameShape(VecField const& v1, VecField const& v2);
 
 
 public:
