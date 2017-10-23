@@ -35,6 +35,9 @@ private:
     // We know we are dealing with PatchBoundary objects
     std::vector<std::unique_ptr<PatchBoundary>> boundaries_;
 
+    void removeOutgoingParticles_(std::vector<Particle>& particleArray,
+                                  LeavingParticles const& leavingParticles) const;
+
 public:
     PatchBoundaryCondition(PRA const& refinedPRA, std::shared_ptr<Patch> coarsePatch,
                            GridLayout const& coarseLayout,
@@ -44,17 +47,28 @@ public:
     virtual void applyElectricBC(VecField& E) const override;
     virtual void applyCurrentBC(VecField& J) const override;
     virtual void applyDensityBC(Field& N) const override;
-    virtual void applyBulkBC(VecField& Vi) const override;
+    virtual void applyFluxBC(Ions& ions) const override;
 
     virtual void applyOutgoingParticleBC(std::vector<Particle>& particleArray,
                                          LeavingParticles const& leavingParticles) override;
 
-    virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusherType,
-                                         double const& dt) const override;
+    virtual void applyIncomingParticleBC(std::vector<Particle>& patchArray,
+                                         std::string const& pusherType, double const& dt,
+                                         std::string const& species) const override;
 
     void initializePRAparticles();
 
-    void computePRAMoments(std::vector<uint32> const& orders);
+    void computePRADensityAndFlux(std::vector<uint32> const& orders);
+    void computePRAChargeDensity();
+    void computePRABulkVelocity();
+
+    void updateCorrectedEMfields(GridLayout const& parentLayout,
+                                 Electromag const& parentElectromag);
+
+    void updateEMfields();
+
+    void resetFreeEvolutionTime();
+    void updateFreeEvolutionTime(double dt);
 };
 
 #endif // PATCHBOUNDARYCONDITION_H

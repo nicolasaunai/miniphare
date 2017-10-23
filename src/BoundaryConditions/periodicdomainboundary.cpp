@@ -7,7 +7,7 @@
  *                        FIELD BOUNDARY CONDITIONS
  *
    ---------------------------------------------------------------------------- */
-void PeriodicDomainBoundary::applyMagneticBC(VecField& B, GridLayout const& layout) const
+void PeriodicDomainBoundary::applyMagneticBC(VecField& B, GridLayout const& layout)
 {
     makeFieldPeriodic_(B, layout);
 }
@@ -114,14 +114,19 @@ void PeriodicDomainBoundary::applyDensityBC(Field& Ni, GridLayout const& layout)
 
 
 
-
-void PeriodicDomainBoundary::applyBulkBC(VecField& Vi, GridLayout const& layout) const
+void PeriodicDomainBoundary::applyFluxBC(Ions& ions, GridLayout const& layout) const
 {
-    for (Field& component : Vi.components())
+    for (uint32 ispe = 0; ispe < ions.nbrSpecies(); ++ispe)
     {
-        makeMomentPeriodic_(component, layout);
+        Species& species = ions.species(ispe);
+
+        for (Field& component : species.flux().components())
+        {
+            makeMomentPeriodic_(component, layout);
+        }
     }
 }
+
 
 
 // moments have to have their own method (makeMomentPeriodic_) and cannot use
@@ -239,6 +244,6 @@ void PeriodicDomainBoundary::applyOutgoingParticleBC(std::vector<Particle>& part
 void PeriodicDomainBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Pusher& pusher,
                                                      GridLayout const& patchLayout,
                                                      std::vector<Particle>& patchParticles,
-                                                     uint32 iesp)
+                                                     std::string const& species)
 {
 }

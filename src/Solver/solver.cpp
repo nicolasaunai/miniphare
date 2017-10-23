@@ -79,7 +79,7 @@ void Solver::init(Ions& ions, BoundaryCondition const& boundaryCondition)
     boundaryCondition.applyDensityBC(ions.rho());
 
     ions.computeBulkVelocity();
-    boundaryCondition.applyBulkBC(ions.bulkVel());
+    // boundaryCondition.applyBulkBC(ions.bulkVel());
 }
 
 
@@ -182,7 +182,7 @@ void Solver::solveStepPPC(Electromag& EMFields, Ions& ions, Electrons& electrons
     //
     // Therefore we apply incoming particle boundary conditions only once,
     // after the 2nd prediction step.
-    boundaryCondition.applyIncomingParticleBC(ions, pusher_->pusherType(), pusher_->dt());
+    // boundaryCondition.applyIncomingParticleBC(ions, pusher_->pusherType(), pusher_->dt());
 
     // TODO : just for debug use, remove asap
     // ions.computeChargeDensity();
@@ -304,5 +304,5 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
     boundaryCondition.applyDensityBC(ions.rho());
 
     ions.computeBulkVelocity();
-    boundaryCondition.applyBulkBC(ions.bulkVel());
+    // boundaryCondition.applyBulkBC(ions.bulkVel());
 }

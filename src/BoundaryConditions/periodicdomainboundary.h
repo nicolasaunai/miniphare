@@ -39,16 +39,17 @@ public:
     virtual ~PeriodicDomainBoundary() = default;
 
     virtual void applyElectricBC(VecField& E, GridLayout const& layout) const override;
-    virtual void applyMagneticBC(VecField& B, GridLayout const& layout) const override;
+    virtual void applyMagneticBC(VecField& B, GridLayout const& layout) override;
     virtual void applyCurrentBC(VecField& J, GridLayout const& layout) const override;
     virtual void applyDensityBC(Field& J, GridLayout const& layout) const override;
-    virtual void applyBulkBC(VecField& Vi, GridLayout const& layout) const override;
+    virtual void applyFluxBC(Ions& ions, GridLayout const& layout) const override;
+
     virtual void applyOutgoingParticleBC(std::vector<Particle>& particleArray,
                                          LeavingParticles const& leavingParticles) const override;
     virtual void applyIncomingParticleBC(BoundaryCondition& temporaryBC, Pusher& pusher,
                                          GridLayout const& patchLayout,
                                          std::vector<Particle>& patchParticles,
-                                         uint32 iesp) override;
+                                         std::string const& species) override;
 };
 
 

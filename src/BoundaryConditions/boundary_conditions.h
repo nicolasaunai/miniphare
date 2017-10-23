@@ -30,13 +30,15 @@ public:
     virtual void applyElectricBC(VecField& E) const = 0;
     virtual void applyCurrentBC(VecField& J) const  = 0;
     virtual void applyDensityBC(Field& N) const     = 0;
-    virtual void applyBulkBC(VecField& Vi) const    = 0;
+    virtual void applyFluxBC(Ions& ions) const      = 0;
+
     virtual void applyOutgoingParticleBC(std::vector<Particle>& particleArray,
                                          LeavingParticles const& leavingParticles)
         = 0;
 
-    virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusher,
-                                         double const& dt) const = 0;
+    virtual void applyIncomingParticleBC(std::vector<Particle>& particles,
+                                         std::string const& pusher, double const& dt,
+                                         std::string const& species) const = 0;
 };
 
 

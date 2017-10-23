@@ -8,6 +8,8 @@
 #include "utilities/box.h"
 
 
+#include <algorithm>
+
 /**
  * @brief PatchBoundaryCondition::PatchBoundaryCondition
  * we initialize isPatchBC = true
@@ -56,28 +58,76 @@ void PatchBoundaryCondition::initializePRAparticles()
 
 
 
-void PatchBoundaryCondition::computePRAMoments(std::vector<uint32> const& orders)
+void PatchBoundaryCondition::computePRADensityAndFlux(std::vector<uint32> const& orders)
 {
     for (auto& boundary : boundaries_)
     {
-        boundary->computePRAmoments(orders);
+        boundary->computePRADensityAndFlux(orders);
     }
 }
 
 
-
-void PatchBoundaryCondition::applyMagneticBC(VecField& B) const
+void PatchBoundaryCondition::computePRAChargeDensity()
 {
+    for (auto& boundary : boundaries_)
+    {
+        boundary->computePRAChargeDensity();
+    }
+}
+
+
+void PatchBoundaryCondition::computePRABulkVelocity()
+{
+    for (auto& boundary : boundaries_)
+    {
+        boundary->computePRABulkVelocity();
+    }
+}
+
+
+void PatchBoundaryCondition::updateCorrectedEMfields(GridLayout const& parentLayout,
+                                                     Electromag const& parentElectromag)
+{
+    for (auto& boundary : boundaries_)
+    {
+        boundary->updateCorrectedEMfields(parentLayout, parentElectromag);
+    }
+}
+
+
+void PatchBoundaryCondition::updateEMfields()
+{
+    for (auto& boundary : boundaries_)
+    {
+        boundary->updateEMfields();
+    }
 }
 
 
 void PatchBoundaryCondition::applyElectricBC(VecField& E) const
 {
+    for (auto& boundary : boundaries_)
+    {
+        boundary->applyElectricBC(E, patchLayout_);
+    }
+}
+
+
+void PatchBoundaryCondition::applyMagneticBC(VecField& B) const
+{
+    for (auto& boundary : boundaries_)
+    {
+        boundary->applyMagneticBC(B, patchLayout_);
+    }
 }
 
 
 void PatchBoundaryCondition::applyCurrentBC(VecField& J) const
 {
+    for (auto& boundary : boundaries_)
+    {
+        boundary->applyCurrentBC(J, patchLayout_);
+    }
 }
 
 
@@ -91,29 +141,59 @@ void PatchBoundaryCondition::applyDensityBC(Field& N) const
 }
 
 
-void PatchBoundaryCondition::applyBulkBC(VecField& Vi) const
+
+void PatchBoundaryCondition::applyFluxBC(Ions& ions) const
 {
     for (auto& boundary : boundaries_)
     {
-        boundary->applyBulkBC(Vi, patchLayout_);
+        boundary->applyFluxBC(ions, patchLayout_);
     }
 }
-
 
 
 void PatchBoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& particleArray,
                                                      LeavingParticles const& leavingParticles)
 {
-    for (auto&& bc : boundaries_)
-    {
-        bc->applyOutgoingParticleBC(particleArray, leavingParticles);
-    }
+    removeOutgoingParticles_(particleArray, leavingParticles);
 }
 
 
+void PatchBoundaryCondition::removeOutgoingParticles_(
+    std::vector<Particle>& particleArray, LeavingParticles const& leavingParticles) const
+{
+    // loop on dimensions of leavingParticles.particleIndicesAtMin/Max
+    uint32 nbDims = static_cast<uint32>(leavingParticles.particleIndicesAtMax.size());
+    std::vector<uint32> leavingIndexes;
 
-void PatchBoundaryCondition::applyIncomingParticleBC(Ions& ions, std::string const& pusherType,
-                                                     double const& dt) const
+    // we need to concatenate all leaving particles to remove them all at once
+    // if we don't then leaving indexes won't match leaving particles in the
+    // particle array any more since the remove() operation shuffles the indexes.
+    for (uint32 dim = 0; dim < nbDims; ++dim)
+    {
+        std::vector<int32> const& leavingAtMin = leavingParticles.particleIndicesAtMin[dim];
+        std::vector<int32> const& leavingAtMax = leavingParticles.particleIndicesAtMax[dim];
+
+        leavingIndexes.insert(leavingIndexes.end(), leavingAtMin.begin(), leavingAtMin.end());
+        leavingIndexes.insert(leavingIndexes.end(), leavingAtMax.begin(), leavingAtMax.end());
+    }
+
+    // the index array should be sorted
+    std::sort(leavingIndexes.begin(), leavingIndexes.end());
+
+    // in case a particle leaves at more than 1 boundary, e.g. x AND y
+    // its index will be found several times in the concatenated array
+    // so call unique() will remove doubles.
+    std::unique(leavingIndexes.begin(), leavingIndexes.end());
+
+    // ok ready to remove particles now.
+    removeParticles(leavingIndexes, particleArray);
+}
+
+
+void PatchBoundaryCondition::applyIncomingParticleBC(std::vector<Particle>& patchArray,
+                                                     std::string const& pusherType,
+                                                     double const& dt,
+                                                     std::string const& species) const
 {
     for (auto&& bc : boundaries_)
     {
@@ -128,11 +208,26 @@ void PatchBoundaryCondition::applyIncomingParticleBC(Ions& ions, std::string con
         // Declare Pusher
         std::unique_ptr<Pusher> pusher{PusherFactory::createPusher(bc->layout(), pusherType, dt)};
 
-        for (uint32 iesp = 0; iesp < ions.nbrSpecies(); ++iesp)
-        {
-            std::vector<Particle>& patchArray = ions.species(iesp).particles();
+        bc->applyIncomingParticleBC(*temporaryBC, *pusher, patchLayout_, patchArray, species);
+    }
+}
 
-            bc->applyIncomingParticleBC(*temporaryBC, *pusher, patchLayout_, patchArray, iesp);
-        }
+
+
+void PatchBoundaryCondition::resetFreeEvolutionTime()
+{
+    for (auto& boundary : boundaries_)
+    {
+        boundary->resetFreeEvolutionTime();
+    }
+}
+
+
+
+void PatchBoundaryCondition::updateFreeEvolutionTime(double dt)
+{
+    for (auto& boundary : boundaries_)
+    {
+        boundary->updateFreeEvolutionTime(dt);
     }
 }

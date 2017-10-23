@@ -61,15 +61,13 @@ void DomainBoundaryCondition::applyDensityBC(Field& Ni) const
 
 
 
-
-void DomainBoundaryCondition::applyBulkBC(VecField& Vi) const
+void DomainBoundaryCondition::applyFluxBC(Ions& ions) const
 {
     for (auto&& bc : boundaries_)
     {
-        bc->applyBulkBC(Vi, layout_);
+        bc->applyFluxBC(ions, layout_);
     }
 }
-
 
 
 void DomainBoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& particleArray,
@@ -82,8 +80,9 @@ void DomainBoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& par
 }
 
 
-void DomainBoundaryCondition::applyIncomingParticleBC(Ions& ions, std::string const& pusher,
-                                                      double const& dt) const
+void DomainBoundaryCondition::applyIncomingParticleBC(std::vector<Particle>& particles,
+                                                      std::string const& pusher, double const& dt,
+                                                      std::string const& species) const
 {
 }
 

@@ -40,11 +40,11 @@ void PRABoundaryCondition::applyDensityBC(Field& Ni) const
 }
 
 
-void PRABoundaryCondition::applyBulkBC(VecField& Vi) const
-{
-    (void)Vi;
-}
 
+void PRABoundaryCondition::applyFluxBC(Ions& ions) const
+{
+    (void)ions;
+}
 
 
 void PRABoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& PRAparticles,
@@ -100,12 +100,14 @@ void PRABoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& PRApar
 
 
 
-void PRABoundaryCondition::applyIncomingParticleBC(Ions& ions, std::string const& pusher,
-                                                   double const& dt) const
+void PRABoundaryCondition::applyIncomingParticleBC(std::vector<Particle>& particles,
+                                                   std::string const& pusher, double const& dt,
+                                                   std::string const& species) const
 {
-    (void)ions;
+    (void)particles;
     (void)pusher;
     (void)dt;
+    (void)species;
 }
 
 

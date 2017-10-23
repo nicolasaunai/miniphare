@@ -3,6 +3,8 @@ project (test-Pusher)
 
 set(SOURCES
      ../../src/Plasmas/particles.cpp
+     ../../src/Plasmas/ions.cpp
+     ../../src/Plasmas/species.cpp
      ../../src/Interpolator/interpolator.cpp
      ../../src/Interpolator/particlemesh.cpp
      ../../src/pusher/modifiedboris.cpp

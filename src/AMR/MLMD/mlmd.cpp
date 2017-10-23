@@ -251,7 +251,7 @@ void MLMD::computePRAMoments_(BoundaryCondition* boundaryCondition,
     if (PatchBoundaryCondition* boundaryCond
         = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
     {
-        boundaryCond->computePRAMoments(orders);
+        // boundaryCond->computePRAMoments(orders);
     }
 }
 
@@ -262,7 +262,7 @@ void MLMD::addPRAMomentsToPatch_(PatchData& data, BoundaryCondition* boundaryCon
     if (PatchBoundaryCondition* condition = dynamic_cast<PatchBoundaryCondition*>(boundaryCond))
     {
         condition->applyDensityBC(data.ions().rho());
-        condition->applyBulkBC(data.ions().bulkVel());
+        // condition->applyBulkBC(data.ions().bulkVel());
     }
 }
 

@@ -38,13 +38,14 @@ public:
     virtual void applyElectricBC(VecField& E) const override;
     virtual void applyCurrentBC(VecField& J) const override;
     virtual void applyDensityBC(Field& N) const override;
-    virtual void applyBulkBC(VecField& Vi) const override;
+    virtual void applyFluxBC(Ions& ions) const override;
 
     virtual void applyOutgoingParticleBC(std::vector<Particle>& particleArray,
                                          LeavingParticles const& leavingParticles) override;
 
-    virtual void applyIncomingParticleBC(Ions& ions, std::string const& pusher,
-                                         double const& dt) const override;
+    virtual void applyIncomingParticleBC(std::vector<Particle>& particles,
+                                         std::string const& pusher, double const& dt,
+                                         std::string const& species) const override;
 
     virtual ~DomainBoundaryCondition();
 };
