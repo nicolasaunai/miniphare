@@ -31,17 +31,37 @@ private:
     void evolvePlasma_(Hierarchy& hierarchy, uint32 refineRatio);
     void recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint32 nbrSteps);
 
-    void manageParticlesInGhostDomain_(Patch& patch);     // MLMD step 1
-    void evolve_(Patch& patch, uint32 nbrSteps);          // MLMD step 2
-    void sendCorrectedFieldsToChildrenPRA_(Patch& patch); // MLMD step 3
-    void interpolateFieldBCInTime_(Patch& patch);         // MLMD step 4
-    void updateFieldsWithRefinedSolutions_(Patch& patch); // MLMD step 5
+    void manageParticlesInGhostDomain_(Patch& patch);                               // MLMD step 1
+    void evolve_(Patch& patch, uint32 nbrSteps);                                    // MLMD step 2
+    void sendCorrectedFieldsToChildrenPRA_(Patch const& parentPatch, Patch& patch); // MLMD step 3
+    void updateFieldsWithRefinedSolutions_(Patch& parentPatch);                     // MLMD step 5
 
     void initPRAparticles_(BoundaryCondition* boundaryCondition);
-    void computePRAMoments_(BoundaryCondition* boundaryCondition,
-                            std::vector<uint32> const& orders);
-    void addPRAMomentsToPatch_(PatchData& data, BoundaryCondition* boundaryCond);
 
+    void computePRADensityAndFlux_(BoundaryCondition* boundaryCondition,
+                                   std::vector<uint32> const& orders);
+    void computePRAChargeDensity_(BoundaryCondition* boundaryCondition);
+    void computePRABulkVelocity_(BoundaryCondition* boundaryCondition);
+
+    void updateChildrenPRA_EMfields_(Patch& childPatch);
+
+    void resetFreeEvolutionOfChildren_(Patch& parentPatch);
+
+    void resetFreeEvolutionTime_(Patch& childPatch);
+    void updateFreeEvolutionTime_(Patch& patch);
+
+    void addChildVecFieldToPatch(VecField& parentVf, VecField const& childVf,
+                                 GridLayout const& parentLayout, GridLayout const& childLayout);
+
+    void addChildFieldToPatch1D_(Field& parentField, Field const& childField,
+                                 GridLayout const& parentLayout, GridLayout const& childLayout);
+    void addChildFieldToPatch2D_(Field& parentField, Field const& childField,
+                                 GridLayout const& parentLayout, GridLayout const& childLayout);
+    void addChildFieldToPatch3D_(Field& parentField, Field const& childField,
+                                 GridLayout const& parentLayout, GridLayout const& childLayout);
+
+    std::array<uint32, 3> getStartIndexes_(GridLayout const& childLayout, Field const& childField);
+    std::array<uint32, 3> getEndIndexes_(GridLayout const& childLayout, Field const& childField);
 
 
 public:

@@ -5,11 +5,14 @@
 
 #include "AMR/Hierarchy/hierarchy.h"
 #include "AMR/MLMD/mlmd.h"
+#include "AMR/coarsetorefinemesh.h"
 #include "AMR/patch.h"
 #include "AMR/patchdata.h"
 #include "AMR/refinmentanalyser.h"
 
 #include "Interpolator/particlemesh.h"
+
+
 
 
 MLMD::MLMD(InitializerFactory const& initFactory)
@@ -26,9 +29,9 @@ MLMD::MLMD(InitializerFactory const& initFactory)
     // if we want, at some point, start from an already existing hierarchy
     // (in case of restart for e.g.
 
-    patchInfos_.fakeStratIteration     = {0}; // 0, 1
-    patchInfos_.fakeStratLevelToRefine = {0}; // 0, 1
-    patchInfos_.fakeStratPatchToRefine = {0}; // 0, 0
+    patchInfos_.fakeStratIteration     = {}; // 0, 1
+    patchInfos_.fakeStratLevelToRefine = {}; // 0, 1
+    patchInfos_.fakeStratPatchToRefine = {}; // 0, 0
 }
 
 
@@ -107,14 +110,14 @@ void MLMD::evolve_(Patch& patch, uint32 nbrSteps)
 
     std::cout << "dt = " << patch.timeStep() << std::endl;
 
+
     for (uint32 itime = 0; itime < nbrSteps; ++itime)
     {
         std::cout << "solveStep = " << itime + 1 << " / " << nbrSteps << std::endl;
 
         patch.data().solveStep();
 
-        // MLMD mecanism step 4
-        interpolateFieldBCInTime_(patch);
+        updateFreeEvolutionTime_(patch);
     }
 }
 
@@ -151,6 +154,9 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
     std::cout << "Level = " << ilevel << std::endl;
     std::cout << "nbrChildren = " << nbrChildren << std::endl;
 
+    std::cout << "Patch total population " << std::endl;
+    patch.data().population();
+
     if (nbrChildren > 0)
     {
         for (uint32 istep = 0; istep < nbrSteps; istep++)
@@ -170,6 +176,8 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
 
                 // MLMD mecanism step 1
                 manageParticlesInGhostDomain_(*patchPtr);
+
+                updateChildrenPRA_EMfields_(*patchPtr);
             }
 
             // MLMD mecanism step 2
@@ -185,27 +193,25 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
                 auto patchPtr = patch.children(ik);
 
                 // MLMD mecanism step 3
-                sendCorrectedFieldsToChildrenPRA_(patch);
+                // TODO: give *patchPtr to this method
+                sendCorrectedFieldsToChildrenPRA_(patch, *patchPtr);
 
                 recursivEvolve_(*patchPtr, ilevel + 1, refineRatio, nbrSteps_new);
             }
+
+            std::cout << "Level = " << ilevel << std::endl;
+            std::cout << "istep/nbrSteps = " << istep + 1 << " / " << nbrSteps << std::endl;
+
+            // MLMD mecanism step 5
+            updateFieldsWithRefinedSolutions_(patch);
+
+            resetFreeEvolutionOfChildren_(patch);
         }
     }
     else
     {
-        std::cout << "Level = " << ilevel << std::endl;
-
-        // MLMD mecanism step 1
-        // warning part BC at tn + dt(parent_patch)
-        //        patch.initParticlesInGhostDomain() ;
-
-        std::cout << "Patch total population = " << patch.data().population() << std::endl;
-
         // MLMD mecanism step 2 (times nbrSteps) on a patch of the finest level
         evolve_(patch, nbrSteps);
-
-        // MLMD mecanism step 5
-        updateFieldsWithRefinedSolutions_(patch);
     }
 }
 
@@ -220,9 +226,15 @@ void MLMD::manageParticlesInGhostDomain_(Patch& patch)
     initPRAparticles_(boundaryCond);
     std::cout << " PRA initialization: OK\n";
 
-    computePRAMoments_(boundaryCond, patchInfos_.interpOrders);
+    // for each species
+    computePRADensityAndFlux_(boundaryCond, patchInfos_.interpOrders);
 
-    addPRAMomentsToPatch_(patch.data(), boundaryCond);
+    computePRAChargeDensity_(boundaryCond);
+    if (PatchBoundaryCondition* condition = dynamic_cast<PatchBoundaryCondition*>(boundaryCond))
+        condition->applyDensityBC(patch.data().ions().rho());
+
+    if (PatchBoundaryCondition* condition = dynamic_cast<PatchBoundaryCondition*>(boundaryCond))
+        condition->applyFluxBC(patch.data().ions());
 }
 
 
@@ -245,41 +257,239 @@ void MLMD::initPRAparticles_(BoundaryCondition* boundaryCondition)
 }
 
 
-void MLMD::computePRAMoments_(BoundaryCondition* boundaryCondition,
-                              std::vector<uint32> const& orders)
+void MLMD::computePRADensityAndFlux_(BoundaryCondition* boundaryCondition,
+                                     std::vector<uint32> const& orders)
 {
     if (PatchBoundaryCondition* boundaryCond
         = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
     {
-        // boundaryCond->computePRAMoments(orders);
+        boundaryCond->computePRADensityAndFlux(orders);
     }
 }
 
 
-
-void MLMD::addPRAMomentsToPatch_(PatchData& data, BoundaryCondition* boundaryCond)
+void MLMD::computePRAChargeDensity_(BoundaryCondition* boundaryCondition)
 {
-    if (PatchBoundaryCondition* condition = dynamic_cast<PatchBoundaryCondition*>(boundaryCond))
+    if (PatchBoundaryCondition* boundaryCond
+        = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
     {
-        condition->applyDensityBC(data.ions().rho());
-        // condition->applyBulkBC(data.ions().bulkVel());
+        boundaryCond->computePRAChargeDensity();
     }
 }
 
 
-void MLMD::sendCorrectedFieldsToChildrenPRA_(Patch& patch)
+void MLMD::computePRABulkVelocity_(BoundaryCondition* boundaryCondition)
+{
+    if (PatchBoundaryCondition* boundaryCond
+        = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
+    {
+        boundaryCond->computePRABulkVelocity();
+    }
+}
+
+
+
+/**
+ * @brief MLMD::sendCorrectedFieldsToChildrenPRA_
+ * This method fills the PRAs of a child patch
+ * - it fills the corrected Electromag field
+ *
+ *
+ */
+void MLMD::sendCorrectedFieldsToChildrenPRA_(Patch const& parentPatch, Patch& childPatch)
 {
     std::cout << "sendCorrectedFieldsToChildrenPRA" << std::endl;
+
+    GridLayout const& parentLayout     = parentPatch.layout();
+    Electromag const& parentElectromag = parentPatch.data().EMfields();
+
+    BoundaryCondition* boundaryCondition = childPatch.data().boundaryCondition();
+
+    if (PatchBoundaryCondition* patchCondition
+        = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
+    {
+        patchCondition->updateCorrectedEMfields(parentLayout, parentElectromag);
+    }
 }
 
 
-void MLMD::interpolateFieldBCInTime_(Patch& patch)
+void MLMD::updateChildrenPRA_EMfields_(Patch& childPatch)
 {
-    std::cout << "interpolateFieldBCInTime" << std::endl;
+    BoundaryCondition* boundaryCondition = childPatch.data().boundaryCondition();
+
+    if (PatchBoundaryCondition* patchCondition
+        = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
+    {
+        patchCondition->updateEMfields();
+    }
 }
 
 
-void MLMD::updateFieldsWithRefinedSolutions_(Patch& patch)
+
+
+void MLMD::updateFieldsWithRefinedSolutions_(Patch& parentPatch)
 {
     std::cout << "updateFieldsWithRefinedSolutions" << std::endl;
+
+    // get EM vecfield of parent patch
+    VecField& E_parent = parentPatch.data().EMfields().getE();
+    VecField& B_parent = parentPatch.data().EMfields().getB();
+
+    GridLayout const& parentLayout = parentPatch.layout();
+
+    for (uint32 ik = 0; ik < parentPatch.nbrChildren(); ++ik)
+    {
+        auto patchPtr = parentPatch.children(ik);
+
+        GridLayout const& childLayout = patchPtr->layout();
+
+        // get EM vecfield of child patch
+        VecField const& E_child = patchPtr->data().EMfields().getE();
+        VecField const& B_child = patchPtr->data().EMfields().getB();
+
+        // loop on the electric field components
+        addChildVecFieldToPatch(E_parent, E_child, parentLayout, childLayout);
+
+        // loop on the magnetic field components
+        addChildVecFieldToPatch(B_parent, B_child, parentLayout, childLayout);
+    }
+}
+
+
+
+void MLMD::addChildVecFieldToPatch(VecField& parentVf, VecField const& childVf,
+                                   GridLayout const& parentLayout, GridLayout const& childLayout)
+{
+    // loop over fields
+    for (uint32 icompo = 0; icompo < NBR_COMPO; ++icompo)
+    {
+        Field& parentField      = parentVf.component(icompo);
+        Field const& childField = childVf.component(icompo);
+
+        switch (childLayout.nbDimensions())
+        {
+            case 1:
+                addChildFieldToPatch1D_(parentField, childField, parentLayout, childLayout);
+                break;
+
+            case 2:
+                addChildFieldToPatch2D_(parentField, childField, parentLayout, childLayout);
+                break;
+
+            case 3:
+                addChildFieldToPatch3D_(parentField, childField, parentLayout, childLayout);
+                break;
+        }
+    }
+}
+
+
+std::array<uint32, 3> MLMD::getStartIndexes_(GridLayout const& childLayout, Field const& childField)
+{
+    return {{childLayout.physicalStartIndex(childField, Direction::X),
+             childLayout.physicalStartIndex(childField, Direction::Y),
+             childLayout.physicalStartIndex(childField, Direction::Z)}};
+}
+
+
+std::array<uint32, 3> MLMD::getEndIndexes_(GridLayout const& childLayout, Field const& childField)
+{
+    return {{childLayout.physicalEndIndex(childField, Direction::X),
+             childLayout.physicalEndIndex(childField, Direction::Y),
+             childLayout.physicalEndIndex(childField, Direction::Z)}};
+}
+
+
+
+void MLMD::addChildFieldToPatch1D_(Field& parentField, Field const& childField,
+                                   GridLayout const& parentLayout, GridLayout const& childLayout)
+{
+    // we need extremal coordinates of the field defined on the child patch
+    std::array<uint32, 3> iStart_child = getStartIndexes_(childLayout, childField);
+    std::array<uint32, 3> iEnd_child   = getEndIndexes_(childLayout, childField);
+
+    QtyCentering fieldCtr = childLayout.fieldCentering(childField, Direction::X);
+
+    // get absolute coordinates
+    Point p_iStart_child = childLayout.fieldNodeCoordinates(
+        childField, childLayout.origin(), iStart_child[0], iStart_child[1], iStart_child[2]);
+
+    Point p_iEnd_child = childLayout.fieldNodeCoordinates(
+        childField, childLayout.origin(), iEnd_child[0], iEnd_child[1], iEnd_child[2]);
+
+    uint32 iStart_OnParent = 0;
+    uint32 iEnd_OnParent   = 0;
+    // get corresponding closest grid nodes on the parent layout
+    // we get: iStart_parent, iEnd_parent
+    getClosestGridNode1D(p_iStart_child, parentLayout, fieldCtr, iStart_OnParent);
+    getClosestGridNode1D(p_iEnd_child, parentLayout, fieldCtr, iEnd_OnParent);
+
+    uint32 nbrNodes = iEnd_OnParent - iStart_OnParent + 1;
+
+    // we build a temporary Field aligned with the
+    // target field on the parent patch
+    Field alignedChildField{
+        buildAlignedChildField1D(childField, childLayout, nbrNodes, patchInfos_.refinementRatio)};
+
+    // Add childField to the parentField
+    // and then average
+    uint32 iChild = 0;
+    for (uint32 ik = iStart_OnParent; ik <= iEnd_OnParent; ++ik)
+    {
+        parentField(ik) = (parentField(ik) + alignedChildField(iChild)) / 2.;
+        ++iChild;
+    }
+}
+
+
+void MLMD::addChildFieldToPatch2D_(Field& parentField, Field const& childField,
+                                   GridLayout const& parentLayout, GridLayout const& childLayout)
+{
+    (void)parentField;
+    (void)childField;
+    (void)parentLayout;
+    (void)childLayout;
+}
+
+
+void MLMD::addChildFieldToPatch3D_(Field& parentField, Field const& childField,
+                                   GridLayout const& parentLayout, GridLayout const& childLayout)
+{
+    (void)parentField;
+    (void)childField;
+    (void)parentLayout;
+    (void)childLayout;
+}
+
+
+
+void MLMD::resetFreeEvolutionOfChildren_(Patch& parentPatch)
+{
+    for (uint32 ik = 0; ik < parentPatch.nbrChildren(); ++ik)
+    {
+        auto patchPtr = parentPatch.children(ik);
+
+        resetFreeEvolutionTime_(*patchPtr);
+    }
+}
+
+
+void MLMD::resetFreeEvolutionTime_(Patch& childPatch)
+{
+    BoundaryCondition* bc = childPatch.data().boundaryCondition();
+    if (PatchBoundaryCondition* patchBC = dynamic_cast<PatchBoundaryCondition*>(bc))
+    {
+        patchBC->resetFreeEvolutionTime();
+    }
+}
+
+
+
+void MLMD::updateFreeEvolutionTime_(Patch& patch)
+{
+    BoundaryCondition* bc = patch.data().boundaryCondition();
+    if (PatchBoundaryCondition* patchBC = dynamic_cast<PatchBoundaryCondition*>(bc))
+    {
+        patchBC->updateFreeEvolutionTime(patch.timeStep());
+    }
 }
