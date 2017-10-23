@@ -8,6 +8,13 @@
 
 
 
+void getClosestGridNode1D(Point const& point, GridLayout const& targetLayout,
+                          QtyCentering const& fieldCtr, uint32& iNode);
+
+
+Field buildAlignedChildField1D(Field const& childField, GridLayout const& childLayout,
+                               uint32 const& nbrNodesTarget, uint32 const& refineRatio);
+
 /* ----------------------------------------------------------------------------
 
                       Field interpolation from a coarse patch
