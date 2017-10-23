@@ -78,8 +78,8 @@ void Solver::init(Ions& ions, BoundaryCondition const& boundaryCondition)
     ions.computeChargeDensity();
     boundaryCondition.applyDensityBC(ions.rho());
 
+    boundaryCondition.applyFluxBC(ions);
     ions.computeBulkVelocity();
-    // boundaryCondition.applyBulkBC(ions.bulkVel());
 }
 
 
@@ -170,23 +170,6 @@ void Solver::solveStepPPC(Electromag& EMFields, Ions& ions, Electrons& electrons
     // Last argument here is 'predictor2_' because we want to
     // update ions at n+1 in place, i.e. overwritting ions at n
     moveIons_(Eavg, Bavg, ions, boundaryCondition, predictor2_);
-
-    // ------------------------------------------------------
-    //                INCOMING PARTICLE BC
-    // ------------------------------------------------------
-    // There are 2 prediction steps, particle positions and velocities
-    // obtained after the 1st prediction push are used to predict the electric field.
-    // But, this data is dispelled after use.
-    // Eventually, we only retain particle information deduced
-    // from the 2nd prediction step.
-    //
-    // Therefore we apply incoming particle boundary conditions only once,
-    // after the 2nd prediction step.
-    // boundaryCondition.applyIncomingParticleBC(ions, pusher_->pusherType(), pusher_->dt());
-
-    // TODO : just for debug use, remove asap
-    // ions.computeChargeDensity();
-    // ions.computeBulkVelocity();
 
     // -----------------------------------------------------------------------
     //
@@ -292,6 +275,20 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
             pusher_->move(particles, particles, species.mass(), E, B, interpolator,
                           boundaryCondition);
 
+            // ------------------------------------------------------
+            //                INCOMING PARTICLE BC
+            // ------------------------------------------------------
+            // There are 2 prediction steps, particle positions and velocities
+            // obtained after the 1st prediction push are used to predict the electric field.
+            // But, this data is dispelled after use.
+            // Eventually, we only retain particle information deduced
+            // from the 2nd prediction step.
+            //
+            // Therefore we apply incoming particle boundary conditions only once,
+            // after the 2nd prediction step.
+            boundaryCondition.applyIncomingParticleBC(particles, pusher_->pusherType(),
+                                                      pusher_->dt(), species.name());
+
             computeChargeDensityAndFlux(interpolator, species, layout_, particles);
         }
 
@@ -303,6 +300,6 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
     ions.computeChargeDensity();
     boundaryCondition.applyDensityBC(ions.rho());
 
+    boundaryCondition.applyFluxBC(ions);
     ions.computeBulkVelocity();
-    // boundaryCondition.applyBulkBC(ions.bulkVel());
 }

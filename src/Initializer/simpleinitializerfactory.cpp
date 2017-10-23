@@ -55,7 +55,6 @@ SimpleInitializerFactory::SimpleInitializerFactory()
 
 double densityProton1(double x, double y, double z)
 {
-    (void)x;
     (void)y;
     (void)z;
 
@@ -64,14 +63,6 @@ double densityProton1(double x, double y, double z)
     return density;
 }
 
-
-double densityProton2(double x, double y, double z)
-{
-    (void)x;
-    (void)y;
-    (void)z;
-    return 0.5;
-}
 
 
 double thermalSpeedProton1(double x, double y, double z)
@@ -83,14 +74,6 @@ double thermalSpeedProton1(double x, double y, double z)
 }
 
 
-double thermalSpeedProton2(double x, double y, double z)
-{
-    (void)x;
-    (void)y;
-    (void)z;
-    return 0.2;
-}
-
 
 std::array<double, 3> bulkVelocityProton1(double x, double y, double z)
 {
@@ -98,18 +81,7 @@ std::array<double, 3> bulkVelocityProton1(double x, double y, double z)
 
     (void)y;
     (void)z;
-    vec[0] = 0.;
-    vec[1] = 0.;
-    vec[2] = 0.;
-    return vec;
-}
 
-std::array<double, 3> bulkVelocityProton2(double x, double y, double z)
-{
-    std::array<double, 3> vec;
-    (void)x;
-    (void)y;
-    (void)z;
     vec[0] = 0.;
     vec[1] = 0.;
     vec[2] = 0.;
