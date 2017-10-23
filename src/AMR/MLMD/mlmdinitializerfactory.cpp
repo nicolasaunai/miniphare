@@ -117,8 +117,8 @@ std::unique_ptr<ElectromagInitializer> MLMDInitializerFactory::createElectromagI
     Electromag const& parentElectromag = parentPatch_->data().EMfields();
     GridLayout const& coarseLayout     = parentPatch_->layout();
 
-    Interpolator interpolator(
-        *std::max_element(interpolationOrders_.begin(), interpolationOrders_.end()));
+    // A linear interpolator is enough here (= 1)
+    Interpolator interpolator(1);
 
     std::unique_ptr<ElectromagInitializer> eminit{
         new ElectromagInitializer{refinedLayout_, "_EMField", "_EMFields"}};
@@ -172,8 +172,9 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
     // this will be used to initialize electromagnetic fields
     // at patch boundaries, into PRA layouts
     Electromag const& parentElectromag = parentPatch_->data().EMfields();
-    Interpolator interpolator(
-        *std::max_element(interpolationOrders_.begin(), interpolationOrders_.end()));
+
+    // A linear interpolator is enough here (= 1)
+    Interpolator interpolator(1);
     PRA refinedPRA{buildPRA(refinedLayout_)};
 
     // We know we are dealing with PatchBoundary objects
@@ -213,17 +214,17 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
         // We need the electromagnetic field on the PRA layout
         // of the adequate Patch boundary
         std::unique_ptr<ElectromagInitializer> emInitPtr{
-            new ElectromagInitializer{praExtendedLayout, "_EMField", "_EMFields"}};
+            new ElectromagInitializer{praEdgeLayout, "_EMField", "_EMFields"}};
 
         // Now we compute the E and B fields
         // of the ElectromagInitializer
-        fieldAtRefinedNodes(interpolator, parentPatch_->layout(), parentElectromag,
-                            praExtendedLayout, *emInitPtr);
+        fieldAtRefinedNodes(interpolator, parentPatch_->layout(), parentElectromag, praEdgeLayout,
+                            *emInitPtr);
 
         // For each boundary build the PatchBoundary object
-        std::unique_ptr<PatchBoundary> boundaryPtr{
-            new PatchBoundary{praEdgeLayout, praExtendedLayout, std::move(ionInitPtr),
-                              std::move(emInitPtr), boundaryEdges[ibord]}};
+        std::unique_ptr<PatchBoundary> boundaryPtr{new PatchBoundary{
+            praEdgeLayout, praExtendedLayout, std::move(ionInitPtr), std::move(emInitPtr),
+            boundaryEdges[ibord], parentPatch_->timeStep()}};
 
         // For each boundary add this PatchBoundary to our temporary
         // vector of std::unique_ptr<Boundary>

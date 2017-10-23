@@ -38,6 +38,9 @@ private:
     Electromag correctedEMfields_;
 
 
+    double freeEvolutionTime_;
+    double dtParent_;
+
     void removeOutgoingParticles_(std::vector<Particle>& particleArray,
                                   LeavingParticles const& leavingParticles) const;
 
@@ -67,12 +70,15 @@ private:
 public:
     PatchBoundary(GridLayout const& layout, GridLayout const& extendedLayout,
                   std::unique_ptr<IonsInitializer> ionsInit,
-                  std::unique_ptr<ElectromagInitializer> electromagInit, Edge const& edge)
+                  std::unique_ptr<ElectromagInitializer> electromagInit, Edge const& edge,
+                  double dtParent)
         : layout_{layout}
         , extendedLayout_{extendedLayout}
         , ions_{layout, std::move(ionsInit)}
         , EMfields_{std::move(electromagInit)}
         , edge_{edge}
+        , freeEvolutionTime_{0.}
+        , dtParent_{dtParent}
     {
         correctedEMfields_ = EMfields_;
 
