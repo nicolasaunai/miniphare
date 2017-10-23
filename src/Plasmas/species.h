@@ -48,6 +48,9 @@ public:
     Field& rho() { return rho_; }
     Field const& rho() const { return rho_; }
 
+    VecField& flux() { return flux_; }
+    VecField const& flux() const { return flux_; }
+
     Field& flux(uint32 iComponent) { return flux_.component(iComponent); }
     Field const& flux(uint32 iComponent) const { return flux_.component(iComponent); }
 

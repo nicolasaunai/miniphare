@@ -40,12 +40,17 @@ bool RefinementAnalyser::refine(Patch const& patch)
     // if needed, build the refine box
     Box box{patch.layout().getBox()};
 
-    Box refinedBox{box.x0 + 0.25 * (box.x1 - box.x0),
-                   box.x0 + 0.75 * (box.x1 - box.x0),
-                   box.y0,
-                   box.y1,
-                   box.z0,
-                   box.z1};
+    double dx = patch.layout().dx();
+
+    // The new patch must be aligned on the parent
+    // primal nodes
+    int32 nbCell1 = static_cast<int32>(std::floor((0.4 * (box.x1 - box.x0)) / dx));
+    int32 nbCell2 = static_cast<int32>(std::floor((0.6 * (box.x1 - box.x0)) / dx));
+
+    double Lx1 = nbCell1 * dx;
+    double Lx2 = nbCell2 * dx;
+
+    Box refinedBox{box.x0 + Lx1, box.x0 + Lx2, box.y0, box.y1, box.z0, box.z1};
 
     refinedVolumes_.push_back(refinedBox);
 

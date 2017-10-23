@@ -44,6 +44,7 @@ public:
 
     uint32 population() const;
 
+    Electromag& EMfields() { return EMfields_; }
     Electromag const& EMfields() const { return EMfields_; }
 
     Ions& ions() { return ions_; }

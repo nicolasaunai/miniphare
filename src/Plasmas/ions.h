@@ -79,7 +79,7 @@ public:
     Species const& species(std::string name) const;
     Species& species(std::string name);
 
-    // std::vector<Species>& species() {return speciesArray_;}
+    // std::vector<Species>& species() { return speciesArray_; }
 
     Field& rho() { return rho_; }
     Field const& rho() const { return rho_; }

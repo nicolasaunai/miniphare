@@ -32,7 +32,10 @@ public:
     VecField const& getE() const { return E_; }
     VecField const& getB() const { return B_; }
 
-    // void init(ElectromagInitializer* const initializer);
+    void setE(VecField const& E) { E_ = E; }
+    void setB(VecField const& B) { B_ = B; }
+
+    void setFields(ElectromagInitializer& initializer);
 
 
 private:

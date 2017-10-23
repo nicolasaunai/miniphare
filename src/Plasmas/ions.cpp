@@ -157,13 +157,17 @@ void Ions::computeBulkVelocity()
 }
 
 
+
 uint32 Ions::population() const
 {
     uint32 popTot = 0;
 
+    uint32 ispe = 0;
     for (Species const& spe : speciesArray_)
     {
-        popTot += spe.particles().size();
+        // popTot += spe.particles().size();
+        std::cout << "Species " << ispe << ", population = " << spe.particles().size() << std::endl;
+        ++ispe;
     }
 
     return popTot;

@@ -37,3 +37,11 @@ Electromag::Electromag(std::unique_ptr<ElectromagInitializer> initializer)
     std::swap(E_, initializer->E_);
     std::swap(B_, initializer->B_);
 }
+
+
+
+void Electromag::setFields(ElectromagInitializer& initializer)
+{
+    std::swap(E_, initializer.E_);
+    std::swap(B_, initializer.B_);
+}
