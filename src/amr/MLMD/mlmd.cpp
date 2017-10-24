@@ -5,9 +5,9 @@
 
 #include "amr/Hierarchy/hierarchy.h"
 #include "amr/MLMD/mlmd.h"
-#include "amr/Refinement/coarsetorefinemesh.h"
 #include "amr/Patch/patch.h"
-#include "amr/patch/patchdata.h"
+#include "amr/Patch/patchdata.h"
+#include "amr/Refinement/coarsetorefinemesh.h"
 #include "amr/Refinement/refinmentanalyser.h"
 #include "core/Interpolator/particlemesh.h"
 

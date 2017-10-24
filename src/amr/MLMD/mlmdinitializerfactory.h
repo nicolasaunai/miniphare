@@ -6,15 +6,15 @@
 #include "data/Electromag/electromaginitializer.h"
 #include "data/Plasmas/ionsinitializer.h"
 
-#include "Initializer/initializerfactory.h"
+#include "initializer/initializerfactory.h"
 
-#include "Initializer/ohminitializer.h"
-#include "Initializer/solverinitializer.h"
+#include "initializer/ohminitializer.h"
+#include "initializer/solverinitializer.h"
 
 #include "amr/MLMD/pra.h"
 #include "amr/Patch/patch.h"
+#include "amr/Patch/patchinfo.h"
 #include "amr/Splitting/splittingstrategy.h"
-#include "amr/patch/patchinfo.h"
 
 #include "utilities/particleselector.h"
 
