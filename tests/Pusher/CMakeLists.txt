@@ -2,20 +2,6 @@ cmake_minimum_required (VERSION 2.6)
 project (test-Pusher)
 
 set(SOURCES
-     ../../src/Plasmas/particles.cpp
-     ../../src/Plasmas/ions.cpp
-     ../../src/Plasmas/species.cpp
-     ../../src/Interpolator/interpolator.cpp
-     ../../src/Interpolator/particlemesh.cpp
-     ../../src/pusher/modifiedboris.cpp
-     ../../src/grid/gridlayout.cpp
-     ../../src/grid/gridlayoutimplyee.cpp
-     ../../src/grid/gridlayoutimplinternals.cpp
-     ../../src/BoundaryConditions/boundary_conditions.cpp
-     ../../src/BoundaryConditions/domainboundarycondition.cpp
-     ../../src/BoundaryConditions/periodicdomainboundary.cpp
-     ../../src/vecfield/vecfield.cpp
-     ../../src/Field/field.cpp
      test_main.cpp
      test_utilities.cpp
      test_commons.cpp
@@ -30,6 +16,8 @@ include_directories("./")
 add_executable(Pusher ${SOURCES})
 target_link_libraries(Pusher gtest gtest_main)
 target_link_libraries(Pusher gmock gmock_main)
+target_link_libraries(Pusher libpharecore libpharedata)
+
 add_test(NAME test-Pusher COMMAND Pusher)
 add_custom_command(TARGET Pusher
                    POST_BUILD

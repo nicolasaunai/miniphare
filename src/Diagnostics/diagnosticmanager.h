@@ -5,16 +5,16 @@
 #include <memory>
 #include <vector>
 
-#include "Diagnostics/diagtype.h"
 #include "diagnosticscheduler.h"
+#include "diagtype.h"
 
-#include "Initializer/diagnosticinitializer.h"
+#include "diagnosticinitializer.h"
 
-#include "Diagnostics/Export/exportstrategy.h"
-#include "Diagnostics/Export/exportstrategyfactory.h"
+#include "Export/exportstrategy.h"
+#include "Export/exportstrategyfactory.h"
 
-#include "Diagnostics/FieldDiagnostics/Electromag/emdiagnostic.h"
-#include "Diagnostics/FieldDiagnostics/Fluid/fluiddiagnosticfactory.h"
+#include "FieldDiagnostics/Electromag/emdiagnostic.h"
+#include "FieldDiagnostics/Fluid/fluiddiagnosticfactory.h"
 
 
 /**

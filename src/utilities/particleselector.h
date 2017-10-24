@@ -2,8 +2,8 @@
 #define PARTICLESELECTOR_H
 
 
-#include "Plasmas/particles.h"
-#include "grid/gridlayoutdefs.h"
+#include "data/Plasmas/particles.h"
+#include "data/grid/gridlayoutdefs.h"
 #include "particleutilities.h"
 #include "types.h"
 #include "utilities/box.h"

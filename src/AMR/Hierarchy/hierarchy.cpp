@@ -3,14 +3,14 @@
 #include <memory>
 #include <tuple>
 
-#include "grid/gridlayout.h"
+#include "data/grid/gridlayout.h"
 
-#include "AMR/Hierarchy/hierarchy.h"
-#include "AMR/MLMD/mlmdinitializerfactory.h"
-#include "AMR/patch.h"
-#include "AMR/refinmentanalyser.h"
+#include "hierarchy.h"
+#include "mlmdinitializerfactory.h"
+#include "patch.h"
+#include "refinmentanalyser.h"
 
-#include "Splitting/splittingstrategy.h"
+#include "amr/Splitting/splittingstrategy.h"
 
 #include "utilities/box.h"
 

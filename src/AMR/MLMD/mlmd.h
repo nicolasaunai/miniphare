@@ -2,15 +2,16 @@
 #define MLMD_H
 
 
-#include "grid/gridlayout.h"
+#include "data/grid/gridlayout.h"
 
-#include "AMR/Hierarchy/hierarchy.h"
-#include "AMR/patchinfo.h"
+#include "amr/Hierarchy/hierarchy.h"
+#include "amr/Patch/patchinfo.h"
+#include "amr/Splitting/splittingstrategy.h"
 
-#include "Initializer/initializerfactory.h"
-#include "Splitting/splittingstrategy.h"
+#include "initializer/initializerfactory.h"
 
-#include "BoundaryConditions/patchboundarycondition.h"
+
+#include "amr/Patch/patchboundarycondition.h"
 
 
 /**

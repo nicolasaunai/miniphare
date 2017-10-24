@@ -1,10 +1,10 @@
 #ifndef FIELDDIAGNOSTICCOMPUTESTRATEGY_H
 #define FIELDDIAGNOSTICCOMPUTESTRATEGY_H
 
-#include "AMR/patch.h"
-#include "Field/field.h"
+#include "amr/Patch/patch.h"
+#include "data/Field/field.h"
+#include "data/grid/gridlayout.h"
 #include "fieldpack.h"
-#include "grid/gridlayout.h"
 
 /**
  * @brief The FieldDiagnosticComputeStrategy class is a base class used

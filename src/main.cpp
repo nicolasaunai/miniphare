@@ -3,17 +3,17 @@
 #include <memory>
 #include <string>
 
-#include "Time/time.h"
 #include "types.h"
+#include "utilities/Time/pharetime.h"
 
-#include "AMR/Hierarchy/hierarchy.h"
-#include "AMR/MLMD/mlmd.h"
-#include "AMR/patch.h"
-#include "AMR/patchdata.h"
+#include "amr/Hierarchy/hierarchy.h"
+#include "amr/MLMD/mlmd.h"
+#include "amr/Patch/patch.h"
+#include "amr/Patch/patchdata.h"
 
-#include "Diagnostics/diagnosticmanager.h"
-#include "Initializer/simulationinitializerfactory.h"
-#include "grid/gridlayout.h"
+#include "diagnostics/diagnosticmanager.h"
+#include "initializer/simulationinitializerfactory.h"
+
 
 
 

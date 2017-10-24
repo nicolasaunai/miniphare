@@ -3,8 +3,8 @@
 
 #include "types.h"
 
-#include "Plasmas/particles.h"
-#include "grid/gridlayout.h"
+#include "data/Plasmas/particles.h"
+#include "data/grid/gridlayout.h"
 
 
 Point getPosition(Particle const& part, GridLayout const& layout);

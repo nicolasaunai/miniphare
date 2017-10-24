@@ -10,16 +10,16 @@
 
 #include "test_pusher1d.h"
 
-#include "Plasmas/particles.h"
+#include "data/Plasmas/particles.h"
 
-#include "Interpolator/interpolator.h"
+#include "core/Interpolator/interpolator.h"
 
-#include "pusher/modifiedboris.h"
-#include "pusher/pusher.h"
-#include "pusher/pusherfactory.h"
+#include "core/pusher/modifiedboris.h"
+#include "core/pusher/pusher.h"
+#include "core/pusher/pusherfactory.h"
 
-#include "BoundaryConditions/domainboundarycondition.h"
-#include "BoundaryConditions/periodicdomainboundary.h"
+#include "core/BoundaryConditions/domainboundarycondition.h"
+#include "core/BoundaryConditions/periodicdomainboundary.h"
 
 
 

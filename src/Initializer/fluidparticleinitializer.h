@@ -3,8 +3,8 @@
 
 #include <random>
 
-#include "grid/gridlayout.h"
-#include "particleinitializer.h"
+#include "data/Plasmas/particleinitializer.h"
+#include "data/grid/gridlayout.h"
 
 
 

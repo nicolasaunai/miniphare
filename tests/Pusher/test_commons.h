@@ -5,7 +5,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "types.h"
+#include "utilities/types.h"
 
 #include <fstream>
 #include <vector>

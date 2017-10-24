@@ -1,5 +1,5 @@
 #include "fluiddiagnostic.h"
-#include "AMR/patchdata.h"
+#include "amr/Patch/patchdata.h"
 
 FieldPack RhoSpeciesDiag::compute(Patch const& patch)
 {

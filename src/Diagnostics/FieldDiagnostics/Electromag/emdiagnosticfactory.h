@@ -4,9 +4,9 @@
 #include <memory>
 #include <string>
 
-#include "types.h"
+#include "utilities/types.h"
 
-#include "Diagnostics/FieldDiagnostics/Electromag/emdiagnostic.h"
+#include "diagnostics/FieldDiagnostics/Electromag/emdiagnostic.h"
 
 
 class EMDiagnosticFactory
@@ -14,14 +14,14 @@ class EMDiagnosticFactory
 public:
     static std::unique_ptr<EMDiagnostic> createEMDiagnostic(uint32 id, std::string type)
     {
-        if (type=="E")
+        if (type == "E")
         {
             std::unique_ptr<FieldDiagnosticComputeStrategy> strat{new ElectricDiag{}};
             std::unique_ptr<EMDiagnostic> ptr{new EMDiagnostic{id, std::move(strat)}};
             return ptr;
         }
 
-        if (type=="B")
+        if (type == "B")
         {
             std::unique_ptr<FieldDiagnosticComputeStrategy> strat{new MagneticDiag{}};
             std::unique_ptr<EMDiagnostic> ptr{new EMDiagnostic{id, std::move(strat)}};

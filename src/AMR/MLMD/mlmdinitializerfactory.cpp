@@ -3,23 +3,20 @@
 #include <cmath>
 
 
-#include "AMR/MLMD/pra.h"
-#include "AMR/coarsetorefinemesh.h"
+#include "amr/MLMD/mlmdinitializerfactory.h"
+#include "amr/MLMD/mlmdparticleinitializer.h"
+#include "amr/MLMD/pra.h"
+#include "amr/Patch/patchboundary.h"
+#include "amr/Patch/patchboundarycondition.h"
+#include "amr/Refinement/coarsetorefinemesh.h"
+#include "amr/Splitting/splittingstrategyfactory.h"
+
 #include "utilities/particleselector.h"
 
-#include "AMR/MLMD/mlmdinitializerfactory.h"
-#include "AMR/MLMD/mlmdparticleinitializer.h"
+#include "data/Electromag/electromag.h"
 
-
-#include "Electromag/electromag.h"
-
-#include "Interpolator/interpolator.h"
-
-#include "Splitting/splittingstrategyfactory.h"
-
-#include "BoundaryConditions/boundary_conditions.h"
-#include "BoundaryConditions/patchboundary.h"
-#include "BoundaryConditions/patchboundarycondition.h"
+#include "core/BoundaryConditions/boundary_conditions.h"
+#include "core/Interpolator/interpolator.h"
 
 
 

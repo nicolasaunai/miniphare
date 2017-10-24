@@ -5,14 +5,14 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "types.h"
 #include "utilities/box.h"
+#include "utilities/types.h"
 
-#include "grid/gridlayout.h"
-#include "grid/gridlayoutimplfactory.h"
-#include "grid/gridlayoutimplyee.h"
+#include "data/grid/gridlayout.h"
+#include "data/grid/gridlayoutimplfactory.h"
+#include "data/grid/gridlayoutimplyee.h"
 
-#include "Field/field.h"
+#include "data/Field/field.h"
 
 
 struct IndexesParams;

@@ -1,16 +1,15 @@
 
 #include <cmath>
 
-#include "Solver/solver.h"
+#include "core/Solver/solver.h"
 
-#include "AMR/Hierarchy/hierarchy.h"
-#include "AMR/MLMD/mlmd.h"
-#include "AMR/coarsetorefinemesh.h"
-#include "AMR/patch.h"
-#include "AMR/patchdata.h"
-#include "AMR/refinmentanalyser.h"
-
-#include "Interpolator/particlemesh.h"
+#include "amr/Hierarchy/hierarchy.h"
+#include "amr/MLMD/mlmd.h"
+#include "amr/Refinement/coarsetorefinemesh.h"
+#include "amr/Patch/patch.h"
+#include "amr/patch/patchdata.h"
+#include "amr/Refinement/refinmentanalyser.h"
+#include "core/Interpolator/particlemesh.h"
 
 
 

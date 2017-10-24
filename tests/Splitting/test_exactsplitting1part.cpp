@@ -3,17 +3,17 @@
 #include <memory>
 
 
-#include "Plasmas/particles.h"
+#include "data/Plasmas/particles.h"
 
-#include "IndexesAndWeights/indexesandweights.h"
-#include "IndexesAndWeights/indexesandweightso1.h"
-#include "IndexesAndWeights/indexesandweightso2.h"
-#include "IndexesAndWeights/indexesandweightso3.h"
-#include "IndexesAndWeights/indexesandweightso4.h"
-#include "grid/gridlayout.h"
+#include "core/IndexesAndWeights/indexesandweights.h"
+#include "core/IndexesAndWeights/indexesandweightso1.h"
+#include "core/IndexesAndWeights/indexesandweightso2.h"
+#include "core/IndexesAndWeights/indexesandweightso3.h"
+#include "core/IndexesAndWeights/indexesandweightso4.h"
+#include "data/grid/gridlayout.h"
 
-#include "Splitting/splittingstrategy.h"
-#include "Splitting/splittingstrategyfactory.h"
+#include "amr/Splitting/splittingstrategy.h"
+#include "amr/Splitting/splittingstrategyfactory.h"
 
 #include "test_commons.h"
 #include "test_exactsplitting1part.h"

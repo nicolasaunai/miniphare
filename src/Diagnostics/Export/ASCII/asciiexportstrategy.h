@@ -1,8 +1,8 @@
 #ifndef ASCIIEXPORTSTRATEGY_H
 #define ASCIIEXPORTSTRATEGY_H
 
-#include "Diagnostics/Export/exportstrategy.h"
-#include "Diagnostics/diagnostics.h"
+#include "diagnostics/Export/exportstrategy.h"
+#include "diagnostics/diagnostics.h"
 
 // a concrete ExportStrategy is to write Ascii files
 // here we will write one file per time step and per diagnostic

@@ -3,21 +3,20 @@
 
 #include <array>
 
-#include "Initializer/electromaginitializer.h"
+#include "data/Electromag/electromaginitializer.h"
+#include "data/Plasmas/ionsinitializer.h"
+
 #include "Initializer/initializerfactory.h"
-#include "Initializer/ionsinitializer.h"
+
 #include "Initializer/ohminitializer.h"
 #include "Initializer/solverinitializer.h"
 
-#include "AMR/patch.h"
+#include "amr/MLMD/pra.h"
+#include "amr/Patch/patch.h"
+#include "amr/Splitting/splittingstrategy.h"
+#include "amr/patch/patchinfo.h"
 
 #include "utilities/particleselector.h"
-
-#include "Splitting/splittingstrategy.h"
-
-#include "AMR/MLMD/pra.h"
-#include "AMR/patchinfo.h"
-
 
 
 

@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 
-#include "AMR/Hierarchy/hierarchy.h"
-#include "Diagnostics/diagnostics.h"
+#include "amr/Hierarchy/hierarchy.h"
+#include "diagnostics/diagnostics.h"
 #include "fielddiagnosticcomputestrategy.h"
 #include "fieldpack.h"
 

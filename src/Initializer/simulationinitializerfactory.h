@@ -1,9 +1,9 @@
 #ifndef SIMULATIONINITIALIZERFACTORY_H
 #define SIMULATIONINITIALIZERFACTORY_H
 
-#include "Initializer/diagnosticinitializer.h"
-#include "Initializer/initializerfactory.h"
-#include "Time/time.h"
+#include "diagnostics/diagnosticinitializer.h"
+#include "initializerfactory.h"
+#include "utilities/Time/pharetime.h"
 
 class SimulationInitializerFactory : public InitializerFactory
 {

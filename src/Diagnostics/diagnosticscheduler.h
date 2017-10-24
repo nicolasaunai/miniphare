@@ -2,9 +2,9 @@
 #define DIAGNOSTICSCHEDULER_H
 
 
-#include "Time/time.h"
 #include "diagtype.h"
-#include "types.h"
+#include "utilities/Time/pharetime.h"
+#include "utilities/types.h"
 
 #include <unordered_map>
 #include <vector>

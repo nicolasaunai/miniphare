@@ -3,9 +3,9 @@
 
 #include <memory>
 
-#include "Initializer/particleinitializer.h"
-#include "Plasmas/species.h"
-#include "Splitting/splittingstrategy.h"
+#include "amr/Splitting/splittingstrategy.h"
+#include "data/Plasmas/particleinitializer.h"
+#include "data/Plasmas/species.h"
 #include "utilities/box.h"
 #include "utilities/particleselector.h"
 

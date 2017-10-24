@@ -4,10 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "AMR/patch.h"
-#include "Field/field.h"
+#include "amr/Patch/patch.h"
+#include "data/Field/field.h"
 //#include "AMR/patchdata.h"
-#include "Diagnostics/FieldDiagnostics/fielddiagnostic.h"
+#include "diagnostics/FieldDiagnostics/fielddiagnostic.h"
 //#include "Plasmas/species.h"
 
 

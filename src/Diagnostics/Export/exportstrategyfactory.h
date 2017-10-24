@@ -3,9 +3,9 @@
 
 #include <memory>
 
-#include "Diagnostics/Export/exportstrategytypes.h"
-#include "Diagnostics/Export/exportstrategy.h"
-#include "Diagnostics/Export/ASCII/asciiexportstrategy.h"
+#include "diagnostics/Export/ASCII/asciiexportstrategy.h"
+#include "diagnostics/Export/exportstrategy.h"
+#include "diagnostics/Export/exportstrategytypes.h"
 
 
 class ExportStrategyFactory

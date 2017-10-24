@@ -7,9 +7,9 @@
 
 #include "test_faraday1d.h"
 
-#include "Faraday/faraday.h"
-#include "Faraday/faradayfactory.h"
-#include "Faraday/faradayimpl1d.h"
+#include "core/Faraday/faraday.h"
+#include "core/Faraday/faradayfactory.h"
+#include "core/Faraday/faradayimpl1d.h"
 
 
 

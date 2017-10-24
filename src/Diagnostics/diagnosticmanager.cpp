@@ -1,10 +1,10 @@
 
 
 #include "diagnosticmanager.h"
-#include "Diagnostics/FieldDiagnostics/Electromag/emdiagnostic.h"
-#include "Diagnostics/FieldDiagnostics/Electromag/emdiagnosticfactory.h"
-#include "Diagnostics/FieldDiagnostics/Fluid/fluiddiagnostic.h"
-#include "Diagnostics/FieldDiagnostics/Fluid/fluiddiagnosticfactory.h"
+#include "FieldDiagnostics/Electromag/emdiagnostic.h"
+#include "FieldDiagnostics/Electromag/emdiagnosticfactory.h"
+#include "FieldDiagnostics/Fluid/fluiddiagnostic.h"
+#include "FieldDiagnostics/Fluid/fluiddiagnosticfactory.h"
 
 uint32 DiagnosticsManager::id = 0;
 

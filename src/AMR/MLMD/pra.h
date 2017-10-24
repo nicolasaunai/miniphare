@@ -5,8 +5,8 @@
 #include <array>
 #include <vector>
 
-#include "grid/gridlayout.h"
-#include "types.h"
+#include "data/grid/gridlayout.h"
+#include "utilities/types.h"
 #include "utilities/box.h"
 
 

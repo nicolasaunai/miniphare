@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "BoundaryConditions/boundary_conditions.h"
-#include "types.h"
+#include "core/BoundaryConditions/boundary_conditions.h"
+#include "utilities/types.h"
 #include <string>
 
 /**

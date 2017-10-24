@@ -1,12 +1,13 @@
 
 #include <memory>
 
-#include "BoundaryConditions/domainboundarycondition.h"
-#include "BoundaryConditions/periodicdomainboundary.h"
-#include "Initializer/fluidparticleinitializer.h"
-#include "Initializer/simpleinitializerfactory.h"
+#include "core/BoundaryConditions/domainboundarycondition.h"
+#include "core/BoundaryConditions/periodicdomainboundary.h"
 
-#include "Splitting/splittingstrategyfactory.h"
+#include "fluidparticleinitializer.h"
+#include "simpleinitializerfactory.h"
+
+#include "amr/Splitting/splittingstrategyfactory.h"
 
 
 #include <cmath>

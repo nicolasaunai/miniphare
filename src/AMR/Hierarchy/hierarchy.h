@@ -4,11 +4,9 @@
 #include <memory>
 #include <vector>
 
-#include "AMR/patch.h"
-#include "AMR/patchinfo.h"
-
-#include "AMR/refinmentanalyser.h"
-
+#include "amr/Patch/patch.h"
+#include "amr/Patch/patchinfo.h"
+#include "amr/Refinement/refinmentanalyser.h"
 
 
 struct RefinementInfo

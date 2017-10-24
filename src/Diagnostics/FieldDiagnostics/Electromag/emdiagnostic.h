@@ -3,9 +3,9 @@
 
 #include <memory>
 
-#include "AMR/patch.h"
-#include "Electromag/electromag.h"
-#include "Diagnostics/FieldDiagnostics/fielddiagnostic.h"
+#include "amr/Patch/patch.h"
+#include "data/Electromag/electromag.h"
+#include "diagnostics/FieldDiagnostics/fielddiagnostic.h"
 
 
 class EMDiagnostic : public FieldDiagnostic

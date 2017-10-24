@@ -2,10 +2,10 @@
 #define EXPORTSTRATEGY_H
 
 
-#include "Time/time.h"
-#include "Diagnostics/diagnostics.h"
-#include "Diagnostics/FieldDiagnostics/Fluid/fluiddiagnostic.h"
-#include "Diagnostics/FieldDiagnostics/Electromag/emdiagnostic.h"
+#include "diagnostics/FieldDiagnostics/Electromag/emdiagnostic.h"
+#include "diagnostics/FieldDiagnostics/Fluid/fluiddiagnostic.h"
+#include "diagnostics/diagnostics.h"
+#include "utilities/Time/pharetime.h"
 //#include "Diagnostics/
 
 

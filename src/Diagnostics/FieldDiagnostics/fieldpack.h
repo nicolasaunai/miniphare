@@ -2,12 +2,12 @@
 #define FIELDPACK_H
 
 #include <array>
-#include <vector>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
-#include "types.h"
-#include "grid/gridlayoutdefs.h"
+#include "data/grid/gridlayoutdefs.h"
+#include "utilities/types.h"
 
 
 /**
@@ -23,7 +23,6 @@ struct FieldPack
     std::unordered_map<std::string, uint32> nbrDimensions;
     std::unordered_map<std::string, Point> origin;
 };
-
 
 
 

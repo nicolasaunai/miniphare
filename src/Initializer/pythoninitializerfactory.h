@@ -2,7 +2,7 @@
 #define PYTHONINITIALIZERFACTORY_H
 
 
-#include "grid/gridlayout.h"
+#include "data/grid/gridlayout.h"
 #include "simulationinitializerfactory.h"
 
 

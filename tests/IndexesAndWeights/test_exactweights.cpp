@@ -7,15 +7,15 @@
 #include <string>
 
 
-#include "Plasmas/particles.h"
+#include "data/Plasmas/particles.h"
 
 #include "test_exactweights.h"
 
-#include "IndexesAndWeights/indexesandweights.h"
-#include "IndexesAndWeights/indexesandweightso1.h"
-#include "IndexesAndWeights/indexesandweightso2.h"
-#include "IndexesAndWeights/indexesandweightso3.h"
-#include "IndexesAndWeights/indexesandweightso4.h"
+#include "core/IndexesAndWeights/indexesandweights.h"
+#include "core/IndexesAndWeights/indexesandweightso1.h"
+#include "core/IndexesAndWeights/indexesandweightso2.h"
+#include "core/IndexesAndWeights/indexesandweightso3.h"
+#include "core/IndexesAndWeights/indexesandweightso4.h"
 
 
 

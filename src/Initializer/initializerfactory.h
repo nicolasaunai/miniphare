@@ -5,15 +5,13 @@
 #include <memory>
 #include <string>
 
-#include "Initializer/electromaginitializer.h"
-#include "Initializer/ionsinitializer.h"
-#include "Initializer/ohminitializer.h"
-#include "Initializer/solverinitializer.h"
+#include "amr/Splitting/splittingstrategy.h"
+#include "diagnostics/diagnosticinitializer.h"
+#include "ohminitializer.h"
+#include "solverinitializer.h"
 
-#include "diagnosticinitializer.h"
-
-#include "Splitting/splittingstrategy.h"
-
+#include "data/Electromag/electromaginitializer.h"
+#include "data/Plasmas/ionsinitializer.h"
 
 
 /**

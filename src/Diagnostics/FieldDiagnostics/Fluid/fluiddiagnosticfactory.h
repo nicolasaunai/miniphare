@@ -5,8 +5,8 @@
 #include <memory>
 #include <string>
 
-#include "Diagnostics/FieldDiagnostics/Fluid/fluiddiagnostic.h"
-#include "Diagnostics/FieldDiagnostics/fielddiagnosticcomputestrategy.h"
+#include "diagnostics/FieldDiagnostics/Fluid/fluiddiagnostic.h"
+#include "diagnostics/FieldDiagnostics/fielddiagnosticcomputestrategy.h"
 
 
 

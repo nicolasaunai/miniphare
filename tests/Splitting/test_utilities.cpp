@@ -2,7 +2,7 @@
 #include <fstream>
 #include <vector>
 
-#include "types.h"
+#include "utilities/types.h"
 
 
 #include "test_approxsplitting1part.h"

@@ -3,7 +3,7 @@
 
 #include <cmath>
 #include <limits>
-#include <vector>
+//#include <vector>
 
 #include "types.h"
 
@@ -114,7 +114,7 @@ struct LogicalBox
     }
 };
 
-struct Point;
+
 
 bool pointInBox(Point const& point, Box const& box);
 

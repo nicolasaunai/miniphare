@@ -2,7 +2,7 @@
 #define DIAGNOSTICS_H
 
 
-#include "AMR/Hierarchy/hierarchy.h"
+#include "amr/Hierarchy/hierarchy.h"
 #include <string>
 
 
