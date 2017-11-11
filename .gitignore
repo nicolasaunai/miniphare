@@ -103,6 +103,7 @@ tests/Faraday/faraday1D_*.txt
 tests/IndexesAndWeights/indexes_*.txt
 tests/IndexesAndWeights/weights_*.txt
 tests/Pusher/odepush_*.txt
+tests/**/*.ini
 
 
 # CMAKE files

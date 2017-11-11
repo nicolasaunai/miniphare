@@ -27,7 +27,7 @@ public:
         , currentTime_{startTime}
         , nbrIterations_{}
     {
-        nbrIterations_ = static_cast<uint32>(static_cast<std::size_t>(duration / dt_) + 1);
+        nbrIterations_ = static_cast<uint32>(static_cast<std::size_t>(duration / dt_));
     }
 
     Time(Time&& source) = default;
