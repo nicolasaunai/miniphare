@@ -10,6 +10,7 @@ class SimulationInitializerFactory : public InitializerFactory
 public:
     virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() const = 0;
     virtual std::unique_ptr<Time> createTimeManager() const                            = 0;
+    virtual bool inputError() const                                                    = 0;
 };
 
 

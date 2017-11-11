@@ -8,12 +8,15 @@
 #include "data/vecfield/vecfield.h"
 #include "utilities/types.h"
 
+
+/**
+ * @brief is passed to and Electromag constructor to initializer EM fields
+ */
 class ElectromagInitializer
 {
 private:
-    // using VectorFunction = void   (*) (double x, double y, double z, std::array<double,3> vec);
-    VectorFunction electricField;
-    VectorFunction magneticField;
+    std::unique_ptr<VectorFunction> electricField;
+    std::unique_ptr<VectorFunction> magneticField;
 
     void init1D_(GridLayout const& layout);
     void init2D_(GridLayout const& layout);
@@ -33,8 +36,8 @@ public:
     VecField B_;
     std::string nameE, nameB;
 
-    ElectromagInitializer(GridLayout const& layout, VectorFunction electricField,
-                          VectorFunction magneticField, std::string electricName,
+    ElectromagInitializer(GridLayout const& layout, std::unique_ptr<VectorFunction> electricField,
+                          std::unique_ptr<VectorFunction> magneticField, std::string electricName,
                           std::string magneticName);
 
     ElectromagInitializer(GridLayout const& layout, std::string electricName,

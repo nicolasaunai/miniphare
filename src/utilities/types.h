@@ -10,8 +10,32 @@ using int32  = std::int32_t;
 using int64  = std::int64_t;
 
 
-using ScalarFunction = double (*)(double x, double y, double z);
-using VectorFunction = std::array<double, 3> (*)(double x, double y, double z);
+// using ScalarFunction = double (*)(double x, double y, double z);
+// using VectorFunction = std::array<double, 3> (*)(double x, double y, double z);
+
+/**
+ * @brief represents a function of 3D spatial coordinates returning a scalar
+ */
+class ScalarFunction
+{
+public:
+    virtual double operator()(double x, double y, double z) = 0;
+
+    virtual ~ScalarFunction() = default;
+};
+
+
+/**
+ * @brief represents a function of 3D spatial coordinates returning a vector
+ */
+class VectorFunction
+{
+public:
+    virtual std::array<double, 3> operator()(double x, double y, double z) = 0;
+
+    virtual ~VectorFunction() = default;
+};
+
 
 
 enum class Edge { Xmin, Xmax, Ymin, Ymax, Zmin, Zmax };

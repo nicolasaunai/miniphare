@@ -32,6 +32,8 @@ public:
     virtual double timeStep() const override { return createTimeManager()->timeStep(); }
     virtual std::string const& pusher() const override { return pusher_; }
 
+    virtual bool inputError() const override { return false; }
+
     virtual std::vector<uint32> const& interpolationOrders() const override
     {
         return interpolationOrders_;

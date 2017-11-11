@@ -6,16 +6,16 @@
 
 
 
-FluidParticleInitializer::FluidParticleInitializer(GridLayout const& layout,
-                                                   ScalarFunction densityProfile,
-                                                   VectorFunction bulkVelocityProfile,
-                                                   ScalarFunction thermalSpeedProfile,
-                                                   uint32 nbrPartPerCell, double particleCharge)
+FluidParticleInitializer::FluidParticleInitializer(
+    GridLayout const& layout, std::unique_ptr<ScalarFunction> densityProfile,
+    std::unique_ptr<VectorFunction> bulkVelocityProfile,
+    std::unique_ptr<ScalarFunction> thermalSpeedProfile, uint32 nbrPartPerCell,
+    double particleCharge)
     : ParticleInitializer{}
     , layout_{layout}
-    , density{densityProfile}
-    , bulkVelocity{bulkVelocityProfile}
-    , thermalSpeed{thermalSpeedProfile}
+    , density_{std::move(densityProfile)}
+    , bulkVelocity_{std::move(bulkVelocityProfile)}
+    , thermalSpeed_{std::move(thermalSpeedProfile)}
     , particleCharge_{particleCharge}
     , nbrParticlePerCell_{nbrPartPerCell}
 {
@@ -62,6 +62,11 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
     // beware: we're looping over the cell but use primal indices because of
     // GridLayout::cellCenteredCoordinates
     // therefore i(x,y,z)1 must be excluded.
+
+    // grab references for convenience
+    auto& density      = *density_;
+    auto& bulkVelocity = *bulkVelocity_;
+    auto& thermalSpeed = *thermalSpeed_;
 
     for (uint32 ix = ix0; ix < ix1; ++ix)
     {
@@ -128,6 +133,11 @@ void FluidParticleInitializer::loadParticles2D_(std::vector<Particle>& particles
     // beware: we're looping over the cell but use primal indices because of
     // GridLayout::cellCenteredCoordinates
     // therefore i(x,y,z)1 must be excluded.
+
+    // grab references for convenience
+    auto& density      = *density_;
+    auto& bulkVelocity = *bulkVelocity_;
+    auto& thermalSpeed = *thermalSpeed_;
 
     for (uint32 ix = ix0; ix < ix1; ++ix)
     {
@@ -201,6 +211,11 @@ void FluidParticleInitializer::loadParticles3D_(std::vector<Particle>& particles
     // beware: we're looping over the cell but use primal indices because of
     // GridLayout::cellCenteredCoordinates
     // therefore i(x,y,z)1 must be excluded.
+
+    // grab references for convenience
+    auto& density      = *density_;
+    auto& bulkVelocity = *bulkVelocity_;
+    auto& thermalSpeed = *thermalSpeed_;
 
     for (uint32 ix = ix0; ix < ix1; ++ix)
     {
