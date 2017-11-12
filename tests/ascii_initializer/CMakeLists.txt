@@ -5,12 +5,8 @@ set(SOURCES
     test_asciiinitializerfactory.cpp
     )
 
-set(Python_ADDITIONAL_VERSIONS 3.6)
-find_package( PythonInterp 3.6 REQUIRED )
 
-
-
-
+#find_package( PythonInterp 3.6 REQUIRED )
 
 include_directories("./")
 add_executable(test_asciiinitializer ${SOURCES})

@@ -16,13 +16,16 @@ if ( MSVC )
 endif ( MSVC )
 
 
+find_package( PythonInterp 3.0 REQUIRED )
+
+
+
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
       "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
 
-include_directories("src")
-add_subdirectory(src)
 
 
 
@@ -47,6 +50,7 @@ if (test)
     # coverage
     set(CMAKE_CXX_FLAGS "-g -O0 -Wall -fprofile-arcs -ftest-coverage")
     list(APPEND CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
+    #list(APPEND CMAKE_STATIC_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
     set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
     add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/out/index.html
         COMMAND lcov --capture -directory ${CMAKE_CURRENT_BINARY_DIR} --output-file ${CMAKE_CURRENT_BINARY_DIR}/coverage.info
@@ -57,6 +61,8 @@ if (test)
     add_custom_target(coverage_report DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/out/index.html)
   endif()
 
+  include_directories("src")
+  add_subdirectory(src)
   ##############
   # Unit Tests
   ##############
