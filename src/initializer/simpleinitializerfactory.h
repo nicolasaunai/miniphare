@@ -2,8 +2,8 @@
 #define SIMPLEINITIALIZERFACTORY_H
 
 
-#include "utilities/Time/pharetime.h"
 #include "simulationinitializerfactory.h"
+#include "utilities/Time/pharetime.h"
 
 
 
@@ -34,10 +34,7 @@ public:
 
     virtual bool inputError() const override { return false; }
 
-    virtual std::vector<uint32> const& interpolationOrders() const override
-    {
-        return interpolationOrders_;
-    }
+    virtual uint32 interpolationOrder() const override { return interpolationOrder_; }
     virtual std::vector<std::string> const& splittingStrategies() const override
     {
         return splitMethods_;
@@ -50,7 +47,7 @@ private:
     Time timeManager_;
     GridLayout layout_;
 
-    const std::vector<uint32> interpolationOrders_;
+    const uint32 interpolationOrder_;
     const std::string pusher_;
     const std::vector<std::string> splitMethods_;
 };

@@ -84,7 +84,7 @@ void MLMDInitializerFactory::buildIonsInitializer_(IonsInitializer& ionInit,
 
     for (uint32 ispe = 0; ispe < parentIons.nbrSpecies(); ++ispe)
     {
-        SplittingStrategyFactory factory{splitMethods_[ispe], interpolationOrders_[ispe],
+        SplittingStrategyFactory factory{splitMethods_[ispe], interpolationOrder_,
                                          refinementRatio_};
 
         std::unique_ptr<SplittingStrategy> splitting = factory.createSplittingStrategy();
@@ -133,8 +133,8 @@ std::unique_ptr<ElectromagInitializer> MLMDInitializerFactory::createElectromagI
 std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializer() const
 {
     std::unique_ptr<SolverInitializer> solverInitPtr{new SolverInitializer{}};
-    solverInitPtr->pusherType          = pusher_;
-    solverInitPtr->interpolationOrders = interpolationOrders_;
+    solverInitPtr->pusherType         = pusher_;
+    solverInitPtr->interpolationOrder = interpolationOrder_;
     return solverInitPtr;
 }
 

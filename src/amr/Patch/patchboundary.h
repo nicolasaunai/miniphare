@@ -4,10 +4,10 @@
 #include <iostream>
 
 
-#include "data/Electromag/electromaginitializer.h"
-#include "data/Plasmas/ionsinitializer.h"
-#include "data/Plasmas/ions.h"
 #include "data/Electromag/electromag.h"
+#include "data/Electromag/electromaginitializer.h"
+#include "data/Plasmas/ions.h"
+#include "data/Plasmas/ionsinitializer.h"
 #include "data/vecfield/vecfield.h"
 
 #include "core/Ampere/ampere.h"
@@ -134,7 +134,7 @@ public:
 
     void initPRAParticles();
 
-    void computePRADensityAndFlux(std::vector<uint32> const& orders);
+    void computePRADensityAndFlux(uint32 orders);
     void computePRAChargeDensity();
     void computePRABulkVelocity();
 

@@ -20,7 +20,7 @@ AsciiInitializerFactory::AsciiInitializerFactory(std::string const& filename)
     , iniExtractor_{INIExtractorFactory::createINIExtractor(iniData_.modelName)}
     , initModel_{InitModelFactory::createInitModel(iniData_.modelName, layout_)}
     , splitMethods_{std::vector<std::string>{iniData_.nbrSpecies, iniData_.splittingMethod}}
-    , interpOrders_{std::vector<uint32>{iniData_.nbrSpecies, iniData_.interpOrder}}
+    , interpOrder_{iniData_.interpOrder}
 {
     iniExtractor_->initializeModel(iniData_, initModel_.get());
 }
@@ -67,11 +67,8 @@ std::unique_ptr<SolverInitializer> AsciiInitializerFactory::createSolverInitiali
 {
     std::unique_ptr<SolverInitializer> solverInitPtr{new SolverInitializer{}};
 
-    solverInitPtr->pusherType = iniData_.pusherName;
-
-    // TODO make it 1 interporder for all species
-    for (uint32 speciesIndex = 0; speciesIndex < iniData_.nbrSpecies; ++speciesIndex)
-        solverInitPtr->interpolationOrders.push_back(iniData_.interpOrder);
+    solverInitPtr->pusherType         = iniData_.pusherName;
+    solverInitPtr->interpolationOrder = iniData_.interpOrder;
 
     return solverInitPtr;
 }

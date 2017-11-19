@@ -57,11 +57,11 @@ void PatchBoundaryCondition::initializePRAparticles()
 
 
 
-void PatchBoundaryCondition::computePRADensityAndFlux(std::vector<uint32> const& orders)
+void PatchBoundaryCondition::computePRADensityAndFlux(uint32 order)
 {
     for (auto& boundary : boundaries_)
     {
-        boundary->computePRADensityAndFlux(orders);
+        boundary->computePRADensityAndFlux(order);
     }
 }
 

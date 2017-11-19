@@ -39,8 +39,7 @@ private:
 
     void initPRAparticles_(BoundaryCondition* boundaryCondition);
 
-    void computePRADensityAndFlux_(BoundaryCondition* boundaryCondition,
-                                   std::vector<uint32> const& orders);
+    void computePRADensityAndFlux_(BoundaryCondition* boundaryCondition, uint32 order);
     void computePRAChargeDensity_(BoundaryCondition* boundaryCondition);
     void computePRABulkVelocity_(BoundaryCondition* boundaryCondition);
 

@@ -45,7 +45,7 @@ public:
     virtual GridLayout const& gridLayout() const                        = 0;
     virtual double timeStep() const                                     = 0;
     virtual std::string const& pusher() const                           = 0;
-    virtual std::vector<uint32> const& interpolationOrders() const      = 0;
+    virtual uint32 interpolationOrder() const                           = 0;
     virtual std::vector<std::string> const& splittingStrategies() const = 0;
 
     // virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() = 0;

@@ -43,19 +43,10 @@ Solver::Solver(GridLayout const& layout, double dt,
     , faraday_{dt, layout}
     , ampere_{layout}
     , ohm_{layout}
-{
-    // take information from the SolverInitializer
-    // we grab interpolators for each particle species
-    // then the pusher.
-    uint32 size = static_cast<uint32>(solverInitializer->interpolationOrders.size());
-    for (uint32 ik = 0; ik < size; ++ik)
-    {
-        uint32 order = solverInitializer->interpolationOrders[ik];
-        interpolators_.push_back(Interpolator{order});
-    }
+    , interpolator_{solverInitializer->interpolationOrder}
+    , pusher_{PusherFactory::createPusher(layout, solverInitializer->pusherType, dt)}
 
-    const std::string pusherType = solverInitializer->pusherType;
-    pusher_                      = PusherFactory::createPusher(layout, pusherType, dt);
+{
 }
 
 
@@ -71,9 +62,8 @@ void Solver::init(Ions& ions, BoundaryCondition const& boundaryCondition)
     {
         Species& species                 = ions.species(iSpe);
         std::vector<Particle>& particles = species.particles();
-        Interpolator& interpolator       = interpolators_[iSpe];
 
-        computeChargeDensityAndFlux(interpolator, species, layout_, particles);
+        computeChargeDensityAndFlux(interpolator_, species, layout_, particles);
     }
 
     ions.computeChargeDensity();
@@ -243,7 +233,6 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
     {
         Species& species                 = ions.species(ispe);
         std::vector<Particle>& particles = species.particles();
-        Interpolator& interpolator       = interpolators_[ispe];
 
 
         // at the first predictor step we must not overwrite particles
@@ -261,11 +250,11 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
 
             // move all particles of that species from n to n+1
             // and put the advanced particles in the predictor buffer 'particleArrayPred_'
-            pusher_->move(particles, particleArrayPred_, species.mass(), E, B, interpolator,
+            pusher_->move(particles, particleArrayPred_, species.mass(), E, B, interpolator_,
                           boundaryCondition);
 
 
-            computeChargeDensityAndFlux(interpolator, species, layout_, particleArrayPred_);
+            computeChargeDensityAndFlux(interpolator_, species, layout_, particleArrayPred_);
         }
 
         // we're at pred2, so we can update particles in place as we won't
@@ -273,7 +262,7 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
         else if (predictorStep == predictor2_)
         {
             // move all particles of that species from n to n+1
-            pusher_->move(particles, particles, species.mass(), E, B, interpolator,
+            pusher_->move(particles, particles, species.mass(), E, B, interpolator_,
                           boundaryCondition);
 
             // ------------------------------------------------------
@@ -290,7 +279,7 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
             boundaryCondition.applyIncomingParticleBC(particles, pusher_->pusherType(),
                                                       pusher_->dt(), species.name());
 
-            computeChargeDensityAndFlux(interpolator, species, layout_, particles);
+            computeChargeDensityAndFlux(interpolator_, species, layout_, particles);
         }
 
 

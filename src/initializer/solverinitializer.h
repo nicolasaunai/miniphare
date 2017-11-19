@@ -19,7 +19,7 @@
 struct SolverInitializer
 {
     std::string pusherType;
-    std::vector<uint32> interpolationOrders;
+    uint32 interpolationOrder;
 };
 
 

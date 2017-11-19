@@ -60,7 +60,7 @@ public:
 
     void initializePRAparticles();
 
-    void computePRADensityAndFlux(std::vector<uint32> const& orders);
+    void computePRADensityAndFlux(uint32 order);
     void computePRAChargeDensity();
     void computePRABulkVelocity();
 

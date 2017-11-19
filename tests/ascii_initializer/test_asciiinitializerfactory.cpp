@@ -145,12 +145,8 @@ TEST(AsciiInitializerTest, SolverInitializerHasInterpolationOrdersOK)
 {
     std::unique_ptr<SimulationInitializerFactory> factory{new AsciiInitializerFactory{"phare.ini"}};
     std::unique_ptr<SolverInitializer> solverInit = factory->createSolverInitializer();
-    auto interpOrders                             = solverInit->interpolationOrders;
-
-    for (std::size_t order = 0; order < interpOrders.size(); ++order)
-    {
-        ASSERT_EQ(1, interpOrders[order]);
-    }
+    auto interpOrder                              = solverInit->interpolationOrder;
+    ASSERT_EQ(1, interpOrder);
 }
 
 

@@ -10,7 +10,7 @@
 struct PatchInfo
 {
     std::string pusher;
-    std::vector<uint32> interpOrders;
+    uint32 interpOrder;
     uint32 refinementRatio;
     std::vector<std::string> splitStrategies;
 

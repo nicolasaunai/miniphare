@@ -38,7 +38,7 @@ private:
     GridLayout refinedLayout_;
 
     uint32 refinementRatio_;
-    std::vector<uint32> interpolationOrders_;
+    uint32 interpolationOrder_;
     std::string pusher_;
     std::vector<std::string> splitMethods_;
 
@@ -57,7 +57,7 @@ public:
         , newPatchCoords_{newPatchCoords}
         , refinedLayout_{refinedLayout}
         , refinementRatio_{patchInfo.refinementRatio}
-        , interpolationOrders_{patchInfo.interpOrders}
+        , interpolationOrder_{patchInfo.interpOrder}
         , pusher_{patchInfo.pusher}
         , splitMethods_{patchInfo.splitStrategies}
         , dt_{dt_patch}
@@ -68,10 +68,7 @@ public:
     virtual GridLayout const& gridLayout() const override { return refinedLayout_; }
     virtual double timeStep() const override { return dt_; }
     virtual std::string const& pusher() const override { return pusher_; }
-    virtual std::vector<uint32> const& interpolationOrders() const override
-    {
-        return interpolationOrders_;
-    }
+    virtual uint32 interpolationOrder() const override { return interpolationOrder_; }
     virtual std::vector<std::string> const& splittingStrategies() const override
     {
         return splitMethods_;

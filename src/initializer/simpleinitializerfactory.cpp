@@ -39,7 +39,7 @@ SimpleInitializerFactory::SimpleInitializerFactory()
     , layout_{{{dx, 0., 0.}}, {{nx, 0, 0}}, 1, "yee", Point{0., 0., 0.}, interpOrderConstant}
     ,
     // hard-coded... will come from input somehow
-    interpolationOrders_{{interpOrderConstant, interpOrderConstant}}
+    interpolationOrder_{interpOrderConstant}
     , pusher_{"modifiedBoris"}
     , splitMethods_{std::vector<std::string>{2, defaultSplitMethod}}
 {
@@ -67,7 +67,7 @@ public:
     }
 };
 
-    double density = 1.;
+double density = 1.;
 
 class ThermalSpeed : public ScalarFunction
 {
@@ -196,8 +196,8 @@ std::unique_ptr<SolverInitializer> SimpleInitializerFactory::createSolverInitial
 {
     std::unique_ptr<SolverInitializer> solverInitPtr{new SolverInitializer{}};
 
-    solverInitPtr->pusherType          = pusher_;
-    solverInitPtr->interpolationOrders = interpolationOrders_;
+    solverInitPtr->pusherType         = pusher_;
+    solverInitPtr->interpolationOrder = interpolationOrder_;
 
     return solverInitPtr;
 }

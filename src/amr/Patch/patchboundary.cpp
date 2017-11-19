@@ -295,7 +295,7 @@ void PatchBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Push
  * @brief PatchBoundary::computePRAmoments
  *
  */
-void PatchBoundary::computePRADensityAndFlux(std::vector<uint32> const& orders)
+void PatchBoundary::computePRADensityAndFlux(uint32 order)
 {
     uint32 nbrSpecies = ions_.nbrSpecies();
 
@@ -303,7 +303,7 @@ void PatchBoundary::computePRADensityAndFlux(std::vector<uint32> const& orders)
     {
         Species& species = ions_.species(ispe);
 
-        Interpolator interpolator(orders[ispe]);
+        Interpolator interpolator(order);
 
         computeChargeDensityAndFlux(interpolator, species, layout_, species.particles());
     }

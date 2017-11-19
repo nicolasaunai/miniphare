@@ -17,7 +17,7 @@
 MLMD::MLMD(InitializerFactory const& initFactory)
     : baseLayout_{GridLayout{initFactory.gridLayout()}}
 {
-    patchInfos_.interpOrders    = initFactory.interpolationOrders();
+    patchInfos_.interpOrder     = initFactory.interpolationOrder();
     patchInfos_.pusher          = initFactory.pusher();
     patchInfos_.splitStrategies = initFactory.splittingStrategies();
     patchInfos_.refinementRatio = 2;
@@ -226,7 +226,7 @@ void MLMD::manageParticlesInGhostDomain_(Patch& patch)
     std::cout << " PRA initialization: OK\n";
 
     // for each species
-    computePRADensityAndFlux_(boundaryCond, patchInfos_.interpOrders);
+    computePRADensityAndFlux_(boundaryCond, patchInfos_.interpOrder);
 
     computePRAChargeDensity_(boundaryCond);
     if (PatchBoundaryCondition* condition = dynamic_cast<PatchBoundaryCondition*>(boundaryCond))
@@ -256,13 +256,12 @@ void MLMD::initPRAparticles_(BoundaryCondition* boundaryCondition)
 }
 
 
-void MLMD::computePRADensityAndFlux_(BoundaryCondition* boundaryCondition,
-                                     std::vector<uint32> const& orders)
+void MLMD::computePRADensityAndFlux_(BoundaryCondition* boundaryCondition, uint32 order)
 {
     if (PatchBoundaryCondition* boundaryCond
         = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
     {
-        boundaryCond->computePRADensityAndFlux(orders);
+        boundaryCond->computePRADensityAndFlux(order);
     }
 }
 

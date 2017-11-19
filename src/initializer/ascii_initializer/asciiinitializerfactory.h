@@ -40,10 +40,7 @@ public:
     virtual double timeStep() const override { return createTimeManager()->timeStep(); }
     virtual std::string const& pusher() const override { return iniData_.pusherName; }
 
-    virtual std::vector<uint32> const& interpolationOrders() const override
-    {
-        return interpOrders_;
-    }
+    virtual uint32 interpolationOrder() const override { return interpOrder_; }
     virtual std::vector<std::string> const& splittingStrategies() const override
     {
         return splitMethods_;
@@ -58,7 +55,7 @@ private:
     std::unique_ptr<INIExtractor> iniExtractor_;
     std::unique_ptr<InitModel> initModel_;
     const std::vector<std::string> splitMethods_;
-    std::vector<uint32> interpOrders_;
+    uint32 interpOrder_;
 
     /*
     Time timeManager_;
