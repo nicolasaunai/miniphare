@@ -60,9 +60,12 @@ if (test)
         )
     add_custom_target(coverage_report DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/out/index.html)
   endif()
+endif()
 
-  include_directories("src")
-  add_subdirectory(src)
+include_directories("src")
+add_subdirectory(src)
+
+if (test)
   ##############
   # Unit Tests
   ##############
