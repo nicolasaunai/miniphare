@@ -21,18 +21,15 @@ static const std::string defaultSplitMethod = "splitOrderN_RF2";
 
 static const double pi = 3.14159;
 
-static const double dx = 0.3;
-static const int32 nx  = 2048;
+static const double dx = 0.2;
+static const int32 nx  = 500;
 static const double Lx = nx * dx;
 
-static const double dt   = 1.e-3;
-static const int32 nstep = 40; // 10000
-
+static const double dt   = 1.e-2;
+static const int32 nstep = 20000;
 
 // le mode de notre perturbation
-static const double k3 = 2 * pi / (Lx / 4.);
-static const double k4 = 2 * pi / (Lx / 2.);
-static const double k5 = 2 * pi / Lx;
+static const double k1 = 2 * pi / Lx;
 
 
 SimpleInitializerFactory::SimpleInitializerFactory()
@@ -92,8 +89,8 @@ class BulkVelocity : public VectorFunction
         (void)z;
 
         vec[0] = 0.;
-        vec[1] = 0.;
-        vec[2] = 0.;
+        vec[1] = 0.1 * std::sin(k1 * x);
+        vec[2] = 0.1 * std::cos(k1 * x);
         return vec;
     }
 };
@@ -111,8 +108,8 @@ class MagneticField : public VectorFunction
         (void)z;
 
         vec[0] = 1.;
-        vec[1] = 0.1 * (std::sin(k3 * x) + std::sin(k4 * x) + std::sin(k5 * x));
-        vec[2] = 0.1 * (std::cos(k3 * x) + std::cos(k4 * x) + std::cos(k5 * x));
+        vec[1] = 0.1 * std::sin(k1 * x);
+        vec[2] = 0.1 * std::cos(k1 * x);
         return vec;
     }
 };
@@ -260,7 +257,7 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
 
     initializer->exportType = ExportStrategyType::ASCII;
     std::vector<uint32> iters;
-    for (uint32 i = 0; i < 100001; i += 5)
+    for (uint32 i = 0; i < 100001; i += 10)
     {
         iters.push_back(i);
     }
@@ -297,20 +294,14 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
     fluidDiag2.writingIterations   = iters;
     initializer->fluidInitializers.push_back(std::move(fluidDiag2));
 
-    // FluidDiagInitializer fluidDiag_p2;
-    // fluidDiag_p2.speciesName         = "proton2";
-    // fluidDiag_p2.typeName            = "rho_s";
-    // fluidDiag_p2.computingIterations = iters;
-    // fluidDiag_p2.writingIterations   = iters;
-    // initializer->fluidInitializers.push_back(std::move(fluidDiag_p2));
-
-
-    // FluidDiagInitializer fluidDiag2_p2;
-    // fluidDiag2_p2.speciesName         = "proton2";
-    // fluidDiag2_p2.typeName            = "flux_s";
-    // fluidDiag2_p2.computingIterations = iters;
-    // fluidDiag2_p2.writingIterations   = iters;
-    // initializer->fluidInitializers.push_back(std::move(fluidDiag2_p2));
+    //    PartDiagInitializer partDiag;
+    //    partDiag.speciesName         = "proton1";
+    //    partDiag.typeName            = "part";
+    //    partDiag.selectorType        = "spaceBox";
+    //    partDiag.selectorParams      = {Lx / 4., Lx / 2.};
+    //    partDiag.computingIterations = iters;
+    //    partDiag.writingIterations   = iters;
+    //    initializer->partInitializers.push_back(std::move(partDiag));
 
 
     return initializer;
