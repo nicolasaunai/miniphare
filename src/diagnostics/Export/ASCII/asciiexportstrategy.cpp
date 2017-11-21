@@ -7,6 +7,7 @@
 
 #include "asciiexportstrategy.h"
 
+#include "utilities/particleutilities.h"
 
 
 float centering2float(QtyCentering centering)
@@ -70,6 +71,38 @@ void fillFile(FieldPack const& pack, FILE* file)
 }
 
 
+void fillFile(ParticlePack const& pack, FILE* file)
+{
+    // writing local diagnostic informations
+    fprintf(file, "# Origin\n");
+    auto const& origin = pack.origin;
+    fprintf(file, "%f %f %f", origin.x, origin.y, origin.z);
+    fprintf(file, "\n");
+
+    fprintf(file, "# grid spacing\n");
+    auto const& spacing = pack.gridSpacing;
+    fprintf(file, "%f %f %f", spacing[0], spacing[1], spacing[2]);
+    fprintf(file, "\n");
+
+    fprintf(file, "# number of particles\n");
+    fprintf(file, "%lu", pack.nbParticles);
+    fprintf(file, "\n");
+
+    // TODO: convert particle (icell, delta) coordinates
+    // into 3d position
+    for (Particle const& part : pack.data)
+    {
+        Point coord = getParticlePosition(part, origin, pack.nbrGhosts, spacing);
+
+        // write weight and charge
+        fprintf(file, "%g %f \n", part.weight, part.charge);
+        // write particle coordinates
+        fprintf(file, "%e %e %e \n", coord.x, coord.y, coord.z);
+        // write velocities
+        fprintf(file, "%e %e %e \n", part.v[0], part.v[1], part.v[2]);
+        fflush(stdout);
+    }
+}
 
 
 /* ----------------------------------------------------------------------------
@@ -118,8 +151,6 @@ void AsciiExportStrategy::saveEMDiagnostic(EMDiagnostic const& diag, Time const&
    ---------------------------------------------------------------------------- */
 
 
-
-
 std::string getFluidFilename(uint32 patchID, FluidDiagnostic const& diag, Time const& timeManager)
 {
     std::stringstream ss;
@@ -146,6 +177,50 @@ void AsciiExportStrategy::saveFluidDiagnostic(FluidDiagnostic const& diag, Time 
     for (FieldPack const& pack : diag.getPacks())
     {
         std::string filename = getFluidFilename(pacthID, diag, timeManager);
+        FILE* file           = fopen(filename.c_str(), "w");
+        fillFile(pack, file);
+        fclose(file);
+        pacthID++;
+    }
+}
+
+
+
+/* ----------------------------------------------------------------------------
+
+                             PARTICLE DIAGNOSTICS
+
+   ---------------------------------------------------------------------------- */
+
+
+std::string getParticleFilename(uint32 patchID, ParticleDiagnostic const& diag,
+                                Time const& timeManager)
+{
+    std::stringstream ss;
+
+    ss << diag.stratName() << "_" << diag.speciesName() << '_' << std::setfill('0') << std::setw(2)
+       << patchID << "_" << std::setprecision(6) << std::scientific << timeManager.currentTime()
+       << ".txt";
+
+    return ss.str();
+}
+
+
+
+void AsciiExportStrategy::saveParticleDiagnostic(ParticleDiagnostic const& diag,
+                                                 Time const& timeManager)
+{
+    std::cout << "I'm writting fluid diagnostics for species " << diag.speciesName()
+              << "at t = " << timeManager.currentTime() << " Diag type : " << diag.stratName()
+              << std::endl;
+
+
+    uint32 pacthID = 0;
+    // there is one FieldPack per Patch
+    // we save one file per Patch.
+    for (ParticlePack const& pack : diag.getPacks())
+    {
+        std::string filename = getParticleFilename(pacthID, diag, timeManager);
         FILE* file           = fopen(filename.c_str(), "w");
         fillFile(pack, file);
         fclose(file);

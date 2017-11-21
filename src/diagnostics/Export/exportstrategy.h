@@ -1,12 +1,12 @@
 #ifndef EXPORTSTRATEGY_H
 #define EXPORTSTRATEGY_H
 
+#include "diagnostics/diagnostics.h"
+#include "utilities/Time/pharetime.h"
 
 #include "diagnostics/FieldDiagnostics/Electromag/emdiagnostic.h"
 #include "diagnostics/FieldDiagnostics/Fluid/fluiddiagnostic.h"
-#include "diagnostics/diagnostics.h"
-#include "utilities/Time/pharetime.h"
-//#include "Diagnostics/
+#include "diagnostics/ParticleDiagnostics/particlediagnostic.h"
 
 
 
@@ -20,15 +20,14 @@
 class ExportStrategy
 {
 private:
-
 public:
-    virtual void saveEMDiagnostic(EMDiagnostic const& diag, Time const& timeManager) = 0;
+    virtual void saveEMDiagnostic(EMDiagnostic const& diag, Time const& timeManager)       = 0;
     virtual void saveFluidDiagnostic(FluidDiagnostic const& diag, Time const& timeManager) = 0;
+    virtual void saveParticleDiagnostic(ParticleDiagnostic const& diag, Time const& timeManager)
+        = 0;
 
     virtual ~ExportStrategy() = default;
-
 };
-
 
 
 

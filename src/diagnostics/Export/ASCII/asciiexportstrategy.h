@@ -12,9 +12,10 @@
 class AsciiExportStrategy : public ExportStrategy
 {
 public:
-
     virtual void saveEMDiagnostic(EMDiagnostic const& diag, Time const& timeManager) final;
     virtual void saveFluidDiagnostic(FluidDiagnostic const& diag, Time const& timeManager) final;
+    virtual void saveParticleDiagnostic(ParticleDiagnostic const& diag,
+                                        Time const& timeManager) final;
 
     virtual ~AsciiExportStrategy() = default;
 };

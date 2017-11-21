@@ -141,7 +141,7 @@ void DiagnosticsManager::save(Time const& timeManager)
     {
         if (scheduler_.isTimeToWrite(timeManager, diag->id()))
         {
-            // exportStrat_->saveParticleDiagnostic(*diag, timeManager);
+            exportStrat_->saveParticleDiagnostic(*diag, timeManager);
             diag->flushPacks();
         }
     }
