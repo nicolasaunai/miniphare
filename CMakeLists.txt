@@ -20,7 +20,6 @@ find_package( PythonInterp 3.0 REQUIRED )
 
 
 
-
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
       "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
@@ -50,7 +49,6 @@ if (test)
     # coverage
     set(CMAKE_CXX_FLAGS "-g -O0 -Wall -fprofile-arcs -ftest-coverage")
     list(APPEND CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
-    #list(APPEND CMAKE_STATIC_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
     set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
     add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/coverage-base.info
       COMMAND lcov --capture --no-external --initial --directory ${CMAKE_CURRENT_SOURCE_DIR} --output-file ${CMAKE_CURRENT_BINARY_DIR}/coverage-base.info

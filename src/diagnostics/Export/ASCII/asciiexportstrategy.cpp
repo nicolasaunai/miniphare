@@ -81,7 +81,7 @@ void fillFile(FieldPack const& pack, FILE* file)
 std::string getEMFilename(uint32 patchID, EMDiagnostic const& diag, Time const& timeManager)
 {
     std::stringstream ss;
-    ss << diag.stratName() << "_" << std::setfill('0') << std::setw(6) << patchID << "_"
+    ss << diag.name() << "_" << std::setfill('0') << std::setw(6) << patchID << "_"
        << std::setprecision(6) << std::scientific << timeManager.currentTime() << ".txt";
 
     return ss.str();
@@ -124,9 +124,8 @@ std::string getFluidFilename(uint32 patchID, FluidDiagnostic const& diag, Time c
 {
     std::stringstream ss;
 
-    ss << diag.stratName() << "_" << diag.speciesName() << '_' << std::setfill('0') << std::setw(6)
-       << patchID << "_" << std::setprecision(6) << std::scientific << timeManager.currentTime()
-       << ".txt";
+    ss << diag.name() << '_' << std::setfill('0') << std::setw(6) << patchID << "_"
+       << std::setprecision(6) << std::scientific << timeManager.currentTime() << ".txt";
 
     return ss.str();
 }

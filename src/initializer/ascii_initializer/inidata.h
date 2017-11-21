@@ -4,10 +4,25 @@
 
 #include "INIReader.h" // https://github.com/jtilly/inih
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 
 #include <utilities/types.h>
+
+
+struct DiagInfos
+{
+    int iStart;
+    int iEnd;
+    int computeEvery;
+    int writeEvery;
+    std::string diagCategory;
+    std::string diagType;
+    std::string diagName;
+    std::string speciesName;
+};
+
 
 /**
  * @brief encapsulate informations read from an INI file.
@@ -76,6 +91,28 @@ public:
                 if (nbrCelly == 0)
                     ndims--;
             }
+
+
+            auto sections = reader.Sections();
+            for (auto section : sections)
+            {
+                if (section != "simulation" && section != "model")
+                {
+                    DiagInfos infos;
+                    infos.diagType = reader.Get(section, "diagType", "ERROR_WRONG_DIAGTYPE");
+                    // the diagName is the section name
+                    infos.diagName     = section;
+                    infos.diagCategory = reader.Get(section, "diagCategory", "ERROR_NO_DIAGNAME");
+                    infos.writeEvery
+                        = static_cast<int>(reader.GetInteger(section, "writeEvery", -1));
+                    infos.computeEvery
+                        = static_cast<int>(reader.GetInteger(section, "computeEvery", -1));
+                    infos.iStart       = static_cast<int>(reader.GetInteger(section, "iStart", -1));
+                    infos.iEnd         = static_cast<int>(reader.GetInteger(section, "iEnd", -1));
+                    infos.speciesName  = reader.Get(section, "speciesName", "NO_SPECIES_NAME");
+                    diagInfos[section] = std::move(infos);
+                }
+            }
         }
     }
 
@@ -108,6 +145,8 @@ public:
     std::string modelName;
     double dt;
     uint32 nbrSteps;
+    std::unordered_map<std::string, DiagInfos> diagInfos;
+    // std::vector<DiagInfos> diagInfos;
 
     INIReader reader;
 };

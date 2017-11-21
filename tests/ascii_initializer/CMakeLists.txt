@@ -6,8 +6,6 @@ set(SOURCES
     )
 
 
-#find_package( PythonInterp 3.6 REQUIRED )
-
 include_directories("./")
 add_executable(test_asciiinitializer ${SOURCES})
 target_link_libraries(test_asciiinitializer gtest gtest_main)

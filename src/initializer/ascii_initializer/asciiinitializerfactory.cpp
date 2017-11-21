@@ -1,6 +1,6 @@
 
-#include <string>
 
+#include <string>
 
 #include "asciiinitializerfactory.h"
 #include "ini_extractor_factory.h"
@@ -8,6 +8,7 @@
 #include <core/BoundaryConditions/boundary_conditions.h>
 #include <core/BoundaryConditions/domainboundarycondition.h>
 #include <initializer/fluidparticleinitializer.h>
+#include <utilities/utilities.h>
 
 AsciiInitializerFactory::AsciiInitializerFactory(std::string const& filename)
     : iniData_{filename}
@@ -109,60 +110,44 @@ std::unique_ptr<DiagnosticInitializer> AsciiInitializerFactory::createDiagnostic
 {
     std::unique_ptr<DiagnosticInitializer> initializer{new DiagnosticInitializer};
 
-    initializer->exportType = ExportStrategyType::ASCII;
-    std::vector<uint32> iters;
-    for (uint32 i = 0; i < 100001; i += 5)
+    std::unordered_map<std::string, DiagInfos> const& diagInfos = iniData_.diagInfos;
+    std::unordered_map<std::string, std::vector<std::size_t>> diagMap;
+
+
+
+    for (auto const& infoPair : diagInfos)
     {
-        iters.push_back(i);
+        auto diagName   = infoPair.first;
+        DiagInfos infos = infoPair.second;
+
+        if (infos.diagCategory == "FluidDiagnostics")
+        {
+            FluidDiagInitializer fluidDiag;
+            fluidDiag.typeName    = infos.diagType;
+            fluidDiag.diagName    = infos.diagName;
+            fluidDiag.speciesName = infos.speciesName;
+            fluidDiag.computingIterations
+                = arange<uint32>(infos.iStart, infos.iEnd + infos.computeEvery, infos.computeEvery);
+            fluidDiag.writingIterations
+                = arange<uint32>(infos.iStart, infos.iEnd + infos.writeEvery, infos.writeEvery);
+            initializer->fluidInitializers.push_back(std::move(fluidDiag));
+        }
+
+        else if (infos.diagCategory == "ElectromagDiagnostics")
+        {
+            EMDiagInitializer emDiag;
+            emDiag.diagName = infos.diagName;
+            emDiag.typeName = infos.diagType;
+            emDiag.computingIterations
+                = arange<uint32>(infos.iStart, infos.iEnd + infos.computeEvery, infos.computeEvery);
+            emDiag.writingIterations
+                = arange<uint32>(infos.iStart, infos.iEnd + infos.writeEvery, infos.writeEvery);
+            initializer->emInitializers.push_back(std::move(emDiag));
+        }
     }
 
-    EMDiagInitializer emDiag;
-    emDiag.typeName = "E";
-    // emDiag.computingIterations.insert(emDiag.computingIterations.end(), {1,10,20,25});
-    // emDiag.writingIterations.insert(emDiag.writingIterations.end(), {1,10,20,25});
-    emDiag.computingIterations = iters;
-    emDiag.writingIterations   = iters;
-    initializer->emInitializers.push_back(std::move(emDiag));
 
-    EMDiagInitializer BDiag;
-    BDiag.typeName = "B";
-    // BDiag.computingIterations.insert(BDiag.computingIterations.end(), {1,10,20,25});
-    // BDiag.writingIterations.insert(BDiag.writingIterations.end(), {1,10,20,25});
-    BDiag.computingIterations = iters;
-    BDiag.writingIterations   = iters;
-    initializer->emInitializers.push_back(std::move(BDiag));
-
-
-    FluidDiagInitializer fluidDiag;
-    fluidDiag.speciesName         = "proton1";
-    fluidDiag.typeName            = "rho_s";
-    fluidDiag.computingIterations = iters;
-    fluidDiag.writingIterations   = iters;
-    initializer->fluidInitializers.push_back(std::move(fluidDiag));
-
-
-    FluidDiagInitializer fluidDiag2;
-    fluidDiag2.speciesName         = "proton1";
-    fluidDiag2.typeName            = "flux_s";
-    fluidDiag2.computingIterations = iters;
-    fluidDiag2.writingIterations   = iters;
-    initializer->fluidInitializers.push_back(std::move(fluidDiag2));
-
-    // FluidDiagInitializer fluidDiag_p2;
-    // fluidDiag_p2.speciesName         = "proton2";
-    // fluidDiag_p2.typeName            = "rho_s";
-    // fluidDiag_p2.computingIterations = iters;
-    // fluidDiag_p2.writingIterations   = iters;
-    // initializer->fluidInitializers.push_back(std::move(fluidDiag_p2));
-
-
-    // FluidDiagInitializer fluidDiag2_p2;
-    // fluidDiag2_p2.speciesName         = "proton2";
-    // fluidDiag2_p2.typeName            = "flux_s";
-    // fluidDiag2_p2.computingIterations = iters;
-    // fluidDiag2_p2.writingIterations   = iters;
-    // initializer->fluidInitializers.push_back(std::move(fluidDiag2_p2));
-
+    // here add ParticleDiagInitializer
 
     return initializer;
 }

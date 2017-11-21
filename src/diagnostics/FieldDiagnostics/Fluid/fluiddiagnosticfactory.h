@@ -13,7 +13,8 @@
 class FluidDiagnosticFactory
 {
 public:
-    static std::unique_ptr<FluidDiagnostic> createFluidDiagnostic(uint32 id, std::string type,
+    static std::unique_ptr<FluidDiagnostic> createFluidDiagnostic(uint32 id, std::string diagName,
+                                                                  std::string type,
                                                                   std::string speciesName)
     {
         if (type == "rho_s")
@@ -21,7 +22,7 @@ public:
             std::unique_ptr<FieldDiagnosticComputeStrategy> strat{new RhoSpeciesDiag{speciesName}};
 
             std::unique_ptr<FluidDiagnostic> ptr{
-                new FluidDiagnostic{id, speciesName, std::move(strat)}};
+                new FluidDiagnostic{id, diagName, speciesName, std::move(strat)}};
 
             return ptr;
         }
@@ -31,7 +32,7 @@ public:
             std::unique_ptr<FieldDiagnosticComputeStrategy> strat{new FluxSpeciesDiag{speciesName}};
 
             std::unique_ptr<FluidDiagnostic> ptr{
-                new FluidDiagnostic{id, speciesName, std::move(strat)}};
+                new FluidDiagnostic{id, diagName, speciesName, std::move(strat)}};
 
             return ptr;
         }

@@ -1,4 +1,5 @@
 
+#include <array>
 #include <memory>
 #include <vector>
 
@@ -170,6 +171,209 @@ TEST(AsciiInitializerTest, numberOfTimeStepsIsOK)
     std::unique_ptr<Time> timeManager             = factory->createTimeManager();
 
     ASSERT_EQ(1000, timeManager->nbrIter());
+}
+
+
+
+
+TEST(AsciiInitializerTest, EMInitializersNumberIsOK)
+{
+    std::unique_ptr<SimulationInitializerFactory> factory{new AsciiInitializerFactory{"phare.ini"}};
+    std::unique_ptr<DiagnosticInitializer> diagInit = factory->createDiagnosticInitializer();
+    ASSERT_EQ(2, diagInit->emInitializers.size());
+}
+
+TEST(AsciiInitializerTest, FluidInitializersNumberIsOK)
+{
+    std::unique_ptr<SimulationInitializerFactory> factory{new AsciiInitializerFactory{"phare.ini"}};
+    std::unique_ptr<DiagnosticInitializer> diagInit = factory->createDiagnosticInitializer();
+    ASSERT_EQ(2, diagInit->fluidInitializers.size());
+}
+
+
+TEST(AsciiInitializerTest, FluidInitializersTypesAreOK)
+{
+    std::unique_ptr<SimulationInitializerFactory> factory{new AsciiInitializerFactory{"phare.ini"}};
+    std::unique_ptr<DiagnosticInitializer> diagInit = factory->createDiagnosticInitializer();
+    for (auto i : std::array<std::size_t, 2>{{0, 1}})
+    {
+        if (diagInit->fluidInitializers[i].diagName == "FluidDiagnostics1")
+        {
+            ASSERT_EQ("rho_s", diagInit->fluidInitializers[i].typeName);
+        }
+        else if (diagInit->fluidInitializers[i].diagName == "FluidDiagnostics1")
+        {
+            ASSERT_EQ("flux_s", diagInit->fluidInitializers[i].typeName);
+        }
+    }
+}
+
+
+
+TEST(AsciiInitializerTest, FluidInitializersSpeciesNamesAreOK)
+{
+    std::unique_ptr<SimulationInitializerFactory> factory{new AsciiInitializerFactory{"phare.ini"}};
+    std::unique_ptr<DiagnosticInitializer> diagInit = factory->createDiagnosticInitializer();
+    ASSERT_EQ("proton1", diagInit->fluidInitializers[0].speciesName);
+    ASSERT_EQ("proton1", diagInit->fluidInitializers[1].speciesName);
+}
+
+
+TEST(AsciiInitializerTest, FluidInitializersComputingIterationsAreOK)
+{
+    std::unique_ptr<SimulationInitializerFactory> factory{new AsciiInitializerFactory{"phare.ini"}};
+    std::unique_ptr<DiagnosticInitializer> diagInit = factory->createDiagnosticInitializer();
+
+    auto expectedSize = 0;
+    auto firstIter    = 20000000000;
+    auto lastIter     = 0;
+
+    for (auto i : std::array<std::size_t, 2>{{0, 1}})
+    {
+        auto size = diagInit->fluidInitializers[i].computingIterations.size();
+
+        if (diagInit->fluidInitializers[i].diagName == "FluidDiagnostics1")
+        {
+            expectedSize = 201;
+            firstIter    = 0;
+            lastIter     = 1000;
+        }
+        else if (diagInit->fluidInitializers[i].diagName == "FluidDiagnostics2")
+        {
+            expectedSize = 201;
+            firstIter    = 0;
+            lastIter     = 1000;
+        }
+
+        ASSERT_EQ(expectedSize, size);
+        ASSERT_EQ(firstIter, diagInit->fluidInitializers[i].computingIterations[0]);
+        ASSERT_EQ(lastIter, diagInit->fluidInitializers[i].computingIterations[size - 1]);
+    }
+}
+
+
+
+
+TEST(AsciiInitializerTest, FluidInitializersWrittingIterationsAreOK)
+{
+    std::unique_ptr<SimulationInitializerFactory> factory{new AsciiInitializerFactory{"phare.ini"}};
+    std::unique_ptr<DiagnosticInitializer> diagInit = factory->createDiagnosticInitializer();
+
+    auto expectedSize = 0;
+    auto firstIter    = 20000000000;
+    auto lastIter     = 0;
+
+    for (auto i : std::array<std::size_t, 2>{{0, 1}})
+    {
+        auto size = diagInit->fluidInitializers[i].writingIterations.size();
+
+        if (diagInit->fluidInitializers[i].diagName == "FluidDiagnostics1")
+        {
+            expectedSize = 101;
+            firstIter    = 0;
+            lastIter     = 1000;
+        }
+        else if (diagInit->fluidInitializers[i].diagName == "FluidDiagnostics2")
+        {
+            expectedSize = 101;
+            firstIter    = 0;
+            lastIter     = 1000;
+        }
+
+        ASSERT_EQ(expectedSize, size);
+        ASSERT_EQ(firstIter, diagInit->fluidInitializers[i].writingIterations[0]);
+        ASSERT_EQ(lastIter, diagInit->fluidInitializers[i].writingIterations[size - 1]);
+    }
+}
+
+
+
+
+TEST(AsciiInitializerTest, EMInitializersComputingIterationsAreOK)
+{
+    std::unique_ptr<SimulationInitializerFactory> factory{new AsciiInitializerFactory{"phare.ini"}};
+    std::unique_ptr<DiagnosticInitializer> diagInit = factory->createDiagnosticInitializer();
+
+    auto expectedSize = 0;
+    auto firstIter    = 20000000000;
+    auto lastIter     = 0;
+
+    for (auto i : std::array<std::size_t, 2>{{0, 1}})
+    {
+        auto size = diagInit->emInitializers[i].computingIterations.size();
+
+        if (diagInit->emInitializers[i].diagName == "ElectromagDiagnostics1")
+        {
+            expectedSize = 201;
+            firstIter    = 0;
+            lastIter     = 1000;
+        }
+        else if (diagInit->emInitializers[i].diagName == "ElectromagDiagnostics2")
+        {
+            expectedSize = 101;
+            firstIter    = 0;
+            lastIter     = 1000;
+        }
+
+        ASSERT_EQ(expectedSize, size);
+        ASSERT_EQ(firstIter, diagInit->emInitializers[i].computingIterations[0]);
+        ASSERT_EQ(lastIter, diagInit->emInitializers[i].computingIterations[size - 1]);
+    }
+}
+
+
+
+
+TEST(AsciiInitializerTest, EMInitializersWrittingIterationsAreOK)
+{
+    std::unique_ptr<SimulationInitializerFactory> factory{new AsciiInitializerFactory{"phare.ini"}};
+    std::unique_ptr<DiagnosticInitializer> diagInit = factory->createDiagnosticInitializer();
+
+    auto expectedSize = 0;
+    auto firstIter    = 20000000000;
+    auto lastIter     = 0;
+
+    for (auto i : std::array<std::size_t, 2>{{0, 1}})
+    {
+        auto size = diagInit->emInitializers[i].writingIterations.size();
+
+        if (diagInit->emInitializers[i].diagName == "ElectromagDiagnostics1")
+        {
+            expectedSize = 101;
+            firstIter    = 0;
+            lastIter     = 1000;
+        }
+        else if (diagInit->emInitializers[i].diagName == "ElectromagDiagnostics2")
+        {
+            expectedSize = 51;
+            firstIter    = 0;
+            lastIter     = 1000;
+        }
+
+        ASSERT_EQ(expectedSize, size);
+        ASSERT_EQ(firstIter, diagInit->emInitializers[i].writingIterations[0]);
+        ASSERT_EQ(lastIter, diagInit->emInitializers[i].writingIterations[size - 1]);
+    }
+}
+
+
+
+TEST(AsciiInitializerTest, EMInitializersTypesAreOK)
+{
+    std::unique_ptr<SimulationInitializerFactory> factory{new AsciiInitializerFactory{"phare.ini"}};
+    std::unique_ptr<DiagnosticInitializer> diagInit = factory->createDiagnosticInitializer();
+
+    for (auto i : std::array<std::size_t, 2>{{0, 1}})
+    {
+        if (diagInit->emInitializers[i].diagName == "ElectromagDiagnostics1")
+        {
+            ASSERT_EQ("E", diagInit->emInitializers[i].typeName);
+        }
+        else if (diagInit->emInitializers[i].diagName == "ElectromagDiagnostics2")
+        {
+            ASSERT_EQ("B", diagInit->emInitializers[i].typeName);
+        }
+    }
 }
 
 
