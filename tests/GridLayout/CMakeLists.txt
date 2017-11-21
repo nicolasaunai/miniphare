@@ -20,7 +20,7 @@ include_directories("./")
 add_executable(Gridlayout ${SOURCES})
 target_link_libraries(Gridlayout gtest gtest_main)
 target_link_libraries(Gridlayout gmock gmock_main)
-target_link_libraries(Gridlayout libpharedata)
+target_link_libraries(Gridlayout pharedata)
 
 add_test(NAME test-GridLayout COMMAND Gridlayout)
 add_custom_command(TARGET Gridlayout

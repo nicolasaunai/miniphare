@@ -15,7 +15,7 @@ include_directories("./")
 add_executable(Splitting ${SOURCES})
 target_link_libraries(Splitting gtest gtest_main)
 target_link_libraries(Splitting gmock gmock_main)
-target_link_libraries(Splitting libpharecore libphareamr libpharedata)
+target_link_libraries(Splitting pharecore phareamr pharedata)
 add_test(NAME test-Splitting COMMAND Splitting)
 
 

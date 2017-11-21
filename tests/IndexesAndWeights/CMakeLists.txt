@@ -17,7 +17,7 @@ include_directories("./")
 add_executable(IndexesAndWeight ${SOURCES})
 target_link_libraries(IndexesAndWeight gtest gtest_main)
 target_link_libraries(IndexesAndWeight gmock gmock_main)
-target_link_libraries(IndexesAndWeight libpharecore libpharedata)
+target_link_libraries(IndexesAndWeight pharecore pharedata)
 
 add_test(NAME test-indexweight COMMAND IndexesAndWeight)
 add_custom_command(TARGET IndexesAndWeight

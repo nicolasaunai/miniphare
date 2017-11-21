@@ -15,7 +15,7 @@ include_directories("./")
 add_executable(Faraday ${SOURCES})
 target_link_libraries(Faraday gtest gtest_main)
 target_link_libraries(Faraday gmock gmock_main)
-target_link_libraries(Faraday libpharecore libpharedata)
+target_link_libraries(Faraday pharecore pharedata)
 
 add_test(NAME test-Faraday COMMAND Faraday)
 add_custom_command(TARGET Faraday

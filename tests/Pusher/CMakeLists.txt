@@ -16,7 +16,7 @@ include_directories("./")
 add_executable(Pusher ${SOURCES})
 target_link_libraries(Pusher gtest gtest_main)
 target_link_libraries(Pusher gmock gmock_main)
-target_link_libraries(Pusher libpharecore libpharedata)
+target_link_libraries(Pusher pharecore pharedata)
 
 add_test(NAME test-Pusher COMMAND Pusher)
 add_custom_command(TARGET Pusher
