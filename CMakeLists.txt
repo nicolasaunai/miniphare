@@ -52,12 +52,23 @@ if (test)
     list(APPEND CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
     #list(APPEND CMAKE_STATIC_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
     set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
-    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/out/index.html
-        COMMAND lcov --capture -directory ${CMAKE_CURRENT_BINARY_DIR} --output-file ${CMAKE_CURRENT_BINARY_DIR}/coverage.info
-        COMMAND genhtml ${CMAKE_CURRENT_BINARY_DIR}/coverage.info --output-directory ${CMAKE_CURRENT_BINARY_DIR}/out
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/coverage-base.info
+      COMMAND lcov --capture --no-external --initial --directory ${CMAKE_CURRENT_SOURCE_DIR} --output-file ${CMAKE_CURRENT_BINARY_DIR}/coverage-base.info
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      COMMENT "Pre-coverage report"
+     )
+     add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/out/index.html
+       COMMAND lcov --capture --no-external --directory ${CMAKE_CURRENT_SOURCE_DIR} --output-file ${CMAKE_CURRENT_BINARY_DIR}/coverage-test.info
+       COMMAND lcov --add-tracefile ${CMAKE_CURRENT_BINARY_DIR}/coverage-base.info --add-tracefile ${CMAKE_CURRENT_BINARY_DIR}/coverage-test.info
+       --output-file ${CMAKE_CURRENT_BINARY_DIR}/coverage.info
+       COMMAND lcov --remove ${CMAKE_CURRENT_BINARY_DIR}/coverage.info '/usr/include/*' 'googletest/*' 'tests/*' -o ${CMAKE_CURRENT_BINARY_DIR}/filtered.info
+       COMMAND genhtml --ignore-errors source ${CMAKE_CURRENT_BINARY_DIR}/filtered.info
+       --prefix ${CMAKE_CURRENT_SOURCE_DIR} --keep-descriptions --frames --show-details --legend
+       --output-directory ${CMAKE_CURRENT_BINARY_DIR}/out
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Generating coverage repport"
-        )
+       )
+    add_custom_target(pre_coverage DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/coverage-base.info)
     add_custom_target(coverage_report DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/out/index.html)
   endif()
 endif()
