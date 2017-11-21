@@ -26,7 +26,7 @@ class ParticleSelector
 public:
     ParticleSelector() {}
 
-    virtual bool pick(Particle const& particle) const = 0;
+    virtual bool pick(Particle const& particle, GridLayout const& layout) const = 0;
 
     virtual ~ParticleSelector() = default;
 };
@@ -44,20 +44,18 @@ public:
 class IsInBoxSelector : public ParticleSelector
 {
 private:
-    GridLayout referenceLayout_;
     Box targetBox_;
 
 public:
-    IsInBoxSelector(GridLayout const& layout, Box const& box)
-        : referenceLayout_{layout}
-        , targetBox_{box}
+    IsInBoxSelector(Box const& box)
+        : targetBox_{box}
     {
     }
 
 
-    inline bool pick(Particle const& particle) const override
+    inline bool pick(Particle const& particle, GridLayout const& referenceLayout) const override
     {
-        Point particlePosition = getPosition(particle, referenceLayout_);
+        Point particlePosition = getParticlePosition(particle, referenceLayout);
         return pointInBox(particlePosition, targetBox_);
     }
 

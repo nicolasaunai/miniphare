@@ -4,7 +4,7 @@
 
 
 
-Point getPosition(Particle const& part, GridLayout const& layout)
+Point getParticlePosition(Particle const& part, GridLayout const& layout)
 {
     double dx = layout.dx();
     double dy = layout.dy();
@@ -25,6 +25,24 @@ Point getPosition(Particle const& part, GridLayout const& layout)
     return Point{posx, posy, posz};
 }
 
+
+Point getParticlePosition(Particle const& part, Point const& origin, int32 nbrGhosts,
+                  std::array<double, 3> gridSpacing)
+{
+    double dx = gridSpacing[0];
+    double dy = gridSpacing[1];
+    double dz = gridSpacing[2];
+
+    double x0 = origin.x;
+    double y0 = origin.y;
+    double z0 = origin.z;
+
+    double posx = (part.icell[0] - nbrGhosts + static_cast<double>(part.delta[0])) * dx + x0;
+    double posy = (part.icell[1] - nbrGhosts + static_cast<double>(part.delta[1])) * dy + y0;
+    double posz = (part.icell[2] - nbrGhosts + static_cast<double>(part.delta[2])) * dz + z0;
+
+    return Point{posx, posy, posz};
+}
 
 
 

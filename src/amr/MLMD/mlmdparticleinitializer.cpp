@@ -8,13 +8,13 @@
 void MLMDParticleInitializer::loadParticles(std::vector<Particle>& particlesArray) const
 {
     ParticleSelector& motherSelector = *selector_;
-    IsInBoxSelector childSelector{refinedLayout_, refinedLayout_.getBox()};
+    IsInBoxSelector childSelector{refinedLayout_.getBox()};
 
     // the ParticleInitializer has a private access to the ion of the Parent Patch
     for (Particle const& mother : particleSource_.particles())
     {
         // look if the 'big' particle is out but near the PRA domain
-        if (motherSelector.pick(mother))
+        if (motherSelector.pick(mother, coarseLayout_))
         {
             Particle normalizedMother;
 
@@ -30,7 +30,7 @@ void MLMDParticleInitializer::loadParticles(std::vector<Particle>& particlesArra
             for (auto& child : childParticles)
             {
                 // if (isInRefinedBox(refinedLayout_, child))
-                if (childSelector.pick(child))
+                if (childSelector.pick(child, refinedLayout_))
                 {
                     particlesArray.push_back(child);
                 }

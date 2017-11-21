@@ -50,8 +50,7 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
 
     // the ParticleSelector will be shared by
     // multiple species
-    std::shared_ptr<ParticleSelector> motherParticleSelector{
-        new IsInBoxSelector{parentPatch_->layout(), selectionBox}};
+    std::shared_ptr<ParticleSelector> motherParticleSelector{new IsInBoxSelector{selectionBox}};
 
 
     buildIonsInitializer_(*ionInitPtr, motherParticleSelector, refinedLayout_);
@@ -204,7 +203,7 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
         // the selector will check whether particles from the parent Box
         // belong to the boundary layout box
         std::shared_ptr<ParticleSelector> selector
-            = std::make_shared<IsInBoxSelector>(parentPatch_->layout(), selectionBox);
+            = std::make_shared<IsInBoxSelector>(selectionBox);
 
         buildIonsInitializer_(*ionInitPtr, selector, praEdgeLayout);
 

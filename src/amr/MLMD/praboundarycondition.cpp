@@ -70,7 +70,7 @@ void PRABoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& PRApar
         }
     }
 
-    IsInBoxSelector selector{PRALayout_, patchLayout_.getBox()};
+    IsInBoxSelector selector{patchLayout_.getBox()};
 
     // build array containing the specific subset of leaving particles
     // going to the patch
@@ -78,12 +78,7 @@ void PRABoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& PRApar
     {
         const Particle& part = PRAparticles[ipart];
 
-        /*        if (!isInSpecifiedBox(PRALayout_, part, PRALayout_))
-                {
-                    if (isInSpecifiedBox(PRALayout_, part, patchLayout_))
-                    {*/
-
-        if (selector.pick(part))
+        if (selector.pick(part, PRALayout_))
         {
             Particle newPart;
 
