@@ -28,12 +28,22 @@ struct EMDiagInitializer
 };
 
 
+struct PartDiagInitializer
+{
+    std::string speciesName;
+    std::string typeName;
+    std::string selectorType;
+    std::vector<double> selectorParams;
+    std::vector<uint32> computingIterations;
+    std::vector<uint32> writingIterations;
+};
 
 
 struct DiagnosticInitializer
 {
     std::vector<EMDiagInitializer> emInitializers;
     std::vector<FluidDiagInitializer> fluidInitializers;
+    std::vector<PartDiagInitializer> partInitializers;
     // other kinds of diags
     ExportStrategyType exportType;
 };

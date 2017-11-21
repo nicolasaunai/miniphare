@@ -5,6 +5,9 @@
 #include "FieldDiagnostics/Electromag/emdiagnosticfactory.h"
 #include "FieldDiagnostics/Fluid/fluiddiagnostic.h"
 #include "FieldDiagnostics/Fluid/fluiddiagnosticfactory.h"
+#include "ParticleDiagnostics/particlediagnostic.h"
+#include "ParticleDiagnostics/particlediagnosticfactory.h"
+
 
 uint32 DiagnosticsManager::id = 0;
 
@@ -33,7 +36,13 @@ DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> in
                            initializer->fluidInitializers[iDiag].writingIterations);
     }
 
-    // then initialize all particle, orbit, probes, etc. diagnostics
+    // then initialize all Particle diagnostics
+    for (uint32 iDiag = 0; iDiag < initializer->partInitializers.size(); ++iDiag)
+    {
+        newParticleDiagnostic(initializer->partInitializers[iDiag]);
+    }
+
+    // then initialize all orbit, probes, etc. diagnostics
 }
 
 // TODO : add 'id' to diagnostic fields too so that each of them
@@ -60,6 +69,16 @@ void DiagnosticsManager::newEMDiagnostic(std::string type, std::string diagName,
     id++; // new diagnostic identifier
 }
 
+
+void DiagnosticsManager::newParticleDiagnostic(PartDiagInitializer const& init)
+{
+    std::unique_ptr<ParticleDiagnostic> partd = ParticleDiagnosticFactory::createParticleDiagnostic(
+        id, init.typeName, init.selectorType, init.selectorParams, init.speciesName);
+    partDiags_.push_back(std::move(partd));
+    scheduler_.registerDiagnostic(id, init.computingIterations, init.writingIterations);
+    id++; // new diagnostic identifier
+}
+
 /**
  * @brief DiagnosticsManager::compute will calculate all diagnostics that need to be.
  * @param timeManager is used to know the current time/iteration
@@ -75,6 +94,12 @@ void DiagnosticsManager::compute(Time const& timeManager, Hierarchy const& hiera
     }
 
     for (auto& diag : fluidDiags_)
+    {
+        if (scheduler_.isTimeToCompute(timeManager, diag->id()))
+            diag->compute(hierarchy);
+    }
+
+    for (auto& diag : partDiags_)
     {
         if (scheduler_.isTimeToCompute(timeManager, diag->id()))
             diag->compute(hierarchy);
@@ -108,6 +133,15 @@ void DiagnosticsManager::save(Time const& timeManager)
         if (scheduler_.isTimeToWrite(timeManager, diag->id()))
         {
             exportStrat_->saveFluidDiagnostic(*diag, timeManager);
+            diag->flushPacks();
+        }
+    }
+
+    for (auto& diag : partDiags_)
+    {
+        if (scheduler_.isTimeToWrite(timeManager, diag->id()))
+        {
+            // exportStrat_->saveParticleDiagnostic(*diag, timeManager);
             diag->flushPacks();
         }
     }

@@ -14,7 +14,8 @@
 #include "Export/exportstrategyfactory.h"
 
 #include "FieldDiagnostics/Electromag/emdiagnostic.h"
-#include "FieldDiagnostics/Fluid/fluiddiagnosticfactory.h"
+#include "FieldDiagnostics/Fluid/fluiddiagnostic.h"
+#include "ParticleDiagnostics/particlediagnostic.h"
 
 
 /**
@@ -31,7 +32,8 @@ private:
     static uint32 id;
     std::vector<std::unique_ptr<FluidDiagnostic>> fluidDiags_;
     std::vector<std::unique_ptr<EMDiagnostic>> emDiags_;
-    // std::vector<ParticleDiagnostic> partDiags_;
+    std::vector<std::unique_ptr<ParticleDiagnostic>> partDiags_;
+
     // std::vector<OrbitDiagnostic> orbitDiags_;
     // std::vector<ProbeDiagnostic> probeDiags_;
     // std::vector<GlobalDiagnostic> globalDiags_;
@@ -51,7 +53,7 @@ public:
                          std::vector<uint32> const& computingIterations,
                          std::vector<uint32> const& writingIterations);
 
-
+    void newParticleDiagnostic(PartDiagInitializer const& partInitializer);
 
     void compute(Time const& timeManager, Hierarchy const& hierarchy);
 

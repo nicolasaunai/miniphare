@@ -25,8 +25,9 @@ static const double dx = 0.3;
 static const int32 nx  = 2048;
 static const double Lx = nx * dx;
 
-static const double dt   = 0.02;
-static const int32 nstep = 26000;
+static const double dt   = 1.e-3;
+static const int32 nstep = 40; // 10000
+
 
 // le mode de notre perturbation
 static const double k3 = 2 * pi / (Lx / 4.);
@@ -67,7 +68,6 @@ public:
     }
 };
 
-double density = 1.;
 
 class ThermalSpeed : public ScalarFunction
 {
