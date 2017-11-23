@@ -27,9 +27,9 @@ protected:
     std::unique_ptr<FieldDiagnosticComputeStrategy> strategy_;
 
 
-    FieldDiagnostic(uint32 id, std::string diagName,
+    FieldDiagnostic(uint32 id, std::string diagName, std::string path,
                     std::unique_ptr<FieldDiagnosticComputeStrategy> strat)
-        : Diagnostic{id, diagName}
+        : Diagnostic{id, diagName, path}
         , strategy_{std::move(strat)}
     {
     }

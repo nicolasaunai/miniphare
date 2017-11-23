@@ -126,6 +126,7 @@ std::unique_ptr<DiagnosticInitializer> AsciiInitializerFactory::createDiagnostic
             fluidDiag.typeName    = infos.diagType;
             fluidDiag.diagName    = infos.diagName;
             fluidDiag.speciesName = infos.speciesName;
+            fluidDiag.path        = infos.path;
             fluidDiag.computingIterations
                 = arange<uint32>(infos.iStart, infos.iEnd + infos.computeEvery, infos.computeEvery);
             fluidDiag.writingIterations
@@ -138,6 +139,7 @@ std::unique_ptr<DiagnosticInitializer> AsciiInitializerFactory::createDiagnostic
             EMDiagInitializer emDiag;
             emDiag.diagName = infos.diagName;
             emDiag.typeName = infos.diagType;
+            emDiag.path     = infos.path;
             emDiag.computingIterations
                 = arange<uint32>(infos.iStart, infos.iEnd + infos.computeEvery, infos.computeEvery);
             emDiag.writingIterations

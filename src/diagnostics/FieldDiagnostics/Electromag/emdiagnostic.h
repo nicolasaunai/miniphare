@@ -12,9 +12,9 @@ class EMDiagnostic : public FieldDiagnostic
 {
 private:
 public:
-    EMDiagnostic(uint32 id, std::string diagName,
+    EMDiagnostic(uint32 id, std::string diagName, std::string path,
                  std::unique_ptr<FieldDiagnosticComputeStrategy> strat)
-        : FieldDiagnostic{id, diagName + "_" + strat->name(), std::move(strat)}
+        : FieldDiagnostic{id, diagName + "_" + strat->name(), path, std::move(strat)}
     {
     }
 };

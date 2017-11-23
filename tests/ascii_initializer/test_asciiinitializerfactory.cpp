@@ -379,6 +379,27 @@ TEST(AsciiInitializerTest, EMInitializersTypesAreOK)
 
 
 
+TEST(AsciiInitializerTest, DiagnosticsDefaultPathIsDiagnosticsName)
+{
+    std::unique_ptr<SimulationInitializerFactory> factory{new AsciiInitializerFactory{"phare.ini"}};
+    std::unique_ptr<DiagnosticInitializer> diagInit = factory->createDiagnosticInitializer();
+
+    // check EM diag initializers
+    for (auto const& initializer : diagInit->emInitializers)
+    {
+        ASSERT_EQ(initializer.diagName, initializer.path);
+    }
+
+    // check Fluid diag Initializers
+    for (auto const& initializer : diagInit->fluidInitializers)
+    {
+        ASSERT_EQ(initializer.diagName, initializer.path);
+    }
+}
+
+
+
+
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

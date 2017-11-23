@@ -15,6 +15,7 @@ struct FluidDiagInitializer
     std::string diagName;
     std::string speciesName;
     std::string typeName;
+    std::string path;
     std::vector<uint32> computingIterations;
     std::vector<uint32> writingIterations;
 };
@@ -23,6 +24,7 @@ struct EMDiagInitializer
 {
     std::string diagName;
     std::string typeName;
+    std::string path;
     std::vector<uint32> computingIterations;
     std::vector<uint32> writingIterations;
 };

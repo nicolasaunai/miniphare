@@ -19,9 +19,9 @@ private:
     std::string speciesName_;
 
 public:
-    FluidDiagnostic(uint32 id, std::string diagname, std::string speciesName,
+    FluidDiagnostic(uint32 id, std::string diagname, std::string path, std::string speciesName,
                     std::unique_ptr<FieldDiagnosticComputeStrategy> strat)
-        : FieldDiagnostic{id, diagname + "_" + "fluid_" + strat->name() + "_" + speciesName,
+        : FieldDiagnostic{id, diagname + "_" + "fluid_" + strat->name() + "_" + speciesName, path,
                           std::move(strat)}
         , speciesName_{speciesName}
     {

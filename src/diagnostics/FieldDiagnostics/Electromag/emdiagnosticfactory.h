@@ -13,19 +13,21 @@ class EMDiagnosticFactory
 {
 public:
     static std::unique_ptr<EMDiagnostic> createEMDiagnostic(uint32 id, std::string diagName,
-                                                            std::string type)
+                                                            std::string path, std::string type)
     {
         if (type == "E")
         {
             std::unique_ptr<FieldDiagnosticComputeStrategy> strat{new ElectricDiag{}};
-            std::unique_ptr<EMDiagnostic> ptr{new EMDiagnostic{id, diagName, std::move(strat)}};
+            std::unique_ptr<EMDiagnostic> ptr{
+                new EMDiagnostic{id, diagName, path, std::move(strat)}};
             return ptr;
         }
 
         if (type == "B")
         {
             std::unique_ptr<FieldDiagnosticComputeStrategy> strat{new MagneticDiag{}};
-            std::unique_ptr<EMDiagnostic> ptr{new EMDiagnostic{id, diagName, std::move(strat)}};
+            std::unique_ptr<EMDiagnostic> ptr{
+                new EMDiagnostic{id, diagName, path, std::move(strat)}};
             return ptr;
         }
 
