@@ -61,7 +61,7 @@ void fillFile(FieldPack const& pack, FILE* file)
         fprintf(file, "# data\n");
         auto itData = pack.data.find(key);
         fprintf(file, "#%s %d \n", itData->first.c_str(), static_cast<int>(itData->second.size()));
-        for (uint i = 0; i < itData->second.size(); ++i)
+        for (uint32 i = 0; i < itData->second.size(); ++i)
         {
             fprintf(file, "%f\n", itData->second[i]);
         }
