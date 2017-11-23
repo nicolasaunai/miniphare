@@ -21,6 +21,7 @@ struct DiagInfos
     std::string diagType;
     std::string diagName;
     std::string speciesName;
+    std::string path;
 };
 
 
@@ -93,6 +94,9 @@ public:
             }
 
 
+            // search for Diagnostics blocks
+            // section names are (unkonwn) diagnostic names so we search for
+            // any section that is not a standard section name (e.g. 'simulation')
             auto sections = reader.Sections();
             for (auto section : sections)
             {
@@ -107,9 +111,13 @@ public:
                         = static_cast<int>(reader.GetInteger(section, "writeEvery", -1));
                     infos.computeEvery
                         = static_cast<int>(reader.GetInteger(section, "computeEvery", -1));
-                    infos.iStart       = static_cast<int>(reader.GetInteger(section, "iStart", -1));
-                    infos.iEnd         = static_cast<int>(reader.GetInteger(section, "iEnd", -1));
-                    infos.speciesName  = reader.Get(section, "speciesName", "NO_SPECIES_NAME");
+                    infos.iStart      = static_cast<int>(reader.GetInteger(section, "iStart", -1));
+                    infos.iEnd        = static_cast<int>(reader.GetInteger(section, "iEnd", -1));
+                    infos.speciesName = reader.Get(section, "speciesName", "NO_SPECIES_NAME");
+
+                    // default path for diagnostics is their name
+                    infos.path = reader.Get(section, "path", infos.diagName);
+
                     diagInfos[section] = std::move(infos);
                 }
             }
