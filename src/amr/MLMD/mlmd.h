@@ -32,9 +32,9 @@ private:
     void evolvePlasma_(Hierarchy& hierarchy, uint32 refineRatio);
     void recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint32 nbrSteps);
 
-    void manageParticlesInGhostDomain_(Patch& patch);                               // MLMD step 1
+    void initGCAparticlesAndMoments_(Patch& patch);                               // MLMD step 1
     void evolve_(Patch& patch, uint32 nbrSteps);                                    // MLMD step 2
-    void sendCorrectedFieldsToChildrenPRA_(Patch const& parentPatch, Patch& patch); // MLMD step 3
+    void sendCorrectedFieldsToChildrenGCA_(Patch const& parentPatch, Patch& patch); // MLMD step 3
     void updateFieldsWithRefinedSolutions_(Patch& parentPatch);                     // MLMD step 5
 
     void initPRAparticles_(BoundaryCondition* boundaryCondition);
@@ -42,7 +42,7 @@ private:
     void computePRADensityAndFlux_(BoundaryCondition* boundaryCondition, uint32 order);
     void computePRAChargeDensity_(BoundaryCondition* boundaryCondition);
 
-    void updateChildrenPRA_EMfields_(Patch& childPatch);
+    void updateGCA_EMfields_(Patch& childPatch);
 
     void resetFreeEvolutionOfChildren_(Patch& parentPatch);
 

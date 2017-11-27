@@ -174,9 +174,9 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
                 auto patchPtr = patch.children(ik);
 
                 // MLMD mecanism step 1
-                manageParticlesInGhostDomain_(*patchPtr);
+                initGCAparticlesAndMoments_(*patchPtr);
 
-                updateChildrenPRA_EMfields_(*patchPtr);
+                updateGCA_EMfields_(*patchPtr);
             }
 
             // MLMD mecanism step 2
@@ -192,8 +192,7 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
                 auto patchPtr = patch.children(ik);
 
                 // MLMD mecanism step 3
-                // TODO: give *patchPtr to this method
-                sendCorrectedFieldsToChildrenPRA_(patch, *patchPtr);
+                sendCorrectedFieldsToChildrenGCA_(patch, *patchPtr);
 
                 recursivEvolve_(*patchPtr, ilevel + 1, refineRatio, nbrSteps_new);
             }
@@ -216,7 +215,7 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
 
 
 
-void MLMD::manageParticlesInGhostDomain_(Patch& patch)
+void MLMD::initGCAparticlesAndMoments_(Patch& patch)
 {
     std::cout << "manageParticlesInGhostDomain()\n" << std::endl;
 
@@ -251,7 +250,7 @@ void MLMD::initPRAparticles_(BoundaryCondition* boundaryCondition)
     if (PatchBoundaryCondition* boundaryCond
         = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
     {
-        boundaryCond->initializePRAparticles();
+        boundaryCond->initializeGCAparticles();
     }
 }
 
@@ -261,7 +260,7 @@ void MLMD::computePRADensityAndFlux_(BoundaryCondition* boundaryCondition, uint3
     if (PatchBoundaryCondition* boundaryCond
         = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
     {
-        boundaryCond->computePRADensityAndFlux(order);
+        boundaryCond->computeGCADensityAndFlux(order);
     }
 }
 
@@ -271,7 +270,7 @@ void MLMD::computePRAChargeDensity_(BoundaryCondition* boundaryCondition)
     if (PatchBoundaryCondition* boundaryCond
         = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
     {
-        boundaryCond->computePRAChargeDensity();
+        boundaryCond->computeGCAChargeDensity();
     }
 }
 
@@ -283,7 +282,7 @@ void MLMD::computePRAChargeDensity_(BoundaryCondition* boundaryCondition)
  *
  *
  */
-void MLMD::sendCorrectedFieldsToChildrenPRA_(Patch const& parentPatch, Patch& childPatch)
+void MLMD::sendCorrectedFieldsToChildrenGCA_(Patch const& parentPatch, Patch& childPatch)
 {
     std::cout << "sendCorrectedFieldsToChildrenPRA" << std::endl;
 
@@ -300,7 +299,7 @@ void MLMD::sendCorrectedFieldsToChildrenPRA_(Patch const& parentPatch, Patch& ch
 }
 
 
-void MLMD::updateChildrenPRA_EMfields_(Patch& childPatch)
+void MLMD::updateGCA_EMfields_(Patch& childPatch)
 {
     BoundaryCondition* boundaryCondition = childPatch.data().boundaryCondition();
 

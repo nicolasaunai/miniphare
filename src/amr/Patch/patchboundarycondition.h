@@ -58,10 +58,10 @@ public:
                                          std::string const& pusherType, double const& dt,
                                          std::string const& species) const override;
 
-    void initializePRAparticles();
+    void initializeGCAparticles();
 
-    void computePRADensityAndFlux(uint32 order);
-    void computePRAChargeDensity();
+    void computeGCADensityAndFlux(uint32 order);
+    void computeGCAChargeDensity();
 
     void updateCorrectedEMfields(GridLayout const& parentLayout,
                                  Electromag const& parentElectromag);

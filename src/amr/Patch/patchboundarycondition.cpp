@@ -37,7 +37,7 @@ PatchBoundaryCondition::PatchBoundaryCondition(
  *
  *
  */
-void PatchBoundaryCondition::initializePRAparticles()
+void PatchBoundaryCondition::initializeGCAparticles()
 {
     for (auto& boundary : boundaries_)
     {
@@ -57,7 +57,7 @@ void PatchBoundaryCondition::initializePRAparticles()
 
 
 
-void PatchBoundaryCondition::computePRADensityAndFlux(uint32 order)
+void PatchBoundaryCondition::computeGCADensityAndFlux(uint32 order)
 {
     for (auto& boundary : boundaries_)
     {
@@ -66,7 +66,7 @@ void PatchBoundaryCondition::computePRADensityAndFlux(uint32 order)
 }
 
 
-void PatchBoundaryCondition::computePRAChargeDensity()
+void PatchBoundaryCondition::computeGCAChargeDensity()
 {
     for (auto& boundary : boundaries_)
     {
