@@ -156,18 +156,52 @@ void PatchBoundary::getPRAIndexesOverlappingPatchGhostNodes(
 
     nbrNodes = nbrGhosts;
 
-    // Default initialization Edge::Xmin
-    // TODO: change this formula
-    iStartPatch = patchLayout.ghostStartIndex(fieldPatch, direction);
-    iStartPRA   = layout_.physicalEndIndex(fieldPRA, direction) - nbrGhosts;
-    if (isDual)
-        iStartPRA += 1;
-
-    if (edge == Edge::Xmax)
+    if (edge == Edge::Xmin)
     {
+        /*  || denotes the boundary */
+        /*  x  denotes a dual node  */
+        /*  $  denotes arrow        */
+        /* Example with 4th order: 2 ghost nodes */
+        /*                        >|< primal physicalEndIndex of PRA */
+        /* PRA      <--|--x--|--x--||--x--|--x--|       */
+        /*             $     $                          */
+        /*             $     $                          */
+        /* Patch       |--x--|--x--||--x--|--x--|-->    */
+        iStartPatch = patchLayout.ghostStartIndex(fieldPatch, direction);
+        iStartPRA   = layout_.physicalEndIndex(fieldPRA, direction) - nbrGhosts;
+
+        /* Example with 4th order: 2 ghost nodes */
+        /*                     >|< dual physicalEndIndex of PRA */
+        /* PRA      <--|--x--|--x--||--x--|--x--|    */
+        /*                $     $                    */
+        /*                $     $                    */
+        /* Patch       |--x--|--x--||--x--|--x--|--> */
+        if (isDual)
+            iStartPRA += 1;
+    }
+    else if (edge == Edge::Xmax)
+    {
+        /*  || denotes the boundary */
+        /*  x  denotes a dual node  */
+        /*  $  denotes arrow        */
+        /* Example with 4th order: 2 ghost nodes */
+        /*                        >|< primal physicalStartIndex of PRA */
+        /* PRA         |--x--|--x--||--x--|--x--|-->      */
+        /*                                $     $         */
+        /*                                $     $         */
+        /* Patch    <--|--x--|--x--||--x--|--x--|         */
         iStartPatch = patchLayout.physicalEndIndex(fieldPatch, direction) + 1;
         iStartPRA   = layout_.physicalStartIndex(fieldPRA, direction) + 1;
 
+        /*  || denotes the boundary */
+        /*  x  denotes a dual node  */
+        /*  $  denotes arrow        */
+        /* Example with 4th order: 2 ghost nodes */
+        /*                        >|< dual physicalStartIndex of PRA */
+        /* PRA         |--x--|--x--||--x--|--x--|-->      */
+        /*                             $     $            */
+        /*                             $     $            */
+        /* Patch    <--|--x--|--x--||--x--|--x--|         */
         if (isDual)
             iStartPRA -= 1;
     }
