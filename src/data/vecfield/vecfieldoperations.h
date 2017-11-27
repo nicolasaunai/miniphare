@@ -11,8 +11,8 @@ void timeAverage(VecField const& vfAtTime1, VecField const& vfAtTime2, VecField&
 void getVariation(VecField const& vfAtT1, VecField const& vfAtT2, VecField& variation,
                   double dt2t1);
 
-void timeInterpolation(VecField const& vfAtT1, VecField& variation, VecField& interpolated,
-                       double delta);
+void timeInterpolation(VecField const& vfAtT1, VecField const& vfAtT2, VecField& interpolated,
+                       double dt2t1, double delta);
 
 
 #endif // VECFIELDOPERATIONS_H

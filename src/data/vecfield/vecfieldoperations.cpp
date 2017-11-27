@@ -36,19 +36,25 @@ void getVariation(VecField const& vfAtT1, VecField const& vfAtT2, VecField& vari
 }
 
 
-void timeInterpolation(VecField const& vfAtT1, VecField& variation, VecField& interpolated,
-                       double delta)
+void timeInterpolation(VecField const& vfAtT1, VecField const& vfAtT2, VecField& interpolated,
+                       double dt2t1, double delta)
 {
+    // dF/dt
+    VecField timeVariation = vfAtT1; // dummy initialization
+
+    // compute dF/dt
+    getVariation(vfAtT1, vfAtT2, timeVariation, dt2t1);
+
     for (uint32 iComponent = 0; iComponent < 3; ++iComponent)
     {
-        // varprime =  delta * variation
+        // varprime =  delta * dF/dt
         std::transform(
-            variation.component(iComponent).begin(), variation.component(iComponent).end(),
-            variation.component(iComponent).begin(), [&](double x) { return x * delta; });
+            timeVariation.component(iComponent).begin(), timeVariation.component(iComponent).end(),
+            timeVariation.component(iComponent).begin(), [&](double x) { return x * delta; });
 
         // vfInterp = vfAtT1 + varprime
         std::transform(vfAtT1.component(iComponent).begin(), vfAtT1.component(iComponent).end(),
-                       variation.component(iComponent).begin(),
+                       timeVariation.component(iComponent).begin(),
                        interpolated.component(iComponent).begin(), std::plus<double>());
     }
 }

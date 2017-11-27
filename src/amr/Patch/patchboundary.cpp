@@ -85,11 +85,7 @@ void PatchBoundary::interpolateElectricFieldInTime_(VecField& E_interp) const
     VecField const& Et1 = EMfields_.getE();
     VecField const& Et2 = correctedEMfields_.getE();
 
-    VecField E_var = EMfields_.getE();
-
-    getVariation(Et1, Et2, E_var, dtParent_);
-
-    timeInterpolation(Et1, E_var, E_interp, freeEvolutionTime_);
+    timeInterpolation(Et1, Et2, E_interp, dtParent_, freeEvolutionTime_);
 }
 
 
@@ -98,11 +94,7 @@ void PatchBoundary::interpolateMagneticFieldInTime_(VecField& B_interp) const
     VecField const& Bt1 = EMfields_.getB();
     VecField const& Bt2 = correctedEMfields_.getB();
 
-    VecField B_var = EMfields_.getB();
-
-    getVariation(Bt1, Bt2, B_var, dtParent_);
-
-    timeInterpolation(Bt1, B_var, B_interp, freeEvolutionTime_);
+    timeInterpolation(Bt1, Bt2, B_interp, dtParent_, freeEvolutionTime_);
 }
 
 
