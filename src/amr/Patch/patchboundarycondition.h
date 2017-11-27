@@ -62,7 +62,6 @@ public:
 
     void computePRADensityAndFlux(uint32 order);
     void computePRAChargeDensity();
-    void computePRABulkVelocity();
 
     void updateCorrectedEMfields(GridLayout const& parentLayout,
                                  Electromag const& parentElectromag);

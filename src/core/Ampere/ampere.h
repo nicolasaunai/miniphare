@@ -38,7 +38,7 @@ public:
 
     ~Ampere() = default;
 
-    void operator()(VecField const& B, VecField& Jnew);
+    void operator()(VecField const& B, VecField& Jnew) const;
 };
 
 

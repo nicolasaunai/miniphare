@@ -39,7 +39,7 @@ public:
     virtual ~PeriodicDomainBoundary() = default;
 
     virtual void applyElectricBC(VecField& E, GridLayout const& layout) const override;
-    virtual void applyMagneticBC(VecField& B, GridLayout const& layout) override;
+    virtual void applyMagneticBC(VecField& B, GridLayout const& layout) const override;
     virtual void applyCurrentBC(VecField& J, GridLayout const& layout) const override;
     virtual void applyDensityBC(Field& J, GridLayout const& layout) const override;
     virtual void applyFluxBC(Ions& ions, GridLayout const& layout) const override;

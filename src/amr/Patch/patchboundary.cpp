@@ -1,21 +1,17 @@
 
 #include "amr/Patch/patchboundary.h"
+#include "amr/MLMD/pra.h"
 #include "amr/MLMD/praboundarycondition.h"
+#include "amr/Refinement/coarsetorefinemesh.h"
 
 #include "core/Interpolator/interpolator.h"
 #include "core/Interpolator/particlemesh.h"
 
-#include "amr/MLMD/pra.h"
-#include "amr/Refinement/coarsetorefinemesh.h"
+#include "data/vecfield/vecfieldoperations.h"
 
 #include "utilities/particleutilities.h"
 
-
-#include "data/vecfield/vecfieldoperations.h"
-
-
 #include <iostream>
-
 
 
 
@@ -45,7 +41,7 @@ void PatchBoundary::applyElectricBC(VecField& E_patch, GridLayout const& patchLa
 }
 
 
-void PatchBoundary::applyMagneticBC(VecField& B_patch, GridLayout const& patchLayout)
+void PatchBoundary::applyMagneticBC(VecField& B_patch, GridLayout const& patchLayout) const
 {
     // Init B_interp on the PRA
     VecField B_interp = EMfields_.getB();
@@ -340,13 +336,6 @@ void PatchBoundary::computePRADensityAndFlux(uint32 order)
 void PatchBoundary::computePRAChargeDensity()
 {
     ions_.computeChargeDensity();
-}
-
-
-
-void PatchBoundary::computePRABulkVelocity()
-{
-    ions_.computeBulkVelocity();
 }
 
 

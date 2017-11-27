@@ -41,7 +41,6 @@ private:
 
     void computePRADensityAndFlux_(BoundaryCondition* boundaryCondition, uint32 order);
     void computePRAChargeDensity_(BoundaryCondition* boundaryCondition);
-    void computePRABulkVelocity_(BoundaryCondition* boundaryCondition);
 
     void updateChildrenPRA_EMfields_(Patch& childPatch);
 

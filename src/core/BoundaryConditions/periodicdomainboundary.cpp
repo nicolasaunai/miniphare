@@ -7,7 +7,7 @@
  *                        FIELD BOUNDARY CONDITIONS
  *
    ---------------------------------------------------------------------------- */
-void PeriodicDomainBoundary::applyMagneticBC(VecField& B, GridLayout const& layout)
+void PeriodicDomainBoundary::applyMagneticBC(VecField& B, GridLayout const& layout) const
 {
     makeFieldPeriodic_(B, layout);
 }

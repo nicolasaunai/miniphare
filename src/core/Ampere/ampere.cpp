@@ -16,7 +16,7 @@ Ampere::Ampere(GridLayout const& layout)
 
 
 
-void Ampere::operator()(VecField const& B, VecField& Jnew)
+void Ampere::operator()(VecField const& B, VecField& Jnew) const
 {
     return (*implPtr_)(B, Jnew);
 }

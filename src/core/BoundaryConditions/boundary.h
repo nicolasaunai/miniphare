@@ -17,7 +17,7 @@
 class Boundary
 {
 public:
-    virtual void applyMagneticBC(VecField& B, GridLayout const& layout)       = 0;
+    virtual void applyMagneticBC(VecField& B, GridLayout const& layout) const = 0;
     virtual void applyElectricBC(VecField& E, GridLayout const& layout) const = 0;
     virtual void applyCurrentBC(VecField& J, GridLayout const& layout) const  = 0;
     virtual void applyDensityBC(Field& J, GridLayout const& layout) const     = 0;

@@ -75,15 +75,6 @@ void PatchBoundaryCondition::computePRAChargeDensity()
 }
 
 
-void PatchBoundaryCondition::computePRABulkVelocity()
-{
-    for (auto& boundary : boundaries_)
-    {
-        boundary->computePRABulkVelocity();
-    }
-}
-
-
 void PatchBoundaryCondition::updateCorrectedEMfields(GridLayout const& parentLayout,
                                                      Electromag const& parentElectromag)
 {

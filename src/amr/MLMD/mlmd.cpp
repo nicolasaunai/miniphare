@@ -28,9 +28,9 @@ MLMD::MLMD(InitializerFactory const& initFactory)
     // if we want, at some point, start from an already existing hierarchy
     // (in case of restart for e.g.
 
-    patchInfos_.fakeStratIteration     = {}; // 0, 1
-    patchInfos_.fakeStratLevelToRefine = {}; // 0, 1
-    patchInfos_.fakeStratPatchToRefine = {}; // 0, 0
+    patchInfos_.fakeStratIteration     = {0}; // 0, 1
+    patchInfos_.fakeStratLevelToRefine = {0}; // 0, 1
+    patchInfos_.fakeStratPatchToRefine = {0}; // 0, 0
 }
 
 
@@ -274,17 +274,6 @@ void MLMD::computePRAChargeDensity_(BoundaryCondition* boundaryCondition)
         boundaryCond->computePRAChargeDensity();
     }
 }
-
-
-void MLMD::computePRABulkVelocity_(BoundaryCondition* boundaryCondition)
-{
-    if (PatchBoundaryCondition* boundaryCond
-        = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
-    {
-        boundaryCond->computePRABulkVelocity();
-    }
-}
-
 
 
 /**

@@ -34,14 +34,13 @@ private:
     // Jtot is computed when necessary
     // at any time substep of a refined patch
     Ampere ampere_;
-    VecField Jtot_;
+    mutable VecField Jtot_;
 
     Edge edge_;
 
     // corrected EM fields from the parent patch
     // at tn + dt(L0)
     Electromag correctedEMfields_;
-
 
     double freeEvolutionTime_;
     double dtParent_;
@@ -93,7 +92,7 @@ public:
         : layout_{layout}
         , extendedLayout_{extendedLayout}
         , ions_{layout, std::move(ionsInit)}
-        , EMfields_{std::move(electromagInit)} //, Jtot_{std::move(Jtot)}
+        , EMfields_{std::move(electromagInit)}
         , ampere_{layout}
         , Jtot_{layout.allocSize(HybridQuantity::Ex),
                 layout.allocSize(HybridQuantity::Ey),
@@ -113,7 +112,7 @@ public:
     virtual ~PatchBoundary() = default;
 
     virtual void applyElectricBC(VecField& E, GridLayout const& layout) const override;
-    virtual void applyMagneticBC(VecField& B, GridLayout const& layout) override;
+    virtual void applyMagneticBC(VecField& B, GridLayout const& layout) const override;
     virtual void applyCurrentBC(VecField& J, GridLayout const& layout) const override;
     virtual void applyDensityBC(Field& J, GridLayout const& layout) const override;
     virtual void applyFluxBC(Ions& ions, GridLayout const& layout) const override;
