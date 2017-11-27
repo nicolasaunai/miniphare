@@ -221,13 +221,13 @@ void MLMD::initGCAparticlesAndMoments_(Patch& patch)
 
     BoundaryCondition* boundaryCond = patch.data().boundaryCondition();
 
-    initPRAparticles_(boundaryCond);
-    std::cout << " PRA initialization: OK\n";
+    initGCAparticles_(boundaryCond);
+    std::cout << " GCA initialization: OK\n";
 
     // for each species
-    computePRADensityAndFlux_(boundaryCond, patchInfos_.interpOrder);
+    computeGCADensityAndFlux_(boundaryCond, patchInfos_.interpOrder);
 
-    computePRAChargeDensity_(boundaryCond);
+    computeGCAChargeDensity_(boundaryCond);
     if (PatchBoundaryCondition* condition = dynamic_cast<PatchBoundaryCondition*>(boundaryCond))
         condition->applyDensityBC(patch.data().ions().rho());
 
@@ -238,12 +238,12 @@ void MLMD::initGCAparticlesAndMoments_(Patch& patch)
 
 
 /**
- * @brief PatchData::initPRA will trigger the initialization of
+ * @brief PatchData::initGCA will trigger the initialization of
  * the Particle Repopulation Area, contained in
  * boundaryCondition_ attribute
  *
  */
-void MLMD::initPRAparticles_(BoundaryCondition* boundaryCondition)
+void MLMD::initGCAparticles_(BoundaryCondition* boundaryCondition)
 {
     // we have to trigger loadParticles() method of Ions,
     // the latter will call loadParticles() of Species
@@ -255,7 +255,7 @@ void MLMD::initPRAparticles_(BoundaryCondition* boundaryCondition)
 }
 
 
-void MLMD::computePRADensityAndFlux_(BoundaryCondition* boundaryCondition, uint32 order)
+void MLMD::computeGCADensityAndFlux_(BoundaryCondition* boundaryCondition, uint32 order)
 {
     if (PatchBoundaryCondition* boundaryCond
         = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
@@ -265,7 +265,7 @@ void MLMD::computePRADensityAndFlux_(BoundaryCondition* boundaryCondition, uint3
 }
 
 
-void MLMD::computePRAChargeDensity_(BoundaryCondition* boundaryCondition)
+void MLMD::computeGCAChargeDensity_(BoundaryCondition* boundaryCondition)
 {
     if (PatchBoundaryCondition* boundaryCond
         = dynamic_cast<PatchBoundaryCondition*>(boundaryCondition))
@@ -276,15 +276,15 @@ void MLMD::computePRAChargeDensity_(BoundaryCondition* boundaryCondition)
 
 
 /**
- * @brief MLMD::sendCorrectedFieldsToChildrenPRA_
- * This method fills the PRAs of a child patch
+ * @brief MLMD::sendCorrectedFieldsToChildrenGCA_
+ * This method fills the GCAs of a child patch
  * - it fills the corrected Electromag field
  *
  *
  */
 void MLMD::sendCorrectedFieldsToChildrenGCA_(Patch const& parentPatch, Patch& childPatch)
 {
-    std::cout << "sendCorrectedFieldsToChildrenPRA" << std::endl;
+    std::cout << "sendCorrectedFieldsToChildrenGCA" << std::endl;
 
     GridLayout const& parentLayout     = parentPatch.layout();
     Electromag const& parentElectromag = parentPatch.data().EMfields();

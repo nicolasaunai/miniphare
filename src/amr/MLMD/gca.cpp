@@ -1,11 +1,11 @@
-#include "pra.h"
+#include "gca.h"
 
 
 // Here we set the number of complete nodes for
-// any arbitrary direction of the PRA
+// any arbitrary direction of the GCA
 //
 // This number should be small to limit computational cost
-static const int32 PRAcompleteNodeNbr = 5;
+static const int32 GCAcompleteNodeNbr = 5;
 
 // ideally this should depend on the interpolation order
 // Here, we overestimate the number of incomplete nodes
@@ -14,9 +14,9 @@ static const int32 MAXincompleteNodeNbr = 3;
 
 
 
-std::array<int32, 3> computePRACellNumbers(GridLayout const& layout)
+std::array<int32, 3> computeGCACellNumbers(GridLayout const& layout)
 {
-    int32 cellNumber = 2 * MAXincompleteNodeNbr + PRAcompleteNodeNbr - 1;
+    int32 cellNumber = 2 * MAXincompleteNodeNbr + GCAcompleteNodeNbr - 1;
 
     switch (layout.nbDimensions())
     {
@@ -26,27 +26,27 @@ std::array<int32, 3> computePRACellNumbers(GridLayout const& layout)
 
         case 3: return {{cellNumber, cellNumber, cellNumber}};
 
-        default: throw std::runtime_error("Fatal Error : computePRACellNumbers");
+        default: throw std::runtime_error("Fatal Error : computeGCACellNumbers");
     }
 }
 
 
 /**
- * @brief MLMDInitializerFactory::definePRA1Dlimits_ is in charge of
- * computing indexes - and the associated coordinates - defining a PRA
+ * @brief MLMDInitializerFactory::defineGCA1Dlimits_ is in charge of
+ * computing indexes - and the associated coordinates - defining a GCA
  * in a prescribed direction.
- * A PRA can be defined knowing an inner and an outer box
+ * A GCA can be defined knowing an inner and an outer box
  * (see
- * https://hephaistos.lpp.polytechnique.fr/redmine/projects/hyb-par/wiki/FieldBCs#PRA-and-the-non-connexe-topology-issue)
+ * https://hephaistos.lpp.polytechnique.fr/redmine/projects/hyb-par/wiki/FieldBCs#GCA-and-the-non-connexe-topology-issue)
  *
  *
  * @param layout of the refined patch
  * @param direction
  * @param nbrMaxGhost
  */
-PRALimits getPRAlimits(GridLayout const& layout, Direction direction)
+GCALimits getGCAlimits(GridLayout const& layout, Direction direction)
 {
-    PRALimits limits;
+    GCALimits limits;
     auto& innerLimitsIndexes = limits.innerLimitsIndexes;
     auto& outerLimitsIndexes = limits.outerLimitsIndexes;
     auto& innerLimitsCoords  = limits.innerLimitsCoords;
@@ -55,18 +55,18 @@ PRALimits getPRAlimits(GridLayout const& layout, Direction direction)
 
     double origin = layout.origin().getCoord(static_cast<uint32>(direction));
 
-    //    innerLimitsIndexes[start] = PRAincompleteNodeNbr + PRAphysicalNodeNbr - 1;
+    //    innerLimitsIndexes[start] = GCAincompleteNodeNbr + GCAphysicalNodeNbr - 1;
     //    innerLimitsIndexes[end]
-    //        = static_cast<int32>(layout.nbrCellx()) - PRAphysicalNodeNbr - PRAincompleteNodeNbr +
+    //        = static_cast<int32>(layout.nbrCellx()) - GCAphysicalNodeNbr - GCAincompleteNodeNbr +
     //        1;
-    //    outerLimitsIndexes[start] = -PRAincompleteNodeNbr;
-    //    outerLimitsIndexes[end]   = static_cast<int32>(layout.nbrCellx()) + PRAincompleteNodeNbr;
+    //    outerLimitsIndexes[start] = -GCAincompleteNodeNbr;
+    //    outerLimitsIndexes[end]   = static_cast<int32>(layout.nbrCellx()) + GCAincompleteNodeNbr;
 
-    outerLimitsIndexes[start] = -2 * MAXincompleteNodeNbr - PRAcompleteNodeNbr + 1;
+    outerLimitsIndexes[start] = -2 * MAXincompleteNodeNbr - GCAcompleteNodeNbr + 1;
     innerLimitsIndexes[start] = 0;
     innerLimitsIndexes[end]   = static_cast<int32>(layout.nbrCellx());
     outerLimitsIndexes[end]
-        = static_cast<int32>(layout.nbrCellx()) + 2 * MAXincompleteNodeNbr + PRAcompleteNodeNbr - 1;
+        = static_cast<int32>(layout.nbrCellx()) + 2 * MAXincompleteNodeNbr + GCAcompleteNodeNbr - 1;
 
     innerLimitsCoords[start] = innerLimitsIndexes[0] * layout.dx() + origin;
     innerLimitsCoords[end]   = innerLimitsIndexes[1] * layout.dx() + origin;
@@ -80,17 +80,17 @@ PRALimits getPRAlimits(GridLayout const& layout, Direction direction)
 
 
 /**
- * @brief MLMDInitializerFactory::buildPRA1D_ returns a simple
- * 1D PRA made of 2 segments
+ * @brief MLMDInitializerFactory::buildGCA1D_ returns a simple
+ * 1D GCA made of 2 segments
  *
  * @param layout
  * @return
  */
-PRA buildPRA1D(GridLayout const& layout)
+GCA buildGCA1D(GridLayout const& layout)
 {
-    std::array<int32, 3> PRAwidth{computePRACellNumbers(layout)};
+    std::array<int32, 3> GCAwidth{computeGCACellNumbers(layout)};
 
-    PRALimits limits = getPRAlimits(layout, Direction::X);
+    GCALimits limits = getGCAlimits(layout, Direction::X);
 
     std::vector<LogicalBox> logicBoxes
         = {{limits.outerLimitsIndexes[0], limits.innerLimitsIndexes[0]},
@@ -99,26 +99,26 @@ PRA buildPRA1D(GridLayout const& layout)
     std::vector<Box> boxes = {{limits.outerLimitsCoords[0], limits.innerLimitsCoords[0]},
                               {limits.innerLimitsCoords[1], limits.outerLimitsCoords[1]}};
 
-    return PRA{PRAwidth, logicBoxes, boxes};
+    return GCA{GCAwidth, logicBoxes, boxes};
 }
 
 
 
 
 /**
- * @brief MLMDInitializerFactory::buildPRA2D_ returns a 2D PRA
+ * @brief MLMDInitializerFactory::buildGCA2D_ returns a 2D GCA
  * made of 4 rectangle areas
  *
  *
  * @param layout
  * @return
  */
-PRA buildPRA2D(GridLayout const& layout)
+GCA buildGCA2D(GridLayout const& layout)
 {
-    std::array<int32, 3> PRAwidth{computePRACellNumbers(layout)};
+    std::array<int32, 3> GCAwidth{computeGCACellNumbers(layout)};
 
-    PRALimits xLimits = getPRAlimits(layout, Direction::X);
-    PRALimits yLimits = getPRAlimits(layout, Direction::Y);
+    GCALimits xLimits = getGCAlimits(layout, Direction::X);
+    GCALimits yLimits = getGCAlimits(layout, Direction::Y);
 
     // Build logic (primal) decomposition
     // TODO: provide a link to redmine with a drawing
@@ -150,28 +150,28 @@ PRA buildPRA2D(GridLayout const& layout)
                               {xLimits.innerLimitsCoords[0], xLimits.innerLimitsCoords[1],
                                yLimits.innerLimitsCoords[1], yLimits.outerLimitsCoords[1]}};
 
-    return PRA{PRAwidth, logicBoxes, boxes};
+    return GCA{GCAwidth, logicBoxes, boxes};
 }
 
 
 
 
 /**
- * @brief MLMDInitializerFactory::buildPRA3D_ returns a 3D PRA
+ * @brief MLMDInitializerFactory::buildGCA3D_ returns a 3D GCA
  * made of 6 cuboid volumes
  *
  *
  * @param layout
  * @return
  */
-PRA buildPRA3D(GridLayout const& layout)
+GCA buildGCA3D(GridLayout const& layout)
 {
-    std::array<int32, 3> PRAwidth{computePRACellNumbers(layout)};
+    std::array<int32, 3> GCAwidth{computeGCACellNumbers(layout)};
 
     // Commented to prevent Warning
-    //    PRALimits xLimits = getPRAlimits(layout, Direction::X);
-    //    PRALimits yLimits = getPRAlimits(layout, Direction::Y);
-    //    PRALimits zLimits = getPRAlimits(layout, Direction::Z);
+    //    GCALimits xLimits = getGCAlimits(layout, Direction::X);
+    //    GCALimits yLimits = getGCAlimits(layout, Direction::Y);
+    //    GCALimits zLimits = getGCAlimits(layout, Direction::Z);
 
     // Build logic (primal) decomposition
     // TODO: 3D generalization
@@ -180,31 +180,31 @@ PRA buildPRA3D(GridLayout const& layout)
     std::vector<LogicalBox> logicBoxes;
     std::vector<Box> boxes;
 
-    return PRA{PRAwidth, logicBoxes, boxes};
+    return GCA{GCAwidth, logicBoxes, boxes};
 }
 
 
 
 
 /**
- * @brief MLMDInitializerFactory::buildPRA_ has to return a valid
- * PRA depending on the dimension.
- * In 1D, the PRA splits into 2 segments.
- * In 2D, the PRA splits into 4 rectangle areas.
- * In 3D, the PRA splits into 6 cuboid volumes.
+ * @brief MLMDInitializerFactory::buildGCA_ has to return a valid
+ * GCA depending on the dimension.
+ * In 1D, the GCA splits into 2 segments.
+ * In 2D, the GCA splits into 4 rectangle areas.
+ * In 3D, the GCA splits into 6 cuboid volumes.
  *
  * @param layout
  * @return
  */
-PRA buildPRA(GridLayout const& layout)
+GCA buildGCA(GridLayout const& layout)
 {
     switch (layout.nbDimensions())
     {
-        case 1: return buildPRA1D(layout);
+        case 1: return buildGCA1D(layout);
 
-        case 2: return buildPRA2D(layout);
+        case 2: return buildGCA2D(layout);
 
-        case 3: return buildPRA3D(layout);
+        case 3: return buildGCA3D(layout);
 
         default: throw std::runtime_error("wrong dimensionality");
     }
@@ -214,17 +214,17 @@ PRA buildPRA(GridLayout const& layout)
 
 
 /**
- * @brief MLMDInitializerFactory::buildPRABoundaryLayout_ has to
- * return a valid GridLayout corrsponding to a part of a complete PRA.
+ * @brief MLMDInitializerFactory::buildGCABoundaryLayout_ has to
+ * return a valid GridLayout corrsponding to a part of a complete GCA.
  * In 1D, we have 2 possible boundaries.
  * In 2D, we have 4 possible boundaries.
  * In 3D, we have 6 possible boundaries.
  *
- * @param refinedPRA
+ * @param refinedGCA
  * @param ibord
  * @return
  */
-GridLayout buildPRABoundaryLayout(PRA const& refinedPRA, uint32 ibord,
+GridLayout buildGCABoundaryLayout(GCA const& refinedGCA, uint32 ibord,
                                   GridLayout const& refinedLayout)
 {
     std::array<double, 3> dxdydz = refinedLayout.dxdydz();
@@ -232,8 +232,8 @@ GridLayout buildPRABoundaryLayout(PRA const& refinedPRA, uint32 ibord,
     std::string layoutName = refinedLayout.layoutName();
     uint32 interpOrder     = refinedLayout.order();
 
-    LogicalBox logic = refinedPRA.logicDecomposition[ibord];
-    Box box          = refinedPRA.boxDecomposition[ibord];
+    LogicalBox logic = refinedGCA.logicDecomposition[ibord];
+    Box box          = refinedGCA.boxDecomposition[ibord];
 
     Point origin{box.x0, box.y0, box.z0};
 

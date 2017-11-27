@@ -1,60 +1,60 @@
 
-#include "praboundarycondition.h"
+#include "gcaboundarycondition.h"
 
 #include "utilities/particleselector.h"
 #include "utilities/particleutilities.h"
 
 
 
-PRABoundaryCondition::PRABoundaryCondition(GridLayout const& patchLayout,
-                                           GridLayout const& PRALayout)
+GCABoundaryCondition::GCABoundaryCondition(GridLayout const& patchLayout,
+                                           GridLayout const& GCALayout)
     : patchLayout_{patchLayout}
-    , PRALayout_{PRALayout}
+    , GCALayout_{GCALayout}
     , incomingParticleBucket_{}
 {
 }
 
 
-void PRABoundaryCondition::applyMagneticBC(VecField& B) const
+void GCABoundaryCondition::applyMagneticBC(VecField& B) const
 {
     (void)B;
 }
 
 
-void PRABoundaryCondition::applyElectricBC(VecField& E) const
+void GCABoundaryCondition::applyElectricBC(VecField& E) const
 {
     (void)E;
 }
 
 
-void PRABoundaryCondition::applyCurrentBC(VecField& J) const
+void GCABoundaryCondition::applyCurrentBC(VecField& J) const
 {
     (void)J;
 }
 
 
 
-void PRABoundaryCondition::applyDensityBC(Field& Ni) const
+void GCABoundaryCondition::applyDensityBC(Field& Ni) const
 {
     (void)Ni;
 }
 
 
 
-void PRABoundaryCondition::applyFluxBC(Ions& ions) const
+void GCABoundaryCondition::applyFluxBC(Ions& ions) const
 {
     (void)ions;
 }
 
 
-void PRABoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& PRAparticles,
+void GCABoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& GCAparticles,
                                                    LeavingParticles const& leavingParticles)
 {
     std::vector<uint32> leavingIndexes;
 
     // build a unique array of leaving particles
     // using data from leavingParticles
-    for (uint32 iDim = 0; iDim < PRALayout_.nbDimensions(); ++iDim)
+    for (uint32 iDim = 0; iDim < GCALayout_.nbDimensions(); ++iDim)
     {
         auto const& indexesAtMin = leavingParticles.indexesAtMin()[iDim];
         uint32 sizeAtMin         = static_cast<uint32>(indexesAtMin.size());
@@ -76,26 +76,26 @@ void PRABoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& PRApar
     // going to the patch
     for (uint32 ipart : leavingIndexes)
     {
-        const Particle& part = PRAparticles[ipart];
+        const Particle& part = GCAparticles[ipart];
 
-        if (selector.pick(part, PRALayout_))
+        if (selector.pick(part, GCALayout_))
         {
             Particle newPart;
 
-            particleChangeLayout(PRALayout_, patchLayout_, part, newPart);
+            particleChangeLayout(GCALayout_, patchLayout_, part, newPart);
 
             incomingParticleBucket_.push_back(newPart);
         }
     }
 
     // Now, we remove all leaving particles from
-    // the PRA
-    removeParticles(leavingIndexes, PRAparticles);
+    // the GCA
+    removeParticles(leavingIndexes, GCAparticles);
 }
 
 
 
-void PRABoundaryCondition::applyIncomingParticleBC(std::vector<Particle>& particles,
+void GCABoundaryCondition::applyIncomingParticleBC(std::vector<Particle>& particles,
                                                    std::string const& pusher, double const& dt,
                                                    std::string const& species) const
 {
@@ -107,6 +107,6 @@ void PRABoundaryCondition::applyIncomingParticleBC(std::vector<Particle>& partic
 
 
 
-PRABoundaryCondition::~PRABoundaryCondition()
+GCABoundaryCondition::~GCABoundaryCondition()
 {
 }

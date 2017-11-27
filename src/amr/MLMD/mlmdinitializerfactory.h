@@ -11,7 +11,7 @@
 #include "initializer/ohminitializer.h"
 #include "initializer/solverinitializer.h"
 
-#include "amr/MLMD/pra.h"
+#include "amr/MLMD/gca.h"
 #include "amr/Patch/patch.h"
 #include "amr/Patch/patchinfo.h"
 #include "amr/Splitting/splittingstrategy.h"

@@ -1,5 +1,5 @@
-#ifndef PRABOUNDARYCONDITION_H
-#define PRABOUNDARYCONDITION_H
+#ifndef GCABOUNDARYCONDITION_H
+#define GCABOUNDARYCONDITION_H
 
 #include <vector>
 
@@ -12,24 +12,24 @@
 
 
 /**
- * @brief The PRABoundaryCondition class is a special type of BoundaryCondition
+ * @brief The GCABoundaryCondition class is a special type of BoundaryCondition
  * used by PatchBoundaryCondition::applyIncomingParticleBC(...)
  *
- * It is required by the pusher used to move particles in the PRA
+ * It is required by the pusher used to move particles in the GCA
  *
  * This boundary condition only defines applyOutgoingParticleBC(...)
  *
  */
-class PRABoundaryCondition : public BoundaryCondition
+class GCABoundaryCondition : public BoundaryCondition
 {
 private:
     GridLayout patchLayout_;
-    GridLayout PRALayout_;
+    GridLayout GCALayout_;
 
     std::vector<Particle> incomingParticleBucket_;
 
 public:
-    PRABoundaryCondition(GridLayout const& patchLayout, GridLayout const& PRALayout);
+    GCABoundaryCondition(GridLayout const& patchLayout, GridLayout const& GCALayout);
 
 
     virtual void applyMagneticBC(VecField& B) const override;
@@ -38,7 +38,7 @@ public:
     virtual void applyDensityBC(Field& N) const override;
     virtual void applyFluxBC(Ions& ions) const override;
 
-    virtual void applyOutgoingParticleBC(std::vector<Particle>& PRAparticles,
+    virtual void applyOutgoingParticleBC(std::vector<Particle>& GCAparticles,
                                          LeavingParticles const& leavingParticles) override;
 
     virtual void applyIncomingParticleBC(std::vector<Particle>& particles,
@@ -49,8 +49,8 @@ public:
 
     void resetBucket() { incomingParticleBucket_.clear(); }
 
-    virtual ~PRABoundaryCondition();
+    virtual ~GCABoundaryCondition();
 };
 
 
-#endif // PRABOUNDARYCONDITION_H
+#endif // GCABOUNDARYCONDITION_H

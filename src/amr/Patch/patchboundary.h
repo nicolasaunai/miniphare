@@ -46,40 +46,40 @@ private:
     double dtParent_;
 
 
-    void addPRAChargeDensityToPatch1D_(GridLayout const& patchLayout, Field& rhoPatch,
-                                       Field const& rhoPRA, Edge const& edge) const;
-    void addPRAChargeDensityToPatch2D_(GridLayout const& patchLayout, Field& rhoPatch,
-                                       Field const& rhoPRA, Edge const& edge) const;
-    void addPRAChargeDensityToPatch3D_(GridLayout const& patchLayout, Field& rhoPatch,
-                                       Field const& rhoPRA, Edge const& edge) const;
+    void addGCAChargeDensityToPatch1D_(GridLayout const& patchLayout, Field& rhoPatch,
+                                       Field const& rhoGCA, Edge const& edge) const;
+    void addGCAChargeDensityToPatch2D_(GridLayout const& patchLayout, Field& rhoPatch,
+                                       Field const& rhoGCA, Edge const& edge) const;
+    void addGCAChargeDensityToPatch3D_(GridLayout const& patchLayout, Field& rhoPatch,
+                                       Field const& rhoGCA, Edge const& edge) const;
 
-    void addPRAFluxesToPatch1D_(GridLayout const& patchLayout, Ions& ionsPatch, Ions const& ionsPRA,
+    void addGCAFluxesToPatch1D_(GridLayout const& patchLayout, Ions& ionsPatch, Ions const& ionsGCA,
                                 Edge const& edge) const;
-    void addPRAFluxesToPatch2D_(GridLayout const& patchLayout, Ions& ionsPatch, Ions const& ionsPRA,
+    void addGCAFluxesToPatch2D_(GridLayout const& patchLayout, Ions& ionsPatch, Ions const& ionsGCA,
                                 Edge const& edge) const;
-    void addPRAFluxesToPatch3D_(GridLayout const& patchLayout, Ions& ionsPatch, Ions const& ionsPRA,
+    void addGCAFluxesToPatch3D_(GridLayout const& patchLayout, Ions& ionsPatch, Ions const& ionsGCA,
                                 Edge const& edge) const;
 
-    void getPRAandPatchStartIndexes_(GridLayout const& patchLayout, Field const& fieldPatch,
-                                     Field const& fieldPRA, Edge const& edge,
+    void getGCAandPatchStartIndexes_(GridLayout const& patchLayout, Field const& fieldPatch,
+                                     Field const& fieldGCA, Edge const& edge,
                                      Direction const& direction, uint32& nbrNodes,
-                                     uint32& iStartPatch, uint32& iStartPRA) const;
+                                     uint32& iStartPatch, uint32& iStartGCA) const;
 
-    Edge findBoundaryEdge_(Box const& praBox, Box const& patchBox, uint32 nbDims) const;
-    Edge findBoundaryEdge1D_(Box const& praBox, Box const& patchBox) const;
+    Edge findBoundaryEdge_(Box const& gcaBox, Box const& patchBox, uint32 nbDims) const;
+    Edge findBoundaryEdge1D_(Box const& gcaBox, Box const& patchBox) const;
 
-    void applyPRAfieldsToPatch1D_(GridLayout const& patchLayout, VecField& EMfieldPatch,
-                                  VecField const& EMfieldPRA, Edge const& edge) const;
-    void applyPRAfieldsToPatch2D_(GridLayout const& patchLayout, VecField& EMfieldPatch,
-                                  VecField const& EMfieldPRA, Edge const& edge) const;
-    void applyPRAfieldsToPatch3D_(GridLayout const& patchLayout, VecField& EMfieldPatch,
-                                  VecField const& EMfieldPRA, Edge const& edge) const;
+    void applyGCAfieldsToPatch1D_(GridLayout const& patchLayout, VecField& EMfieldPatch,
+                                  VecField const& EMfieldGCA, Edge const& edge) const;
+    void applyGCAfieldsToPatch2D_(GridLayout const& patchLayout, VecField& EMfieldPatch,
+                                  VecField const& EMfieldGCA, Edge const& edge) const;
+    void applyGCAfieldsToPatch3D_(GridLayout const& patchLayout, VecField& EMfieldPatch,
+                                  VecField const& EMfieldGCA, Edge const& edge) const;
 
-    void getPRAIndexesOverlappingPatchGhostNodes(GridLayout const& patchLayout,
-                                                 Field const& fieldPatch, Field const& fieldPRA,
+    void getGCAIndexesOverlappingPatchGhostNodes(GridLayout const& patchLayout,
+                                                 Field const& fieldPatch, Field const& fieldGCA,
                                                  Edge const& edge, Direction const& direction,
                                                  uint32& nbrNodes, uint32& iStartPatch,
-                                                 uint32& iStartPRA) const;
+                                                 uint32& iStartGCA) const;
 
     void interpolateElectricFieldInTime_(VecField& E_interp) const;
     void interpolateMagneticFieldInTime_(VecField& B_interp) const;
@@ -131,10 +131,10 @@ public:
     GridLayout const& extendedLayout() { return extendedLayout_; }
     GridLayout const& extendedLayout() const { return extendedLayout_; }
 
-    void initPRAParticles();
+    void initGCAParticles();
 
-    void computePRADensityAndFlux(uint32 orders);
-    void computePRAChargeDensity();
+    void computeGCADensityAndFlux(uint32 orders);
+    void computeGCAChargeDensity();
 
     void updateCorrectedEMfields(GridLayout const& parentLayout,
                                  Electromag const& parentElectromag);

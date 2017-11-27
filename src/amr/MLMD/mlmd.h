@@ -18,7 +18,7 @@
  * @brief The MLMD class deals with all MLMD operations.
  *
  * MLMD is the object executes MLDM operations:
- *     - dealing with PRA (splitting, inter patch communications, field interpolations etc.)
+ *     - dealing with GCA (splitting, inter patch communications, field interpolations etc.)
  *     - refinement / patch creation and insertion into the Hierarchy
  *     -  etc.
  */
@@ -32,15 +32,15 @@ private:
     void evolvePlasma_(Hierarchy& hierarchy, uint32 refineRatio);
     void recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint32 nbrSteps);
 
-    void initGCAparticlesAndMoments_(Patch& patch);                               // MLMD step 1
+    void initGCAparticlesAndMoments_(Patch& patch);                                 // MLMD step 1
     void evolve_(Patch& patch, uint32 nbrSteps);                                    // MLMD step 2
     void sendCorrectedFieldsToChildrenGCA_(Patch const& parentPatch, Patch& patch); // MLMD step 3
     void updateFieldsWithRefinedSolutions_(Patch& parentPatch);                     // MLMD step 5
 
-    void initPRAparticles_(BoundaryCondition* boundaryCondition);
+    void initGCAparticles_(BoundaryCondition* boundaryCondition);
 
-    void computePRADensityAndFlux_(BoundaryCondition* boundaryCondition, uint32 order);
-    void computePRAChargeDensity_(BoundaryCondition* boundaryCondition);
+    void computeGCADensityAndFlux_(BoundaryCondition* boundaryCondition, uint32 order);
+    void computeGCAChargeDensity_(BoundaryCondition* boundaryCondition);
 
     void updateGCA_EMfields_(Patch& childPatch);
 

@@ -1,7 +1,7 @@
 
 #include "amr/Patch/patchboundary.h"
-#include "amr/MLMD/pra.h"
-#include "amr/MLMD/praboundarycondition.h"
+#include "amr/MLMD/gca.h"
+#include "amr/MLMD/gcaboundarycondition.h"
 #include "amr/Refinement/coarsetorefinemesh.h"
 
 #include "core/Interpolator/interpolator.h"
@@ -15,7 +15,7 @@
 
 
 
-void PatchBoundary::initPRAParticles()
+void PatchBoundary::initGCAParticles()
 {
     ions_.resetParticles();
     ions_.loadParticles();
@@ -25,39 +25,39 @@ void PatchBoundary::initPRAParticles()
 
 void PatchBoundary::applyElectricBC(VecField& E_patch, GridLayout const& patchLayout) const
 {
-    // Init E_interp on the PRA
+    // Init E_interp on the GCA
     VecField E_interp = EMfields_.getE();
 
     interpolateElectricFieldInTime_(E_interp);
 
     switch (patchLayout.nbDimensions())
     {
-        case 1: applyPRAfieldsToPatch1D_(patchLayout, E_patch, E_interp, edge_); break;
+        case 1: applyGCAfieldsToPatch1D_(patchLayout, E_patch, E_interp, edge_); break;
 
-        case 2: applyPRAfieldsToPatch2D_(patchLayout, E_patch, E_interp, edge_); break;
+        case 2: applyGCAfieldsToPatch2D_(patchLayout, E_patch, E_interp, edge_); break;
 
-        case 3: applyPRAfieldsToPatch3D_(patchLayout, E_patch, E_interp, edge_); break;
+        case 3: applyGCAfieldsToPatch3D_(patchLayout, E_patch, E_interp, edge_); break;
     }
 }
 
 
 void PatchBoundary::applyMagneticBC(VecField& B_patch, GridLayout const& patchLayout) const
 {
-    // Init B_interp on the PRA
+    // Init B_interp on the GCA
     VecField B_interp = EMfields_.getB();
 
     interpolateMagneticFieldInTime_(B_interp);
 
-    // we update Jtot on the PRA
+    // we update Jtot on the GCA
     ampere_(B_interp, Jtot_);
 
     switch (patchLayout.nbDimensions())
     {
-        case 1: applyPRAfieldsToPatch1D_(patchLayout, B_patch, B_interp, edge_); break;
+        case 1: applyGCAfieldsToPatch1D_(patchLayout, B_patch, B_interp, edge_); break;
 
-        case 2: applyPRAfieldsToPatch2D_(patchLayout, B_patch, B_interp, edge_); break;
+        case 2: applyGCAfieldsToPatch2D_(patchLayout, B_patch, B_interp, edge_); break;
 
-        case 3: applyPRAfieldsToPatch3D_(patchLayout, B_patch, B_interp, edge_); break;
+        case 3: applyGCAfieldsToPatch3D_(patchLayout, B_patch, B_interp, edge_); break;
     }
 }
 
@@ -67,11 +67,11 @@ void PatchBoundary::applyCurrentBC(VecField& J_patch, GridLayout const& patchLay
 {
     switch (patchLayout.nbDimensions())
     {
-        case 1: applyPRAfieldsToPatch1D_(patchLayout, J_patch, Jtot_, edge_); break;
+        case 1: applyGCAfieldsToPatch1D_(patchLayout, J_patch, Jtot_, edge_); break;
 
-        case 2: applyPRAfieldsToPatch2D_(patchLayout, J_patch, Jtot_, edge_); break;
+        case 2: applyGCAfieldsToPatch2D_(patchLayout, J_patch, Jtot_, edge_); break;
 
-        case 3: applyPRAfieldsToPatch3D_(patchLayout, J_patch, Jtot_, edge_); break;
+        case 3: applyGCAfieldsToPatch3D_(patchLayout, J_patch, Jtot_, edge_); break;
     }
 }
 
@@ -95,8 +95,8 @@ void PatchBoundary::interpolateMagneticFieldInTime_(VecField& B_interp) const
 
 
 
-void PatchBoundary::applyPRAfieldsToPatch1D_(GridLayout const& patchLayout, VecField& EMfieldPatch,
-                                             VecField const& EMfieldPRA, Edge const& edge) const
+void PatchBoundary::applyGCAfieldsToPatch1D_(GridLayout const& patchLayout, VecField& EMfieldPatch,
+                                             VecField const& EMfieldGCA, Edge const& edge) const
 {
     uint32 idirX = static_cast<uint32>(Direction::X);
     uint32 idirY = static_cast<uint32>(Direction::Y);
@@ -108,39 +108,39 @@ void PatchBoundary::applyPRAfieldsToPatch1D_(GridLayout const& patchLayout, VecF
 
     std::array<std::reference_wrapper<Field>, 3> FxyzPatch = {{Fx, Fy, Fz}};
 
-    Field const& FxPRA = EMfieldPRA.component(idirX);
-    Field const& FyPRA = EMfieldPRA.component(idirY);
-    Field const& FzPRA = EMfieldPRA.component(idirZ);
+    Field const& FxGCA = EMfieldGCA.component(idirX);
+    Field const& FyGCA = EMfieldGCA.component(idirY);
+    Field const& FzGCA = EMfieldGCA.component(idirZ);
 
-    std::array<std::reference_wrapper<Field const>, 3> FxyzPRA = {{FxPRA, FyPRA, FzPRA}};
+    std::array<std::reference_wrapper<Field const>, 3> FxyzGCA = {{FxGCA, FyGCA, FzGCA}};
 
     for (uint32 ifield = 0; ifield < FxyzPatch.size(); ++ifield)
     {
-        Field const& fieldPRA = FxyzPRA[ifield];
+        Field const& fieldGCA = FxyzGCA[ifield];
         Field& fieldPatch     = FxyzPatch[ifield];
 
         uint32 nbrNodes    = 0;
         uint32 iStartPatch = 0;
-        uint32 iStartPRA   = 0;
+        uint32 iStartGCA   = 0;
 
-        getPRAIndexesOverlappingPatchGhostNodes(patchLayout, fieldPatch, fieldPRA, edge,
-                                                Direction::X, nbrNodes, iStartPatch, iStartPRA);
+        getGCAIndexesOverlappingPatchGhostNodes(patchLayout, fieldPatch, fieldGCA, edge,
+                                                Direction::X, nbrNodes, iStartPatch, iStartGCA);
 
         for (uint32 iNode = 0; iNode < nbrNodes; ++iNode)
         {
-            fieldPatch(iStartPatch + iNode) = fieldPRA(iStartPRA + iNode);
+            fieldPatch(iStartPatch + iNode) = fieldGCA(iStartGCA + iNode);
         }
     }
 }
 
 
-void PatchBoundary::getPRAIndexesOverlappingPatchGhostNodes(
-    GridLayout const& patchLayout, Field const& fieldPatch, Field const& fieldPRA, Edge const& edge,
-    Direction const& direction, uint32& nbrNodes, uint32& iStartPatch, uint32& iStartPRA) const
+void PatchBoundary::getGCAIndexesOverlappingPatchGhostNodes(
+    GridLayout const& patchLayout, Field const& fieldPatch, Field const& fieldGCA, Edge const& edge,
+    Direction const& direction, uint32& nbrNodes, uint32& iStartPatch, uint32& iStartGCA) const
 {
-    uint32 nbrGhosts = layout_.nbrGhostNodes(fieldPRA, direction);
+    uint32 nbrGhosts = layout_.nbrGhostNodes(fieldGCA, direction);
 
-    bool isDual = (layout_.fieldCentering(fieldPRA, direction) == QtyCentering::dual);
+    bool isDual = (layout_.fieldCentering(fieldGCA, direction) == QtyCentering::dual);
 
     nbrNodes = nbrGhosts;
 
@@ -150,22 +150,22 @@ void PatchBoundary::getPRAIndexesOverlappingPatchGhostNodes(
         /*  x  denotes a dual node  */
         /*  $  denotes arrow        */
         /* Example with 4th order: 2 ghost nodes */
-        /*                        >|< primal physicalEndIndex of PRA */
-        /* PRA      <--|--x--|--x--||--x--|--x--|       */
+        /*                        >|< primal physicalEndIndex of GCA */
+        /* GCA      <--|--x--|--x--||--x--|--x--|       */
         /*             $     $                          */
         /*             $     $                          */
         /* Patch       |--x--|--x--||--x--|--x--|-->    */
         iStartPatch = patchLayout.ghostStartIndex(fieldPatch, direction);
-        iStartPRA   = layout_.physicalEndIndex(fieldPRA, direction) - nbrGhosts;
+        iStartGCA   = layout_.physicalEndIndex(fieldGCA, direction) - nbrGhosts;
 
         /* Example with 4th order: 2 ghost nodes */
-        /*                     >|< dual physicalEndIndex of PRA */
-        /* PRA      <--|--x--|--x--||--x--|--x--|    */
+        /*                     >|< dual physicalEndIndex of GCA */
+        /* GCA      <--|--x--|--x--||--x--|--x--|    */
         /*                $     $                    */
         /*                $     $                    */
         /* Patch       |--x--|--x--||--x--|--x--|--> */
         if (isDual)
-            iStartPRA += 1;
+            iStartGCA += 1;
     }
     else if (edge == Edge::Xmax)
     {
@@ -173,49 +173,49 @@ void PatchBoundary::getPRAIndexesOverlappingPatchGhostNodes(
         /*  x  denotes a dual node  */
         /*  $  denotes arrow        */
         /* Example with 4th order: 2 ghost nodes */
-        /*                        >|< primal physicalStartIndex of PRA */
-        /* PRA         |--x--|--x--||--x--|--x--|-->      */
+        /*                        >|< primal physicalStartIndex of GCA */
+        /* GCA         |--x--|--x--||--x--|--x--|-->      */
         /*                                $     $         */
         /*                                $     $         */
         /* Patch    <--|--x--|--x--||--x--|--x--|         */
         iStartPatch = patchLayout.physicalEndIndex(fieldPatch, direction) + 1;
-        iStartPRA   = layout_.physicalStartIndex(fieldPRA, direction) + 1;
+        iStartGCA   = layout_.physicalStartIndex(fieldGCA, direction) + 1;
 
         /*  || denotes the boundary */
         /*  x  denotes a dual node  */
         /*  $  denotes arrow        */
         /* Example with 4th order: 2 ghost nodes */
-        /*                        >|< dual physicalStartIndex of PRA */
-        /* PRA         |--x--|--x--||--x--|--x--|-->      */
+        /*                        >|< dual physicalStartIndex of GCA */
+        /* GCA         |--x--|--x--||--x--|--x--|-->      */
         /*                             $     $            */
         /*                             $     $            */
         /* Patch    <--|--x--|--x--||--x--|--x--|         */
         if (isDual)
-            iStartPRA -= 1;
+            iStartGCA -= 1;
     }
 }
 
 
 
-void PatchBoundary::applyPRAfieldsToPatch2D_(GridLayout const& patchLayout, VecField& EMfieldPatch,
-                                             VecField const& EMfieldPRA, Edge const& edge) const
+void PatchBoundary::applyGCAfieldsToPatch2D_(GridLayout const& patchLayout, VecField& EMfieldPatch,
+                                             VecField const& EMfieldGCA, Edge const& edge) const
 {
     (void)patchLayout;
     (void)EMfieldPatch;
-    (void)EMfieldPRA;
+    (void)EMfieldGCA;
     (void)edge;
-    throw std::runtime_error("applyPRAfieldsToPatch2D_ : Not Implemented");
+    throw std::runtime_error("applyGCAfieldsToPatch2D_ : Not Implemented");
 }
 
 
-void PatchBoundary::applyPRAfieldsToPatch3D_(GridLayout const& patchLayout, VecField& EMfieldPatch,
-                                             VecField const& EMfieldPRA, Edge const& edge) const
+void PatchBoundary::applyGCAfieldsToPatch3D_(GridLayout const& patchLayout, VecField& EMfieldPatch,
+                                             VecField const& EMfieldGCA, Edge const& edge) const
 {
     (void)patchLayout;
     (void)EMfieldPatch;
-    (void)EMfieldPRA;
+    (void)EMfieldGCA;
     (void)edge;
-    throw std::runtime_error("applyPRAfieldsToPatch3D_ : Not Implemented");
+    throw std::runtime_error("applyGCAfieldsToPatch3D_ : Not Implemented");
 }
 
 
@@ -223,13 +223,13 @@ void PatchBoundary::applyPRAfieldsToPatch3D_(GridLayout const& patchLayout, VecF
 
 void PatchBoundary::applyDensityBC(Field& rhoPatch, GridLayout const& patchLayout) const
 {
-    Field const& rhoPRA = ions_.rho();
+    Field const& rhoGCA = ions_.rho();
 
     switch (patchLayout.nbDimensions())
     {
-        case 1: addPRAChargeDensityToPatch1D_(patchLayout, rhoPatch, rhoPRA, edge_); break;
-        case 2: addPRAChargeDensityToPatch2D_(patchLayout, rhoPatch, rhoPRA, edge_); break;
-        case 3: addPRAChargeDensityToPatch3D_(patchLayout, rhoPatch, rhoPRA, edge_); break;
+        case 1: addGCAChargeDensityToPatch1D_(patchLayout, rhoPatch, rhoGCA, edge_); break;
+        case 2: addGCAChargeDensityToPatch2D_(patchLayout, rhoPatch, rhoGCA, edge_); break;
+        case 3: addGCAChargeDensityToPatch3D_(patchLayout, rhoPatch, rhoGCA, edge_); break;
     }
 }
 
@@ -239,9 +239,9 @@ void PatchBoundary::applyFluxBC(Ions& ionsPatch, GridLayout const& patchLayout) 
 {
     switch (patchLayout.nbDimensions())
     {
-        case 1: addPRAFluxesToPatch1D_(patchLayout, ionsPatch, ions_, edge_); break;
-        case 2: addPRAFluxesToPatch2D_(patchLayout, ionsPatch, ions_, edge_); break;
-        case 3: addPRAFluxesToPatch3D_(patchLayout, ionsPatch, ions_, edge_); break;
+        case 1: addGCAFluxesToPatch1D_(patchLayout, ionsPatch, ions_, edge_); break;
+        case 2: addGCAFluxesToPatch2D_(patchLayout, ionsPatch, ions_, edge_); break;
+        case 3: addGCAFluxesToPatch3D_(patchLayout, ionsPatch, ions_, edge_); break;
     }
 }
 
@@ -272,10 +272,10 @@ void PatchBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Push
 {
     uint32 iesp = ions_.speciesID(species);
 
-    std::vector<Particle>& PRAparticles = ions_.species(iesp).particles();
+    std::vector<Particle>& GCAparticles = ions_.species(iesp).particles();
 
     // default initialization
-    // std::vector<Particle> pushed_PRAparticles{PRAparticles};
+    // std::vector<Particle> pushed_GCAparticles{GCAparticles};
 
 
     // TODO: define E
@@ -287,11 +287,11 @@ void PatchBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Push
     // TODO: define interpolator
     Interpolator interpolator(patchLayout.order());
 
-    pusher.move(PRAparticles, PRAparticles, ions_.species(iesp).mass(), E, B, interpolator,
+    pusher.move(GCAparticles, GCAparticles, ions_.species(iesp).mass(), E, B, interpolator,
                 temporaryBC);
     try
     {
-        PRABoundaryCondition& boundaryCond = dynamic_cast<PRABoundaryCondition&>(temporaryBC);
+        GCABoundaryCondition& boundaryCond = dynamic_cast<GCABoundaryCondition&>(temporaryBC);
 
         std::vector<Particle>& incomingBucket{boundaryCond.incomingBucket()};
 
@@ -314,10 +314,10 @@ void PatchBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Push
 
 
 /**
- * @brief PatchBoundary::computePRAmoments
+ * @brief PatchBoundary::computeGCAmoments
  *
  */
-void PatchBoundary::computePRADensityAndFlux(uint32 order)
+void PatchBoundary::computeGCADensityAndFlux(uint32 order)
 {
     uint32 nbrSpecies = ions_.nbrSpecies();
 
@@ -333,32 +333,32 @@ void PatchBoundary::computePRADensityAndFlux(uint32 order)
 
 
 
-void PatchBoundary::computePRAChargeDensity()
+void PatchBoundary::computeGCAChargeDensity()
 {
     ions_.computeChargeDensity();
 }
 
 
-void PatchBoundary::addPRAChargeDensityToPatch1D_(GridLayout const& patchLayout, Field& rhoPatch,
-                                                  Field const& rhoPRA, Edge const& edge) const
+void PatchBoundary::addGCAChargeDensityToPatch1D_(GridLayout const& patchLayout, Field& rhoPatch,
+                                                  Field const& rhoGCA, Edge const& edge) const
 {
     uint32 nbrNodes    = 0;
     uint32 iStartPatch = 0;
-    uint32 iStartPRA   = 0;
+    uint32 iStartGCA   = 0;
 
-    getPRAandPatchStartIndexes_(patchLayout, rhoPatch, rhoPRA, edge, Direction::X, nbrNodes,
-                                iStartPatch, iStartPRA);
+    getGCAandPatchStartIndexes_(patchLayout, rhoPatch, rhoGCA, edge, Direction::X, nbrNodes,
+                                iStartPatch, iStartGCA);
 
     // HERE we add !
     for (uint32 iNode = 0; iNode < nbrNodes; ++iNode)
     {
-        rhoPatch(iStartPatch + iNode) += rhoPRA(iStartPRA + iNode);
+        rhoPatch(iStartPatch + iNode) += rhoGCA(iStartGCA + iNode);
     }
 }
 
 
-void PatchBoundary::addPRAFluxesToPatch1D_(GridLayout const& patchLayout, Ions& ionsPatch,
-                                           Ions const& ionsPRA, Edge const& edge) const
+void PatchBoundary::addGCAFluxesToPatch1D_(GridLayout const& patchLayout, Ions& ionsPatch,
+                                           Ions const& ionsGCA, Edge const& edge) const
 {
     uint32 iCompX = static_cast<uint32>(Direction::X);
     uint32 iCompY = static_cast<uint32>(Direction::Y);
@@ -368,38 +368,38 @@ void PatchBoundary::addPRAFluxesToPatch1D_(GridLayout const& patchLayout, Ions& 
     {
         uint32 nbrNodes    = 0;
         uint32 iStartPatch = 0;
-        uint32 iStartPRA   = 0;
+        uint32 iStartGCA   = 0;
 
         Species& speciesPatch     = ionsPatch.species(ispe);
-        Species const& speciesPRA = ionsPRA.species(ispe);
+        Species const& speciesGCA = ionsGCA.species(ispe);
 
         std::array<std::reference_wrapper<Field>, 3> fxyzPatch
             = {{speciesPatch.flux(iCompX), speciesPatch.flux(iCompY), speciesPatch.flux(iCompZ)}};
 
-        std::array<std::reference_wrapper<Field const>, 3> fxyzPRA
-            = {{speciesPRA.flux(iCompX), speciesPRA.flux(iCompY), speciesPRA.flux(iCompZ)}};
+        std::array<std::reference_wrapper<Field const>, 3> fxyzGCA
+            = {{speciesGCA.flux(iCompX), speciesGCA.flux(iCompY), speciesGCA.flux(iCompZ)}};
 
         for (uint32 ifield = 0; ifield < fxyzPatch.size(); ++ifield)
         {
             Field& fluxPatch     = fxyzPatch[ifield];
-            Field const& fluxPRA = fxyzPRA[ifield];
+            Field const& fluxGCA = fxyzGCA[ifield];
 
-            getPRAandPatchStartIndexes_(patchLayout, fluxPatch, fluxPRA, edge, Direction::X,
-                                        nbrNodes, iStartPatch, iStartPRA);
+            getGCAandPatchStartIndexes_(patchLayout, fluxPatch, fluxGCA, edge, Direction::X,
+                                        nbrNodes, iStartPatch, iStartGCA);
 
             for (uint32 iNode = 0; iNode < nbrNodes; ++iNode)
-                fluxPatch(iStartPatch + iNode) += fluxPRA(iStartPRA + iNode);
+                fluxPatch(iStartPatch + iNode) += fluxGCA(iStartGCA + iNode);
         }
     }
 }
 
 
 
-void PatchBoundary::getPRAandPatchStartIndexes_(GridLayout const& patchLayout,
-                                                Field const& fieldPatch, Field const& fieldPRA,
+void PatchBoundary::getGCAandPatchStartIndexes_(GridLayout const& patchLayout,
+                                                Field const& fieldPatch, Field const& fieldGCA,
                                                 Edge const& edge, Direction const& direction,
                                                 uint32& nbrNodes, uint32& iStartPatch,
-                                                uint32& iStartPRA) const
+                                                uint32& iStartGCA) const
 {
     // here we need the exact number of ghost nodes
     // no exception for 1st order
@@ -409,59 +409,59 @@ void PatchBoundary::getPRAandPatchStartIndexes_(GridLayout const& patchLayout,
 
     // Default initialization Edge::Xmin
     iStartPatch = patchLayout.physicalStartIndex(fieldPatch, direction) - nbrGhosts;
-    iStartPRA   = layout_.physicalEndIndex(fieldPRA, direction) - nbrGhosts;
+    iStartGCA   = layout_.physicalEndIndex(fieldGCA, direction) - nbrGhosts;
 
     if (edge == Edge::Xmax)
     {
         iStartPatch = patchLayout.physicalEndIndex(fieldPatch, direction) - nbrGhosts;
-        iStartPRA   = layout_.physicalStartIndex(fieldPRA, direction) - nbrGhosts;
+        iStartGCA   = layout_.physicalStartIndex(fieldGCA, direction) - nbrGhosts;
     }
 }
 
 
 
-void PatchBoundary::addPRAChargeDensityToPatch2D_(GridLayout const& patchLayout, Field& rhoPatch,
-                                                  Field const& rhoPRA, Edge const& edge) const
+void PatchBoundary::addGCAChargeDensityToPatch2D_(GridLayout const& patchLayout, Field& rhoPatch,
+                                                  Field const& rhoGCA, Edge const& edge) const
 {
     (void)patchLayout;
     (void)rhoPatch;
-    (void)rhoPRA;
+    (void)rhoGCA;
     (void)edge;
-    throw std::runtime_error("addPRAChargeDensityToPatch2D_ : Not Implemented");
+    throw std::runtime_error("addGCAChargeDensityToPatch2D_ : Not Implemented");
 }
 
 
-void PatchBoundary::addPRAFluxesToPatch2D_(GridLayout const& patchLayout, Ions& ionsPatch,
-                                           Ions const& ionsPRA, Edge const& edge) const
+void PatchBoundary::addGCAFluxesToPatch2D_(GridLayout const& patchLayout, Ions& ionsPatch,
+                                           Ions const& ionsGCA, Edge const& edge) const
 {
     (void)patchLayout;
     (void)ionsPatch;
-    (void)ionsPRA;
+    (void)ionsGCA;
     (void)edge;
-    throw std::runtime_error("addPRAFluxesToPatch2D_ : Not Implemented");
+    throw std::runtime_error("addGCAFluxesToPatch2D_ : Not Implemented");
 }
 
 
 
-void PatchBoundary::addPRAChargeDensityToPatch3D_(GridLayout const& patchLayout, Field& rhoPatch,
-                                                  Field const& rhoPRA, Edge const& edge) const
+void PatchBoundary::addGCAChargeDensityToPatch3D_(GridLayout const& patchLayout, Field& rhoPatch,
+                                                  Field const& rhoGCA, Edge const& edge) const
 {
     (void)patchLayout;
     (void)rhoPatch;
-    (void)rhoPRA;
+    (void)rhoGCA;
     (void)edge;
-    throw std::runtime_error("addPRAChargeDensityToPatch3D_ : Not Implemented");
+    throw std::runtime_error("addGCAChargeDensityToPatch3D_ : Not Implemented");
 }
 
 
-void PatchBoundary::addPRAFluxesToPatch3D_(GridLayout const& patchLayout, Ions& ionsPatch,
-                                           Ions const& ionsPRA, Edge const& edge) const
+void PatchBoundary::addGCAFluxesToPatch3D_(GridLayout const& patchLayout, Ions& ionsPatch,
+                                           Ions const& ionsGCA, Edge const& edge) const
 {
     (void)patchLayout;
     (void)ionsPatch;
-    (void)ionsPRA;
+    (void)ionsGCA;
     (void)edge;
-    throw std::runtime_error("addPRAFluxesToPatch3D_ : Not Implemented");
+    throw std::runtime_error("addGCAFluxesToPatch3D_ : Not Implemented");
 }
 
 
@@ -469,8 +469,8 @@ void PatchBoundary::addPRAFluxesToPatch3D_(GridLayout const& patchLayout, Ions& 
 void PatchBoundary::updateCorrectedEMfields(GridLayout const& parentLayout,
                                             Electromag const& parentElectromag)
 {
-    // We update the electromagnetic field on the PRA layout
-    // PRA == PatchBoundary, we just use the private layout_
+    // We update the electromagnetic field on the GCA layout
+    // GCA == PatchBoundary, we just use the private layout_
     ElectromagInitializer emInitializer{layout_, "_EMField", "_EMFields"};
 
     // A linear interpolator is enough here (= 1)
@@ -480,7 +480,7 @@ void PatchBoundary::updateCorrectedEMfields(GridLayout const& parentLayout,
     // of the ElectromagInitializer
     fieldAtRefinedNodes(interpolator, parentLayout, parentElectromag, layout_, emInitializer);
 
-    // We now update the correctedEM field of the PRA
+    // We now update the correctedEM field of the GCA
     correctedEMfields_.setFields(emInitializer);
 }
 

@@ -1,28 +1,28 @@
-#ifndef PRA_H
-#define PRA_H
+#ifndef GCA_H
+#define GCA_H
 
 
 #include <array>
 #include <vector>
 
 #include "data/grid/gridlayout.h"
-#include "utilities/types.h"
 #include "utilities/box.h"
+#include "utilities/types.h"
 
 
 
 
-struct PRA
+struct GCA
 {
-    std::array<int32, 3> PRAwidth;
+    std::array<int32, 3> GCAwidth;
 
     std::vector<LogicalBox> logicDecomposition;
     std::vector<Box> boxDecomposition;
 
-    PRA() {}
+    GCA() {}
 
-    PRA(std::array<int32, 3> PRAwidth, std::vector<LogicalBox> logicBoxes, std::vector<Box> boxes)
-        : PRAwidth{PRAwidth}
+    GCA(std::array<int32, 3> GCAwidth, std::vector<LogicalBox> logicBoxes, std::vector<Box> boxes)
+        : GCAwidth{GCAwidth}
         , logicDecomposition{logicBoxes}
         , boxDecomposition{boxes}
     {
@@ -31,7 +31,7 @@ struct PRA
 
 
 
-struct PRALimits
+struct GCALimits
 {
     std::array<int32, 2> innerLimitsIndexes;
     std::array<int32, 2> outerLimitsIndexes;
@@ -41,10 +41,10 @@ struct PRALimits
 
 
 
-PRA buildPRA(GridLayout const& layout);
-GridLayout buildPRABoundaryLayout(PRA const& refinedPRA, uint32 ibord,
+GCA buildGCA(GridLayout const& layout);
+GridLayout buildGCABoundaryLayout(GCA const& refinedGCA, uint32 ibord,
                                   GridLayout const& refinedLayout);
 
 
 
-#endif // PRA_H
+#endif // GCA_H

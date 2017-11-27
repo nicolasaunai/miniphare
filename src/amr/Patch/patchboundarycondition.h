@@ -1,7 +1,7 @@
 #ifndef PATCHBOUNDARYCONDITION_H
 #define PATCHBOUNDARYCONDITION_H
 
-#include "amr/MLMD/pra.h"
+#include "amr/MLMD/gca.h"
 #include "amr/Patch/patch.h"
 
 #include "amr/Patch/patchboundary.h"
@@ -21,7 +21,7 @@
  * @brief The PatchBoundaryCondition class
  *
  * PatchBoundaryCondition constructor basically needs:
- * + a PRA struct (containing innerBox and outerBox)
+ * + a GCA struct (containing innerBox and outerBox)
  * + a pointer to the coarse (parent) patch
  * + a copy of the coarse (parent) patch layout
  *
@@ -30,7 +30,7 @@
 class PatchBoundaryCondition : public BoundaryCondition
 {
 private:
-    PRA refinedPRA_;
+    GCA refinedGCA_;
     std::shared_ptr<Patch> parent_;
     GridLayout patchLayout_;
 
@@ -41,7 +41,7 @@ private:
                                   LeavingParticles const& leavingParticles) const;
 
 public:
-    PatchBoundaryCondition(PRA const& refinedPRA, std::shared_ptr<Patch> coarsePatch,
+    PatchBoundaryCondition(GCA const& refinedGCA, std::shared_ptr<Patch> coarsePatch,
                            GridLayout const& coarseLayout,
                            std::vector<std::unique_ptr<PatchBoundary>> boundaries);
 

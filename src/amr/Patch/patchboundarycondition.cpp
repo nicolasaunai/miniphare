@@ -1,6 +1,6 @@
 #include "amr/Patch/patchboundarycondition.h"
 
-#include "amr/MLMD/praboundarycondition.h"
+#include "amr/MLMD/gcaboundarycondition.h"
 #include "core/pusher/pusherfactory.h"
 
 
@@ -14,15 +14,15 @@
  * we initialize isPatchBC = true
  *
  *
- * @param refinedPRA
+ * @param refinedGCA
  * @param coarsePatch
  * @param coarseLayout
  * @param boundaries
  */
 PatchBoundaryCondition::PatchBoundaryCondition(
-    PRA const& refinedPRA, std::shared_ptr<Patch> coarsePatch, GridLayout const& refinedLayout,
+    GCA const& refinedGCA, std::shared_ptr<Patch> coarsePatch, GridLayout const& refinedLayout,
     std::vector<std::unique_ptr<PatchBoundary>> boundaries)
-    : refinedPRA_{refinedPRA}
+    : refinedGCA_{refinedGCA}
     , parent_{coarsePatch}
     , patchLayout_{refinedLayout}
     , boundaries_{std::move(boundaries)}
@@ -33,7 +33,7 @@ PatchBoundaryCondition::PatchBoundaryCondition(
 /**
  * @brief PatchBoundaryCondition::initializeGhostArea
  * In the case of a PatchBoundaryCondition this method
- * will initialize the PRA of the Patch.
+ * will initialize the GCA of the Patch.
  *
  *
  */
@@ -45,7 +45,7 @@ void PatchBoundaryCondition::initializeGCAparticles()
         // PatchBoundary object using
         // the ParticleInitializer of each Species object stored
         // Ions instance
-        boundary->initPRAParticles();
+        boundary->initGCAParticles();
 
         // the electro-magnetic field has been
         // initialized by PatchBoundary constructor
@@ -61,7 +61,7 @@ void PatchBoundaryCondition::computeGCADensityAndFlux(uint32 order)
 {
     for (auto& boundary : boundaries_)
     {
-        boundary->computePRADensityAndFlux(order);
+        boundary->computeGCADensityAndFlux(order);
     }
 }
 
@@ -70,7 +70,7 @@ void PatchBoundaryCondition::computeGCAChargeDensity()
 {
     for (auto& boundary : boundaries_)
     {
-        boundary->computePRAChargeDensity();
+        boundary->computeGCAChargeDensity();
     }
 }
 
@@ -187,13 +187,13 @@ void PatchBoundaryCondition::applyIncomingParticleBC(std::vector<Particle>& patc
 {
     for (auto&& bc : boundaries_)
     {
-        // frozen boundary condition of the PRA
-        // each PRA has its frozen boundaries built here
+        // frozen boundary condition of the GCA
+        // each GCA has its frozen boundaries built here
         // std::unique_ptr<BoundaryCondition> temporaryBC{
         //    new DomainBoundaryCondition{bc->extendedLayout(), boundaries}};
 
         std::unique_ptr<BoundaryCondition> temporaryBC{
-            new PRABoundaryCondition{patchLayout_, bc->layout()}};
+            new GCABoundaryCondition{patchLayout_, bc->layout()}};
 
         // Declare Pusher
         std::unique_ptr<Pusher> pusher{PusherFactory::createPusher(bc->layout(), pusherType, dt)};

@@ -89,18 +89,18 @@ void removeParticles(std::vector<uint32> leavingIndexes, std::vector<Particle>& 
 
 
 
-void particleChangeLayout(GridLayout const& praLayout, GridLayout const& patchLayout,
+void particleChangeLayout(GridLayout const& gcaLayout, GridLayout const& patchLayout,
                           Particle const& part, Particle& newPart)
 {
     newPart = part;
 
-    auto nbrGhostspra   = static_cast<int32>(praLayout.nbrGhostNodes(QtyCentering::primal));
+    auto nbrGhostsgca   = static_cast<int32>(gcaLayout.nbrGhostNodes(QtyCentering::primal));
     auto nbrGhostsPatch = static_cast<int32>(patchLayout.nbrGhostNodes(QtyCentering::primal));
 
     std::array<double, 3> deltaOrigins;
-    deltaOrigins[0] = praLayout.origin().x - patchLayout.origin().x;
-    deltaOrigins[1] = praLayout.origin().y - patchLayout.origin().y;
-    deltaOrigins[2] = praLayout.origin().z - patchLayout.origin().z;
+    deltaOrigins[0] = gcaLayout.origin().x - patchLayout.origin().x;
+    deltaOrigins[1] = gcaLayout.origin().y - patchLayout.origin().y;
+    deltaOrigins[2] = gcaLayout.origin().z - patchLayout.origin().z;
 
 
     std::array<double, 3> oldNormalizedPos;
@@ -110,10 +110,10 @@ void particleChangeLayout(GridLayout const& praLayout, GridLayout const& patchLa
     // Components of the vector oriented from the origin of the refined layout
     // to mother particle
     std::array<double, 3> newNormalizedPos;
-    auto pradxyz = praLayout.dxdydz();
+    auto gcadxyz = gcaLayout.dxdydz();
 
     for (uint32 i           = 0; i <= 2; ++i)
-        newNormalizedPos[i] = deltaOrigins[i] + (oldNormalizedPos[i] - nbrGhostspra) * pradxyz[i];
+        newNormalizedPos[i] = deltaOrigins[i] + (oldNormalizedPos[i] - nbrGhostsgca) * gcadxyz[i];
 
 
     auto newPosition = newNormalizedPos;
@@ -126,7 +126,7 @@ void particleChangeLayout(GridLayout const& praLayout, GridLayout const& patchLa
     auto delta
         = [](double position) { return static_cast<float>(position - std::floor(position)); };
 
-    switch (praLayout.nbDimensions())
+    switch (gcaLayout.nbDimensions())
     {
         case 3:
             newPart.icell[2] = nbrGhostsPatch + static_cast<int32>(std::floor(newPosition[2]));

@@ -5,7 +5,6 @@
 
 #include "amr/MLMD/mlmdinitializerfactory.h"
 #include "amr/MLMD/mlmdparticleinitializer.h"
-#include "amr/MLMD/pra.h"
 #include "amr/Patch/patchboundary.h"
 #include "amr/Patch/patchboundarycondition.h"
 #include "amr/Refinement/coarsetorefinemesh.h"
@@ -20,7 +19,7 @@
 
 
 
-std::array<double, 3> computeNearPRARegion(uint32 interpOrder, std::array<double, 3> const& dxdydz);
+std::array<double, 3> computeNearGCARegion(uint32 interpOrder, std::array<double, 3> const& dxdydz);
 
 
 /**
@@ -43,7 +42,7 @@ std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer()
     std::unique_ptr<IonsInitializer> ionInitPtr{new IonsInitializer{}};
 
     std::array<double, 3> tol_xyz{
-        computeNearPRARegion(parentPatch_->layout().order(), parentPatch_->layout().dxdydz())};
+        computeNearGCARegion(parentPatch_->layout().order(), parentPatch_->layout().dxdydz())};
 
     Box selectionBox{newPatchCoords_};
     selectionBox.expand(tol_xyz);
@@ -144,7 +143,7 @@ std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializ
  * @brief MLMDInitializerFactory::createBoundaryCondition is responsible to create
  * a BoundaryCondition object.
  * We build the following private attributes of BoundaryCondition:
- * - PRA refinedPRA_
+ * - GCA refinedGCA_
  * - std::shared_ptr<Patch> parent_
  * - GridLayout coarseLayout_
  * - std::vector<std::unique_ptr<Boundary>> boundaries_
@@ -166,12 +165,12 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
     uint32 nbrBoundaries = 2 * coarseLayout.nbDimensions();
 
     // this will be used to initialize electromagnetic fields
-    // at patch boundaries, into PRA layouts
+    // at patch boundaries, into GCA layouts
     Electromag const& parentElectromag = parentPatch_->data().EMfields();
 
     // A linear interpolator is enough here (= 1)
     Interpolator interpolator(1);
-    PRA refinedPRA{buildPRA(refinedLayout_)};
+    GCA refinedGCA{buildGCA(refinedLayout_)};
 
     // We know we are dealing with PatchBoundary objects
     // because we are in a MLMDInitializerFactory method
@@ -187,17 +186,17 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
     {
         std::cout << "Boundary, ibord = " << ibord << std::endl;
 
-        // Get the layout of the adequate PRA boundary
-        GridLayout praEdgeLayout{buildPRABoundaryLayout(refinedPRA, ibord, refinedLayout_)};
-        // Get PRA extended layout
-        GridLayout praExtendedLayout{getExtendedLayout_(praEdgeLayout)};
+        // Get the layout of the adequate GCA boundary
+        GridLayout gcaEdgeLayout{buildGCABoundaryLayout(refinedGCA, ibord, refinedLayout_)};
+        // Get GCA extended layout
+        GridLayout gcaExtendedLayout{getExtendedLayout_(gcaEdgeLayout)};
 
         std::unique_ptr<IonsInitializer> ionInitPtr{new IonsInitializer{}};
 
         std::array<double, 3> tol_xyz{
-            computeNearPRARegion(parentPatch_->layout().order(), parentPatch_->layout().dxdydz())};
+            computeNearGCARegion(parentPatch_->layout().order(), parentPatch_->layout().dxdydz())};
 
-        Box selectionBox = praEdgeLayout.getBox();
+        Box selectionBox = gcaEdgeLayout.getBox();
         selectionBox.expand(tol_xyz);
 
         // the selector will check whether particles from the parent Box
@@ -205,21 +204,21 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
         std::shared_ptr<ParticleSelector> selector
             = std::make_shared<IsInBoxSelector>(selectionBox);
 
-        buildIonsInitializer_(*ionInitPtr, selector, praEdgeLayout);
+        buildIonsInitializer_(*ionInitPtr, selector, gcaEdgeLayout);
 
-        // We need the electromagnetic field on the PRA layout
+        // We need the electromagnetic field on the GCA layout
         // of the adequate Patch boundary
         std::unique_ptr<ElectromagInitializer> emInitPtr{
-            new ElectromagInitializer{praEdgeLayout, "_EMField", "_EMFields"}};
+            new ElectromagInitializer{gcaEdgeLayout, "_EMField", "_EMFields"}};
 
         // Now we compute the E and B fields
         // of the ElectromagInitializer
-        fieldAtRefinedNodes(interpolator, parentPatch_->layout(), parentElectromag, praEdgeLayout,
+        fieldAtRefinedNodes(interpolator, parentPatch_->layout(), parentElectromag, gcaEdgeLayout,
                             *emInitPtr);
 
         // For each boundary build the PatchBoundary object
         std::unique_ptr<PatchBoundary> boundaryPtr{new PatchBoundary{
-            praEdgeLayout, praExtendedLayout, std::move(ionInitPtr), std::move(emInitPtr),
+            gcaEdgeLayout, gcaExtendedLayout, std::move(ionInitPtr), std::move(emInitPtr),
             boundaryEdges[ibord], parentPatch_->timeStep()}};
 
         // For each boundary add this PatchBoundary to our temporary
@@ -229,7 +228,7 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 
     // SECOND, build PatchBoundaryCondition object
     std::unique_ptr<BoundaryCondition> boundaryCondition{new PatchBoundaryCondition{
-        refinedPRA, parentPatch_, refinedLayout_, std::move(boundaries)}};
+        refinedGCA, parentPatch_, refinedLayout_, std::move(boundaries)}};
 
     return boundaryCondition;
 }
@@ -237,7 +236,7 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
 
 
 
-std::array<double, 3> computeNearPRARegion(uint32 interpOrder, std::array<double, 3> const& dxdydz)
+std::array<double, 3> computeNearGCARegion(uint32 interpOrder, std::array<double, 3> const& dxdydz)
 {
     // In 1D, if the mother particle position is farther than tol_x
     // from the physical boundary of the domain
@@ -262,14 +261,14 @@ std::array<double, 3> computeNearPRARegion(uint32 interpOrder, std::array<double
  * in each active direction
  *
  *
- * @param praLayout
+ * @param gcaLayout
  * @return
  */
-GridLayout MLMDInitializerFactory::getExtendedLayout_(GridLayout const& praLayout) const
+GridLayout MLMDInitializerFactory::getExtendedLayout_(GridLayout const& gcaLayout) const
 {
-    Point origin{praLayout.origin()};
-    std::array<double, 3> dxdydz{praLayout.dxdydz()};
-    std::array<uint32, 3> nxnynz{praLayout.nbrCellxyz()};
+    Point origin{gcaLayout.origin()};
+    std::array<double, 3> dxdydz{gcaLayout.dxdydz()};
+    std::array<uint32, 3> nxnynz{gcaLayout.nbrCellxyz()};
 
     double dx = dxdydz[0];
     double dy = dxdydz[1];
@@ -279,7 +278,7 @@ GridLayout MLMDInitializerFactory::getExtendedLayout_(GridLayout const& praLayou
     uint32 ny = nxnynz[1];
     uint32 nz = nxnynz[2];
 
-    switch (praLayout.nbDimensions())
+    switch (gcaLayout.nbDimensions())
     {
         case 1:
             origin.x += -dx;
@@ -304,6 +303,6 @@ GridLayout MLMDInitializerFactory::getExtendedLayout_(GridLayout const& praLayou
     }
 
 
-    return GridLayout(praLayout.dxdydz(), {{nx, ny, nz}}, praLayout.nbDimensions(),
-                      praLayout.layoutName(), origin, praLayout.order());
+    return GridLayout(gcaLayout.dxdydz(), {{nx, ny, nz}}, gcaLayout.nbDimensions(),
+                      gcaLayout.layoutName(), origin, gcaLayout.order());
 }
