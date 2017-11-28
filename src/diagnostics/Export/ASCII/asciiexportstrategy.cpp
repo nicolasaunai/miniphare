@@ -88,8 +88,6 @@ void fillFile(ParticlePack const& pack, FILE* file)
     fprintf(file, "%lu", pack.nbParticles);
     fprintf(file, "\n");
 
-    // TODO: convert particle (icell, delta) coordinates
-    // into 3d position
     for (Particle const& part : pack.data)
     {
         Point coord = getParticlePosition(part, origin, pack.nbrGhosts, spacing);

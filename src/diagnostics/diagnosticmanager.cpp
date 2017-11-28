@@ -6,7 +6,8 @@
 #include "FieldDiagnostics/Fluid/fluiddiagnostic.h"
 #include "FieldDiagnostics/Fluid/fluiddiagnosticfactory.h"
 #include "ParticleDiagnostics/particlediagnostic.h"
-#include "ParticleDiagnostics/particlediagnosticfactory.h"
+
+#include "utilities/particleselectorfactory.h"
 
 
 uint32 DiagnosticsManager::id = 0;
@@ -72,8 +73,13 @@ void DiagnosticsManager::newEMDiagnostic(std::string type, std::string diagName,
 
 void DiagnosticsManager::newParticleDiagnostic(PartDiagInitializer const& init)
 {
-    std::unique_ptr<ParticleDiagnostic> partd = ParticleDiagnosticFactory::createParticleDiagnostic(
-        id, init.typeName, init.selectorType, init.selectorParams, init.speciesName);
+    std::unique_ptr<ParticleSelector> selector
+        = ParticleSelectorFactory::createParticleSelector(init.selectorType, init.selectorParams);
+
+    std::unique_ptr<ParticleDiagnostic> partd{
+        new ParticleDiagnostic{id, init.diagname + "_" + init.selectorType, init.speciesName,
+                               init.selectorType, std::move(selector)}};
+
     partDiags_.push_back(std::move(partd));
     scheduler_.registerDiagnostic(id, init.computingIterations, init.writingIterations);
     id++; // new diagnostic identifier

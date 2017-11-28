@@ -31,7 +31,7 @@ struct EMDiagInitializer
 struct PartDiagInitializer
 {
     std::string speciesName;
-    std::string typeName;
+    std::string diagname;
     std::string selectorType;
     std::vector<double> selectorParams;
     std::vector<uint32> computingIterations;
