@@ -79,9 +79,8 @@ void DiagnosticsManager::newParticleDiagnostic(PartDiagInitializer const& init)
     std::unique_ptr<ParticleSelector> selector
         = ParticleSelectorFactory::createParticleSelector(init.selectorType, init.selectorParams);
 
-    std::unique_ptr<ParticleDiagnostic> partd{
-        new ParticleDiagnostic{id, init.diagname + "_" + init.selectorType, init.speciesName,
-                               init.selectorType, std::move(selector)}};
+    std::unique_ptr<ParticleDiagnostic> partd{new ParticleDiagnostic{
+        id, init.diagname, init.path, init.speciesName, std::move(selector)}};
 
     partDiags_.push_back(std::move(partd));
     scheduler_.registerDiagnostic(id, init.computingIterations, init.writingIterations);

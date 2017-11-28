@@ -34,6 +34,7 @@ struct PartDiagInitializer
 {
     std::string speciesName;
     std::string diagname;
+    std::string path;
     std::string selectorType;
     std::vector<double> selectorParams;
     std::vector<uint32> computingIterations;

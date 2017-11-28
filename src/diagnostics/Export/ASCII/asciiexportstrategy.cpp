@@ -196,9 +196,9 @@ std::string getParticleFilename(uint32 patchID, ParticleDiagnostic const& diag,
 {
     std::stringstream ss;
 
-    ss << diag.stratName() << "_" << diag.speciesName() << '_' << std::setfill('0') << std::setw(2)
-       << patchID << "_" << std::setprecision(6) << std::scientific << timeManager.currentTime()
-       << ".txt";
+    ss << diag.path() << "/" << diag.name() << "_" << diag.speciesName() << '_' << std::setfill('0')
+       << std::setw(2) << patchID << "_" << std::setprecision(6) << std::scientific
+       << timeManager.currentTime() << ".txt";
 
     return ss.str();
 }

@@ -36,11 +36,11 @@ private:
     void fillDiagData1D_(ParticlePack& pack, std::vector<Particle> const& particles);
 
 public:
-    ParticleDiagnostic(uint32 id, std::string diagName, std::string speciesName,
-                       std::string selectorType, std::unique_ptr<ParticleSelector> selector)
-        : Diagnostic{id, diagName}
+    ParticleDiagnostic(uint32 id, std::string diagName, std::string path, std::string speciesName,
+                       std::unique_ptr<ParticleSelector> selector)
+        : Diagnostic{id, diagName, path}
         , speciesName_{speciesName}
-        , selectorType_{selectorType}
+        , selectorType_{selector->name()}
         , selectorPtr_{std::move(selector)}
     {
     }
