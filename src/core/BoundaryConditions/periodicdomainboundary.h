@@ -33,7 +33,6 @@ public:
     PeriodicDomainBoundary(Edge edge)
         : edge_{edge}
     {
-        std::cout << "creating periodic boundary\n";
     }
 
     virtual ~PeriodicDomainBoundary() = default;

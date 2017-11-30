@@ -10,6 +10,7 @@
 #include "amr/Refinement/coarsetorefinemesh.h"
 #include "amr/Refinement/refinmentanalyser.h"
 #include "core/Interpolator/particlemesh.h"
+#include <utilities/print/outputs.h>
 
 
 
@@ -38,7 +39,8 @@ MLMD::MLMD(InitializerFactory const& initFactory)
 
 void MLMD::initializeRootLevel(Hierarchy& patchHierarchy)
 {
-    std::cout << "building root level...";
+    Logger::Debug << "Building AMR root level\n";
+    Logger::Debug.flush();
     Patch& rootLevel = patchHierarchy.root();
     rootLevel.init();
 }
@@ -74,6 +76,8 @@ void MLMD::evolveFullDomain(Hierarchy& hierarchy, uint32 iter)
 
     // New patches are created here if necessary
     // it depends on evaluateHierarchy()
+    Logger::Debug << "\t - Analizing domain for refinement\n";
+    Logger::Debug.flush();
     hierarchy.refine(refinementTable, patchInfos_);
 }
 
@@ -105,17 +109,15 @@ void MLMD::evolvePlasma_(Hierarchy& hierarchy, uint32 refineRatio)
 
 void MLMD::evolve_(Patch& patch, uint32 nbrSteps)
 {
-    std::cout << "Evolve" << std::endl;
-
-    std::cout << "dt = " << patch.timeStep() << std::endl;
-
+    Logger::Info << "\t - Patch evolution : " << nbrSteps << " steps with dt = " << patch.timeStep()
+                 << "\n";
+    Logger::Debug.flush();
 
     for (uint32 itime = 0; itime < nbrSteps; ++itime)
     {
-        std::cout << "solveStep = " << itime + 1 << " / " << nbrSteps << std::endl;
-
+        Logger::Info << "\t \t - solving step " << itime + 1 << " / " << nbrSteps << "\n";
+        Logger::Info.flush();
         patch.data().solveStep();
-
         updateFreeEvolutionTime_(patch);
     }
 }
@@ -124,7 +126,8 @@ void MLMD::evolve_(Patch& patch, uint32 nbrSteps)
 
 void evaluateNbrSteps(uint32 refineRatio, uint32& nbrSteps_new)
 {
-    std::cout << "evaluateNbrSteps(...)" << std::endl;
+    Logger::Debug << "evaluateNbrSteps(...)\n";
+    Logger::Debug.flush();
 
     uint32 CFL_coef = refineRatio * refineRatio;
 
@@ -145,31 +148,31 @@ void evaluateNbrSteps(uint32 refineRatio, uint32& nbrSteps_new)
  */
 void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint32 nbrSteps)
 {
-    std::cout << "recursivEvolve:"
-              << "dt = " << patch.timeStep() << ", nbrSteps = " << nbrSteps << std::endl;
-
     auto nbrChildren = patch.nbrChildren();
 
-    std::cout << "Level = " << ilevel << std::endl;
-    std::cout << "nbrChildren = " << nbrChildren << std::endl;
+    Logger::Debug << "\t - recursivEvolve:"
+                  << "dt(" << patch.timeStep() << ") nbrSteps = " << nbrSteps << "\n";
+    Logger::Debug << "\t - Level = " << ilevel << "\n";
+    Logger::Debug << "\t - nbrChildren = " << nbrChildren << "\n";
+    Logger::Debug.flush();
 
-    std::cout << "Patch total population " << std::endl;
-    patch.data().population();
 
     if (nbrChildren > 0)
     {
         for (uint32 istep = 0; istep < nbrSteps; istep++)
         {
-            std::cout << "Level = " << ilevel << std::endl;
-            std::cout << "istep/nbrSteps = " << istep + 1 << " / " << nbrSteps << std::endl;
+            Logger::Debug << "\t - Level = " << ilevel << "\n";
+            Logger::Debug << "\t - istep/nbrSteps = " << istep + 1 << " / " << nbrSteps << "\n";
+            Logger::Debug.flush();
 
             // MLMD mecanism step 1
             // loop over children patches
             // trigger: Part BC at tn
             for (uint32 ik = 0; ik < nbrChildren; ik++)
             {
-                std::cout << "\nchild/nbrChildren = " << ik + 1 << " / " << nbrChildren
-                          << std::endl;
+                Logger::Debug << "\t - child/nbrChildren = " << ik + 1 << " / " << nbrChildren
+                              << "\n";
+                Logger::Debug.flush();
 
                 auto patchPtr = patch.children(ik);
 
@@ -187,7 +190,9 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
 
             for (uint32 ik = 0; ik < nbrChildren; ik++)
             {
-                std::cout << "child/nbrChildren = " << ik + 1 << " / " << nbrChildren << std::endl;
+                Logger::Debug << "\t - child/nbrChildren = " << ik + 1 << " / " << nbrChildren
+                              << "\n";
+                Logger::Debug.flush();
 
                 auto patchPtr = patch.children(ik);
 
@@ -197,8 +202,9 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
                 recursivEvolve_(*patchPtr, ilevel + 1, refineRatio, nbrSteps_new);
             }
 
-            std::cout << "Level = " << ilevel << std::endl;
-            std::cout << "istep/nbrSteps = " << istep + 1 << " / " << nbrSteps << std::endl;
+            Logger::Debug << "\t - Level = " << ilevel << "\n";
+            Logger::Debug << "\t - istep/nbrSteps = " << istep + 1 << " / " << nbrSteps << "\n";
+            Logger::Debug.flush();
 
             // MLMD mecanism step 5
             updateFieldsWithRefinedSolutions_(patch);
@@ -217,12 +223,14 @@ void MLMD::recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint
 
 void MLMD::initGCAparticlesAndMoments_(Patch& patch)
 {
-    std::cout << "manageParticlesInGhostDomain()\n" << std::endl;
+    Logger::Debug << "manageParticlesInGhostDomain()\n";
+    Logger::Debug.flush();
 
     BoundaryCondition* boundaryCond = patch.data().boundaryCondition();
 
     initGCAparticles_(boundaryCond);
-    std::cout << " GCA initialization: OK\n";
+    Logger::Debug << " GCA initialization: OK\n";
+    Logger::Debug.flush();
 
     // for each species
     computeGCADensityAndFlux_(boundaryCond, patchInfos_.interpOrder);
@@ -284,7 +292,8 @@ void MLMD::computeGCAChargeDensity_(BoundaryCondition* boundaryCondition)
  */
 void MLMD::sendCorrectedFieldsToChildrenGCA_(Patch const& parentPatch, Patch& childPatch)
 {
-    std::cout << "sendCorrectedFieldsToChildrenGCA" << std::endl;
+    Logger::Debug << "sendCorrectedFieldsToChildrenGCA\n";
+    Logger::Debug.flush();
 
     GridLayout const& parentLayout     = parentPatch.layout();
     Electromag const& parentElectromag = parentPatch.data().EMfields();
@@ -315,7 +324,8 @@ void MLMD::updateGCA_EMfields_(Patch& childPatch)
 
 void MLMD::updateFieldsWithRefinedSolutions_(Patch& parentPatch)
 {
-    std::cout << "updateFieldsWithRefinedSolutions" << std::endl;
+    Logger::Debug << "updateFieldsWithRefinedSolutions\n";
+    Logger::Debug.flush();
 
     // get EM vecfield of parent patch
     VecField& E_parent = parentPatch.data().EMfields().getE();

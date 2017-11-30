@@ -1,7 +1,7 @@
 
 #include "patchdata.h"
 #include "utilities/hybridenums.h"
-
+#include "utilities/print/outputs.h"
 
 
 
@@ -20,13 +20,8 @@ PatchData::PatchData(const InitializerFactory& initFactory)
 
 void PatchData::initPatchPhysicalDomain()
 {
-    std::cout << "Initializing PatchData..." << std::endl;
-
     ions_.loadParticles();
-
     solver_.init(ions_, *boundaryCondition_);
-    // EMfields_.init(EMInitializer_.get());
-    std::cout << "PatchData initialized!" << std::endl;
 }
 
 

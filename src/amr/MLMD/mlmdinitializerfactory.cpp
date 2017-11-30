@@ -36,8 +36,6 @@ std::array<double, 3> computeNearGCARegion(uint32 interpOrder, std::array<double
  */
 std::unique_ptr<IonsInitializer> MLMDInitializerFactory::createIonsInitializer() const
 {
-    std::cout << "\nCREATE IONS INITIALIZER" << std::endl;
-
     /* this routine creates an ion initializer with a Patch Choice function. */
     std::unique_ptr<IonsInitializer> ionInitPtr{new IonsInitializer{}};
 
@@ -118,8 +116,6 @@ std::unique_ptr<ElectromagInitializer> MLMDInitializerFactory::createElectromagI
     std::unique_ptr<ElectromagInitializer> eminit{
         new ElectromagInitializer{refinedLayout_, "_EMField", "_EMFields"}};
 
-    std::cout << "creating MLMD ElectromagInitializer" << std::endl;
-
     fieldAtRefinedNodes(interpolator, coarseLayout, parentElectromag, refinedLayout_, *eminit);
 
     return eminit;
@@ -159,8 +155,6 @@ std::unique_ptr<SolverInitializer> MLMDInitializerFactory::createSolverInitializ
  */
 std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryCondition() const
 {
-    std::cout << "\nCREATE BOUNDARY CONDITION" << std::endl;
-
     GridLayout coarseLayout{parentPatch_->layout()};
     uint32 nbrBoundaries = 2 * coarseLayout.nbDimensions();
 
@@ -184,8 +178,6 @@ std::unique_ptr<BoundaryCondition> MLMDInitializerFactory::createBoundaryConditi
     // FIRST, LOOP OVER all the boundaries
     for (uint32 ibord = 0; ibord < nbrBoundaries; ++ibord)
     {
-        std::cout << "Boundary, ibord = " << ibord << std::endl;
-
         // Get the layout of the adequate GCA boundary
         GridLayout gcaEdgeLayout{buildGCABoundaryLayout(refinedGCA, ibord, refinedLayout_)};
         // Get GCA extended layout

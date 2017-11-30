@@ -16,7 +16,7 @@ add_subdirectory(initializer)
 
 include_directories("core" "data" "utilities")
 
-target_link_libraries(miniphare pharediagnostics phareamr phareinitializer pharecore phareutilities pharedata)
+target_link_libraries(miniphare pharediagnostics phareamr phareinitializer pharecore pharedata phareutilities )
 
 
 include(../cppcheck.cmake)

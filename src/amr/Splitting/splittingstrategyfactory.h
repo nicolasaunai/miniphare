@@ -54,9 +54,6 @@ public:
         {
             StrategyFunctor const& fonctor = *(mapIterator->second);
             strategyPtr                    = fonctor.createStrategy();
-            std::cout << "Splitting strategy found: " << mapIterator->first << " ";
-            std::cout << "(order = " << fonctor.interpOrder() << ", RF = " << fonctor.refineFactor()
-                      << ")" << std::endl;
         }
         else
         {

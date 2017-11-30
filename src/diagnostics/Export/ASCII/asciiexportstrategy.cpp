@@ -8,6 +8,7 @@
 #include "asciiexportstrategy.h"
 
 #include "utilities/particleutilities.h"
+#include "utilities/print/outputs.h"
 
 
 float centering2float(QtyCentering centering)
@@ -123,9 +124,8 @@ std::string getEMFilename(uint32 patchID, EMDiagnostic const& diag, Time const& 
 
 void AsciiExportStrategy::saveEMDiagnostic(EMDiagnostic const& diag, Time const& timeManager)
 {
-    std::cout << "I'm writting EM diagnostics at t = " << timeManager.currentTime()
-              << " Diag type : " << diag.stratName() << std::endl;
-
+    Logger::Debug << "\t - Writting EM diagnostic : " << diag.stratName() << "\n";
+    Logger::Debug.flush();
 
     uint32 pacthID = 0;
     // there is one FieldPack per Patch
@@ -164,9 +164,9 @@ std::string getFluidFilename(uint32 patchID, FluidDiagnostic const& diag, Time c
 
 void AsciiExportStrategy::saveFluidDiagnostic(FluidDiagnostic const& diag, Time const& timeManager)
 {
-    std::cout << "I'm writting fluid diagnostics for species " << diag.speciesName()
-              << "at t = " << timeManager.currentTime() << " Diag type : " << diag.stratName()
-              << std::endl;
+    Logger::Debug << "\t - Writting fluid diagnostics for species " << diag.speciesName()
+                  << "at t = " << timeManager.currentTime() << " Diag type : " << diag.stratName()
+                  << "\n";
 
 
     uint32 pacthID = 0;
@@ -208,9 +208,10 @@ std::string getParticleFilename(uint32 patchID, ParticleDiagnostic const& diag,
 void AsciiExportStrategy::saveParticleDiagnostic(ParticleDiagnostic const& diag,
                                                  Time const& timeManager)
 {
-    std::cout << "I'm writting fluid diagnostics for species " << diag.speciesName()
-              << "at t = " << timeManager.currentTime() << " Diag type : " << diag.stratName()
-              << std::endl;
+    Logger::Debug << "\t - Writting fluid diagnostics for species " << diag.speciesName()
+                  << "at t = " << timeManager.currentTime() << " Diag type : " << diag.stratName()
+                  << "\n";
+    Logger::Debug.flush();
 
 
     uint32 pacthID = 0;

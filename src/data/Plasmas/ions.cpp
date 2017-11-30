@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "ions.h"
+#include <utilities/print/outputs.h>
 
 
 /**
@@ -31,7 +32,10 @@ Ions::Ions(GridLayout const& layout, std::unique_ptr<IonsInitializer> ionInitial
                "_bulkVelTot"}
 {
     uint32 nbrSpecies = ionInitializer->nbrSpecies;
-    std::cout << "Building Ions with " << nbrSpecies << " species" << std::endl;
+
+    Logger::Debug << "Building Ions\n";
+    Logger::Debug << "\t - number of species : " << nbrSpecies << "\n";
+    Logger::Debug.flush();
 
     speciesArray_.reserve(nbrSpecies);
 
@@ -45,6 +49,10 @@ Ions::Ions(GridLayout const& layout, std::unique_ptr<IonsInitializer> ionInitial
 
         name2ID_.insert({ionInitializer->names[speciesIndex], speciesIndex});
     }
+
+    Logger::Debug << "\t - Ions built OK\n";
+    Logger::Debug << Logger::hline;
+    Logger::Debug.flush();
 }
 
 
@@ -83,11 +91,12 @@ Species& Ions::species(std::string name)
  */
 void Ions::loadParticles()
 {
-    std::cout << "Ions > loading particles..." << std::endl;
+    Logger::Debug << "loading particles : \n";
 
     for (Species& species : speciesArray_)
     {
-        std::cout << "... species : " << species.name() << std::endl;
+        Logger::Debug << "\t - species : " << species.name() << "\n";
+        Logger::Debug.flush();
         species.loadParticles();
     }
 }
@@ -166,7 +175,8 @@ uint32 Ions::population() const
     for (Species const& spe : speciesArray_)
     {
         // popTot += spe.particles().size();
-        std::cout << "Species " << ispe << ", population = " << spe.particles().size() << std::endl;
+        Logger::Debug << "Species " << ispe << ", population = " << spe.particles().size() << "\n";
+        Logger::Debug.flush();
         ++ispe;
     }
 

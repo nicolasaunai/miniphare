@@ -10,6 +10,7 @@
 #include "data/vecfield/vecfieldoperations.h"
 
 #include "utilities/particleutilities.h"
+#include <utilities/print/outputs.h>
 
 #include <iostream>
 
@@ -306,7 +307,8 @@ void PatchBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Push
     }
     catch (std::bad_cast excep)
     {
-        std::cout << "PatchBoundary::applyIncomingParticleBC => Caught bad cast\n";
+        Logger::Error << "PatchBoundary::applyIncomingParticleBC => Caught bad cast\n";
+        Logger::Error.flush();
     }
 }
 
@@ -495,13 +497,10 @@ void PatchBoundary::updateEMfields()
 void PatchBoundary::resetFreeEvolutionTime()
 {
     freeEvolutionTime_ = 0.;
-    std::cout << "RESET, Free evolution time = " << freeEvolutionTime_ << std::endl;
 }
 
 
 void PatchBoundary::updateFreeEvolutionTime(double dt)
 {
-    std::cout << "Free evolution time = " << freeEvolutionTime_ << std::endl;
     freeEvolutionTime_ += dt;
-    std::cout << "Free evolution time = " << freeEvolutionTime_ << std::endl;
 }

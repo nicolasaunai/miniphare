@@ -6,7 +6,7 @@
 #include "simpleinitializerfactory.h"
 #include "simulationinitializerfactory.h"
 #include <initializer/ascii_initializer/asciiinitializerfactory.h>
-
+#include <utilities/print/outputs.h>
 
 
 
@@ -30,12 +30,17 @@ std::unique_ptr<SimulationInitializerFactory> fromCommandLine(int argc, char** a
             std::string arg = argv[1];
             if (arg.substr(arg.find_last_of(".") + 1) == "ini")
             {
-                std::cout << "INI input detected, building INI factory...\n";
+                Logger::Info << "INI input detected, building INI factory...\n";
                 factory = simuFactoPtr{new AsciiInitializerFactory{argv[1]}};
+                Logger::Info << "INI factory built OK\n";
+                Logger::Info.flush();
             }
 
             break;
     }
+
+    Logger::Info << Logger::hline;
+    Logger::Info.flush();
 
     return factory;
 }

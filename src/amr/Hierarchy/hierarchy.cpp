@@ -13,6 +13,7 @@
 #include "amr/Splitting/splittingstrategy.h"
 
 #include "utilities/box.h"
+#include <utilities/print/outputs.h>
 
 
 
@@ -112,7 +113,8 @@ void Hierarchy::refine(std::vector<std::vector<RefinementInfo>> const& refinemen
 std::shared_ptr<Patch> Hierarchy::addNewPatch(RefinementInfo const& refineInfo,
                                               PatchInfo const& patchInfo)
 {
-    std::cout << "ADD NEW PATCH!" << std::endl;
+    Logger::Debug << "\t \t - adding new patch\n";
+    Logger::Debug.flush();
 
     std::shared_ptr<Patch> coarsePatch = refineInfo.parentPatch;
     Box refinedBox                     = refineInfo.refinedDomain;

@@ -9,6 +9,7 @@
 
 #include "amr/Splitting/splittingstrategyfactory.h"
 
+#include <utilities/print/outputs.h>
 
 #include <cmath>
 
@@ -240,7 +241,7 @@ std::unique_ptr<ElectromagInitializer> SimpleInitializerFactory::createElectroma
     std::unique_ptr<ElectromagInitializer> eminit{new ElectromagInitializer{
         layout_, std::move(electricField), std::move(magneticField), "_EField", "_BField"}};
 
-    std::cout << "creating Simple ElectromagInitializer" << std::endl;
+    Logger::Debug << "creating Simple ElectromagInitializer\n";
 
     return eminit;
 }

@@ -6,7 +6,7 @@
 #include "amr/Patch/patch.h"
 #include "data/Electromag/electromag.h"
 #include "diagnostics/FieldDiagnostics/fielddiagnostic.h"
-
+#include <utilities/print/outputs.h>
 
 class EMDiagnostic : public FieldDiagnostic
 {
@@ -31,7 +31,8 @@ public:
 
     FieldPack virtual compute(Patch const& patch) override
     {
-        std::cout << "computing ElectricDiag " << std::endl;
+        Logger::Debug << "\t - computing ElectricDiag \n";
+        Logger::Debug.flush();
         FieldPack pack;
 
         PatchData const& patchData = patch.data();
@@ -62,7 +63,8 @@ public:
 
     FieldPack virtual compute(Patch const& patch) override
     {
-        std::cout << "computing MagneticDiag " << std::endl;
+        Logger::Debug << "\t - computing MagneticDiag\n";
+        Logger::Debug.flush();
         FieldPack pack;
 
         PatchData const& patchData = patch.data();

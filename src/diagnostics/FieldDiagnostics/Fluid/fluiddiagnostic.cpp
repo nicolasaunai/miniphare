@@ -1,9 +1,13 @@
 #include "fluiddiagnostic.h"
 #include "amr/Patch/patchdata.h"
 
+#include <utilities/print/outputs.h>
+
 FieldPack RhoSpeciesDiag::compute(Patch const& patch)
 {
-    std::cout << "computing RhoSpeciesDiag" << speciesName_ << std::endl;
+    Logger::Debug << "\t - computing RhoSpeciesDiag" << speciesName_ << "\n";
+    Logger::Debug.flush();
+
     FieldPack pack;
 
     PatchData const& patchData = patch.data();
@@ -19,7 +23,8 @@ FieldPack RhoSpeciesDiag::compute(Patch const& patch)
 
 FieldPack FluxSpeciesDiag::compute(Patch const& patch)
 {
-    std::cout << "computing FluxSpeciesDiag for species " << speciesName_ << std::endl;
+    Logger::Debug << "\t - computing FluxSpeciesDiag for species " << speciesName_ << "\n";
+    Logger::Debug.flush();
     FieldPack pack;
 
     PatchData const& patchData = patch.data();

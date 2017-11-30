@@ -14,25 +14,29 @@
 #include "diagnostics/diagnosticmanager.h"
 #include "initializer/simulationinitializerfactory.h"
 
+#include "utilities/print/outputs.h"
 
 
-
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-    std::cout << "Welcome to : " << std::endl;
+    Logger::setVerbosity(Logger::NormalVerbosity);
+    Logger::Info << "Welcome to : \n";
 
-    std::cout << R"(
+    Logger::Info << R"(
                  __  __ _____ _   _ _____ _____  _    _          _____  ______
                 |  \/  |_   _| \ | |_   _|  __ \| |  | |   /\   |  __ \|  ____|
                 | \  / | | | |  \| | | | | |__) | |__| |  /  \  | |__) | |__
                 | |\/| | | | | . ` | | | |  ___/|  __  | / /\ \ |  _  /|  __|
                 | |  | |_| |_| |\  |_| |_| |    | |  | |/ ____ \| | \ \| |____
                 |_|  |_|_____|_| \_|_____|_|    |_|  |_/_/    \_\_|  \_\______| v1.0)"
-              << std::endl
-              << std::endl;
+                 << "\n\n";
 
 
 
+
+    Logger::Info << Logger::hline;
+    Logger::Info << "INITIALIZATION\n";
+    Logger::Info << Logger::hline;
 
     std::unique_ptr<SimulationInitializerFactory> initFactory = fromCommandLine(argc, argv);
 
@@ -48,16 +52,24 @@ int main(int argc, char *argv[])
     MLMD mlmdManager{*initFactory};
     mlmdManager.initializeRootLevel(patchHierarchy);
 
+    Logger::Info << Logger::hline;
+    Logger::Info << "STARTING MAIN SIMULATION LOOP\n";
+    Logger::Info << Logger::hline;
+    Logger::Info.flush();
+
 
     for (uint32 it = 0; it < timeManager->nbrIter(); ++it)
     {
-        std::cout << "itime = " << it << std::endl;
-
-        std::cout << timeManager->currentTime() << std::endl;
+        Logger::Info << "time/Iteration : " << timeManager->currentTime() << " / "
+                     << timeManager->currentIteration() << "\n";
+        Logger::Info.flush();
 
         mlmdManager.evolveFullDomain(patchHierarchy, it);
         diagnosticManager.compute(*timeManager, patchHierarchy);
         diagnosticManager.save(*timeManager);
         timeManager->advance();
+
+        Logger::Info << Logger::sharpLine;
+        Logger::Info.flush();
     }
 }

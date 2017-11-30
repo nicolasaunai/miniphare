@@ -55,9 +55,6 @@ std::unique_ptr<ElectromagInitializer> AsciiInitializerFactory::createElectromag
     std::unique_ptr<ElectromagInitializer> eminit{new ElectromagInitializer{
         layout_, std::move(electricField), std::move(magneticField), "_EField", "_BField"}};
 
-    std::cout << "creating INI ElectromagInitializer" << std::endl;
-
-
     return eminit;
 }
 

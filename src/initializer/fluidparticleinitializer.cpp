@@ -3,7 +3,7 @@
 #include <random>
 
 #include "fluidparticleinitializer.h"
-
+#include <utilities/print/outputs.h>
 
 
 FluidParticleInitializer::FluidParticleInitializer(
@@ -41,7 +41,7 @@ void maxwellianVelocity(std::array<double, 3> V, double Vth, std::mt19937_64 gen
 
 void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles) const
 {
-    std::cout << "FluidParticleInitializer : loading particles for 1D run... ";
+    Logger::Debug << "\t - 1D Fluid Particle Initializer\n";
     double dx;
     dx = layout_.dx();
 
@@ -102,7 +102,6 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
             particles.push_back(std::move(tmpParticle));
         }
     }
-    std::cout << " OK!" << std::endl;
 }
 
 
@@ -110,7 +109,7 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
 
 void FluidParticleInitializer::loadParticles2D_(std::vector<Particle>& particles) const
 {
-    std::cout << "2D particle loader\n";
+    Logger::Debug << "\t - 2D Fluid Particle Initializer\n";
     double dx, dy;
     dx = layout_.dx();
     dy = layout_.dy();
@@ -186,7 +185,7 @@ void FluidParticleInitializer::loadParticles2D_(std::vector<Particle>& particles
 
 void FluidParticleInitializer::loadParticles3D_(std::vector<Particle>& particles) const
 {
-    std::cout << "3D particle loader\n";
+    Logger::Debug << "\t - 3D Fluid Particle Initializer\n";
     double dx, dy, dz;
     dx = layout_.dx();
     dy = layout_.dy();
@@ -277,9 +276,6 @@ void FluidParticleInitializer::loadParticles3D_(std::vector<Particle>& particles
  */
 void FluidParticleInitializer::loadParticles(std::vector<Particle>& particles) const
 {
-    std::cout << "FluidParticleInitializer : I'm loading particles with Fluid profiles"
-              << std::endl;
-    std::cout << "total number of particles : " << particles.size() << std::endl;
     switch (layout_.nbDimensions())
     {
         case 1: loadParticles1D_(particles); break;
@@ -288,8 +284,7 @@ void FluidParticleInitializer::loadParticles(std::vector<Particle>& particles) c
 
         case 3: loadParticles3D_(particles); break;
     }
-
-    std::cout << "total number of particles : " << particles.size() << std::endl;
+    Logger::Debug << "\t - Number of particles loaded : " << particles.size() << "\n";
 }
 
 

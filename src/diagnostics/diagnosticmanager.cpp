@@ -8,7 +8,7 @@
 #include "ParticleDiagnostics/particlediagnostic.h"
 
 #include "utilities/particleselectorfactory.h"
-
+#include <utilities/print/outputs.h>
 
 uint32 DiagnosticsManager::id = 0;
 
@@ -18,6 +18,14 @@ DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> in
     , exportStrat_{ExportStrategyFactory::makeExportStrategy(initializer->exportType)}
     , scheduler_{}
 {
+    Logger::Debug << "Building Diagnostics manager\n";
+    Logger::Debug << "\t - Electromag Diagnostics : " << initializer->emInitializers.size() << "\n";
+    Logger::Debug << "\t - Fluid Diagnostics      : " << initializer->fluidInitializers.size()
+                  << "\n";
+    Logger::Debug << "\t - Particle Diagnostics   : " << initializer->partInitializers.size()
+                  << "\n";
+    Logger::Debug.flush();
+
     // first initialize all electromagnetic diagnostics
     for (uint32 iDiag = 0; iDiag < initializer->emInitializers.size(); ++iDiag)
     {
@@ -46,6 +54,8 @@ DiagnosticsManager::DiagnosticsManager(std::unique_ptr<DiagnosticInitializer> in
     }
 
     // then initialize all orbit, probes, etc. diagnostics
+    Logger::Info << Logger::hline;
+    Logger::Info.flush();
 }
 
 // TODO : add 'id' to diagnostic fields too so that each of them
@@ -95,6 +105,8 @@ void DiagnosticsManager::newParticleDiagnostic(PartDiagInitializer const& init)
  */
 void DiagnosticsManager::compute(Time const& timeManager, Hierarchy const& hierarchy)
 {
+    Logger::Debug << "Computing diagnostics\n";
+    Logger::Debug.flush();
     for (auto& diag : emDiags_)
     {
         if (scheduler_.isTimeToCompute(timeManager, diag->id()))
@@ -127,6 +139,8 @@ void DiagnosticsManager::compute(Time const& timeManager, Hierarchy const& hiera
  */
 void DiagnosticsManager::save(Time const& timeManager)
 {
+    Logger::Debug << "Writing diagnostics on disk\n";
+    Logger::Debug.flush();
     for (auto& diag : emDiags_)
     {
         if (scheduler_.isTimeToWrite(timeManager, diag->id()))

@@ -105,8 +105,6 @@ public:
     {
         correctedEMfields_ = EMfields_;
         ampere_(EMfields_.getB(), Jtot_);
-
-        std::cout << "creating patch boundary\n";
     }
 
     virtual ~PatchBoundary() = default;

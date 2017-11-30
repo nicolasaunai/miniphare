@@ -3,7 +3,7 @@
 
 
 #include "particlediagnostic.h"
-
+#include <utilities/print/outputs.h>
 
 
 /**
@@ -37,7 +37,8 @@ void ParticleDiagnostic::flushPacks()
 
 ParticlePack ParticleDiagnostic::compute_(Patch const& patch)
 {
-    std::cout << "computing RhoSpeciesDiag" << speciesName_ << std::endl;
+    Logger::Debug << "computing RhoSpeciesDiag" << speciesName_ << "\n";
+
     ParticlePack pack;
 
     PatchData const& patchData             = patch.data();
@@ -50,7 +51,6 @@ ParticlePack ParticleDiagnostic::compute_(Patch const& patch)
         if (selectorPtr_->pick(part, layout))
             selectedParticles.push_back(part);
     }
-
 
     fillPack_(pack, selectedParticles, layout);
 

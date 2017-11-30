@@ -1,12 +1,16 @@
 #include "patch.h"
-
+#include "utilities/print/outputs.h"
 
 
 void Patch::init()
 {
-    std::cout << "init Patch...";
+    Logger::Debug << "Initialize patch data\n";
+    Logger::Debug.flush();
+
     data_.initPatchPhysicalDomain();
-    std::cout << " Patch initialization: OK\n";
+
+    Logger::Debug << "Patch initialization OK\n";
+    Logger::Debug.flush();
 }
 
 

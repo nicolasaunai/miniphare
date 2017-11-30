@@ -10,7 +10,7 @@ include_directories("./")
 add_executable(test_asciiinitializer ${SOURCES})
 target_link_libraries(test_asciiinitializer gtest gtest_main)
 target_link_libraries(test_asciiinitializer gmock gmock_main)
-target_link_libraries(test_asciiinitializer phareinitializer pharecore pharedata)
+target_link_libraries(test_asciiinitializer phareinitializer pharecore pharedata phareutilities)
 add_test(NAME test-asciiinitializerfactory COMMAND test_asciiinitializer)
 add_custom_command(TARGET test_asciiinitializer
                    POST_BUILD
