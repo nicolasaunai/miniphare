@@ -264,6 +264,8 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
 
     EMDiagInitializer emDiag;
     emDiag.typeName = "E";
+    emDiag.path     = ".";
+    emDiag.diagName = "EMDiag1";
     // emDiag.computingIterations.insert(emDiag.computingIterations.end(), {1,10,20,25});
     // emDiag.writingIterations.insert(emDiag.writingIterations.end(), {1,10,20,25});
     emDiag.computingIterations = iters;
@@ -272,6 +274,8 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
 
     EMDiagInitializer BDiag;
     BDiag.typeName = "B";
+    BDiag.path     = ".";
+    BDiag.diagName = ".";
     // BDiag.computingIterations.insert(BDiag.computingIterations.end(), {1,10,20,25});
     // BDiag.writingIterations.insert(BDiag.writingIterations.end(), {1,10,20,25});
     BDiag.computingIterations = iters;
@@ -282,6 +286,8 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
     FluidDiagInitializer fluidDiag;
     fluidDiag.speciesName         = "proton1";
     fluidDiag.typeName            = "rho_s";
+    fluidDiag.path                = ".";
+    fluidDiag.diagName            = "FluidDiag1";
     fluidDiag.computingIterations = iters;
     fluidDiag.writingIterations   = iters;
     initializer->fluidInitializers.push_back(std::move(fluidDiag));
@@ -290,6 +296,8 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
     FluidDiagInitializer fluidDiag2;
     fluidDiag2.speciesName         = "proton1";
     fluidDiag2.typeName            = "flux_s";
+    fluidDiag2.diagName            = "FluidDiag2";
+    fluidDiag2.path                = ".";
     fluidDiag2.computingIterations = iters;
     fluidDiag2.writingIterations   = iters;
     initializer->fluidInitializers.push_back(std::move(fluidDiag2));
