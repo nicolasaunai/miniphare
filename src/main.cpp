@@ -14,6 +14,7 @@
 #include "diagnostics/diagnosticmanager.h"
 #include "initializer/simulationinitializerfactory.h"
 
+#include "gitsha1.h"
 #include "utilities/print/outputs.h"
 
 
@@ -28,8 +29,10 @@ int main(int argc, char* argv[])
                 | \  / | | | |  \| | | | | |__) | |__| |  /  \  | |__) | |__
                 | |\/| | | | | . ` | | | |  ___/|  __  | / /\ \ |  _  /|  __|
                 | |  | |_| |_| |\  |_| |_| |    | |  | |/ ____ \| | \ \| |____
-                |_|  |_|_____|_| \_|_____|_|    |_|  |_/_/    \_\_|  \_\______| v1.0)"
+                |_|  |_|_____|_| \_|_____|_|    |_|  |_/_/    \_\_|  \_\______|)"
                  << "\n\n";
+    Logger::Info << "Version: " << g_GIT_SHA1 << "\n";
+    Logger::Info << "Compile time:" << __DATE__ << " " << __TIME__ << "\n\n";
 
 
 
