@@ -52,10 +52,9 @@ public:
 
             interpOrder = static_cast<uint32>(reader.GetInteger("simulation", "interporder", 1));
 
-            nbrSpecies
-                = static_cast<uint32>(reader.GetInteger("simulation", "nbrionpopulations", 1));
 
-            modelName = reader.Get("model", "model_name", "ERROR_NO_MODEL");
+            modelName  = reader.Get("model", "model_name", "ERROR_NO_MODEL");
+            nbrSpecies = static_cast<uint32>(reader.GetInteger("model", "nbrionpopulations", 1));
 
             // browse species and get their charge, mass and initial model name
             for (auto speciesIndex = 0u; speciesIndex < nbrSpecies; ++speciesIndex)

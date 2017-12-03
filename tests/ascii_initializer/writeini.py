@@ -22,14 +22,15 @@ def main():
                             "boundaryConditionz":"periodic",
                             "layout":"yee",
                             "interpOrder":1,
-                            "nbrIonPopulations":2,
                             "timeStep":0.001,
                             "numOfSteps":1000,
                             "particlePusher":"modifiedBoris",
-                            "splittingMethod":"splitOrderN_RF2"
+                            "splittingMethod":"splitOrderN_RF2",
+                            "diagExportType":"ascii"
                             }
 
     config['model'] = { "model_name":"uniform",
+                        "nbrIonPopulations":2,
                         "speciesName0":"proton1",
                         "nbrParticlesPerCell0":100,
                         "charge0":1,
