@@ -93,6 +93,8 @@ public:
                     ndims--;
             }
 
+            exportStrategy = reader.Get("simulation", "diagExportType", "ascii");
+
 
             // search for Diagnostics blocks
             // section names are (unkonwn) diagnostic names so we search for
@@ -153,6 +155,8 @@ public:
     std::string modelName;
     double dt;
     uint32 nbrSteps;
+
+    std::string exportStrategy;
     std::unordered_map<std::string, DiagInfos> diagInfos;
     // std::vector<DiagInfos> diagInfos;
 

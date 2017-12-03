@@ -7,8 +7,10 @@
 #include "initializer/initmodel/init_model_factory.h"
 #include <core/BoundaryConditions/boundary_conditions.h>
 #include <core/BoundaryConditions/domainboundarycondition.h>
+#include <diagnostics/Export/exportstrategytypes.h>
 #include <initializer/fluidparticleinitializer.h>
 #include <utilities/utilities.h>
+
 
 AsciiInitializerFactory::AsciiInitializerFactory(std::string const& filename)
     : iniData_{filename}
@@ -145,6 +147,10 @@ std::unique_ptr<DiagnosticInitializer> AsciiInitializerFactory::createDiagnostic
         }
     }
 
+    if (iniData_.exportStrategy == "ascii")
+    {
+        initializer->exportType = ExportStrategyType::ASCII;
+    }
 
     // here add ParticleDiagInitializer
 

@@ -23,8 +23,8 @@ public:
     Time(double timeStep, double startTime, double duration)
         : dt_{timeStep}
         , startTime_{startTime} //, endTime_{startTime + duration}
-        //, duration_{duration}
         , currentTime_{startTime}
+        , iteration_{0}
         , nbrIterations_{}
     {
         nbrIterations_ = static_cast<uint32>(static_cast<std::size_t>(duration / dt_));
