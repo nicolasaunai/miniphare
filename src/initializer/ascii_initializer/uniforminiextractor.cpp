@@ -43,9 +43,12 @@ void UniformINIExtractor::initializeModel(INIData& iniData, InitModel* model) co
 
             uniformModel->setV0(vx, vy, vz, speciesIndex);
 
-            double T = iniData.reader.GetReal("model", "temperature" + indexStr, 0.1);
+            double beta = iniData.reader.GetReal("model", "betaRatio" + indexStr, 1.);
 
-            uniformModel->setVth(T, speciesIndex);
+            uniformModel->setBeta(beta, speciesIndex);
+
+            double aniso = iniData.reader.GetReal("model", "anisotropy" + indexStr, 1.);
+            uniformModel->setAnisotropy(aniso, speciesIndex);
 
 
             auto mass = iniData.reader.GetReal("model", "mass" + indexStr, 1);

@@ -73,11 +73,11 @@ public:
 
     // InitModel Interface
     virtual uint32 nbParticlesPerCell(uint32 speciesIndex) const override;
+
     virtual std::vector<std::unique_ptr<ParticleInitializer>> particleInitializers() const override;
 
     virtual std::unique_ptr<VectorFunction> electricFunction() const override;
     virtual std::unique_ptr<VectorFunction> magneticFunction() const override;
-
 
     virtual std::vector<uint32> nbrsParticlesPerCell() const override;
 
@@ -90,7 +90,8 @@ public:
     void setNbrSpecies(uint32 nbrSpecies);
     void setDensity(double n, uint32 speciesIndex);
     void setV0(double vx, double vy, double vz, uint32 speciesIndex);
-    void setVth(double Vth, uint32 speciesIndex);
+    void setBeta(double beta, uint32 speciesIndex);
+    void setAnisotropy(double Vth, uint32 speciesIndex);
     void setMass(double mass, uint32 speciesIndex);
     void setCharges(double charge, uint32 speciesIndex);
     void setNbrParticlesPerCell(uint32 nbr, uint32 speciesIndex);
@@ -101,11 +102,11 @@ public:
 
 private:
     std::unique_ptr<ScalarFunction> density(uint32 speciesIndex) const;
-    std::unique_ptr<ScalarFunction> thermalSpeed(uint32 speciesIndex) const;
+    std::unique_ptr<VectorFunction> thermalSpeed(uint32 speciesIndex) const;
     std::unique_ptr<VectorFunction> bulkVelocity(uint32 speciesIndex) const;
 
     std::vector<std::unique_ptr<ScalarFunction>> densities_() const;
-    std::vector<std::unique_ptr<ScalarFunction>> thermalSpeeds_() const;
+    std::vector<std::unique_ptr<VectorFunction>> thermalSpeeds_() const;
     std::vector<std::unique_ptr<VectorFunction>> bulkVelocities_() const;
 
     GridLayout layout_;
@@ -115,8 +116,9 @@ private:
     std::vector<double> vx_;
     std::vector<double> vy_;
     std::vector<double> vz_;
-    std::vector<double> Vth_;
+    std::vector<double> betas_;
 
+    std::vector<double> speciesAnisotropy_;
     std::vector<double> speciesMasses_;
     std::vector<double> speciesCharges_;
     std::vector<uint32> nbrParticlesPerCell_;

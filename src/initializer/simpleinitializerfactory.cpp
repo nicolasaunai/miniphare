@@ -67,14 +67,18 @@ public:
 };
 
 
-class ThermalSpeed : public ScalarFunction
+class ThermalSpeed : public VectorFunction
 {
-    virtual double operator()(double x, double y, double z) override
+    virtual std::array<double, 3> operator()(double x, double y, double z) override
     {
         (void)x;
         (void)y;
         (void)z;
-        return 0.001;
+        std::array<double, 3> vec;
+        vec[0] = 0.5;
+        vec[1] = 0.5;
+        vec[2] = 0.5;
+        return vec;
     }
 };
 
@@ -167,7 +171,7 @@ std::unique_ptr<IonsInitializer> SimpleInitializerFactory::createIonsInitializer
     // ionInitPtr->names.push_back("proton2");
 
     std::unique_ptr<ScalarFunction> density{new Density{}};
-    std::unique_ptr<ScalarFunction> thermalSpeed{new ThermalSpeed{}};
+    std::unique_ptr<VectorFunction> thermalSpeed{new ThermalSpeed{}};
     std::unique_ptr<VectorFunction> bulkVelocity{new BulkVelocity{}};
 
     // TODO those rvalues should be moved so ParticleInitializer should have noexcept move Ctor.

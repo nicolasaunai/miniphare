@@ -1,7 +1,9 @@
 
 
 #include "uniform_model.h"
+#include <cmath>
 #include <initializer/fluidparticleinitializer.h>
+#include <numeric>
 
 
 void UniformModel::setNbrSpecies(uint32 nbrSpecies)
@@ -10,7 +12,7 @@ void UniformModel::setNbrSpecies(uint32 nbrSpecies)
     vx_.resize(nbrSpecies);
     vy_.resize(nbrSpecies);
     vz_.resize(nbrSpecies);
-    Vth_.resize(nbrSpecies);
+    betas_.resize(nbrSpecies);
     speciesCharges_.resize(nbrSpecies);
     speciesMasses_.resize(nbrSpecies);
     nbrParticlesPerCell_.resize(nbrSpecies);
@@ -45,10 +47,20 @@ void UniformModel::setV0(double vx, double vy, double vz, uint32 speciesIndex)
 }
 
 
-void UniformModel::setVth(double Vth, uint32 speciesIndex)
+void UniformModel::setBeta(double beta, uint32 speciesIndex)
 {
-    Vth_[static_cast<std::size_t>(speciesIndex)] = Vth;
+    betas_[static_cast<std::size_t>(speciesIndex)] = beta;
 }
+
+
+
+void UniformModel::setAnisotropy(double aniso, uint32 speciesIndex)
+{
+    speciesAnisotropy_[static_cast<std::size_t>(speciesIndex)] = aniso;
+}
+
+
+
 
 void UniformModel::setMass(double mass, uint32 speciesIndex)
 {
@@ -74,9 +86,25 @@ std::unique_ptr<ScalarFunction> UniformModel::density(uint32 speciesIndex) const
 
 
 
-std::unique_ptr<ScalarFunction> UniformModel::thermalSpeed(uint32 speciesIndex) const
+std::unique_ptr<VectorFunction> UniformModel::thermalSpeed(uint32 speciesIndex) const
 {
-    return std::unique_ptr<ScalarFunction>{new UniformScalarFunction{Vth_[speciesIndex]}};
+    auto beta = betas_[speciesIndex];
+
+    auto aniso   = speciesAnisotropy_[speciesIndex];
+    auto mass    = speciesMasses_[speciesIndex];
+    auto density = n0_[speciesIndex];
+
+    auto rho    = density * mass;
+    auto b2     = bx_ * bx_ + by_ * by_ + bz_ * bz_;
+    auto traceP = 0.5 * 3 * b2 * beta;
+
+    auto Pperp = traceP / (aniso + 2.);
+    auto Ppara = Pperp * aniso;
+
+    auto VthPara = std::sqrt(Ppara / rho);
+    auto VthPerp = std::sqrt(Pperp / rho);
+
+    return std::unique_ptr<VectorFunction>{new UniformVectorFunction{VthPara, VthPerp, VthPerp}};
 }
 
 
@@ -115,9 +143,9 @@ std::vector<std::unique_ptr<ScalarFunction>> UniformModel::densities_() const
 
 
 
-std::vector<std::unique_ptr<ScalarFunction>> UniformModel::thermalSpeeds_() const
+std::vector<std::unique_ptr<VectorFunction>> UniformModel::thermalSpeeds_() const
 {
-    std::vector<std::unique_ptr<ScalarFunction>> thermalSpeedFunctions;
+    std::vector<std::unique_ptr<VectorFunction>> thermalSpeedFunctions;
     uint32 nbrSpecies = static_cast<uint32>(speciesMasses_.size());
 
     for (uint32 speciesIndex = 0; speciesIndex < nbrSpecies; ++speciesIndex)
@@ -146,7 +174,7 @@ std::vector<std::unique_ptr<VectorFunction>> UniformModel::bulkVelocities_() con
 std::vector<std::unique_ptr<ParticleInitializer>> UniformModel::particleInitializers() const
 {
     std::vector<std::unique_ptr<ScalarFunction>> densities      = densities_();
-    std::vector<std::unique_ptr<ScalarFunction>> thermalSpeeds  = thermalSpeeds_();
+    std::vector<std::unique_ptr<VectorFunction>> thermalSpeeds  = thermalSpeeds_();
     std::vector<std::unique_ptr<VectorFunction>> bulkVelocities = bulkVelocities_();
 
     std::size_t nbrSpecies = densities.size();
@@ -158,7 +186,7 @@ std::vector<std::unique_ptr<ParticleInitializer>> UniformModel::particleInitiali
         std::unique_ptr<ParticleInitializer> pinit{new FluidParticleInitializer{
             layout_, std::move(densities[speciesIndex]), std::move(bulkVelocities[speciesIndex]),
             std::move(thermalSpeeds[speciesIndex]), nbrParticlesPerCell_[speciesIndex],
-            speciesCharges_[speciesIndex]}};
+            speciesCharges_[speciesIndex], Base::Magnetic, magneticFunction()}};
 
         partInits.push_back(std::move(pinit));
     }
