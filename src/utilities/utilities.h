@@ -26,7 +26,7 @@ T norm(std::array<T, 3> vec)
 
 
 
-void localMagneticBasis(std::array<double, 3> B, std::array<std::array<double, 3>, 3> basis);
+void localMagneticBasis(std::array<double, 3> B, std::array<std::array<double, 3>, 3>& basis);
 
 
 

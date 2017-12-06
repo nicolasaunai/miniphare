@@ -19,7 +19,7 @@ std::array<double, 3> basisTransform(const std::array<std::array<double, 3>, 3> 
 
 
 
-void localMagneticBasis(std::array<double, 3> B, std::array<std::array<double, 3>, 3> basis)
+void localMagneticBasis(std::array<double, 3> B, std::array<std::array<double, 3>, 3>& basis)
 {
     auto b2 = norm(B);
 
@@ -55,8 +55,8 @@ void localMagneticBasis(std::array<double, 3> B, std::array<std::array<double, 3
         basis[1][2] /= vecNorm;
 
         // last vector is just the cross product of the first two vectors
-        basis[1][0] = basis[0][1] * basis[1][2] - basis[0][2] * basis[1][1];
-        basis[1][1] = basis[0][2] * basis[1][0] - basis[0][0] * basis[1][2];
-        basis[1][2] = basis[0][0] * basis[1][1] - basis[0][1] * basis[1][0];
+        basis[2][0] = basis[0][1] * basis[1][2] - basis[0][2] * basis[1][1];
+        basis[2][1] = basis[0][2] * basis[1][0] - basis[0][0] * basis[1][2];
+        basis[2][2] = basis[0][0] * basis[1][1] - basis[0][1] * basis[1][0];
     }
 }

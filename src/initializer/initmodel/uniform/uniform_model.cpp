@@ -15,6 +15,7 @@ void UniformModel::setNbrSpecies(uint32 nbrSpecies)
     betas_.resize(nbrSpecies);
     speciesCharges_.resize(nbrSpecies);
     speciesMasses_.resize(nbrSpecies);
+    speciesAnisotropy_.resize(nbrSpecies);
     nbrParticlesPerCell_.resize(nbrSpecies);
 }
 
