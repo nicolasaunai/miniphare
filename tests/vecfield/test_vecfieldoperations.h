@@ -69,6 +69,43 @@ struct basicVecFieldParams
 
 
 
+struct getVariationParams
+{
+    basicVecFieldParams vfPars;
+
+    double dt;
+
+    getVariationParams() = default;
+
+    getVariationParams(AllocSizeT xCompo, HybridQuantity compoType,
+                       std::array<std::string, 3> names, std::array<double, 3> unif_t1,
+                       std::array<double, 3> unif_t2, std::array<double, 3> expected, double dt)
+        : vfPars{xCompo, compoType, names, unif_t1, unif_t2, expected}
+        , dt{dt}
+    {
+    }
+};
+
+
+
+struct timeInterpolationParams
+{
+    basicVecFieldParams vfPars;
+
+    double dt, delta;
+
+    timeInterpolationParams() = default;
+
+    timeInterpolationParams(AllocSizeT xCompo, HybridQuantity compoType,
+                            std::array<std::string, 3> names, std::array<double, 3> unif_t1,
+                            std::array<double, 3> unif_t2, std::array<double, 3> expected,
+                            double dt, double delta)
+        : vfPars{xCompo, compoType, names, unif_t1, unif_t2, expected}
+        , dt{dt}
+        , delta{delta}
+    {
+    }
+};
 
 
 // --------------------------------------------------------
@@ -99,6 +136,18 @@ public:
 class test_getVariation : public ::testing::TestWithParam<getVariationParams>
 {
 public:
+    getVariationParams inputs;
+
+    const double precision = std::numeric_limits<float>::epsilon();
+
+    VecField expected_variation;
+    VecField actual_variation;
+
+    test_getVariation() = default;
+
+    ~test_getVariation() = default;
+
+    void SetUp();
 };
 
 // --------------------------------------------------------
@@ -108,6 +157,18 @@ public:
 class test_timeInterpolation : public ::testing::TestWithParam<timeInterpolationParams>
 {
 public:
+    timeInterpolationParams inputs;
+
+    const double precision = std::numeric_limits<float>::epsilon();
+
+    VecField expected_interpolation;
+    VecField actual_interpolation;
+
+    test_timeInterpolation() = default;
+
+    ~test_timeInterpolation() = default;
+
+    void SetUp();
 };
 
 

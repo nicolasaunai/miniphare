@@ -30,6 +30,20 @@ basicVecFieldParams timeAverageExamples[] = {
     basicVecFieldParams(AllocSizeT{100, 1, 1}, HybridQuantity::V, {{"vft1", "vft2", "vf_avg"}},
                         {{-10., -100., -1.e9}}, {{10., 100., 1.e9}}, {{0., 0., 0.}})};
 
+getVariationParams timeVariationExamples[] = {
+
+    getVariationParams(AllocSizeT{100, 1, 1}, HybridQuantity::V, {{"vft1", "vft2", "vf_var"}},
+                       {{1., 10., 100.}}, {{2., 20., 200.}}, {{10., 100., 1000.}}, 0.1),
+    getVariationParams(AllocSizeT{100, 1, 1}, HybridQuantity::V, {{"vft1", "vft2", "vf_var"}},
+                       {{-10., -100., -1.e9}}, {{-10., -100., -1.e9}}, {{0., 0., 0.}}, 2.)};
+
+timeInterpolationParams timeInterpolationExamples[] = {
+
+    timeInterpolationParams(AllocSizeT{100, 1, 1}, HybridQuantity::V, {{"vft1", "vft2", "vf_var"}},
+                            {{1., 10., 100.}}, {{2., 20., 200.}}, {{1.5, 15., 150.}}, 0.1, 0.05),
+    timeInterpolationParams(AllocSizeT{100, 1, 1}, HybridQuantity::V, {{"vft1", "vft2", "vf_var"}},
+                            {{-10., -100., -1.e9}}, {{-10., -100., -1.e9}}, {{-10., -100., -1.e9}},
+                            2., 2.)};
 
 // --------------------------------------------------------
 //
@@ -64,6 +78,72 @@ void test_timeAverage::SetUp()
 }
 
 
+// --------------------------------------------------------
+//
+//           GET VARIATION TEST
+//
+// --------------------------------------------------------
+void test_getVariation::SetUp()
+{
+    inputs = GetParam();
+    print(inputs);
+
+    VecField vft1, vft2;
+
+    buildVecFields(inputs.vfPars, vft1, vft2, expected_variation);
+
+    UniformVectorFunction unifFunc_t1(inputs.vfPars.uniformValues_t1);
+    UniformVectorFunction unifFunc_t2(inputs.vfPars.uniformValues_t2);
+    UniformVectorFunction unifFunc_exp(inputs.vfPars.unif_expected);
+
+    // Now, we fill VecField objects using uniform vector Functions
+    fillComponent_(vft1, unifFunc_t1);
+    fillComponent_(vft2, unifFunc_t2);
+    fillComponent_(expected_variation, unifFunc_exp);
+
+    // Build actual variation VecField
+    actual_variation = VecField(
+        inputs.vfPars.xComponent, inputs.vfPars.xComponent, inputs.vfPars.xComponent,
+        {{inputs.vfPars.componentType, inputs.vfPars.componentType, inputs.vfPars.componentType}},
+        "actual_variation");
+
+    // Now, we use getVariation(...) method to compute the actual VecField
+    getVariation(vft1, vft2, actual_variation, inputs.dt);
+}
+
+
+// --------------------------------------------------------
+//
+//           TIME INTERPOLATION TEST
+//
+// --------------------------------------------------------
+void test_timeInterpolation::SetUp()
+{
+    inputs = GetParam();
+    print(inputs);
+
+    VecField vft1, vft2;
+
+    buildVecFields(inputs.vfPars, vft1, vft2, expected_interpolation);
+
+    UniformVectorFunction unifFunc_t1(inputs.vfPars.uniformValues_t1);
+    UniformVectorFunction unifFunc_t2(inputs.vfPars.uniformValues_t2);
+    UniformVectorFunction unifFunc_exp(inputs.vfPars.unif_expected);
+
+    // Now, we fill VecField objects using uniform vector Functions
+    fillComponent_(vft1, unifFunc_t1);
+    fillComponent_(vft2, unifFunc_t2);
+    fillComponent_(expected_interpolation, unifFunc_exp);
+
+    // Build actual variation VecField
+    actual_interpolation = VecField(
+        inputs.vfPars.xComponent, inputs.vfPars.xComponent, inputs.vfPars.xComponent,
+        {{inputs.vfPars.componentType, inputs.vfPars.componentType, inputs.vfPars.componentType}},
+        "actual_interpolation");
+
+    // Now, we use timeInterpolation(...) method to compute the actual VecField
+    timeInterpolation(vft1, vft2, actual_interpolation, inputs.dt, inputs.delta);
+}
 
 
 
@@ -76,10 +156,24 @@ TEST_P(test_timeAverage, timeAverage)
     EXPECT_TRUE(AreVecfieldsEqual(expected_average, actual_average, precision));
 }
 
+TEST_P(test_getVariation, getVariation)
+{
+    EXPECT_TRUE(AreVecfieldsEqual(expected_variation, actual_variation, precision));
+}
+
+TEST_P(test_timeInterpolation, timeInterpolation)
+{
+    EXPECT_TRUE(AreVecfieldsEqual(expected_interpolation, actual_interpolation, precision));
+}
 
 
 INSTANTIATE_TEST_CASE_P(timeAverageTest, test_timeAverage, testing::ValuesIn(timeAverageExamples));
 
+INSTANTIATE_TEST_CASE_P(getVariationTest, test_getVariation,
+                        testing::ValuesIn(timeVariationExamples));
+
+INSTANTIATE_TEST_CASE_P(timeInterpolationTest, test_timeInterpolation,
+                        testing::ValuesIn(timeInterpolationExamples));
 
 
 int main(int argc, char** argv)
@@ -145,3 +239,19 @@ void print(basicVecFieldParams const& inputs)
 }
 
 
+void print(getVariationParams const& inputs)
+{
+    print(inputs.vfPars);
+
+    std::cout << "Time step = " << inputs.dt << std::endl;
+}
+
+
+
+void print(timeInterpolationParams const& inputs)
+{
+    print(inputs.vfPars);
+
+    std::cout << "Time step = " << inputs.dt << std::endl;
+    std::cout << "delta time step = " << inputs.delta << std::endl;
+}
