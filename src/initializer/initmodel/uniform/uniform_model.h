@@ -95,6 +95,7 @@ public:
     void setMass(double mass, uint32 speciesIndex);
     void setCharges(double charge, uint32 speciesIndex);
     void setNbrParticlesPerCell(uint32 nbr, uint32 speciesIndex);
+    void setBasis(Base basis, uint32 speciesIndex);
 
 
     virtual ~UniformModel() = default;
@@ -122,6 +123,7 @@ private:
     std::vector<double> speciesMasses_;
     std::vector<double> speciesCharges_;
     std::vector<uint32> nbrParticlesPerCell_;
+    std::vector<Base> speciesBasis_;
 };
 
 #endif // UNIFORM_MODEL_H

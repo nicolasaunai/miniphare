@@ -1,7 +1,7 @@
 
 #include "uniforminiextractor.h"
 #include "initializer/initmodel/uniform/uniform_model.h"
-
+#include "utilities/types.h"
 
 UniformINIExtractor::UniformINIExtractor()
 {
@@ -50,6 +50,9 @@ void UniformINIExtractor::initializeModel(INIData& iniData, InitModel* model) co
             double aniso = iniData.reader.GetReal("model", "anisotropy" + indexStr, 1.);
             uniformModel->setAnisotropy(aniso, speciesIndex);
 
+            auto basisStr = iniData.reader.Get("model", "basis" + indexStr, "magnetic");
+            auto basis    = (basisStr == "magnetic") ? Base::Magnetic : Base::Cartesian;
+            uniformModel->setBasis(basis, speciesIndex);
 
             auto mass = iniData.reader.GetReal("model", "mass" + indexStr, 1);
             uniformModel->setMass(mass, speciesIndex);

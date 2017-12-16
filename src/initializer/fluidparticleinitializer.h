@@ -5,9 +5,7 @@
 
 #include "data/Plasmas/particleinitializer.h"
 #include "data/grid/gridlayout.h"
-
-
-enum class Base { Magnetic, Cartesian };
+#include "utilities/types.h"
 
 
 /**

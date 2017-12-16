@@ -17,6 +17,7 @@ void UniformModel::setNbrSpecies(uint32 nbrSpecies)
     speciesMasses_.resize(nbrSpecies);
     speciesAnisotropy_.resize(nbrSpecies);
     nbrParticlesPerCell_.resize(nbrSpecies);
+    speciesBasis_.resize(nbrSpecies);
 }
 
 void UniformModel::setB0(double bx, double by, double bz)
@@ -79,6 +80,13 @@ void UniformModel::setNbrParticlesPerCell(uint32 nbr, uint32 speciesIndex)
 }
 
 
+void UniformModel::setBasis(Base basis, uint32 speciesIndex)
+{
+    speciesBasis_[static_cast<std::size_t>(speciesIndex)] = basis;
+}
+
+
+
 
 std::unique_ptr<ScalarFunction> UniformModel::density(uint32 speciesIndex) const
 {
@@ -94,20 +102,30 @@ std::unique_ptr<VectorFunction> UniformModel::thermalSpeed(uint32 speciesIndex) 
     auto aniso   = speciesAnisotropy_[speciesIndex];
     auto mass    = speciesMasses_[speciesIndex];
     auto density = n0_[speciesIndex];
+    auto basis   = speciesBasis_[speciesIndex];
 
     auto rho    = density * mass;
     auto b2     = bx_ * bx_ + by_ * by_ + bz_ * bz_;
     auto traceP = 0.5 * 3 * b2 * beta;
 
-    // find Pperp and Ppara knowing that Trace(P) = Ppara + 2*Pperp
-    // and Pperp/Ppara = aniso
-    auto Ppara = traceP / (1. + 2 * aniso);
-    auto Pperp = Ppara * aniso;
+    if (basis == Base::Magnetic)
+    {
+        // find Pperp and Ppara knowing that Trace(P) = Ppara + 2*Pperp
+        // and Pperp/Ppara = aniso
+        auto Ppara = traceP / (1. + 2 * aniso);
+        auto Pperp = Ppara * aniso;
 
-    auto VthPara = std::sqrt(Ppara / rho);
-    auto VthPerp = std::sqrt(Pperp / rho);
-
-    return std::unique_ptr<VectorFunction>{new UniformVectorFunction{VthPara, VthPerp, VthPerp}};
+        auto VthPara = std::sqrt(Ppara / rho);
+        auto VthPerp = std::sqrt(Pperp / rho);
+        return std::unique_ptr<VectorFunction>{
+            new UniformVectorFunction{VthPara, VthPerp, VthPerp}};
+    }
+    else
+    {
+        auto P   = traceP / 3.;
+        auto Vth = std::sqrt(P / rho);
+        return std::unique_ptr<VectorFunction>{new UniformVectorFunction{Vth, Vth, Vth}};
+    }
 }
 
 
@@ -189,7 +207,7 @@ std::vector<std::unique_ptr<ParticleInitializer>> UniformModel::particleInitiali
         std::unique_ptr<ParticleInitializer> pinit{new FluidParticleInitializer{
             layout_, std::move(densities[speciesIndex]), std::move(bulkVelocities[speciesIndex]),
             std::move(thermalSpeeds[speciesIndex]), nbrParticlesPerCell_[speciesIndex],
-            speciesCharges_[speciesIndex], Base::Magnetic, magneticFunction()}};
+            speciesCharges_[speciesIndex], speciesBasis_[speciesIndex], magneticFunction()}};
 
         partInits.push_back(std::move(pinit));
     }

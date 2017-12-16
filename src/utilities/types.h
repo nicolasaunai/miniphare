@@ -9,6 +9,8 @@ using uint64 = std::uint64_t;
 using int32  = std::int32_t;
 using int64  = std::int64_t;
 
+enum class Base { Magnetic, Cartesian };
+
 
 // using ScalarFunction = double (*)(double x, double y, double z);
 // using VectorFunction = std::array<double, 3> (*)(double x, double y, double z);
