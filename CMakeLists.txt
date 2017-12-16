@@ -92,6 +92,7 @@ if (test)
   add_subdirectory(tests/Splitting)
   add_subdirectory(tests/ascii_initializer)
   add_subdirectory(tests/utilities)
+  add_subdirectory(tests/uniform_model)
   #add_subdirectory(tests/Plasma)
 
 endif()
