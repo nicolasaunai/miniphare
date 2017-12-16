@@ -99,8 +99,10 @@ std::unique_ptr<VectorFunction> UniformModel::thermalSpeed(uint32 speciesIndex) 
     auto b2     = bx_ * bx_ + by_ * by_ + bz_ * bz_;
     auto traceP = 0.5 * 3 * b2 * beta;
 
-    auto Pperp = traceP / (aniso + 2.);
-    auto Ppara = Pperp * aniso;
+    // find Pperp and Ppara knowing that Trace(P) = Ppara + 2*Pperp
+    // and Pperp/Ppara = aniso
+    auto Ppara = traceP / (1. + 2 * aniso);
+    auto Pperp = Ppara * aniso;
 
     auto VthPara = std::sqrt(Ppara / rho);
     auto VthPerp = std::sqrt(Pperp / rho);
