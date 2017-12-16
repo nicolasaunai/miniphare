@@ -80,7 +80,7 @@ void UniformModel::setNbrParticlesPerCell(uint32 nbr, uint32 speciesIndex)
 }
 
 
-void UniformModel::setBasis(Base basis, uint32 speciesIndex)
+void UniformModel::setBasis(Basis basis, uint32 speciesIndex)
 {
     speciesBasis_[static_cast<std::size_t>(speciesIndex)] = basis;
 }
@@ -108,7 +108,7 @@ std::unique_ptr<VectorFunction> UniformModel::thermalSpeed(uint32 speciesIndex) 
     auto b2     = bx_ * bx_ + by_ * by_ + bz_ * bz_;
     auto traceP = 0.5 * 3 * b2 * beta;
 
-    if (basis == Base::Magnetic)
+    if (basis == Basis::Magnetic)
     {
         // find Pperp and Ppara knowing that Trace(P) = Ppara + 2*Pperp
         // and Pperp/Ppara = aniso

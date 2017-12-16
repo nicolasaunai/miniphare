@@ -51,7 +51,7 @@ void UniformINIExtractor::initializeModel(INIData& iniData, InitModel* model) co
             uniformModel->setAnisotropy(aniso, speciesIndex);
 
             auto basisStr = iniData.reader.Get("model", "basis" + indexStr, "magnetic");
-            auto basis    = (basisStr == "magnetic") ? Base::Magnetic : Base::Cartesian;
+            auto basis    = (basisStr == "magnetic") ? Basis::Magnetic : Basis::Cartesian;
             uniformModel->setBasis(basis, speciesIndex);
 
             auto mass = iniData.reader.GetReal("model", "mass" + indexStr, 1);

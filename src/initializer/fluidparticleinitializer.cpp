@@ -11,7 +11,7 @@ FluidParticleInitializer::FluidParticleInitializer(
     GridLayout const& layout, std::unique_ptr<ScalarFunction> densityProfile,
     std::unique_ptr<VectorFunction> bulkVelocityProfile,
     std::unique_ptr<VectorFunction> thermalSpeedProfile, uint32 nbrPartPerCell,
-    double particleCharge, Base base, std::unique_ptr<VectorFunction> magneticField)
+    double particleCharge, Basis base, std::unique_ptr<VectorFunction> magneticField)
     : ParticleInitializer{}
     , layout_{layout}
     , density_{std::move(densityProfile)}
@@ -95,7 +95,7 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
         cellWeight = n * cellVolume / nbrParticlePerCell_;
         std::uniform_real_distribution<float> randPosX(0., 1.);
 
-        if (base_ == Base::Magnetic)
+        if (base_ == Basis::Magnetic)
         {
             auto B = magneticField(x, origin.y, origin.z);
             localMagneticBasis(B, basis);
@@ -105,7 +105,7 @@ void FluidParticleInitializer::loadParticles1D_(std::vector<Particle>& particles
         {
             maxwellianVelocity(V, Vth, generator, particleVelocity);
 
-            if (base_ == Base::Magnetic)
+            if (base_ == Basis::Magnetic)
             {
                 particleVelocity = basisTransform(basis, particleVelocity);
             }
@@ -183,7 +183,7 @@ void FluidParticleInitializer::loadParticles2D_(std::vector<Particle>& particles
             std::uniform_real_distribution<float> randPosX(0., 1.);
             std::uniform_real_distribution<float> randPosY(0., 1.);
 
-            if (base_ == Base::Magnetic)
+            if (base_ == Basis::Magnetic)
             {
                 auto B = magneticField(x, y, origin.z);
                 localMagneticBasis(B, basis);
@@ -194,7 +194,7 @@ void FluidParticleInitializer::loadParticles2D_(std::vector<Particle>& particles
             {
                 maxwellianVelocity(V, Vth, generator, particleVelocity);
 
-                if (base_ == Base::Magnetic)
+                if (base_ == Basis::Magnetic)
                 {
                     particleVelocity = basisTransform(basis, particleVelocity);
                 }
@@ -279,7 +279,7 @@ void FluidParticleInitializer::loadParticles3D_(std::vector<Particle>& particles
                 std::uniform_real_distribution<float> randPosY(0., 1.);
                 std::uniform_real_distribution<float> randPosZ(0., 1.);
 
-                if (base_ == Base::Magnetic)
+                if (base_ == Basis::Magnetic)
                 {
                     auto B = magneticField(x, y, z);
                     localMagneticBasis(B, basis);
@@ -289,7 +289,7 @@ void FluidParticleInitializer::loadParticles3D_(std::vector<Particle>& particles
                 {
                     maxwellianVelocity(V, Vth, generator, particleVelocity);
 
-                    if (base_ == Base::Magnetic)
+                    if (base_ == Basis::Magnetic)
                     {
                         particleVelocity = basisTransform(basis, particleVelocity);
                     }

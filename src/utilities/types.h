@@ -9,7 +9,7 @@ using uint64 = std::uint64_t;
 using int32  = std::int32_t;
 using int64  = std::int64_t;
 
-enum class Base { Magnetic, Cartesian };
+enum class Basis { Magnetic, Cartesian };
 
 
 // using ScalarFunction = double (*)(double x, double y, double z);
