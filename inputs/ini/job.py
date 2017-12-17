@@ -12,7 +12,12 @@ class UniformModel(object):
         self.model = {"model":"model","model_name":"uniform"}
 
 
+#------------------------------------------------------------------------------
     def add_fields(self,B=(1.,0.,0.),E=(0.,0.,0.)):
+        """
+        defines electromagnetic fields of a uniform model_name
+        default is B=1.e_x and E=0.
+        """
         if len(B) != 3 or not isinstance(B,tuple) or not isinstance(B,list):
             ValueError("invalid B")
         if len(E) != 3 or not isinstance(E,tuple) or not isinstance(E,list):
@@ -25,28 +30,54 @@ class UniformModel(object):
                     "ey":E[1],
                     "ez":E[2]})
 
+#------------------------------------------------------------------------------
+
+    def nbr_species(self):
+        """
+        returns the number of species currently registered in the model
+        """
+        keys = self.model.keys()
+        nbr = 0
+        for k in keys:
+            if k.startswith('species'):
+                nbr += 1
+        return nbr
+
+#------------------------------------------------------------------------------
+
     def add_species(self,name,
                     charge=1,
                     mass=1,
                     nbrPartCell=100,
                     density=1.,
                     vbulk=(0.,0.,0.),
-                    temperature=0.0):
+                    beta=1.0,
+                    anisotropy=1.):
+        """
+        add a species to the current model
 
-        keys = self.model.keys()
-        nbr_species = 0
-        for k in keys:
-            if k[:7] == 'species':
-                nbr_species+=1
+        add_species(name,charge=1, mass=1, nbrPartCell=100, density=1, vbulk=(0,0,0), beta=1, anisotropy=1)
 
-        idx=str(nbr_species)
+        Parameters:
+        -----------
+        name        : name of the species, str
+        charge      : charge of the species particles, float (default = 1.)
+        nbrPartCell : number of particles per cell, int (default = 100)
+        density     : particle density, float (default = 1.)
+        vbulk       : bulk velocity, tuple of size 3  (default = (0,0,0))
+        beta        : beta of the species, float (default = 1)
+        anisotropy  : Pperp/Ppara of the species, float (default = 1)
+        """
+
+        idx=str(self.nbr_species())
 
         new_species = {"speciesName"+idx:name,
                        "charge"+idx:charge,
                        "mass"+idx:mass,
                        "density"+idx:density,
                        "vbulk"+idx:vbulk,
-                       "temperature"+idx:temperature,
+                       "beta"+idx:beta,
+                       "anisotropy"+idx:anisotropy,
                        "nbrParticlesPerCell"+idx:nbrPartCell}
 
         keys = self.model.keys()
@@ -54,13 +85,18 @@ class UniformModel(object):
             raise ValueError("species already registered")
 
         self.model.update(new_species)
-
+#------------------------------------------------------------------------------
 
     def to_dict(self):
         return self.model
 
+#------------------------------------------------------------------------------
 
 def add_dict_to_config(the_dict,conf, section_key="section"):
+    """
+    adds the dictionnary 'the_dict' to a config 'conf' under the section 'section_key'
+    if the section does not exist, it is created
+    """
     sections = conf.sections()
     this_section = the_dict[section_key]
     if this_section not in sections:
@@ -69,7 +105,7 @@ def add_dict_to_config(the_dict,conf, section_key="section"):
         if key != section_key:
             conf.set(the_dict[section_key], key, str(the_dict[key]))
 
-
+#------------------------------------------------------------------------------
 
 
 
@@ -80,24 +116,51 @@ class Simulation(object):
     em_diag_types=['E', 'B']
 
 
-    def __init__(self, time_step_nbr,
-                 boundary_types,
-                 cells,
-                 domain_size=None,
-                 dl=None,
-                 time_step=None,
-                 final_time=None,
-                 layout="yee",
-                 interp_order=1,
-                 nbr_ion_populations=1,
-                 particle_pusher="modifiedBoris",
-                 splitting_method="splitOrderN_RF2",
-                 origin=(0,0,0),
-                 path='.'):
+    def __init__(self, **kwargs):
+        """
+        1D run example: Simulation(time_step_nbr = 100, boundary_types="periodic", cells=80)
+        2D run example: Simulation(time_step_nbr = 100, boundary_types=("periodic","periodic"), cells=(80,20))
+        3D run example: Simulation(time_step_nbr = 100, boundary_types=("periodic","periodic","periodic"), cells=(80,20,40))
+
+        optional parameters:
+        -------------------
+
+        dl               : grid spacing dx, (dx,dy) or (dx,dy,dz) in 1D, 2D or 3D
+                           must be specified if 'domain_size' is not set
+        domain_size      : size of the physical domain Lx, (Lx,Ly), (Lx,Ly,Lz) in 1D, 2D or 3D
+                           must be specified if 'dl' is not set
+        final_time       : final simulation time. Must be set if 'time_step' is not
+        time_step        : simulation time step. Must be specified if 'final_time' is not
+        interp_order     : order of the particle/mesh interpolation. Either 1, 2, 3 or 4 (default=1)
+        layout           : layout of the physical quantities on the mesh (default = "yee")
+        origin           : origin of the physical domain, (default (0,0,0) in 3D)
+        splitting_method : method to split particles (default= "splitOrderN_RF2")
+        particle_pusher  : algo to push particles (default = "modifiedBoris")
+
+        """
+
+        if 'time_step_nbr' not in kwargs:
+            raise ValueError("Error : specify 'time_step_nbr'")
+
+        if 'boundary_types' not in kwargs:
+            raise ValueError("Error : specify 'boundary_types'")
+
+        if 'cells' not in kwargs:
+            raise ValueError("Error : specify 'cells'")
+
+                 #layout="yee",
+                 #nbr_ion_populations=1,
+                 #particle_pusher="modifiedBoris",
+                 #splitting_method="splitOrderN_RF2",
+                 #origin=(0,0,0),
+                 #path='.'):
 
         super(Simulation, self).__init__()
 
-        self.path = path
+        if 'path' in kwargs:
+            self.path = kwargs['path']
+        else:
+            self.path = './'
 
         def missingInfo(a,b):
             if a is None or b is None:
@@ -107,38 +170,40 @@ class Simulation(object):
                 raise ValueError("not iterable")
 
 
-        if domain_size is None:
-            missingInfo(cells, dl)
-            self.domain_size = [cell*d for cell,d in zip(cells,dl)]
-            self.cells = cells
-            self.dl = dl
+        if 'domain_size' not in kwargs:
+            missingInfo(kwargs['cells'], kwargs['dl'])
+            self.domain_size = [cell*d for cell,d in zip(kwargs["cells"],kwargs['dl'])]
+            self.cells = kwargs['cells']
+            self.dl = kwargs['dl']
 
-        elif dl is None:
-            missingInfo(domain_size,cells)
+        elif 'dl' not in kwargs:
+            missingInfo(kwargs['domain_size'],kwargs['cells'])
             self.dl= []
-            for L, n in zip(domain_size, cells):
+            for L, n in zip(kwargs['domain_size'], kwargs['cells']):
                 if n == 0:
                     self.dl.append(-1)
                 else:
                     self.dl.append(L/float(n))
-            self.cells = cells
-            self.domain_size = domain_size
+            self.cells = kwargs['cells']
+            self.domain_size = kwargs['domain_size']
 
 
-        self.time_step_nbr = time_step_nbr
-        if final_time is not None and time_step is not None:
+        self.time_step_nbr = kwargs['time_step_nbr']
+        if 'final_time' in kwargs and 'time_step' in kwargs:
             raise ValueError("specify either time_step or final_time not both")
-        if final_time is not None:
-            self.time_step = final_time/float(time_step_nbr)
-            self.final_time = final_time
+
+        if 'final_time' in kwargs:
+            self.time_step = kwargs['final_time']/float(kwargs['time_step_nbr'])
+            self.final_time = kwargs['final_time']
         else:
-            if time_step is not None:
-                self.final_time = time_step_nbr * time_step
-                self.time_step = time_step
+            if 'time_step' in kwargs:
+                self.final_time = kwargs['time_step_nbr'] * kwargs['time_step']
+                self.time_step = kwargs['time_step']
             else:
                 raise ValueError("specify time_step or final_time")
 
         # search dimension
+        cells = kwargs['cells']
         if cells[2] == 0:
             if cells[1] == 0:
                 self.dims = 1
@@ -150,37 +215,54 @@ class Simulation(object):
             else:
                 self.dims=3
 
+        if 'interp_order' not in kwargs:
+            self.interp_order=1
 
-        if interp_order not in [1,2,3,4]:
+        elif kwargs['interp_order'] not in [1,2,3,4]:
             raise ValueError("invalid interpolation order")
         else:
-            self.interp_order = interp_order
+            self.interp_order = kwargs['interp_order']
 
 
         error_bc_dim = "boundary_types must have {} dimension".format(self.dims)
-        if isinstance(boundary_types,list) or isinstance(boundary_types,tuple):
-            if self.dims == len(boundary_types):
-                self.boundary_types = boundary_types
+        if isinstance(kwargs['boundary_types'],list) or isinstance(kwargs['boundary_types'],tuple):
+            if self.dims == len(kwargs['boundary_types']):
+                self.boundary_types = kwargs['boundary_types']
             else:
                 raise ValueError(error_bc_dim)
         else:
             if self.dims==1:
                 self.boundary_types = []
-                self.boundary_types.append(boundary_types)
+                self.boundary_types.append(kwargs['boundary_types'])
             else:
-                print(self.cells, boundary_types)
+                print(self.cells, kwargs['boundary_types'])
                 raise ValueError(error_bc_dim)
 
 
-        self.nbr_ion_populations = nbr_ion_populations
-        self.origin = origin
-        self.layout = layout
-        self.splitting_method = splitting_method
+        # TODO: nbr_ion_populations must be a function that counts the species in a model
+        #self.nbr_ion_populations = nbr_ion_populations
 
-        if particle_pusher not in ["modifiedBoris"]:
-            raise ValueError("invalid pusher")
+        if 'origin' in kwargs:
+            self.origin = kwargs['origin']
         else:
-            self.particle_pusher = particle_pusher
+            self.origin = (0,0,0)
+
+        if 'layout' in kwargs:
+            self.layout = kwargs['layout']
+        else:
+            self.layout = "yee"
+
+        if 'splitting_method' in kwargs:
+            self.splitting_method = kwargs['splitting_method']
+        else:
+            self.splitting_method = "splitOrderN_RF2"
+
+        if 'particle_pusher' not in kwargs:
+            self.particle_pusher = "modifiedBoris"
+        else:
+            if particle_pusher not in ["modifiedBoris"]:
+                raise ValueError("invalid pusher")
+            self.particle_pusher = "modifiedBoris"
 
 
         self.fluid_diagnostics=[]
@@ -312,7 +394,10 @@ class TestSimulation(unittest.TestCase):
 
     def test_domain_size(self):
         for cells,dl,dim,bc in zip(self.cells_array, self.dl_array, self.dims,self.bcs):
-            j = Simulation(self.time_step_nbr, bc, cells ,dl=dl, final_time=self.final_time)
+            j = Simulation(time_step_nbr=self.time_step_nbr,
+                           boundary_types=bc,
+                           cells=cells ,dl=dl, final_time=self.final_time)
+
             for d in np.arange(dim):
                 self.assertEqual(j.domain_size[d], j.dl[d]*cells[d])
 
@@ -322,29 +407,41 @@ class TestSimulation(unittest.TestCase):
                                              self.domain_size_array,
                                              self.dims,
                                              self.bcs):
-            j = Simulation(self.time_step_nbr, bc, cells ,
+            j = Simulation(time_step_nbr=self.time_step_nbr,
+                           boundary_types=bc, cells=cells ,
                            domain_size=domain_size, final_time=self.final_time)
+
             for d in np.arange(dim):
                 self.assertEqual(j.dl[d], domain_size[d]/float(cells[d]))
 
 
 
     def test_boundary_conditions(self):
-        j = Simulation(1000, "periodic", (80,0,0) ,domain_size=(10,0,0), final_time=1.)
+        j = Simulation(time_step_nbr=1000, boundary_types="periodic",
+                       cells=(80,0,0), domain_size=(10,0,0), final_time=1.)
+
         for d in np.arange(j.dims):
             self.assertEqual("periodic", j.boundary_types[d])
 
 
     def test_assert_boundary_condition(self):
-        j= Simulation(1000, "periodic", (80,0,0) ,domain_size=(10,0,0), final_time=1000)
+        j= Simulation(time_step_nbr=1000,
+                      boundary_types="periodic",
+                      cells=(80,0,0), domain_size=(10,0,0), final_time=1000)
 
 
     def test_final_time(self):
-        s = Simulation(1000,"periodic",(80,0,0), domain_size=(10,0,0), time_step=0.01)
+        s = Simulation(time_step_nbr=1000,
+                       boundary_types="periodic",
+                       cells=(80,0,0),domain_size=(10,0,0), time_step=0.01)
+
         self.assertEqual(10,s.final_time)
 
     def test_time_step(self):
-        s = Simulation(1000,"periodic",(80,0,0), domain_size=(10,0,0), final_time=10)
+        s = Simulation(time_step_nbr=1000,
+                       boundary_types="periodic",
+                       cells=(80,0,0), domain_size=(10,0,0), final_time=10)
+
         self.assertEqual(0.01,s.time_step)
 
 
@@ -352,7 +449,12 @@ class TestSimulation(unittest.TestCase):
     def test_ini_file(self):
         """ serialize a simulation in an INI file and read it to check it is OK"""
 
-        simu = Simulation(1000,"periodic",(80,0,0),dl=(0.1,0,0), final_time=1.)
+        simu = Simulation(time_step_nbr=1000,
+                          boundary_types="periodic",
+                          cells=(80,0,0),
+                          dl=(0.1,0,0),
+                          final_time=1.)
+
         simu.add_fluid_diagnostics('FluidDiagnostics1','rho_s', 10, 5, 0, 1000, 'proton1')
         simu.add_fluid_diagnostics('FluidDiagnostics2','flux_s', 10, 5, 0, 1000, 'proton1')
         simu.add_electromag_diagnostics('ElectromagDiagnostics1','E', 10, 5, 0, 1000)
@@ -436,7 +538,13 @@ def prepare_job(simulation):
 
 if __name__ == '__main__':
 
-     simu = Simulation(1000,"periodic",(80,0,0),dl=(0.1,0,0), final_time=1.,path='test')
+     simu = Simulation(time_step_nbr=1000,
+                       boundary_types="periodic",
+                       cells=(80,0,0),
+                       dl=(0.1,0,0),
+                       final_time=1.,
+                       path='test')
+
      simu.add_fluid_diagnostics('FluidDiagnostics1','rho_s', 10, 5, 0, 1000, 'proton1')
      simu.add_fluid_diagnostics('FluidDiagnostics2','flux_s', 10, 5, 0, 1000, 'proton1')
      simu.add_electromag_diagnostics('ElectromagDiagnostics1','E', 10, 5, 0, 1000)
