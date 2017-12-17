@@ -61,6 +61,9 @@ class UniformModel(object):
         Parameters:
         -----------
         name        : name of the species, str
+
+        Optional Parameters:
+        -------------------
         charge      : charge of the species particles, float (default = 1.)
         nbrPartCell : number of particles per cell, int (default = 100)
         density     : particle density, float (default = 1.)
@@ -106,7 +109,6 @@ def add_dict_to_config(the_dict,conf, section_key="section"):
             conf.set(the_dict[section_key], key, str(the_dict[key]))
 
 #------------------------------------------------------------------------------
-
 
 
 class Simulation(object):
@@ -269,67 +271,152 @@ class Simulation(object):
         self.em_diagnostics=[]
         self.particle_diagnostics=[]
 
+#------------------------------------------------------------------------------
+    def add_fluid_diagnostics(self, **kwargs):
+        """
+        Example :
 
-    def add_fluid_diagnostics(self, name, diag_type,
-                              write_every, compute_every,
-                              istart, iend, species_name, path=None):
+        simu.add_fluid_diagnostics(name='FluidDiagnostics1',
+                                   diag_type='rho_s',
+                                   write_every=10,
+                                   compute_every=5,
+                                   start_iteration=0,
+                                   last_iteration=1000,
+                                   species_name='proton1')
 
-            if path is None:
-                path = name.lower()
+        if 'compute_every' is not specified, then it is set to 'write_every'
+        if 'last_iteration' is not specified then it is set to the simulation nbr of time steps
+        if 'start_iteration' is not specified then it is 0
+        """
 
-            if diag_type not in Simulation.fluid_diag_types:
-                raise ValueError("invalid diagnostic type : {}".format(diag_type))
+        if 'write_every' not in kwargs:
+            raise ValueError("Error: specify 'write_every'")
 
-            if write_every < compute_every:
-                raise ValueError("write_every should be >= compute_every")
+        if 'name' not in kwargs:
+            raise ValueError("Error: specify 'name'")
 
-            if istart >= iend:
-                raise ValueError("iStart should be < iEnd")
+        if 'diag_type' not in kwargs:
+            raise ValueError("Error: specify 'diag_type'")
 
-            for diag in self.fluid_diagnostics:
-                if name == diag["name"]:
-                    raise ValueError("diagnostic name already used")
+        if 'species_name' not in kwargs:
+            raise ValueError("Error: specify 'species_name'")
+
+        if 'start_iteration' not in kwargs:
+            start_iteration = 0
+        else:
+            start_iteration = kwargs['start_iteration']
+
+        if 'last_iteration' not in kwargs:
+            last_iteration = self.time_step_nbr
+        else:
+            last_iteration = kwargs['last_iteration']
+
+        if 'path' not in kwargs:
+            path = kwargs['name'].lower()
+        else:
+            path = kwargs['path']
+
+        if kwargs['diag_type'] not in Simulation.fluid_diag_types:
+            raise ValueError("invalid diagnostic type : {}".format(kwargs['diag_type']))
+
+        if 'compute_every' not in kwargs:
+            compute_every = kwargs['write_every']
+        else:
+            compute_every = kwargs['compute_every']
+
+        if kwargs['write_every'] < compute_every:
+            raise ValueError("write_every should be >= compute_every")
+
+        if start_iteration >= last_iteration:
+            raise ValueError("iStart should be < iEnd")
+
+        for diag in self.fluid_diagnostics:
+            if kwargs['name'] == diag["name"]:
+                raise ValueError("diagnostic name already used")
 
 
-            self.fluid_diagnostics.append({"name":name,
+        self.fluid_diagnostics.append({"name":kwargs['name'],
                                     "diagCategory":"FluidDiagnostics",
-                                    "diagType":diag_type,
-                                    "writeEvery":write_every,
+                                    "diagType":kwargs['diag_type'],
+                                    "writeEvery":kwargs['write_every'],
                                     "computeEvery":compute_every,
-                                    "iStart":istart,
-                                    "iEnd":iend,
-                                    "speciesName":species_name,
+                                    "iStart":start_iteration,
+                                    "iEnd":last_iteration,
+                                    "speciesName":kwargs['species_name'],
                                     "path":path})
+#------------------------------------------------------------------------------
 
-    def add_electromag_diagnostics(self, name, diag_type,
-                              write_every, compute_every,
-                              istart, iend, path=None):
+    def add_electromag_diagnostics(self, **kwargs):
 
-            if path is None:
-                path = name.lower()
+        """
+        Example :
 
-            if diag_type not in Simulation.em_diag_types:
-                raise ValueError("invalid diagnostic type : {}".format(diag_type))
+        simu.add_electromag_diagnostics(name='ElectromagDiagnostics1',
+                                        diag_type='E',
+                                        write_every=10,
+                                        compute_every=5,
+                                        start_iteration=0,
+                                        last_iteration=1000)
 
-            if write_every < compute_every:
-                raise ValueError("write_every should be >= compute_every")
+        if 'compute_every' is not specified, then it is set to 'write_every'
+        if 'last_iteration' is not specified then it is set to the simulation nbr of time steps
+        if 'start_iteration' is not specified then it is 0
+        """
 
-            if istart >= iend:
-                raise ValueError("iStart should be < iEnd")
+        if 'write_every' not in kwargs:
+            raise ValueError("Error: specify 'write_every'")
 
-            for diag in self.em_diagnostics:
-                if name == diag["name"]:
-                    raise ValueError("diagnostic name already used")
+        if 'name' not in kwargs:
+            raise ValueError("Error: specify 'name'")
 
-            self.em_diagnostics.append({"name":name,
+        if 'diag_type' not in kwargs:
+            raise ValueError("Error: specify 'diag_type'")
+
+
+        if 'start_iteration' not in kwargs:
+            start_iteration = 0
+        else:
+            start_iteration = kwargs['start_iteration']
+
+        if 'last_iteration' not in kwargs:
+            last_iteration = self.time_step_nbr
+        else:
+            last_iteration = kwargs['last_iteration']
+
+        if 'path' not in kwargs:
+            path = kwargs['name'].lower()
+        else:
+            path = kwargs['path']
+
+        if kwargs['diag_type'] not in Simulation.em_diag_types:
+            raise ValueError("invalid diagnostic type : {}".format(kwargs['diag_type']))
+
+        if 'compute_every' not in kwargs:
+            compute_every = kwargs['write_every']
+        else:
+            compute_every = kwargs['compute_every']
+
+        if kwargs['write_every'] < compute_every:
+            raise ValueError("write_every should be >= compute_every")
+
+        if start_iteration >= last_iteration:
+            raise ValueError("iStart should be < iEnd")
+
+        for diag in self.fluid_diagnostics:
+            if kwargs['name'] == diag["name"]:
+                raise ValueError("diagnostic name already used")
+
+        self.em_diagnostics.append({"name":kwargs['name'],
                                     "diagCategory":"ElectromagDiagnostics",
-                                    "diagType":diag_type,
-                                    "writeEvery":write_every,
+                                    "diagType":kwargs['diag_type'],
+                                    "writeEvery":kwargs['write_every'],
                                     "computeEvery":compute_every,
-                                    "iStart":istart,
-                                    "iEnd":iend,
+                                    "iStart":start_iteration,
+                                    "iEnd":last_iteration,
                                     "path":path})
 
+
+#------------------------------------------------------------------------------
 
 
     def write_ini_file(self, filename="phare.ini"):
@@ -369,10 +456,13 @@ class Simulation(object):
         with open(os.path.join(self.path,filename),"w") as config_file:
             config.write(config_file)
 
-
+#------------------------------------------------------------------------------
 
     def add_model(self,model):
         self.model = model
+
+#------------------------------------------------------------------------------
+
 
 
 ###############################################################################
@@ -455,10 +545,29 @@ class TestSimulation(unittest.TestCase):
                           dl=(0.1,0,0),
                           final_time=1.)
 
-        simu.add_fluid_diagnostics('FluidDiagnostics1','rho_s', 10, 5, 0, 1000, 'proton1')
-        simu.add_fluid_diagnostics('FluidDiagnostics2','flux_s', 10, 5, 0, 1000, 'proton1')
-        simu.add_electromag_diagnostics('ElectromagDiagnostics1','E', 10, 5, 0, 1000)
-        simu.add_electromag_diagnostics('ElectromagDiagnostics2','B', 20, 10, 0, 1000)
+        simu.add_fluid_diagnostics(name='FluidDiagnostics1',
+                                   diag_type='rho_s',
+                                   write_every=10,
+                                   compute_every=5,
+                                   start_iteration=0,
+                                   last_iteration=1000,
+                                   species_name='proton1')
+
+        simu.add_fluid_diagnostics(name='FluidDiagnostics2',
+                                   diag_type='flux_s',
+                                   write_every=10,
+                                   compute_every=5,
+                                   start_iteration=0,
+                                   last_iteration=1000,
+                                   species_name='proton1')
+
+        simu.add_electromag_diagnostics(name='ElectromagDiagnostics1',diag_type='E',
+                                        write_every=10,compute_every= 5,
+                                        start_iteration= 0, last_iteration=1000)
+
+        simu.add_electromag_diagnostics(name='ElectromagDiagnostics2',diag_type='B',
+                                        write_every=20, compute_every=10,
+                                        start_iteration= 0,last_iteration= 1000)
 
         model = UniformModel()
         model.add_fields()
@@ -516,6 +625,14 @@ class TestSimulation(unittest.TestCase):
 
 
 def prepare_job(simulation):
+    """
+    prepare a simulation for a run:
+        - creates the simulation directory [simulation.path] if it does not exist yet
+        - writes an INI file in the directory [simulation.path]
+        - for each diagnostic registered in the simulation:
+            - creates the diagnostic directory 'diag['path']' under [simulation.path]/
+              if it does not exist yet
+    """
 
     diagnostics = simulation.em_diagnostics + simulation.fluid_diagnostics
 
@@ -535,20 +652,44 @@ def prepare_job(simulation):
 
 
 
-
+###############################################################################
+#
+#                   usage example and run tests
+#
+#       the script: - creates a Simulation
+#                   - registers 2 fluid diagnostics to the Simulation
+#                   - registers 2 electromag diagnostics to the Simulation
+#                   - creates a model 'UniformModel'
+#                   - adds default electromagnetic fields to the model
+#                   - adds 2 proton species, the second has a density of 2.
+#                   - registers the model to the Simulation
+#                   - prepare the job directories and input file
+#
+#                   - executs unit tests of this module
+###############################################################################
 if __name__ == '__main__':
 
-     simu = Simulation(time_step_nbr=1000,
-                       boundary_types="periodic",
-                       cells=(80,0,0),
-                       dl=(0.1,0,0),
-                       final_time=1.,
-                       path='test')
+     simu = Simulation(time_step_nbr=1000, boundary_types="periodic",
+                       cells=(80,0,0), dl=(0.1,0,0),
+                       final_time=1., path='test')
 
-     simu.add_fluid_diagnostics('FluidDiagnostics1','rho_s', 10, 5, 0, 1000, 'proton1')
-     simu.add_fluid_diagnostics('FluidDiagnostics2','flux_s', 10, 5, 0, 1000, 'proton1')
-     simu.add_electromag_diagnostics('ElectromagDiagnostics1','E', 10, 5, 0, 1000)
-     simu.add_electromag_diagnostics('ElectromagDiagnostics2','B', 20, 10, 0, 1000)
+     simu.add_fluid_diagnostics(name='FluidDiagnostics1',
+                                diag_type='rho_s', write_every=10, compute_every=5,
+                                start_iteration=0, last_iteration=1000,
+                                species_name='proton1')
+
+     simu.add_fluid_diagnostics(name='FluidDiagnostics2',
+                                diag_type='flux_s', write_every=10, compute_every=5,
+                                start_iteration=0, last_iteration=1000,
+                                species_name= 'proton1')
+
+     simu.add_electromag_diagnostics(name='ElectromagDiagnostics1',diag_type='E',
+                                     write_every=10, compute_every=5,
+                                     start_iteration=0, last_iteration= 1000)
+
+     simu.add_electromag_diagnostics(name='ElectromagDiagnostics2',diag_type='B',
+                                     compute_every=10, write_every= 20,
+                                     start_iteration= 0, last_iteration= 1000)
 
      model = UniformModel()
      model.add_fields()
