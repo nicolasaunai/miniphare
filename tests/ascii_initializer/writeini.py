@@ -57,6 +57,13 @@ def main():
                         "ez":0.0}
 
 
+    config['mlmd'] = {"minratio":0.4,
+                      "maxratio":0.6,
+                      "refineatiteration":"0, 3",
+                      "leveltorefine":"0, 1",
+                      "patchtorefine":"0, 1"}
+
+
     config['FluidDiagnostics1'] = {"diagCategory":"FluidDiagnostics",
                                   "diagType":"rho_s",
                                   "writeEvery":10,

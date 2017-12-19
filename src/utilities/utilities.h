@@ -25,7 +25,7 @@ T norm(std::array<T, 3> vec)
 }
 
 
-std::vector<uint32> stripToString(std::string str);
+std::vector<uint32> stripStringToVector(std::string str);
 
 
 void localMagneticBasis(std::array<double, 3> B, std::array<std::array<double, 3>, 3>& basis);

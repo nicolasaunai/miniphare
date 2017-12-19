@@ -6,7 +6,7 @@
 
 
 
-std::vector<uint32> stripToString(std::string str)
+std::vector<uint32> stripStringToVector(std::string str)
 {
     // remove white spaces
     str.erase(remove_if(str.begin(), str.end(), isspace), str.end());

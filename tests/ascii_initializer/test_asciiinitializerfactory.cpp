@@ -1,17 +1,12 @@
 
-#include <array>
-#include <memory>
-#include <vector>
-
-#include "initializer/ascii_initializer/asciiinitializerfactory.h"
 #include "test_asciiinitializerfactory.h"
+#include "initializer/ascii_initializer/asciiinitializerfactory.h"
 #include <data/Plasmas/ionsinitializer.h>
 #include <data/Plasmas/particleinitializer.h>
 #include <data/Plasmas/particles.h>
 #include <utilities/Time/pharetime.h>
 
-#include "gmock/gmock.h"
-#include "gtest/gtest.h"
+
 
 
 test_asciiinitializerfactory::test_asciiinitializerfactory()
@@ -397,6 +392,19 @@ TEST(AsciiInitializerTest, DiagnosticsDefaultPathIsDiagnosticsName)
     }
 }
 
+
+TEST(AsciiInitializerTest, MLMDParametersOK)
+{
+    std::unique_ptr<SimulationInitializerFactory> factory{new AsciiInitializerFactory{"phare.ini"}};
+    std::unique_ptr<MLMDInitializer> mlmdInit = factory->createMLMDInitializer();
+
+    ASSERT_EQ(0.4, mlmdInit->mlmdInfos.minRatio);
+    ASSERT_EQ(0.6, mlmdInit->mlmdInfos.maxRatio);
+
+    EXPECT_TRUE(AreVectorsEqual({0, 3}, mlmdInit->mlmdInfos.refineAtIteration));
+    EXPECT_TRUE(AreVectorsEqual({0, 1}, mlmdInit->mlmdInfos.levelToRefine));
+    EXPECT_TRUE(AreVectorsEqual({0, 1}, mlmdInit->mlmdInfos.patchToRefine));
+}
 
 
 
