@@ -330,9 +330,12 @@ std::unique_ptr<MLMDInitializer> SimpleInitializerFactory::createMLMDInitializer
     patchInfos.refinementRatio = 2;
     patchInfos.userTimeStep    = timeStep();
 
-    mlmdInfos.fakeStratIteration     = {0}; // 0, 1
-    mlmdInfos.fakeStratLevelToRefine = {0}; // 0, 1
-    mlmdInfos.fakeStratPatchToRefine = {0}; // 0, 1
+    mlmdInfos.minRatio = 0.4;
+    mlmdInfos.maxRatio = 0.6;
+
+    mlmdInfos.refineAtIteration = {0}; // 0, 1
+    mlmdInfos.levelToRefine     = {0}; // 0, 1
+    mlmdInfos.patchToRefine     = {0}; // 0, 1
 
     std::unique_ptr<MLMDInitializer> initializer{
         new MLMDInitializer(layout_, patchInfos, mlmdInfos)};

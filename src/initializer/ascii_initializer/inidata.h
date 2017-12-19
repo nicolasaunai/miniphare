@@ -11,6 +11,16 @@
 #include <utilities/types.h>
 
 
+struct MLMDIniData
+{
+    double minRatio;
+    double maxRatio;
+    std::string refineAtIteration;
+    std::string levelToRefine;
+    std::string patchToRefine;
+};
+
+
 struct DiagInfos
 {
     int iStart;
@@ -94,13 +104,12 @@ public:
 
             exportStrategy = reader.Get("simulation", "diagExportType", "ascii");
 
-
-            // search for Diagnostics blocks
-            // section names are (unkonwn) diagnostic names so we search for
-            // any section that is not a standard section name (e.g. 'simulation')
             auto sections = reader.Sections();
             for (auto section : sections)
             {
+                // search for Diagnostics blocks
+                // section names are (unkonwn) diagnostic names so we search for
+                // any section that is not a standard section name (e.g. 'simulation')
                 if (section != "simulation" && section != "model")
                 {
                     DiagInfos infos;
@@ -120,6 +129,20 @@ public:
                     infos.path = reader.Get(section, "path", infos.diagName);
 
                     diagInfos[section] = std::move(infos);
+                }
+
+
+                if (section == "mlmd")
+                {
+                    MLMDIniData infos;
+
+                    infos.minRatio          = reader.GetReal(section, "minratio", 0.4);
+                    infos.maxRatio          = reader.GetReal(section, "maxratio", 0.6);
+                    infos.refineAtIteration = reader.Get(section, "refineatiteration", "");
+                    infos.levelToRefine     = reader.Get(section, "leveltorefine", "");
+                    infos.patchToRefine     = reader.Get(section, "patchtorefine", "");
+
+                    mlmdIniData = std::move(infos);
                 }
             }
         }
@@ -157,7 +180,8 @@ public:
 
     std::string exportStrategy;
     std::unordered_map<std::string, DiagInfos> diagInfos;
-    // std::vector<DiagInfos> diagInfos;
+    MLMDIniData mlmdIniData;
+
 
     INIReader reader;
 };

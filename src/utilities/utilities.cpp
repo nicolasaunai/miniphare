@@ -1,6 +1,33 @@
 
+#include <algorithm>
+#include <sstream>
 
 #include <utilities/utilities.h>
+
+
+
+std::vector<uint32> stripToString(std::string str)
+{
+    // remove white spaces
+    str.erase(remove_if(str.begin(), str.end(), isspace), str.end());
+
+    std::stringstream stream(str);
+
+    std::vector<uint32> vect;
+    uint32 ik;
+
+    // find integers and store them in a vector
+    while (stream >> ik)
+    {
+        vect.push_back(ik);
+
+        if (stream.peek() == ',')
+            stream.ignore();
+    }
+
+    return vect;
+}
+
 
 
 std::array<double, 3> basisTransform(const std::array<std::array<double, 3>, 3> basis,
@@ -15,7 +42,6 @@ std::array<double, 3> basisTransform(const std::array<std::array<double, 3>, 3> 
 
     return newVec;
 }
-
 
 
 

@@ -14,9 +14,9 @@ struct MLMDInfos
     double maxRatio;
 
     // MLMD refinement strategy
-    std::vector<uint32> fakeStratIteration;
-    std::vector<uint32> fakeStratLevelToRefine;
-    std::vector<uint32> fakeStratPatchToRefine;
+    std::vector<uint32> refineAtIteration;
+    std::vector<uint32> levelToRefine;
+    std::vector<uint32> patchToRefine;
 };
 
 

@@ -113,8 +113,6 @@ std::unique_ptr<DiagnosticInitializer> AsciiInitializerFactory::createDiagnostic
     std::unique_ptr<DiagnosticInitializer> initializer{new DiagnosticInitializer};
 
     std::unordered_map<std::string, DiagInfos> const& diagInfos = iniData_.diagInfos;
-    std::unordered_map<std::string, std::vector<std::size_t>> diagMap;
-
 
 
     for (auto const& infoPair : diagInfos)
@@ -164,19 +162,23 @@ std::unique_ptr<DiagnosticInitializer> AsciiInitializerFactory::createDiagnostic
 
 std::unique_ptr<MLMDInitializer> AsciiInitializerFactory::createMLMDInitializer() const
 {
-    MLMDInfos mlmdInfos;
     PatchInfos patchInfos;
 
-    // TODO: replace by information read from .ini file
     patchInfos.interpOrder     = interpolationOrder();
     patchInfos.pusher          = pusher();
     patchInfos.splitStrategies = splittingStrategies();
     patchInfos.refinementRatio = 2;
     patchInfos.userTimeStep    = timeStep();
 
-    mlmdInfos.fakeStratIteration     = {0}; // 0, 1
-    mlmdInfos.fakeStratLevelToRefine = {0}; // 0, 1
-    mlmdInfos.fakeStratPatchToRefine = {0}; // 0, 1
+    MLMDInfos mlmdInfos;
+    MLMDIniData const& mlmdini = iniData_.mlmdIniData;
+
+    mlmdInfos.minRatio = mlmdini.minRatio;
+    mlmdInfos.maxRatio = mlmdini.maxRatio;
+
+    mlmdInfos.refineAtIteration = stripToString(mlmdini.refineAtIteration);
+    mlmdInfos.levelToRefine     = stripToString(mlmdini.levelToRefine);
+    mlmdInfos.patchToRefine     = stripToString(mlmdini.patchToRefine);
 
     std::unique_ptr<MLMDInitializer> initializer{
         new MLMDInitializer(layout_, patchInfos, mlmdInfos)};
