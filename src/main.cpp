@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
                                                      initFactory->gridLayout(),
                                                      PatchData{*initFactory})};
 
-    MLMD mlmdManager{*initFactory};
+    MLMD mlmdManager{initFactory->createMLMDInitializer()};
     mlmdManager.initializeRootLevel(patchHierarchy);
 
     Logger::Info << Logger::hline;

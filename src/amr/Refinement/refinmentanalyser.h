@@ -1,6 +1,7 @@
 #ifndef REFINMENTANALYSER_H
 #define REFINMENTANALYSER_H
 
+#include "amr/MLMD/mlmdinfo.h"
 #include "amr/Patch/patch.h"
 #include "utilities/box.h"
 
@@ -14,17 +15,20 @@ private:
     // Initialize with an empty Box
     std::vector<Box> refinedVolumes_;
 
+    double minRatio_;
+    double maxRatio_;
+
     std::vector<uint32> const fakeStratIter_;
     std::vector<uint32> const fakeStratLevel_;
     std::vector<uint32> const fakeStratPatch_;
 
 public:
-    RefinementAnalyser(std::vector<uint32> const& fakeStratIter,
-                       std::vector<uint32> const& fakeStratLevel,
-                       std::vector<uint32> const& fakeStratPatch)
-        : fakeStratIter_{fakeStratIter}
-        , fakeStratLevel_{fakeStratLevel}
-        , fakeStratPatch_{fakeStratPatch}
+    RefinementAnalyser(MLMDInfos const& mlmdInfos)
+        : minRatio_{mlmdInfos.minRatio}
+        , maxRatio_{mlmdInfos.maxRatio}
+        , fakeStratIter_{mlmdInfos.fakeStratIteration}
+        , fakeStratLevel_{mlmdInfos.fakeStratLevelToRefine}
+        , fakeStratPatch_{mlmdInfos.fakeStratPatchToRefine}
     {
     }
 

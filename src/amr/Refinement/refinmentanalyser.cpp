@@ -44,8 +44,8 @@ bool RefinementAnalyser::refine(Patch const& patch)
 
     // The new patch must be aligned on the parent
     // primal nodes
-    int32 nbCell1 = static_cast<int32>(std::floor((0.4 * (box.x1 - box.x0)) / dx));
-    int32 nbCell2 = static_cast<int32>(std::floor((0.6 * (box.x1 - box.x0)) / dx));
+    int32 nbCell1 = static_cast<int32>(std::floor((minRatio_ * (box.x1 - box.x0)) / dx));
+    int32 nbCell2 = static_cast<int32>(std::floor((maxRatio_ * (box.x1 - box.x0)) / dx));
 
     double Lx1 = nbCell1 * dx;
     double Lx2 = nbCell2 * dx;

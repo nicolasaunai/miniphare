@@ -80,7 +80,7 @@ Hierarchy::evaluateRefinementNeed(uint32 refineRatio, GridLayout const& baseLayo
  * @param layoutTable
  */
 void Hierarchy::refine(std::vector<std::vector<RefinementInfo>> const& refinementTable,
-                       PatchInfo const& patchInfo)
+                       PatchInfos const& patchInfo)
 {
     uint32 nbrLevels = static_cast<uint32>(refinementTable.size());
 
@@ -111,7 +111,7 @@ void Hierarchy::refine(std::vector<std::vector<RefinementInfo>> const& refinemen
  * The new Patch is built from a MLMDInitializerFactory
  */
 std::shared_ptr<Patch> Hierarchy::addNewPatch(RefinementInfo const& refineInfo,
-                                              PatchInfo const& patchInfo)
+                                              PatchInfos const& patchInfo)
 {
     Logger::Debug << "\t \t - adding new patch\n";
     Logger::Debug.flush();

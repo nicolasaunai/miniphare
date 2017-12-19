@@ -60,10 +60,10 @@ public:
 
 
     std::shared_ptr<Patch> addNewPatch(RefinementInfo const& refineInfo,
-                                       PatchInfo const& patchInfo);
+                                       PatchInfos const& patchInfo);
 
     void refine(std::vector<std::vector<RefinementInfo>> const& refinementTable,
-                PatchInfo const& patchInfo);
+                PatchInfos const& patchInfo);
 
     RefinementInfoTable evaluateRefinementNeed(uint32 refineRatio, GridLayout const& baseLayout,
                                                RefinementAnalyser& analyser, uint32 iter);

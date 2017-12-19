@@ -4,12 +4,15 @@
 
 #include "asciiinitializerfactory.h"
 #include "ini_extractor_factory.h"
+
+#include "amr/MLMD/mlmdinfo.h"
+#include "amr/Patch/patchinfo.h"
+#include "core/BoundaryConditions/boundary_conditions.h"
+#include "core/BoundaryConditions/domainboundarycondition.h"
+#include "diagnostics/Export/exportstrategytypes.h"
+#include "initializer/fluidparticleinitializer.h"
 #include "initializer/initmodel/init_model_factory.h"
-#include <core/BoundaryConditions/boundary_conditions.h>
-#include <core/BoundaryConditions/domainboundarycondition.h>
-#include <diagnostics/Export/exportstrategytypes.h>
-#include <initializer/fluidparticleinitializer.h>
-#include <utilities/utilities.h>
+#include "utilities/utilities.h"
 
 
 AsciiInitializerFactory::AsciiInitializerFactory(std::string const& filename)
@@ -158,6 +161,28 @@ std::unique_ptr<DiagnosticInitializer> AsciiInitializerFactory::createDiagnostic
 }
 
 
+
+std::unique_ptr<MLMDInitializer> AsciiInitializerFactory::createMLMDInitializer() const
+{
+    MLMDInfos mlmdInfos;
+    PatchInfos patchInfos;
+
+    // TODO: replace by information read from .ini file
+    patchInfos.interpOrder     = interpolationOrder();
+    patchInfos.pusher          = pusher();
+    patchInfos.splitStrategies = splittingStrategies();
+    patchInfos.refinementRatio = 2;
+    patchInfos.userTimeStep    = timeStep();
+
+    mlmdInfos.fakeStratIteration     = {0}; // 0, 1
+    mlmdInfos.fakeStratLevelToRefine = {0}; // 0, 1
+    mlmdInfos.fakeStratPatchToRefine = {0}; // 0, 1
+
+    std::unique_ptr<MLMDInitializer> initializer{
+        new MLMDInitializer(layout_, patchInfos, mlmdInfos)};
+
+    return initializer;
+}
 
 
 std::unique_ptr<Time> AsciiInitializerFactory::createTimeManager() const

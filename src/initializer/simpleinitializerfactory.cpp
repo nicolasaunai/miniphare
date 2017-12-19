@@ -36,9 +36,7 @@ static const double k1 = 2 * pi / Lx;
 SimpleInitializerFactory::SimpleInitializerFactory()
     : timeManager_{0.01, 0., 10.}
     , layout_{{{dx, 0., 0.}}, {{nx, 0, 0}}, 1, "yee", Point{0., 0., 0.}, interpOrderConstant}
-    ,
-    // hard-coded... will come from input somehow
-    interpolationOrder_{interpOrderConstant}
+    , interpolationOrder_{interpOrderConstant}
     , pusher_{"modifiedBoris"}
     , splitMethods_{std::vector<std::string>{2, defaultSplitMethod}}
 {
@@ -316,6 +314,28 @@ std::unique_ptr<DiagnosticInitializer> SimpleInitializerFactory::createDiagnosti
     //    partDiag.writingIterations   = iters;
     //    initializer->partInitializers.push_back(std::move(partDiag));
 
+
+    return initializer;
+}
+
+
+std::unique_ptr<MLMDInitializer> SimpleInitializerFactory::createMLMDInitializer() const
+{
+    PatchInfos patchInfos;
+    MLMDInfos mlmdInfos;
+
+    patchInfos.interpOrder     = interpolationOrder();
+    patchInfos.pusher          = pusher();
+    patchInfos.splitStrategies = splittingStrategies();
+    patchInfos.refinementRatio = 2;
+    patchInfos.userTimeStep    = timeStep();
+
+    mlmdInfos.fakeStratIteration     = {0}; // 0, 1
+    mlmdInfos.fakeStratLevelToRefine = {0}; // 0, 1
+    mlmdInfos.fakeStratPatchToRefine = {0}; // 0, 1
+
+    std::unique_ptr<MLMDInitializer> initializer{
+        new MLMDInitializer(layout_, patchInfos, mlmdInfos)};
 
     return initializer;
 }

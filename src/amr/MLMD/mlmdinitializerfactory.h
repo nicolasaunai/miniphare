@@ -51,7 +51,7 @@ private:
 
 public:
     MLMDInitializerFactory(std::shared_ptr<Patch> parentPatch, Box const& newPatchCoords,
-                           GridLayout const& refinedLayout, PatchInfo const& patchInfo,
+                           GridLayout const& refinedLayout, PatchInfos const& patchInfo,
                            double dt_patch)
         : parentPatch_{parentPatch}
         , newPatchCoords_{newPatchCoords}

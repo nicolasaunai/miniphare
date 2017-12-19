@@ -25,6 +25,7 @@ public:
     virtual std::unique_ptr<SolverInitializer> createSolverInitializer() const override;
     virtual std::unique_ptr<BoundaryCondition> createBoundaryCondition() const override;
     virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() const override;
+    virtual std::unique_ptr<MLMDInitializer> createMLMDInitializer() const override;
     virtual std::unique_ptr<Time> createTimeManager() const override;
 
     virtual Box getBox() const override { return layout_.getBox(); }
@@ -40,7 +41,6 @@ public:
         return splitMethods_;
     }
 
-    // virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() = 0;
     // virtual std::unique_ptr<GridLayoutInitializer> createGridLayoutInitializer() = 0;
 
 private:

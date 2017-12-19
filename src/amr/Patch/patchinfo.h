@@ -7,7 +7,7 @@
 #include "utilities/types.h"
 
 
-struct PatchInfo
+struct PatchInfos
 {
     std::string pusher;
     uint32 interpOrder;
@@ -15,12 +15,6 @@ struct PatchInfo
     std::vector<std::string> splitStrategies;
 
     double userTimeStep; // base L0 time step
-
-    // this will help debug and tests
-    // for MLMD feature
-    std::vector<uint32> fakeStratIteration;
-    std::vector<uint32> fakeStratLevelToRefine;
-    std::vector<uint32> fakeStratPatchToRefine;
 };
 
 

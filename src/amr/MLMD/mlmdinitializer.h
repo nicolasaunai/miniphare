@@ -1,18 +1,40 @@
 #ifndef MLMDINITIALIZER_H
 #define MLMDINITIALIZER_H
 
+#include <vector>
+
+
+#include "amr/MLMD/mlmdinfo.h"
+#include "amr/Patch/patchinfo.h"
+#include "data/grid/gridlayout.h"
 #include "utilities/types.h"
 
 
-struct MLMDInitializer
+
+/**
+ * @brief The MLMDInitializer struct contains
+ * MLMD parameters
+ *
+ *
+ */
+class MLMDInitializer
 {
-//    std::vector<EMDiagInitializer> emInitializers;
-//    std::vector<FluidDiagInitializer> fluidInitializers;
-//    std::vector<PartDiagInitializer> partInitializers;
-//    ExportStrategyType exportType;
+public:
+    GridLayout baseLayout;
+    PatchInfos patchInfos;
 
+    MLMDInfos mlmdInfos;
 
+public:
+    MLMDInitializer(GridLayout const& baseLayout, PatchInfos const& patchInfos,
+                    MLMDInfos const& mlmdInfos)
+        : baseLayout{baseLayout}
+        , patchInfos{patchInfos}
+        , mlmdInfos{mlmdInfos}
+    {
+    }
 
+    MLMDInitializer() = default;
 };
 
 

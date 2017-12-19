@@ -5,6 +5,8 @@
 #include "data/grid/gridlayout.h"
 
 #include "amr/Hierarchy/hierarchy.h"
+#include "amr/MLMD/mlmdinfo.h"
+#include "amr/MLMD/mlmdinitializer.h"
 #include "amr/Patch/patchinfo.h"
 #include "amr/Splitting/splittingstrategy.h"
 
@@ -27,7 +29,10 @@ class MLMD
 private:
     // TODO: should be initialized by reading inputs parameters
     GridLayout baseLayout_;
-    PatchInfo patchInfos_;
+    PatchInfos patchInfos_;
+
+    // MLMD refinement strategy
+    MLMDInfos mlmdInfos_;
 
     void evolvePlasma_(Hierarchy& hierarchy, uint32 refineRatio);
     void recursivEvolve_(Patch& patch, uint32 ilevel, uint32 refineRatio, uint32 nbrSteps);
@@ -64,7 +69,8 @@ private:
 
 
 public:
-    MLMD(InitializerFactory const& initFactory);
+    MLMD(std::unique_ptr<MLMDInitializer> initializer);
+
     void initializeRootLevel(Hierarchy& patchHierarchy);
     void evolveFullDomain(Hierarchy& patchHierarchy, uint32 iter);
 

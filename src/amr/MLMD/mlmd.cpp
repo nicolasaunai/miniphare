@@ -15,26 +15,12 @@
 
 
 
-MLMD::MLMD(InitializerFactory const& initFactory)
-    : baseLayout_{GridLayout{initFactory.gridLayout()}}
+MLMD::MLMD(std::unique_ptr<MLMDInitializer> initializer)
+    : baseLayout_{initializer->baseLayout}
+    , patchInfos_{initializer->patchInfos}
+    , mlmdInfos_{initializer->mlmdInfos}
 {
-    patchInfos_.interpOrder     = initFactory.interpolationOrder();
-    patchInfos_.pusher          = initFactory.pusher();
-    patchInfos_.splitStrategies = initFactory.splittingStrategies();
-    patchInfos_.refinementRatio = 2;
-
-    patchInfos_.userTimeStep = initFactory.timeStep();
-
-    // will probably have to change the way objects are initialized.
-    // if we want, at some point, start from an already existing hierarchy
-    // (in case of restart for e.g.
-
-    patchInfos_.fakeStratIteration     = {0}; // 0, 1
-    patchInfos_.fakeStratLevelToRefine = {0}; // 0, 1
-    patchInfos_.fakeStratPatchToRefine = {0}; // 0, 0
 }
-
-
 
 
 void MLMD::initializeRootLevel(Hierarchy& patchHierarchy)
@@ -65,8 +51,7 @@ void MLMD::evolveFullDomain(Hierarchy& hierarchy, uint32 iter)
     evolvePlasma_(hierarchy, patchInfos_.refinementRatio);
 
     // build RefinementAnalyser here
-    RefinementAnalyser analyser{patchInfos_.fakeStratIteration, patchInfos_.fakeStratLevelToRefine,
-                                patchInfos_.fakeStratPatchToRefine};
+    RefinementAnalyser analyser{mlmdInfos_};
 
     // Here, AMR patches will say whether they need refinement
     // the ouput of this method is used by updateHierarchy()
