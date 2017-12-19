@@ -1,7 +1,9 @@
 #ifndef SIMULATIONINITIALIZERFACTORY_H
 #define SIMULATIONINITIALIZERFACTORY_H
 
+#include "amr/MLMD/mlmdinitializer.h"
 #include "diagnostics/diagnosticinitializer.h"
+
 #include "initializerfactory.h"
 #include "utilities/Time/pharetime.h"
 
@@ -9,6 +11,7 @@ class SimulationInitializerFactory : public InitializerFactory
 {
 public:
     virtual std::unique_ptr<DiagnosticInitializer> createDiagnosticInitializer() const = 0;
+    virtual std::unique_ptr<MLMDInitializer> createMLMDInitializer() const             = 0;
     virtual std::unique_ptr<Time> createTimeManager() const                            = 0;
     virtual bool inputError() const                                                    = 0;
 };
