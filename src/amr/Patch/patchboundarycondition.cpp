@@ -172,8 +172,11 @@ void PatchBoundaryCondition::removeOutgoingParticles_(
 
     // in case a particle leaves at more than 1 boundary, e.g. x AND y
     // its index will be found several times in the concatenated array
-    // so call unique() will remove doubles.
-    std::unique(leavingIndexes.begin(), leavingIndexes.end());
+    // so call unique() will locate doubles.
+    auto last = std::unique(leavingIndexes.begin(), leavingIndexes.end());
+
+    // call erase() will remove doubles
+    leavingIndexes.erase(last, leavingIndexes.end());
 
     // ok ready to remove particles now.
     removeParticles(leavingIndexes, particleArray);
