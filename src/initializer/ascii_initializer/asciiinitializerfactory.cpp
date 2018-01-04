@@ -146,6 +146,23 @@ std::unique_ptr<DiagnosticInitializer> AsciiInitializerFactory::createDiagnostic
                 = arange<uint32>(infos.iStart, infos.iEnd + infos.writeEvery, infos.writeEvery);
             initializer->emInitializers.push_back(std::move(emDiag));
         }
+
+        else if (infos.diagCategory == "ParticleDiagnostics")
+        {
+            PartDiagInitializer partDiag;
+            partDiag.diagName       = infos.diagName;
+            partDiag.selectorType   = infos.diagType;
+            partDiag.speciesName    = infos.speciesName;
+            partDiag.path           = infos.path;
+            partDiag.selectorParams = infos.selectorParams;
+
+            partDiag.computingIterations
+                = arange<uint32>(infos.iStart, infos.iEnd + infos.computeEvery, infos.computeEvery);
+            partDiag.writingIterations
+                = arange<uint32>(infos.iStart, infos.iEnd + infos.writeEvery, infos.writeEvery);
+
+            initializer->partInitializers.push_back(std::move(partDiag));
+        }
     }
 
     if (iniData_.exportStrategy == "ascii")
@@ -153,7 +170,6 @@ std::unique_ptr<DiagnosticInitializer> AsciiInitializerFactory::createDiagnostic
         initializer->exportType = ExportStrategyType::ASCII;
     }
 
-    // here add ParticleDiagInitializer
 
     return initializer;
 }

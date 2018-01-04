@@ -3,6 +3,9 @@
 
 
 #include "INIReader.h" // https://github.com/jtilly/inih
+
+#include <algorithm>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -32,6 +35,9 @@ struct DiagInfos
     std::string diagName;
     std::string speciesName;
     std::string path;
+
+    // specific for particle diagnostics
+    std::vector<double> selectorParams;
 };
 
 
@@ -138,6 +144,30 @@ public:
 
                     // default path for diagnostics is their name
                     infos.path = reader.Get(section, "path", infos.diagName);
+
+                    std::string category{infos.diagCategory};
+                    std::transform(infos.diagCategory.begin(), infos.diagCategory.end(),
+                                   category.begin(), ::tolower);
+
+                    if (category == "particlediagnostics")
+                    {
+                        std::string params_str;
+
+                        std::string diagtype{infos.diagType};
+                        std::transform(infos.diagType.begin(), infos.diagType.end(),
+                                       diagtype.begin(), ::tolower);
+
+                        if (diagtype == "spacebox")
+                        {
+                            params_str = reader.Get(section, "spaceparams", "0., 0.");
+
+                            std::istringstream sstream(params_str);
+                            std::string token;
+
+                            while (std::getline(sstream, token, ','))
+                                infos.selectorParams.push_back(std::stod(token));
+                        }
+                    }
 
                     diagInfos[section] = std::move(infos);
                 }

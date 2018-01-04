@@ -90,7 +90,7 @@ void DiagnosticsManager::newParticleDiagnostic(PartDiagInitializer const& init)
         = ParticleSelectorFactory::createParticleSelector(init.selectorType, init.selectorParams);
 
     std::unique_ptr<ParticleDiagnostic> partd{new ParticleDiagnostic{
-        id, init.diagname, init.path, init.speciesName, std::move(selector)}};
+        id, init.diagName, init.path, init.speciesName, std::move(selector)}};
 
     partDiags_.push_back(std::move(partd));
     scheduler_.registerDiagnostic(id, init.computingIterations, init.writingIterations);
