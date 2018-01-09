@@ -37,7 +37,7 @@ public:
                              std::unique_ptr<VectorFunction> bulkVelocityProfile,
                              std::unique_ptr<VectorFunction> thermalSpeedProfile,
                              uint32 nbrPartPerCell, double particleCharge,
-                             Basis base                                    = Basis::Magnetic,
+                             Basis base                                    = Basis::Cartesian,
                              std::unique_ptr<VectorFunction> magneticField = nullptr);
 
     virtual void loadParticles(std::vector<Particle>& particles) const override;
