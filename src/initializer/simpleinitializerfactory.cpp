@@ -333,8 +333,8 @@ std::unique_ptr<MLMDInitializer> SimpleInitializerFactory::createMLMDInitializer
     mlmdInfos.minRatio = 0.4;
     mlmdInfos.maxRatio = 0.6;
 
-    mlmdInfos.refineAtIteration = {0}; // 0, 1
-    mlmdInfos.levelToRefine     = {0}; // 0, 1
+    mlmdInfos.refineIterations = {0}; // 0, 1
+    mlmdInfos.levelsToRefine     = {0}; // 0, 1
     mlmdInfos.patchToRefine     = {0}; // 0, 1
 
     std::unique_ptr<MLMDInitializer> initializer{

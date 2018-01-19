@@ -15,7 +15,7 @@
 #include "amr/Splitting/splittingstrategy.h"
 #include "amr/Splitting/splittingstrategyfactory.h"
 
-#include "test_commons.h"
+#include "../test_commons.h"
 #include "test_exactsplitting1part.h"
 
 

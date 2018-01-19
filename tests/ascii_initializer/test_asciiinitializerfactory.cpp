@@ -1,12 +1,14 @@
 
-#include "test_asciiinitializerfactory.h"
+
+
+#include "data/Plasmas/ionsinitializer.h"
+#include "data/Plasmas/particleinitializer.h"
+#include "data/Plasmas/particles.h"
 #include "initializer/ascii_initializer/asciiinitializerfactory.h"
-#include <data/Plasmas/ionsinitializer.h>
-#include <data/Plasmas/particleinitializer.h>
-#include <data/Plasmas/particles.h>
-#include <utilities/Time/pharetime.h>
+#include "utilities/Time/pharetime.h"
 
-
+#include "../test_commons.h"
+#include "test_asciiinitializerfactory.h"
 
 
 test_asciiinitializerfactory::test_asciiinitializerfactory()
@@ -401,8 +403,8 @@ TEST(AsciiInitializerTest, MLMDParametersOK)
     ASSERT_EQ(0.4, mlmdInit->mlmdInfos.minRatio);
     ASSERT_EQ(0.6, mlmdInit->mlmdInfos.maxRatio);
 
-    EXPECT_TRUE(AreVectorsEqual({0, 3}, mlmdInit->mlmdInfos.refineAtIteration));
-    EXPECT_TRUE(AreVectorsEqual({0, 1}, mlmdInit->mlmdInfos.levelToRefine));
+    EXPECT_TRUE(AreVectorsEqual({0, 3}, mlmdInit->mlmdInfos.refineIterations));
+    EXPECT_TRUE(AreVectorsEqual({0, 1}, mlmdInit->mlmdInfos.levelsToRefine));
     EXPECT_TRUE(AreVectorsEqual({0, 1}, mlmdInit->mlmdInfos.patchToRefine));
 }
 

@@ -26,8 +26,8 @@ public:
     RefinementAnalyser(MLMDInfos const& mlmdInfos)
         : minRatio_{mlmdInfos.minRatio}
         , maxRatio_{mlmdInfos.maxRatio}
-        , fakeStratIter_{mlmdInfos.refineAtIteration}
-        , fakeStratLevel_{mlmdInfos.levelToRefine}
+        , fakeStratIter_{mlmdInfos.refineIterations}
+        , fakeStratLevel_{mlmdInfos.levelsToRefine}
         , fakeStratPatch_{mlmdInfos.patchToRefine}
     {
     }

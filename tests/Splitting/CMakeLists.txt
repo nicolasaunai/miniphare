@@ -5,8 +5,8 @@ set(SOURCES
      test_exactsplitting1part.cpp
      test_approxsplitting1part.cpp
      test_utilities.cpp
-     test_commons.cpp
      test_main.cpp
+     ../test_commons.cpp
     )
 
 

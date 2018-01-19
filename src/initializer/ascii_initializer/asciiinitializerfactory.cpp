@@ -176,9 +176,9 @@ std::unique_ptr<MLMDInitializer> AsciiInitializerFactory::createMLMDInitializer(
     mlmdInfos.minRatio = mlmdini.minRatio;
     mlmdInfos.maxRatio = mlmdini.maxRatio;
 
-    mlmdInfos.refineAtIteration = stripStringToVector(mlmdini.refineAtIteration);
-    mlmdInfos.levelToRefine     = stripStringToVector(mlmdini.levelToRefine);
-    mlmdInfos.patchToRefine     = stripStringToVector(mlmdini.patchToRefine);
+    mlmdInfos.refineIterations = stripStringToVector(mlmdini.refineAtIteration);
+    mlmdInfos.levelsToRefine   = stripStringToVector(mlmdini.levelToRefine);
+    mlmdInfos.patchToRefine    = stripStringToVector(mlmdini.patchToRefine);
 
     std::unique_ptr<MLMDInitializer> initializer{
         new MLMDInitializer(layout_, patchInfos, mlmdInfos)};

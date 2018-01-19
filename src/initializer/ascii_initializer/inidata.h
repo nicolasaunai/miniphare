@@ -104,13 +104,24 @@ public:
 
             exportStrategy = reader.Get("simulation", "diagExportType", "ascii");
 
+            // MLMD informations
+            MLMDIniData infos;
+
+            infos.minRatio          = reader.GetReal("mlmd", "minratio", 0.4);
+            infos.maxRatio          = reader.GetReal("mlmd", "maxratio", 0.6);
+            infos.refineAtIteration = reader.Get("mlmd", "refineatiteration", "");
+            infos.levelToRefine     = reader.Get("mlmd", "leveltorefine", "");
+            infos.patchToRefine     = reader.Get("mlmd", "patchtorefine", "");
+
+            mlmdIniData = std::move(infos);
+
             auto sections = reader.Sections();
             for (auto section : sections)
             {
                 // search for Diagnostics blocks
                 // section names are (unkonwn) diagnostic names so we search for
                 // any section that is not a standard section name (e.g. 'simulation')
-                if (section != "simulation" && section != "model")
+                if (section != "simulation" && section != "model" && section != "mlmd")
                 {
                     DiagInfos infos;
                     infos.diagType = reader.Get(section, "diagType", "ERROR_WRONG_DIAGTYPE");
@@ -129,20 +140,6 @@ public:
                     infos.path = reader.Get(section, "path", infos.diagName);
 
                     diagInfos[section] = std::move(infos);
-                }
-
-
-                if (section == "mlmd")
-                {
-                    MLMDIniData infos;
-
-                    infos.minRatio          = reader.GetReal(section, "minratio", 0.4);
-                    infos.maxRatio          = reader.GetReal(section, "maxratio", 0.6);
-                    infos.refineAtIteration = reader.Get(section, "refineatiteration", "");
-                    infos.levelToRefine     = reader.Get(section, "leveltorefine", "");
-                    infos.patchToRefine     = reader.Get(section, "patchtorefine", "");
-
-                    mlmdIniData = std::move(infos);
                 }
             }
         }

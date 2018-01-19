@@ -85,6 +85,7 @@ if (test)
   ##############
   # Unit Tests
   ##############
+  #add_subdirectory(tests)
   add_subdirectory(tests/Faraday)
   add_subdirectory(tests/GridLayout)
   add_subdirectory(tests/Pusher)

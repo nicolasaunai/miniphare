@@ -6,7 +6,8 @@
 #include <iostream>
 #include <string>
 
-#include "test_commons.h"
+#include "../test_commons.h"
+#include "test_utils.h"
 
 #include "test_pusher1d.h"
 

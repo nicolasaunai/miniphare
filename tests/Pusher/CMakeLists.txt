@@ -4,8 +4,9 @@ project (test-Pusher)
 set(SOURCES
      test_main.cpp
      test_utilities.cpp
-     test_commons.cpp
+     test_utils.cpp
      test_pusher1d.cpp
+     ../test_commons.cpp
     )
 
 
