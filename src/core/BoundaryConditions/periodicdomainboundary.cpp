@@ -244,6 +244,6 @@ void PeriodicDomainBoundary::applyOutgoingParticleBC(std::vector<Particle>& part
 void PeriodicDomainBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Pusher& pusher,
                                                      GridLayout const& patchLayout,
                                                      std::vector<Particle>& patchParticles,
-                                                     std::string const& species)
+                                                     std::string const& species, bool update)
 {
 }

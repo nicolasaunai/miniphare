@@ -269,15 +269,14 @@ void PatchBoundary::applyOutgoingParticleBC(std::vector<Particle>& particleArray
 void PatchBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Pusher& pusher,
                                             GridLayout const& patchLayout,
                                             std::vector<Particle>& particleArray,
-                                            std::string const& species)
+                                            std::string const& species, bool update)
 {
     uint32 iesp = ions_.speciesID(species);
 
     std::vector<Particle>& GCAparticles = ions_.species(iesp).particles();
 
     // default initialization
-    // std::vector<Particle> pushed_GCAparticles{GCAparticles};
-
+    std::vector<Particle> temporary_particles{GCAparticles};
 
     // TODO: define E
     VecField const& E = EMfields_.getE();
@@ -288,8 +287,18 @@ void PatchBoundary::applyIncomingParticleBC(BoundaryCondition& temporaryBC, Push
     // TODO: define interpolator
     Interpolator interpolator(patchLayout.order());
 
-    pusher.move(GCAparticles, GCAparticles, ions_.species(iesp).mass(), E, B, interpolator,
-                temporaryBC);
+
+    if (update)
+    {
+        pusher.move(GCAparticles, GCAparticles, ions_.species(iesp).mass(), E, B, interpolator,
+                    temporaryBC);
+    }
+    else
+    {
+        pusher.move(GCAparticles, temporary_particles, ions_.species(iesp).mass(), E, B,
+                    interpolator, temporaryBC);
+    }
+
     try
     {
         GCABoundaryCondition& boundaryCond = dynamic_cast<GCABoundaryCondition&>(temporaryBC);

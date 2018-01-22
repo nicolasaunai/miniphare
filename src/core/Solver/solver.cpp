@@ -253,6 +253,9 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
             pusher_->move(particles, particleArrayPred_, species.mass(), E, B, interpolator_,
                           boundaryCondition);
 
+            // we do not update GCA particles (flag set to false)
+            boundaryCondition.applyIncomingParticleBC(particleArrayPred_, pusher_->pusherType(),
+                                                      pusher_->dt(), species.name(), false);
 
             computeChargeDensityAndFlux(interpolator_, species, layout_, particleArrayPred_);
         }
@@ -268,16 +271,9 @@ void Solver::moveIons_(VecField const& E, VecField const& B, Ions& ions,
             // ------------------------------------------------------
             //                INCOMING PARTICLE BC
             // ------------------------------------------------------
-            // There are 2 prediction steps, particle positions and velocities
-            // obtained after the 1st prediction push are used to predict the electric field.
-            // But, this data is dispelled after use.
-            // Eventually, we only retain particle information deduced
-            // from the 2nd prediction step.
-            //
-            // Therefore we apply incoming particle boundary conditions only once,
-            // after the 2nd prediction step.
+            // we update GCA particles (flag set to true)
             boundaryCondition.applyIncomingParticleBC(particles, pusher_->pusherType(),
-                                                      pusher_->dt(), species.name());
+                                                      pusher_->dt(), species.name(), true);
 
             computeChargeDensityAndFlux(interpolator_, species, layout_, particles);
         }

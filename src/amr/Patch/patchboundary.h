@@ -121,7 +121,7 @@ public:
     virtual void applyIncomingParticleBC(BoundaryCondition& temporaryBC, Pusher& pusher,
                                          GridLayout const& patchLayout,
                                          std::vector<Particle>& particleArray,
-                                         std::string const& species) override;
+                                         std::string const& species, bool update) override;
 
     GridLayout const& layout() { return layout_; }
     GridLayout const& layout() const { return layout_; }

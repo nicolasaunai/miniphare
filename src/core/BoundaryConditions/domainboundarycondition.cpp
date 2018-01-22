@@ -82,7 +82,7 @@ void DomainBoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& par
 
 void DomainBoundaryCondition::applyIncomingParticleBC(std::vector<Particle>& particles,
                                                       std::string const& pusher, double const& dt,
-                                                      std::string const& species) const
+                                                      std::string const& species, bool update) const
 {
 }
 

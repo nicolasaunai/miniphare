@@ -185,8 +185,8 @@ void PatchBoundaryCondition::removeOutgoingParticles_(
 
 void PatchBoundaryCondition::applyIncomingParticleBC(std::vector<Particle>& patchArray,
                                                      std::string const& pusherType,
-                                                     double const& dt,
-                                                     std::string const& species) const
+                                                     double const& dt, std::string const& species,
+                                                     bool update) const
 {
     for (auto&& bc : boundaries_)
     {
@@ -201,7 +201,8 @@ void PatchBoundaryCondition::applyIncomingParticleBC(std::vector<Particle>& patc
         // Declare Pusher
         std::unique_ptr<Pusher> pusher{PusherFactory::createPusher(bc->layout(), pusherType, dt)};
 
-        bc->applyIncomingParticleBC(*temporaryBC, *pusher, patchLayout_, patchArray, species);
+        bc->applyIncomingParticleBC(*temporaryBC, *pusher, patchLayout_, patchArray, species,
+                                    update);
     }
 }
 

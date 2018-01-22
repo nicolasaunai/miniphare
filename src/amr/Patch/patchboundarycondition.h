@@ -56,7 +56,7 @@ public:
 
     virtual void applyIncomingParticleBC(std::vector<Particle>& patchArray,
                                          std::string const& pusherType, double const& dt,
-                                         std::string const& species) const override;
+                                         std::string const& species, bool update) const override;
 
     void initializeGCAparticles();
 

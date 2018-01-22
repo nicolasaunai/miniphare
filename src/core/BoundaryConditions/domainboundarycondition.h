@@ -46,7 +46,7 @@ public:
 
     virtual void applyIncomingParticleBC(std::vector<Particle>& particles,
                                          std::string const& pusher, double const& dt,
-                                         std::string const& species) const override;
+                                         std::string const& species, bool update) const override;
 
     virtual ~DomainBoundaryCondition();
 };

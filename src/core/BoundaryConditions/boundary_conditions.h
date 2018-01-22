@@ -6,8 +6,8 @@
 
 #include "data/Field/field.h"
 #include "data/Plasmas/ions.h"
-#include "data/vecfield/vecfield.h"
 #include "data/Plasmas/particles.h"
+#include "data/vecfield/vecfield.h"
 #include "leavingparticles.h"
 
 enum class BoundaryType { Periodic, Frozen };
@@ -38,7 +38,7 @@ public:
 
     virtual void applyIncomingParticleBC(std::vector<Particle>& particles,
                                          std::string const& pusher, double const& dt,
-                                         std::string const& species) const = 0;
+                                         std::string const& species, bool update) const = 0;
 };
 
 

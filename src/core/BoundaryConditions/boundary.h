@@ -29,7 +29,7 @@ public:
     virtual void applyIncomingParticleBC(BoundaryCondition& temporaryBC, Pusher& pusher,
                                          GridLayout const& patchLayout,
                                          std::vector<Particle>& patchParticles,
-                                         std::string const& species)
+                                         std::string const& species, bool update)
         = 0;
 };
 

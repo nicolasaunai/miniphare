@@ -97,12 +97,13 @@ void GCABoundaryCondition::applyOutgoingParticleBC(std::vector<Particle>& GCApar
 
 void GCABoundaryCondition::applyIncomingParticleBC(std::vector<Particle>& particles,
                                                    std::string const& pusher, double const& dt,
-                                                   std::string const& species) const
+                                                   std::string const& species, bool update) const
 {
     (void)particles;
     (void)pusher;
     (void)dt;
     (void)species;
+    (void)update;
 }
 
 
